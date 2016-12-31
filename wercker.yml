@@ -13,3 +13,4 @@ deploy:
         token: $GIT_TOKEN
         domain: computer-vision-talks.com
         basedir: public
+        branch: gh-pages

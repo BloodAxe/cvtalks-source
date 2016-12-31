@@ -10,6 +10,7 @@ deploy:
     - install-packages:
         packages: git ssh-client
     - lukevivier/gh-pages@0.2.1:
+        repo: BloodAxe/cvtalks-www
         token: $GIT_TOKEN
         domain: computer-vision-talks.com
         basedir: public

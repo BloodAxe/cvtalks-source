@@ -2,7 +2,7 @@ languageCode = "en-us"
 title = "Computer Vision Talks"
 baseurl = "http://computer-vision-talks.com/"
 theme = "mainroad"
-canonifyURLs: true
+canonifyURLs = true
 
 disqusShortname = "cvtalks" # Enable comments by entering your Disqus shortname
 googleAnalytics = "" # Enable Google Analytics by entering your tracking id

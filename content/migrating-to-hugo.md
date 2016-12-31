@@ -1,5 +1,5 @@
 +++
-tags = [hugo,news]
+tags = [ "hugo", "news" ]
 categories = []
 date = "2016-12-31T21:10:26+02:00"
 description = ""

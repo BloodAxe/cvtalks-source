@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>How-to-convert-args-from-js-to-cpp-rsses on Ghostwriter example</title>
+    <link>https://example.com/how-to-convert-args-from-js-to-cpp/index.xml</link>
+    <description>Recent content in How-to-convert-args-from-js-to-cpp-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Thu, 11 Sep 2014 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/how-to-convert-args-from-js-to-cpp/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Argument checking for native addons for Node.js. Do it right!</title>
+      <link>https://example.com/how-to-convert-args-from-js-to-cpp/</link>
+      <pubDate>Thu, 11 Sep 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/how-to-convert-args-from-js-to-cpp/</guid>
+      <description>
+
+&lt;div class=&#34;featured-image&#34;&gt;
+![NanCheck](logo.jpg)
+&lt;/div&gt;
+
+&lt;p&gt;During development of &lt;a href=&#34;https://cloudcv.io&#34;&gt;CloudCV&lt;/a&gt; I came to the problem on converting &lt;code&gt;v8::Arguments&lt;/code&gt; to
+native C++ data types in my Node.js native module. If you are new to C++ and Node.js, I suggest you to read how to write C++ modules for Node.js and connecting OpenCV and Node.js first.&lt;/p&gt;
+
+&lt;p&gt;Mapping V8 data types to native C++ equivalents is trivial, but somewhat wordy. One should take the
+argument at given index, check whether it is defined, then check it&amp;rsquo;s type and finally cast to C++ type.
+This works fine while you have function that receive two or three arguments of trivial type (That can be mapped directly to built-in C++ types). What about strings? Arrays? Complex types like objects or function callback?
+You code will grow like and became hard-to-maintain pasta-code some day.&lt;/p&gt;
+
+&lt;p&gt;In this post I present my approach on solving this problem with a laconic way on describing what do you expect as input arguments.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;
+&lt;div class=&#34;clearfix&#34;&gt;&lt;/div&gt;&lt;/p&gt;
+
+&lt;p&gt;To illustrate the difference between imperative approach I included source code for calibrationPatternDetect method that expose function to detect calibration pattern on a single image to Node.js code. As you may see below, there are a lot of &lt;em&gt;if&lt;/em&gt; conditions, magic numbers and no type checking for a half of arguments. But even without it, this function occupy 50 lines of code.
+What even worse, 90% of this code is going to be the same for other functions. The main purpose of code of any &lt;code&gt;NAN_METHOD&lt;/code&gt; implementation - to marshal data in such a way it can be used by C++ code.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;NAN_METHOD(calibrationPatternDetect)
+{
+    NanScope();
+
+    if (args.Length() != 5)
+    {
+        return NanThrowError(&amp;quot;Invalid number of arguments&amp;quot;);  
+    }
+
+    if (!args[0]-&amp;gt;IsObject())
+    {
+        return NanThrowTypeError(&amp;quot;First argument should be a Buffer&amp;quot;);      
+    }
+
+    // 0 - image
+    // 1 - width
+    // 2 - height
+    // 3 - pattern
+    // 4 - callback
+
+    int w  = args[1]-&amp;gt;Uint32Value();
+    int h  = args[2]-&amp;gt;Uint32Value();
+    int pt = args[3]-&amp;gt;Uint32Value();
+    PatternType pattern;
+
+    switch (pt)
+    {
+        case 0:
+            pattern = CHESSBOARD;
+            break;
+
+        case 1:
+            pattern = CIRCLES_GRID;
+            break;
+
+        case 2:
+            pattern = ASYMMETRIC_CIRCLES_GRID;
+            break;    
+
+        default:
+            return NanThrowError(&amp;quot;Unsupported pattern type. Only 0 (CHESSBOARD), 1 (CIRCLES_GRID) or 2 (ASYMMETRIC_CIRCLES_GRID) are supported.&amp;quot;);
+    };
+
+    if (!args[4]-&amp;gt;IsFunction())
+    {
+        return NanThrowTypeError(&amp;quot;Last argument must be a function.&amp;quot;);
+    }
+
+    // The task holds our custom status information for this asynchronous call,
+    // like the callback function we want to call when returning to the main
+    // thread and the status information.
+
+    NanCallback *callback = new NanCallback(args[4].As&amp;lt;Function&amp;gt;());
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So the goal is to add more syntax sugar for argument checking.
+Basically, it should provide a convenient way to check number and type of arguments passed.
+For &lt;a href=&#34;https://cloudcv.io&#34;&gt;CloudCV&lt;/a&gt; project I&amp;rsquo;ve ended with a declarative approach because I found it fit my needs very much
+and makes argument checking self-explanatory. Here is how new implementation of &lt;code&gt;calibrationPatternDetect&lt;/code&gt; looks like:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;NAN_METHOD(calibrationPatternDetect)
+{
+    NanScope();
+
+    Local&amp;lt;Object&amp;gt;   imageBuffer;
+    Local&amp;lt;Function&amp;gt; callback;
+    cv::Size        patternSize;
+    PatternType     pattern;
+
+    try
+    {
+        if (NanCheck(args).ArgumentsCount(5)
+            .Argument(0).IsBuffer().Bind(imageBuffer)
+            .Argument(1).Bind(patternSize.width)
+            .Argument(2).Bind(patternSize.height)
+            .Argument(3).StringEnum&amp;lt;PatternType&amp;gt;({ 
+                { &amp;quot;CHESSBOARD&amp;quot;,     PatternType::CHESSBOARD }, 
+                { &amp;quot;CIRCLES_GRID&amp;quot;,   PatternType::CIRCLES_GRID }, 
+                { &amp;quot;ACIRCLES_GRID&amp;quot;,  PatternType::ACIRCLES_GRID } }).Bind(pattern)
+            .Argument(4).IsFunction().Bind(callback))
+        {
+            NanCallback *nanCallback = new NanCallback(callback);
+            NanAsyncQueueWorker(new DetectPatternTask(imageBuffer, patternSize, pattern, nanCallback));
+            NanReturnValue(NanTrue());
+        }
+
+        NanReturnValue(NanFalse());
+    }
+    catch (ArgumentMismatchException exc)
+    {
+        return NanThrowTypeError(exc.what());
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I hope you agree that second version is much more easy to read. Fluent architecture allows to write predicates in a chain, which actually is very similar to the way we thing. All predicate has self-telling names made from verb and a noun. So let me give you a brief overview what &lt;code&gt;NanCheck&lt;/code&gt; is capable of.&lt;/p&gt;
+
+&lt;h2 id=&#34;fluent-api&#34;&gt;Fluent API&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://en.wikipedia.org/wiki/Method_chaining&#34;&gt;Method chaining&lt;/a&gt; (aka Fluent API) makes it very easy to build final predicate for argument checking via consecutive checks.
+Each next step will be made &lt;strong&gt;if and only if&lt;/strong&gt; all previous predicates were successful.
+In case of error, predicate will throw an &lt;code&gt;ArgumentMismatchException&lt;/code&gt; exception that will terminate all further checks. &lt;code&gt;NanCheck(args)&lt;/code&gt; can be evaluated to &lt;code&gt;bool&lt;/code&gt; which makes it possible to use NanCheck in a condition statement:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;if (NanCheck(args). ...) {
+    // This code will be executed if argument parsing
+    // will be successful        
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;type-checking&#34;&gt;Type checking&lt;/h2&gt;
+
+&lt;p&gt;To check particular argument at given index, &lt;code&gt;NanCheckArguments&lt;/code&gt; provide a &lt;code&gt;Argument(index)&lt;/code&gt; function. This function lets you to build a sub-predicate for given argument and bind it&amp;rsquo;s value with particular local variable:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;    if (NanCheck(args).Argument(0).IsBuffer()) {
+        // This code will be executed if argument parsing
+        // will be successful        
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Currently, &lt;code&gt;NanCheck&lt;/code&gt; support type checking of the following built-in V8 types:
+1. &lt;code&gt;v8::Function&lt;/code&gt;
+2. &lt;code&gt;v8::Object&lt;/code&gt;
+3. &lt;code&gt;v8::String&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;In addition, it offers &lt;code&gt;NotNull&lt;/code&gt; predicate to ensure argument is not null or empty.
+The list of predicates will grow for sure. New functions to check whether argument is &lt;code&gt;v8::Array&lt;/code&gt;, &lt;code&gt;v8::Number&lt;/code&gt;, &lt;code&gt;v8::Integer&lt;/code&gt;, &lt;code&gt;v8::Boolean&lt;/code&gt; will be added in a next updates.&lt;/p&gt;
+
+&lt;h2 id=&#34;binding&#34;&gt;Binding&lt;/h2&gt;
+
+&lt;p&gt;After type checking, it&amp;rsquo;s necessary to complete sub-predicate construction by &lt;em&gt;binding&lt;/em&gt; argument to a local variable. Binding is a assignment of the argument (with data marshaling, if it&amp;rsquo;s necessary) to a variable that will be used later;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;    Local&amp;lt;Object&amp;gt;   imageBuffer;
+    if (NanCheck(args).Argument(0).IsBuffer().Bind(imageBuffer)) {
+        // This code will be executed if argument parsing
+        // will be successful        
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;NanCheck support transparent binding to all v8 types (Number, String, Function, Object, Array, etc.), native C++ and OpenCV types (via &lt;a href=&#34;https://github.com/BloodAxe/CloudCVBackend/blob/master/src/framework/marshal/opencv.cpp&#34;&gt;marshaling system&lt;/a&gt;):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;    cv::Size        patternSize;
+    if (NanCheck(args).Argument(1).IsObject().Bind(patternSize)) {
+        // This code will be executed if argument parsing
+        // will be successful        
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;There is a special case of string arguments called &lt;code&gt;StringEnum&lt;/code&gt; - that is, a string argument, which can be one of a priory defined values. It introduced to support *&lt;em&gt;C++ enum&lt;/em&gt; types and pass them
+as string constants. &lt;code&gt;StringEnum&lt;/code&gt; predicate allow to parse string value and map to C++ enum type:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;    PatternType     pattern;
+    if (NanCheck(args)
+        .Argument(3).StringEnum&amp;lt;PatternType&amp;gt;({ 
+            { &amp;quot;CHESSBOARD&amp;quot;,     PatternType::CHESSBOARD }, 
+            { &amp;quot;CIRCLES_GRID&amp;quot;,   PatternType::CIRCLES_GRID }, 
+            { &amp;quot;ACIRCLES_GRID&amp;quot;,  PatternType::ACIRCLES_GRID } }).Bind(pattern)) {
+        // This code will be executed if argument parsing
+        // will be successful        
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;implementation-highlights&#34;&gt;Implementation highlights&lt;/h2&gt;
+
+&lt;p&gt;Thanks to C++11, it&amp;rsquo;s really easy to construct predicate chain using lambda functions. Basically predicate chain is nothing but a recursive anonymous function of the following form:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;    auto initFn = [innerPredicate, outerPredicate](const v8::Arguments&amp;amp; args) {
+        return innerPredicate(args) &amp;amp;&amp;amp; outerPredicate(args);
+    };
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To illustrate an idea of building predicate chain, let&amp;rsquo;s take a look on ArgumentsCount implementation:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;    NanCheckArguments&amp;amp; NanCheckArguments::ArgumentsCount(int count)
+    {
+        return AddAndClause([count](const v8::Arguments&amp;amp; args) 
+        { 
+            if (args.Length() != count)
+                throw ArgumentMismatchException(args.Length(), count); 
+
+            return true;
+        });
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Here we construct outer predicate which compare number of arguments to expected value
+and throw an exception if it does not match.&lt;/p&gt;
+
+&lt;p&gt;With a help of &lt;code&gt;std::initializer_list&lt;/code&gt; it became really simple to declare string enum with minimal syntax overhead:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;    class NanMethodArgBinding
+    {
+    public:
+    ...
+        template &amp;lt;typename T&amp;gt;
+        NanArgStringEnum&amp;lt;T&amp;gt; 
+        StringEnum(std::initializer_list&amp;lt; std::pair&amp;lt;const char*, T&amp;gt; &amp;gt; possibleValues);
+    ...
+    };
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now we&amp;rsquo;re able to call this function with arbitrary number of elements for this enum using
+&lt;code&gt;std::initializer_list&lt;/code&gt; syntax:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;    { 
+        { &amp;quot;CHESSBOARD&amp;quot;,     PatternType::CHESSBOARD }, 
+        { &amp;quot;CIRCLES_GRID&amp;quot;,   PatternType::CIRCLES_GRID }, 
+        { &amp;quot;ACIRCLES_GRID&amp;quot;,  PatternType::ACIRCLES_GRID }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/BloodAxe/CloudCVBackend/blob/master/src/framework/NanCheck.hpp&#34;&gt;&lt;strong&gt;NanCheck&lt;/strong&gt;&lt;/a&gt; helped me to reduce amount of code required to check arguments passed to &lt;a href=&#34;https://cloudcv.io&#34;&gt;CloudCV&lt;/a&gt; back-end. There are many cool ideas that I&amp;rsquo;ll probably add as soon as there will be necessity to have them in my library:
+- Strongly typed objects (Objects with required fields)
+- Optional parameters with default values
+- Automatic type inference based on &lt;code&gt;Bind&amp;lt;T&amp;gt;(...)&lt;/code&gt; type.
+- Support of multiple types per argument (Parameter can be either of type A or B)&lt;/p&gt;
+
+&lt;p&gt;Please leave your comments on this post. I&amp;rsquo;ve spent many hours on figuring out how to implement data marshaling and type checking in V8 and Node.js, so please help information to
+spread out - share and re-tweet this post. Cheers!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

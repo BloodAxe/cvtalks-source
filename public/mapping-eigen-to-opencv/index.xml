@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Mapping-eigen-to-opencv-rsses on Ghostwriter example</title>
+    <link>https://example.com/mapping-eigen-to-opencv/index.xml</link>
+    <description>Recent content in Mapping-eigen-to-opencv-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Sat, 16 Aug 2014 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/mapping-eigen-to-opencv/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Mapping data from Eigen to OpenCV and back</title>
+      <link>https://example.com/mapping-eigen-to-opencv/</link>
+      <pubDate>Sat, 16 Aug 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/mapping-eigen-to-opencv/</guid>
+      <description>
+
+&lt;div class=&#34;featured-image&#34;&gt;
+![Eigen2CV](eigen2cv.png)
+&lt;/div&gt;
+
+&lt;p&gt;Eigen is a C++ template library for matrix and vector operations.
+It is highly optimized for numeric operations and support vectorization and
+use aligned memory allocators.&lt;/p&gt;
+
+&lt;p&gt;When it comes to matrix operations, Eigen is much faster than OpenCV.
+However, it can be situations when it is necessary to pass Eigen data
+to OpenCV functions.&lt;/p&gt;
+
+&lt;p&gt;In this post I will show how to map Eigen data to OpenCV with easy and efficient
+way. No copy, minimal overhead and maximum syntax sugar:
+&lt;div class=&#34;clearfix&#34;&gt;&lt;/div&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Simple case&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;Eigen::ArrayXXd img(480, 640);
+...
+cv::imshow(&amp;quot;test&amp;quot;, eigen2cv(img));
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Proposed approach does not limited to continuous memory layout - it support expression and blocks
+as well. If given expression has to be evaluated - it will be evaluated into temporary dense storage
+and then mapped to OpenCV structure:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Expressions&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;// Unsharp mask
+Eigen::ArrayXXd img, blur;    
+cv::GaussianBlur(eigen2cv(img), eigen2cv(blur));
+
+cv::imshow(&amp;quot;sharpened&amp;quot;, eigen2cv(1.5 * img - 0.5 * blur));
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;idea&#34;&gt;Idea&lt;/h2&gt;
+
+&lt;p&gt;In fact, Eigen heavily use &lt;a href=&#34;#1&#34;&gt;C++ templates magic&lt;/a&gt; to create expression structures with delayed evaluation and &lt;a href=&#34;#2&#34;&gt;type traits&lt;/a&gt; to detect type of derived objects in compile time.
+This approach gives compiler a lot of hints on actual data layout which helps to generate more efficient code.
+The drawback of this - if you want to deep dive in Eigen internals be prepared to hardcore.&lt;/p&gt;
+
+&lt;p&gt;I will use templates as well. We will have template class &lt;code&gt;Eigen2CV&lt;/code&gt; and several specializations of this class - for planar types, for blocks, for expression and so on&amp;hellip;
+In addition we will specialize this class with mutable specification which will
+let us to define &lt;u&gt;at compile time&lt;/u&gt; whether mapped object is allowed for writing or not. Awesome.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;template&amp;lt;
+    typename Derived, 
+    typename Base, 
+    typename ConstPolicy, 
+    typename StorageKind = typename Eigen::internal::traits&amp;lt;Derived&amp;gt;::StorageKind 
+    &amp;gt;
+class Eigen2CV;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To interact with OpenCV, we can declare implicit conversion operators for &lt;code&gt;cv::Mat&lt;/code&gt;, &lt;code&gt;cv::InputArray&lt;/code&gt; and &lt;code&gt;cv::OutputArray&lt;/code&gt;.
+Some of the mapped objects can have read/write access while the rest  - read-only.
+Therefore we will introduce the base class &lt;code&gt;Eigen2CVBase&lt;/code&gt; to provide a &amp;ldquo;read-only&amp;rdquo; access for all derived objects.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;class Eigen2CVBase
+{
+public:
+    
+    operator cv::Mat() const
+    {
+        return mBody;
+    }
+    
+    operator cv::_InputArray() const
+    {
+        return cv::_InputArray(mBody);
+    }
+    
+protected:
+    
+    template&amp;lt;typename Derived&amp;gt;
+    void mapPlaneMemory(const Derived&amp;amp; src)
+    {
+        const bool isRowMajor = int(Derived::Flags) &amp;amp; Eigen::RowMajorBit;
+        const int stride = src.outerStride() * sizeof(typename Derived::Scalar);
+        
+        if (isRowMajor)
+            this-&amp;gt;mapPlaneMemoryRowMajor(src.data(),
+                                         src.rows(),
+                                         src.cols(),
+                                         stride);
+        else
+            this-&amp;gt;mapPlaneMemoryColMajor(src.data(),
+                                         src.rows(),
+                                         src.cols(),
+                                         stride);
+    }
+
+    template &amp;lt;typename Scalar&amp;gt;
+    void mapPlaneMemoryRowMajor(const Scalar* planeData, int rows, int cols, int stride)
+    {
+        this-&amp;gt;mBody = cv::Mat(rows, 
+                              cols, 
+                              opencv_matrix&amp;lt;Scalar&amp;gt;::type, 
+                              const_cast&amp;lt;Scalar*&amp;gt;(planeData), 
+                              stride);
+    }
+    
+    template &amp;lt;typename Scalar&amp;gt;
+    void mapPlaneMemoryColMajor(const Scalar* planeData, int rows, int cols, int stride)
+    {
+        this-&amp;gt;mBody = cv::Mat(cols, 
+                              rows, 
+                              opencv_matrix&amp;lt;Scalar&amp;gt;::type, 
+                              const_cast&amp;lt;Scalar*&amp;gt;(planeData), 
+                              stride);
+    }
+
+    template &amp;lt;typename Derived, typename T&amp;gt;
+    void assignMatrix(Eigen::DenseBase&amp;lt;Derived&amp;gt;&amp;amp; dst, const cv::Mat_&amp;lt;T&amp;gt;&amp;amp; src)
+    {
+        typedef typename Derived::Scalar Scalar;
+        typedef Eigen::Matrix&amp;lt;T, 
+                              Eigen::Dynamic, 
+                              Eigen::Dynamic, 
+                              Eigen::RowMajor&amp;gt; PlainMatrixType;
+        
+        dst = Eigen::Map&amp;lt;PlainMatrixType&amp;gt;((T*)src.data, 
+                                          src.rows, 
+                                          src.cols).
+                                          template cast&amp;lt;Scalar&amp;gt;();
+    }
+    
+    cv::Mat mBody;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;For those Eigen types that allows read/write access, we will have additional conversion operator to cv::OutputArray. By default all derived types will have read-only access.&lt;/p&gt;
+
+&lt;h2 id=&#34;mapping-eigen-plain-objects&#34;&gt;Mapping Eigen plain objects&lt;/h2&gt;
+
+&lt;p&gt;Let&amp;rsquo;s start from mapping continuous block of memory represented by &lt;code&gt;Eigen::Matrix&lt;/code&gt; of &lt;code&gt;Eigen::Array&lt;/code&gt;.
+These two classes derives from &lt;code&gt;Eigen::PlainObjectBase&lt;/code&gt; class which provides methods to access internal storage
+buffer.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;template&amp;lt;typename Derived&amp;gt;
+class Eigen2CV&amp;lt;
+    Derived, 
+    Eigen::PlainObjectBase&amp;lt;Derived&amp;gt;, 
+    details::Const&amp;gt; : public Eigen2CVBase
+{
+public:
+    
+    typedef typename Derived::Scalar Scalar;
+    typedef Eigen2CV&amp;lt;Derived, Eigen::PlainObjectBase&amp;lt;Derived&amp;gt;, details::Mutable&amp;gt; Self;
+    
+    Eigen2CV(const Eigen::PlainObjectBase&amp;lt;Derived&amp;gt;&amp;amp; src)
+    : mMappedView(src)
+    {
+        this-&amp;gt;mapPlaneMemory(mMappedView);
+    }
+           
+private:
+    const Eigen::PlainObjectBase&amp;lt;Derived&amp;gt;&amp;amp; mMappedView;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is &lt;code&gt;Eigen2CV&lt;/code&gt; specialization for constant &lt;code&gt;Eigen::PlainObjectBase&lt;/code&gt; object. This specialization of &lt;code&gt;Eigen2CV&lt;/code&gt; can return constant reference to &lt;code&gt;cv::Mat&lt;/code&gt; and &lt;code&gt;cv::InputArray&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Now we can write two overloads of &lt;code&gt;eigen2cv&lt;/code&gt; function for &lt;code&gt;Eigen::Matrix&lt;/code&gt; and &lt;code&gt;Eigen::Array&lt;/code&gt;. The goal of &lt;code&gt;eigen2cv&lt;/code&gt; is simple - take an argument and create &amp;lsquo;right&amp;rsquo; Eigen2CV&amp;lt;&amp;hellip;&amp;gt; mapper.
+Here is how it looks like for planar data:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;template&amp;lt;typename E&amp;gt;
+Eigen2CV&amp;lt;E, Eigen::PlainObjectBase&amp;lt;E&amp;gt;, details::Mutable&amp;gt; 
+eigen2cv(Eigen::PlainObjectBase&amp;lt;E&amp;gt;&amp;amp; src) 
+{
+    return Eigen2CV&amp;lt;E, 
+                    Eigen::PlainObjectBase&amp;lt;E&amp;gt;, 
+                    details::Mutable
+                    &amp;gt;(src));
+}
+
+template&amp;lt;typename E&amp;gt;
+Eigen2CV&amp;lt;E, Eigen::PlainObjectBase&amp;lt;E&amp;gt;, details::Const&amp;gt;
+eigen2cv(const Eigen::PlainObjectBase&amp;lt;E&amp;gt;&amp;amp; src) 
+{
+    return Eigen2CV&amp;lt;E, 
+                    Eigen::PlainObjectBase&amp;lt;E&amp;gt;, 
+                    details::Const
+                    &amp;gt;(src);
+}  
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I want to draw your attention to how elegant C++ allows us to distinct mutable and constant objects.
+Compiler will choose right function depending on the context of &lt;code&gt;src&lt;/code&gt;.
+In case of access right conflicts you will get compile-time error.&lt;/p&gt;
+
+&lt;h2 id=&#34;assigning-opencv-matrix-to-eigen-object&#34;&gt;Assigning OpenCV matrix to Eigen object&lt;/h2&gt;
+
+&lt;p&gt;What if someone write:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;eigen2cv(a) = cv::imread(&amp;quot;lena.jpg&amp;quot;, cv::IMREAD_GRAYSCALE);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Well, it&amp;rsquo;s legal and I see no problems with this code while we follow few restrictions:
+1. &lt;code&gt;data&lt;/code&gt; has dynamic size or fixed one which match cv::Mat size.
+2. Image is single channel - there is no way to map multi-channel images to Eigen now.&lt;/p&gt;
+
+&lt;p&gt;Assignment operator is also quite simple:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;template &amp;lt;typename T&amp;gt;
+Self&amp;amp; operator=(const cv::Mat_&amp;lt;T&amp;gt;&amp;amp; src)
+{
+    assignMatrix&amp;lt;Derived, T&amp;gt;(mMappedView, src);
+    return *this;
+}
+
+/**
+ * @brief Assignment operator to copy OpenCV Mat data to mapped Eigen object.
+ */
+Self&amp;amp; operator= (const cv::Mat&amp;amp; m)
+{
+    switch (m.type())
+    {
+        case CV_8U:  return *this = (cv::Mat_&amp;lt;uint8_t&amp;gt;)m;
+        case CV_16U: return *this = (cv::Mat_&amp;lt;uint16_t&amp;gt;)m;
+        case CV_16S: return *this = (cv::Mat_&amp;lt;int16_t&amp;gt;)m;
+        case CV_32S: return *this = (cv::Mat_&amp;lt;int32_t&amp;gt;)m;
+        case CV_32F: return *this = (cv::Mat_&amp;lt;float&amp;gt;)m;
+        case CV_64F: return *this = (cv::Mat_&amp;lt;double&amp;gt;)m;
+        default:
+            throw std::runtime_error(&amp;quot;Unsupported OpenCV matrix type&amp;quot;);
+    };
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;mapping-eigen-expressions&#34;&gt;Mapping Eigen expressions&lt;/h2&gt;
+
+&lt;p&gt;Dealing with expressions is not much harder.
+Depending on the expression type, we must either evaluate it into dense storage (when it&amp;rsquo;s real expression like &lt;code&gt;AX + B&lt;/code&gt;, or &lt;code&gt;cast&amp;lt;float&amp;gt;()&lt;/code&gt;)
+or use underlying storage with regards to expression operator (&lt;code&gt;block()&lt;/code&gt;, &lt;code&gt;transpose()&lt;/code&gt;, &lt;code&gt;array()&lt;/code&gt;, &lt;code&gt;matrix()&lt;/code&gt;).
+We will get to mapping blocks in a next section.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s map expression that require evaluation first. For the sake of simplicity,
+I will not implement write expressions, e.g expressions that require eval/update/write-back.
+Eigen2CV will be able map Eigen expressions in read-only mode.
+And here&amp;rsquo;s how:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;template&amp;lt;typename Derived&amp;gt;
+class Eigen2CV&amp;lt;Derived, Eigen::EigenBase&amp;lt;Derived&amp;gt;, details::Const&amp;gt; : public Eigen2CVBase
+{
+public:
+    typedef typename Derived::Scalar Scalar;
+    typedef typename Eigen::internal::plain_matrix_type&amp;lt;Derived&amp;gt;::type StorageType;
+
+    Eigen2CV(const Eigen::EigenBase&amp;lt;Derived&amp;gt;&amp;amp; src)
+    {
+        mStorage = src; // All magic happens here
+        this-&amp;gt;mapPlaneMemory(mStorage);
+    }
+
+protected:
+
+    void mapPlaneMemory(StorageType&amp;amp; src)
+    {
+        if ( ( StorageType::Options &amp;amp; Eigen::RowMajor) == Eigen::RowMajor)
+            this-&amp;gt;mapPlaneMemoryRowMajor(src.data(), 
+                                         src.rows(), 
+                                         src.cols(), 
+                                         src.outerStride() * sizeof(Scalar));
+        else
+            this-&amp;gt;mapPlaneMemoryColMajor(src.data(), 
+                                         src.rows(), 
+                                         src.cols(), 
+                                         src.outerStride() * sizeof(Scalar));
+    }
+
+private:
+    StorageType mStorage;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;For the first look, it is almost the same as specialization for planar data types. A few differences make this specialization very other one.
+First, &lt;code&gt;Eigen::internal::plain_matrix_type&amp;lt;Derived&amp;gt;::type&lt;/code&gt; type trait helps us to infer type of dense storage for given expression.
+Second, line &lt;code&gt;mStorage = src&lt;/code&gt; looks really simple right? But hold on, &lt;code&gt;src&lt;/code&gt; is an expression, and &lt;code&gt;mStorage&lt;/code&gt; is dense matrix.
+Assignment operator makes our like much easier by performing evaluation step inside this assignment.&lt;/p&gt;
+
+&lt;p&gt;And here is &lt;code&gt;eigen2cv&lt;/code&gt; overload for Eigen expressions:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;template&amp;lt;typename E&amp;gt;
+Eigen2CV&amp;lt;E, Eigen::EigenBase&amp;lt;E&amp;gt;, details::Const&amp;gt;
+eigen2cv(const Eigen::EigenBase&amp;lt;E&amp;gt;&amp;amp; src) 
+{
+    return Eigen2CV&amp;lt;E, 
+                    Eigen::EigenBase&amp;lt;E&amp;gt;, 
+                    details::Const
+                    &amp;gt;(src);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;mapping-eigen-views&#34;&gt;Mapping Eigen views&lt;/h2&gt;
+
+&lt;p&gt;User can create sub-view for the Eigen storage using &lt;code&gt;block()&lt;/code&gt;.
+Eigen block create view that points to the same memory region, but has different size and stride.
+Blocks can be read and written.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;template&amp;lt;typename Derived&amp;gt;
+class Eigen2CV&amp;lt;Derived, 
+               Eigen::Block&amp;lt;Derived&amp;gt;, 
+               details::Mutable, 
+               Eigen::Dense&amp;gt; : public Eigen2CVBase
+{
+public:
+    typename Derived::Scalar Scalar;
+    typedef Eigen2CV&amp;lt;Derived, Eigen::Block&amp;lt;Derived&amp;gt;, details::Mutable&amp;gt; Self;
+
+    Eigen2CV(const Eigen::Block&amp;lt;Derived&amp;gt;&amp;amp; src)
+        : mMappedView(src)
+    {
+        this-&amp;gt;mapPlaneMemory(mMappedView);
+    }
+    
+    operator cv::_OutputArray()
+    {
+        return cv::_OutputArray(this-&amp;gt;mBody);
+    }
+    
+    template &amp;lt;typename T&amp;gt;
+    Self&amp;amp; operator=(const cv::Mat_&amp;lt;T&amp;gt;&amp;amp; src)
+    {
+        MatrixAssign&amp;lt;Derived, T&amp;gt;(mMappedView, src);
+        return *this;
+    }
+    
+    /**
+     * @brief Assignment operator to copy OpenCV Mat data to mapped Eigen object.
+     */
+    Self&amp;amp; operator= (const cv::Mat&amp;amp; m) throw ()
+    {
+        switch (m.type())
+        {
+            case CV_8U:  return *this = (cv::Mat_&amp;lt;uint8_t&amp;gt;)m;
+            case CV_16U: return *this = (cv::Mat_&amp;lt;uint16_t&amp;gt;)m;
+            case CV_16S: return *this = (cv::Mat_&amp;lt;int16_t&amp;gt;)m;
+            case CV_32S: return *this = (cv::Mat_&amp;lt;int32_t&amp;gt;)m;
+            case CV_32F: return *this = (cv::Mat_&amp;lt;float&amp;gt;)m;
+            case CV_64F: return *this = (cv::Mat_&amp;lt;double&amp;gt;)m;
+            default:
+                throw std::runtime_error(&amp;quot;Unsupported OpenCV matrix type&amp;quot;);
+        };
+    }
+    
+private:
+    const Eigen::Block&amp;lt;Derived&amp;gt;&amp;amp; mMappedView;
+};
+
+template&amp;lt;typename E&amp;gt;
+Eigen2CV&amp;lt;E, Eigen::Block&amp;lt;E&amp;gt;, details::Mutable&amp;gt;
+eigen2cv(const Eigen::Block&amp;lt;E&amp;gt;&amp;amp; src)
+{
+    return Eigen2CV&amp;lt;E, 
+                    Eigen::Block&amp;lt;E&amp;gt;, 
+                    details::Mutable
+                    &amp;gt;(src);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;eigen-memory-organization&#34;&gt;Eigen memory organization&lt;/h2&gt;
+
+&lt;p&gt;Eigen can use column-major or row-major ordering of internal data storage.
+By default it&amp;rsquo;s column-major, but OpenCV use row-major ordering.&lt;/p&gt;
+
+&lt;p class=&#34;info info-warning&#34;&gt;
+&lt;span class=&#34;label label-info&#34;&gt;Notice&lt;/span&gt;
+This mapping implementation will NOT convert underlying Eigen memory to meet OpenCV convention. 
+For column-major order of Eigen data type this will lead to transposed matrices in OpenCV. 
+&lt;/p&gt;
+
+&lt;h2 id=&#34;demonstration&#34;&gt;Demonstration&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;Image8u_t a(512, 512); // Eigen::Matrix&amp;lt;uint8_t, Dynamic, Dynamic&amp;gt;
+
+for (size_t i = 0; i &amp;lt; 512; i++)
+{
+    for (size_t j = 0; j &amp;lt; 512; j++)
+    {
+        a(i,j) = 255.0f * (sin(0.04f * i) * sin(0.04f * i) + 
+                           cos(0.04f * j) * cos(0.04f * j));
+    }
+}
+
+cv::GaussianBlur(eigen2cv(a.block(128, 128, 256, 256)),
+                 eigen2cv(a.block(128, 128, 256, 256)), cv::Size(25,25), 0);
+cv::imshow(&amp;quot;Blur image region&amp;quot;, eigen2cv(a));
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;blur_roi.png&#34; alt=&#34;Blur image region&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;source-code&#34;&gt;Source code&lt;/h2&gt;
+
+&lt;p&gt;Source code for this post can be found on GitHub: &lt;a href=&#34;https://gist.github.com/BloodAxe/c94d65d5977fb1d3e53f&#34;&gt;Eigen2CV.h&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;License: &lt;a href=&#34;https://tldrlegal.com/license/bsd-3-clause-license-(revised)#summary&#34;&gt;BSD-3&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;references&#34;&gt;References&lt;/h2&gt;
+
+&lt;p&gt;&lt;a name=&#34;#1&#34; /&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.amazon.com/gp/product/0201704315/ref=as_li_tl?ie=UTF8&amp;camp=1789&amp;creative=9325&amp;creativeASIN=0201704315&amp;linkCode=as2&amp;tag=compvisitalk-20&amp;linkId=2ZA2JDQNEDOQJZFL&#34;&gt;Modern C++ Design: Generic Programming and Design Patterns Applied&lt;/a&gt;&lt;img src=&#34;http://ir-na.amazon-adsystem.com/e/ir?t=compvisitalk-20&amp;l=as2&amp;o=1&amp;a=0201704315&#34; width=&#34;1&#34; height=&#34;1&#34; border=&#34;0&#34; alt=&#34;&#34; style=&#34;border:none !important; margin:0px !important;&#34; /&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;a name=&#34;#2&#34; /&gt;
+2. &lt;a href=&#34;http://www.drdobbs.com/cpp/c-type-traits/184404270&#34;&gt;http://www.drdobbs.com/cpp/c-type-traits/184404270&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

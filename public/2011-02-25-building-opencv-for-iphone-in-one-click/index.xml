@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2011-02-25-building-opencv-for-iphone-in-one-click-rsses on Ghostwriter example</title>
+    <link>https://example.com/2011-02-25-building-opencv-for-iphone-in-one-click/index.xml</link>
+    <description>Recent content in 2011-02-25-building-opencv-for-iphone-in-one-click-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Fri, 25 Feb 2011 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2011-02-25-building-opencv-for-iphone-in-one-click/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Building OpenCV for iPhone in one click</title>
+      <link>https://example.com/2011-02-25-building-opencv-for-iphone-in-one-click/</link>
+      <pubDate>Fri, 25 Feb 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2011-02-25-building-opencv-for-iphone-in-one-click/</guid>
+      <description>
+
+&lt;p&gt;&lt;img src=&#34;build-opencv-script_thumb2.png&#34; alt=&#34;build-opencv-script&#34; title=&#34;build-opencv-script&#34; /&gt;&lt;br /&gt;
+My first post in this blog was about building OpenCV for iOS devices (iPhone, iPad, iPod and so on). But the build process that i used is not trivial at all. I received a lot of feedbacks and questions about building OpenCV, setting up XCode build environment. Today i made your life much easier. I have a gift - a build script, which will **build OpenCV **library for your iPhone, iPad, iPod or any other iOS based Apple device right &lt;strong&gt;in one click&lt;/strong&gt;!  &lt;strong&gt;Update: Now build script supports XCode 4 and iOS 4.3 SDK&lt;/strong&gt; Sounds cool, yeah? Well, It&amp;rsquo;s all true. Actually, my script does exactly the same things as i mentioned in original article. But without user interaction.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;
+&lt;div class=&#34;alert alert-danger&#34;&gt;
+    &lt;p class=&#34;lead&#34;&gt;This post is outdated.&lt;/p&gt;
+    &lt;p&gt;
+    Current version of OpenCV supports iOS toolchain and can be build in much easier way. You are welcome to read this post for educational purposes. It&amp;rsquo;s 99.9% chance that &lt;strong&gt;you will not be able to build OpenCV&lt;/strong&gt; using instructions decribed here.
+    &lt;/p&gt;
+&lt;/div&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;let-s-build-it&#34;&gt;Let&amp;rsquo;s build it!&lt;/h2&gt;
+
+&lt;p&gt;We start, as usual, from getting a fresh source code from OpenCV repository:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;svn co http://code.opencv.org/svn/opencv/trunk
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Or, if you already have checked out in the past, run svn update command:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;svn update
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To start build process you should call build script with two required arguments: directory, where OpenCV sources located and directory, where libraries and headers will be places:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sh BuildOpenCV.sh trunk/opencv/ opencv_ios_build
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Hit Enter and take a rest - it will take 5-10 minutes. There will be compilation errors. Something like:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;The following build commands failed:
+opencv_highgui:
+CompileC cap_qtkit.o cap_qtkit.mm normal armv7 objective-c++ com.apple.compilers.gcc.4_2
+opencv_ts:
+CompileC ts_gtest.o ts_gtest.cpp normal armv7 c++ com.apple.compilers.gcc.4_2
+(2 failures)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It&amp;rsquo;s okay. For now, OpenCV has to official iOS support, so some parts of code will cause compilation errors (highgui module). Maybe in future this will change, but ignore them now. If you are getting other errors, it looks like either you doing something wrong, or repository build is broken. When all is done, your build directory should looks like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;   opencv_build_ios_4771
+   |-include
+   |---opencv
+   |---opencv2
+   |-----calib3d
+   |-----contrib
+   |-----core
+   |-----features2d
+   |-----flann
+   |-----highgui
+   |-----imgproc
+   |-----legacy
+   |-----ml
+   |-----objdetect
+   |-----ts
+   |-----video
+   |-lib
+   |---Release-iphonesimulator
+   |---debug-iphoneos
+   |---debug-iphonesimulator
+   |---debug-universal
+   |---release-iphoneos
+   |---release-universal
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Lib folder contains all necessary static libraries, Include - OpenCV headers.&lt;/p&gt;
+
+&lt;h2 id=&#34;how-it-works&#34;&gt;How it works&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Configure OpenCV using CMake. I disabled enabled by default options like SSE, SSE2, support of video input libraries, because they are not actual for iOS&lt;/li&gt;
+&lt;li&gt;Run batch build process from command line using xcodebuild tool. With their help we build all necessary libs.&lt;/li&gt;
+&lt;li&gt;Copy libraries to appropriate directories and create universal ones.&lt;/li&gt;
+&lt;li&gt;Run Install target to get OpenCV headers.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&#34;script-source&#34;&gt;Script source&lt;/h2&gt;
+
+&lt;p&gt;Here is script listing. Don&amp;rsquo;t start copy&amp;amp;pasting it, there are download link at the end of the post.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;    #!/bin/bash
+    ################################################################################
+    # This script will create universal binaries for OpenCV library for
+    # iOS-based devices (iPhone, iPad, iPod, etc).
+    # As output you obtain debug/release static libraries and include headers.
+    #
+    # This script was written by Eugene Khvedchenya
+    # And distributed under GPL license
+    # Support site: http://computer-vision-talks.com
+    ################################################################################
+    
+    if [ $# -ne 2 ]
+    then
+        echo &amp;quot;Error in $0 - Invalid Argument Count&amp;quot;
+        echo &amp;quot;Syntax: $0 [OpenCV source directory] [Build destination directory]&amp;quot;
+        echo &amp;quot;If the destination directory already exists, it will be overwritten!&amp;quot;
+        exit
+    fi
+    
+    # Absolute path to the source code directory.
+    D=`dirname &amp;quot;$1&amp;quot;`
+    B=`basename &amp;quot;$1&amp;quot;`
+    SRC=&amp;quot;`cd \&amp;quot;$D\&amp;quot; 2&amp;gt;/dev/null &amp;amp;&amp;amp; pwd || echo \&amp;quot;$D\&amp;quot;`/$B&amp;quot;
+    
+    # Absolute path to the build directory.
+    D=`dirname &amp;quot;$2&amp;quot;`
+    B=`basename &amp;quot;$2&amp;quot;`
+    BUILD=&amp;quot;`cd \&amp;quot;$D\&amp;quot; 2&amp;gt;/dev/null &amp;amp;&amp;amp; pwd || echo \&amp;quot;$D\&amp;quot;`/$B&amp;quot;
+    
+    INTERMEDIATE=$BUILD/tmp
+    IOS_INSTALL_DIR=$INTERMEDIATE/ios-install
+    MAC_INSTALL_DIR=$INTERMEDIATE/mac-install
+    PATCHED_SRC_DIR=$INTERMEDIATE/ios-sources-patched
+    IOS_BUILD_DIR=$INTERMEDIATE/ios-build
+    MAC_BUILD_DIR=$INTERMEDIATE/mac-build
+    
+    echo &amp;quot;OpenCV source   :&amp;quot; $SRC
+    echo &amp;quot;Build directory :&amp;quot; $BUILD
+    echo &amp;quot;Intermediate dir:&amp;quot; $INTERMEDIATE
+    echo &amp;quot;Patched source  :&amp;quot; $PATCHED_SRC_DIR
+    
+    OPENCV_MODULES_TO_BUILD=(zlib libjpeg libpng libtiff libjasper opencv_lapack opencv_calib3d opencv_core opencv_features2d opencv_flann opencv_imgproc opencv_legacy opencv_contrib opencv_ml opencv_objdetect opencv_video)
+    
+    ################################################################################
+    # Clear the old build and recompile the new one.
+    rm -rf $BUILD
+    
+    ################################################################################
+    # Now we build OpenCV with macosx sdk.
+    # This will build opencv INSTALL target, which will
+    # copy headers to the $BUILD/include directory.
+    echo &amp;quot;Installing OpenCV headers&amp;quot;
+    mkdir -p $MAC_BUILD_DIR
+    cd $MAC_BUILD_DIR
+    cmake -DCMAKE_INSTALL_PREFIX=$MAC_INSTALL_DIR \
+    -DENABLE_SSE=NO \
+    -DENABLE_SSE2=NO \
+    -DBUILD_TESTS=OFF \
+    -DBUILD_EXAMPLES=NO \
+    -DBUILD_NEW_PYTHON_SUPPORT=NO \
+    -DWITH_EIGEN2=NO \
+    -DWITH_PVAPI=NO \
+    -DWITH_OPENEXR=NO \
+    -DWITH_QT=NO \
+    -DWITH_QUICKTIME=NO \
+    -DOPENCV_BUILD_3RDPARTY_LIBS=YES \
+    -G Xcode $SRC &amp;gt; /dev/null
+    
+    mkdir $BUILD/include
+    xcodebuild -sdk macosx -configuration Release -parallelizeTargets -target install &amp;gt; /dev/null
+    mv $MAC_INSTALL_DIR/include/* $BUILD/include
+    
+    ################################################################################
+    # We have to patch OpenCV source to exclude several modules form build
+    # because they prevent building other libs.
+    echo &amp;quot;Patching OpenCV sources&amp;quot;
+    mkdir -p $PATCHED_SRC_DIR
+    cp -R $SRC/ $PATCHED_SRC_DIR
+    sed &#39;/add_subdirectory(ts)/d&#39; $PATCHED_SRC_DIR/modules/CMakeLists.txt      &amp;gt; $PATCHED_SRC_DIR/modules/CMakeLists.txt.patched
+    mv $PATCHED_SRC_DIR/modules/CMakeLists.txt.patched                           $PATCHED_SRC_DIR/modules/CMakeLists.txt
+    sed &#39;/add_subdirectory(highgui)/d&#39; $PATCHED_SRC_DIR/modules/CMakeLists.txt &amp;gt; $PATCHED_SRC_DIR/modules/CMakeLists.txt.patched
+    mv $PATCHED_SRC_DIR/modules/CMakeLists.txt.patched                           $PATCHED_SRC_DIR/modules/CMakeLists.txt
+    
+    ################################################################################
+    # Configure OpenCV
+    mkdir -p $IOS_BUILD_DIR
+    cd $IOS_BUILD_DIR
+    
+    cmake -DCMAKE_INSTALL_PREFIX=$IOS_INSTALL_DIR \
+    -DENABLE_SSE=NO \
+    -DENABLE_SSE2=NO \
+    -DBUILD_TESTS=OFF \
+    -DBUILD_SHARED_LIBS=NO \
+    -DBUILD_NEW_PYTHON_SUPPORT=NO \
+    -DBUILD_EXAMPLES=NO \
+    -DWITH_EIGEN2=NO \
+    -DWITH_PVAPI=NO \
+    -DWITH_OPENEXR=NO \
+    -DWITH_QT=NO \
+    -DWITH_QUICKTIME=NO \
+    -DOPENCV_BUILD_3RDPARTY_LIBS=YES \
+    -G Xcode $PATCHED_SRC_DIR &amp;gt; /dev/null
+    
+    ################################################################################
+    # Build for device armv6 architecture :
+    echo &amp;quot;Building iphone release armv6 configuration&amp;quot;
+    for target in ${OPENCV_MODULES_TO_BUILD[*]}
+    do
+    echo &amp;quot;\tbuilding &amp;quot; $target
+    xcodebuild -sdk iphoneos -configuration Release -parallelizeTargets ARCHS=&amp;quot;armv6&amp;quot; -target $target &amp;gt; /dev/null
+    done
+    
+    mkdir -p $BUILD/lib/release-iphoneos-armv6
+    mv $IOS_BUILD_DIR/lib/Release/*.a          $BUILD/lib/release-iphoneos-armv6 &amp;gt; /dev/null
+    mv $IOS_BUILD_DIR/3rdparty/lib/Release/*.a $BUILD/lib/release-iphoneos-armv6 &amp;gt; /dev/null
+    
+    echo &amp;quot;Building iphone debug armv6 configuration&amp;quot;
+    for target in ${OPENCV_MODULES_TO_BUILD[*]}
+    do
+    echo &amp;quot;\tbuilding &amp;quot; $target
+    xcodebuild -sdk iphoneos -configuration Debug -parallelizeTargets   ARCHS=&amp;quot;armv6&amp;quot; -target $target &amp;gt; /dev/null
+    done
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

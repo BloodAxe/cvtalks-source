@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2013-02-05-image-and-video-processing-from-mars-to-hollywood-with-a-stop-at-the-hospital-rsses on Ghostwriter example</title>
+    <link>https://example.com/2013-02-05-image-and-video-processing-from-mars-to-hollywood-with-a-stop-at-the-hospital/index.xml</link>
+    <description>Recent content in 2013-02-05-image-and-video-processing-from-mars-to-hollywood-with-a-stop-at-the-hospital-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Tue, 05 Feb 2013 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2013-02-05-image-and-video-processing-from-mars-to-hollywood-with-a-stop-at-the-hospital/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Image and video processing: From Mars to Hollywood with a stop at the hospital - Week 1</title>
+      <link>https://example.com/2013-02-05-image-and-video-processing-from-mars-to-hollywood-with-a-stop-at-the-hospital/</link>
+      <pubDate>Tue, 05 Feb 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2013-02-05-image-and-video-processing-from-mars-to-hollywood-with-a-stop-at-the-hospital/</guid>
+      <description>
+
+&lt;p&gt;With this post i start describing my experience with a &lt;a href=&#34;https://www.coursera.org/course/images&#34;&gt;&amp;ldquo;Image and video processing: From Mars to Hollywood with a stop at the hospital&amp;rdquo;&lt;/a&gt; class. I will write a series of 9 posts each week i complete and highlight interesting tasks and solution to optional programming quizzes in OpenCV.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;h1 id=&#34;week-1&#34;&gt;Week 1&lt;/h1&gt;
+
+&lt;p&gt;The first week was very easy, just an introduction to image processing with explanation of basics and fundamental things. Took a day to see all video lectures and answer questions.&lt;/p&gt;
+
+&lt;h2 id=&#34;optional-task-average-3x3-blur&#34;&gt;Optional task: Average 3x3 blur&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;Task&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Using any programming language you fill comfortable with, perform a simple spatial 3x3 average of image pixels. In other words, replace the value of every pixel by the average of the values in its 3x3 neighborhood. If the pixel is located at (0,0), this means averaging the values of the pixels at the positions (-1,1), (0,1), (1,1), (-1,0), (0,0), (1,0), (-1,-1), (0,-1), and (1,-1). Be careful with pixels at the image boundaries. Repeat the process for a 10x10 neighborhood and again for a 20x20 neighborhood. Observe what happens to the image (we will discuss this in more details in the very near future, about week 3).&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Solution&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;First of all, there is &lt;a href=&#34;http://docs.opencv.org/modules/imgproc/doc/filtering.html?highlight=blur#void%20blur%28InputArray%20src,%20OutputArray%20dst,%20Size%20ksize,%20Point%20anchor,%20int%20borderType%29&#34;&gt;cv::blur&lt;/a&gt; function that performs what is exactly requested. But to practice, we&amp;rsquo;re gonna to write its our own implementation.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The &lt;strong&gt;trivial implementation&lt;/strong&gt; is to traverse over each pixels, and compute NxN sum over each pixel. But that&amp;rsquo;s extremely slow and inefficient solution.&lt;/p&gt;
+
+&lt;p&gt;The most time-consuming operation is calculation of sum of intensities in given area, which has complexity about O(N^2), where N is kernel size. There is a way to perform this operation in O(1) time by using &lt;strong&gt;&lt;a href=&#34;http://en.wikipedia.org/wiki/Summed_area_table&#34;&gt;integral images**&lt;/a&gt;. In OpenCV we can use **[cv::integral&lt;/strong&gt;]&lt;a href=&#34;http://docs.opencv.org/modules/imgproc/doc/miscellaneous_transformations.html?highlight=integral#void%20integral%28InputArray%20src,%20OutputArray%20sum,%20int%20sdepth%29&#34;&gt;4&lt;/a&gt; function to compute the integral image for given image and then use it to quicly compute sum or elements in particular area.&lt;/p&gt;
+
+&lt;p&gt;So, our algorithm looks as follows:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Take input image&lt;/li&gt;
+&lt;li&gt;Create temporary image with padded borders (to handle border case we extend input image by replicating border pixels using &lt;strong&gt;[cv::copyMakeBorder&lt;/strong&gt;]&lt;a href=&#34;http://docs.opencv.org/modules/imgproc/doc/filtering.html?highlight=copymakeborder#void%20copyMakeBorder%28InputArray%20src,%20OutputArray%20dst,%20int%20top,%20int%20bottom,%20int%20left,%20int%20right,%20int%20borderType,%20const%20Scalar&amp;amp;%20value%29&#34;&gt;5&lt;/a&gt; function)&lt;/li&gt;
+&lt;li&gt;Compute integral image of it&lt;/li&gt;
+&lt;li&gt;Compute sum of each region, divide it by kernel area and write the result to output image&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Here is a complete function that performs average sampling using given kernel size. It does perform operation in-place:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;void sampleImage(cv::Mat_&amp;lt;unsigned char&amp;gt;&amp;amp; img, int halfKernelSize)
+{
+    cv::Mat padded;
+    cv::copyMakeBorder(img, padded, halfKernelSize, halfKernelSize, halfKernelSize, halfKernelSize, cv::BORDER_REPLICATE);
+
+    cv::Mat_&amp;lt;int&amp;gt; integral;
+    cv::integral(padded, integral);
+
+    int sampleArea = (halfKernelSize * 2 + 1) * (halfKernelSize * 2 + 1);
+
+    for (int row = 0; row &amp;lt; img.rows; row++)
+    {
+        for (int col = 0; col &amp;lt; img.cols; col++)
+        {
+            int sum = integralSum(integral, row + halfKernelSize, col + halfKernelSize, halfKernelSize);
+            img(row, col) = cv::saturate_cast&amp;lt;unsigned char&amp;gt;(sum / sampleArea);
+        }
+    }
+}
+&amp;lt;/int&amp;gt;&amp;lt;/unsigned&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The integralSum function calculates the sum of pixel values in a given area (row and cols indicates center of kernel):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;int integralSum(cv::Mat_&amp;lt;int&amp;gt;&amp;amp; integralImage, int row, int col, int halfKernelSize)
+{
+    return + integralImage(row + halfKernelSize + 1, col + halfKernelSize + 1)
+           + integralImage(row - halfKernelSize,     col - halfKernelSize)
+           - integralImage(row + halfKernelSize + 1, col - halfKernelSize)
+           - integralImage(row - halfKernelSize,     col + halfKernelSize + 1);
+}
+&amp;lt;/int&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Running this function on the image gives us following output:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Input image&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;fruits.jpg&#34; alt=&#34;Source image&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Average blur of 5x5 kernel (grayscale)&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;sampled_gray.png&#34; alt=&#34;Source image&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Average blur of 5x5 kernel (color)&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;sampled_rgb.png&#34; alt=&#34;Source image&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In this solution i didn&amp;rsquo;t posted RGB-version of the algorithm. But the idea is exactly the same. Each color plane is processed independently and then you compute the final RGB pixel value. I leave it for your home work :)&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

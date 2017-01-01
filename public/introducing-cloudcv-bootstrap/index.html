@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Introducing CloudCV bootstrap &middot; My Name</title>
+        <meta name="description" content="Here&rsquo;s an open-source ready to use bootstrap project written in Node.js that lets you to quickly build a REST service to host your image processing and computer vision code in a cloud environment. Please welcome: cloudcv-bootstrap.
+I made this project aside of CloudCV to keep it simple but functionaly. It is self-contained Node.js project that helps you to get quick results on building and deploying your first server-based image processing service.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="Introducing CloudCV bootstrap">
+<meta property="og:description" content="Here&rsquo;s an open-source ready to use bootstrap project written in Node.js that lets you to quickly build a REST service to host your image processing and computer vision code in a cloud environment. Please welcome: cloudcv-bootstrap.
+I made this project aside of CloudCV to keep it simple but functionaly. It is self-contained Node.js project that helps you to get quick results on building and deploying your first server-based image processing service.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/introducing-cloudcv-bootstrap/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">Introducing CloudCV bootstrap</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    
+
+<p>Here&rsquo;s an open-source ready to use bootstrap project written in Node.js that lets
+you to quickly build a REST service to host your image processing and computer vision code
+in a cloud environment.
+Please welcome: <a href="https://github.com/CloudCV/cloudcv-bootstrap">cloudcv-bootstrap</a>.</p>
+
+<p><img src="cloudcv-bootstrap.jpg" alt="" /></p>
+
+<p><span class="more" /></p>
+
+<p>I made this project aside of CloudCV to keep it simple but functionaly. It is self-contained
+Node.js project that helps you to get quick results on building and deploying your first
+server-based image processing service.</p>
+
+<h2 id="features">Features</h2>
+
+<ul>
+<li>Ready to use. No need to download extra dependencies. Just run <code>npm install</code> and that&rsquo;s all.</li>
+<li>Built-in REST-API support. As a bonus, a Swagger 2.0 specification file comes too. You can use it as a template to build client SDKs.</li>
+<li>Shipped with OpenCV 3.0.0</li>
+<li>Interopability between C++ and Node.js code</li>
+<li>Covered with unit tests</li>
+<li>Logging support</li>
+</ul>
+
+<p>With cloudcv-bootstrap you can quickly wrap your C++ code into web-service using simple and
+clear syntax:</p>
+
+<pre><code class="language-js">app.post('/api/v1/image/analyze/dominantColors/', function (req, res) {
+    cv.analyzeImage(req.files.image.buffer, function(error, result) {
+        res.setHeader(&quot;Content-Type&quot;, &quot;application/json&quot;);
+        res.write(JSON.stringify(MapAnalyzeResult(result)));
+        res.end();
+    });
+});
+</code></pre>
+
+<p>Error handling and logging here omited for the sake of simplicity, but this is full-functional snippet.
+It accepts uploaded image using POST request and transfers image data to C++ backend.
+<a href="https://github.com/CloudCV/cloudcv-bootstrap">cloudcv-bootstrap</a> fully follows Node.js programming paradigm and schedule C++ code on libuv thread pool and leave main thread free for requests processing.</p>
+
+<h2 id="quick-start">Quick start</h2>
+
+<pre><code class="language-bash">git clone https://github.com/CloudCV/cloudcv-bootstrap.git
+npm install
+npm start &amp;
+curl localhost:3000/api/v1/image/analyze/dominantColors?image=https%3A%2F%2Fraw.githubusercontent.com%2FCloudCV%2Fcloudcv-bootstrap%2Fmaster%2Ftest%2Fdata%2Fopencv-logo.jpg
+</code></pre>
+
+<p>Produces:</p>
+
+<pre><code class="language-bash">{
+    &quot;aspect&quot;:
+    {
+        &quot;width&quot;:599,
+        &quot;height&quot;:555
+    },
+    &quot;size&quot;:
+    {
+        &quot;width&quot;:0,
+        &quot;height&quot;:0
+    },
+    &quot;dominantColors&quot;:
+    [
+        {&quot;color&quot;:[252,252,252],&quot;totalPixels&quot;:201655,&quot;interclassVariance&quot;:7.83907795204613e-37,&quot;error&quot;:0},
+        {&quot;color&quot;:[252,0,0],&quot;totalPixels&quot;:43612,&quot;interclassVariance&quot;:7.83907795204613e-37,&quot;error&quot;:0},
+        {&quot;color&quot;:[0,0,252],&quot;totalPixels&quot;:43591,&quot;interclassVariance&quot;:7.83907795204613e-37,&quot;error&quot;:0},
+        {&quot;color&quot;:[0,252,0],&quot;totalPixels&quot;:43587,&quot;interclassVariance&quot;:7.83907795204613e-37,&quot;error&quot;:0}
+    ]
+}
+</code></pre>
+
+<p>Congratulations, you&rsquo;ve just computed dominant colors of the OpenCV logo image:</p>
+
+<p><img src="https://raw.githubusercontent.com/CloudCV/cloudcv-bootstrap/master/test/data/opencv-logo.jpg" alt="" /></p>
+
+<h2 id="extending-with-your-code">Extending with your code</h2>
+
+<p>This module uses node-gyp build system. It produces Node C++ addon and require you to do minimal changes into this module:</p>
+
+<ol>
+<li>Have C++ code you want to host</li>
+<li>Write module binding</li>
+<li>Register it</li>
+<li>Write unit tests</li>
+</ol>
+
+<p>Let&rsquo;s go step by step using camera calibration as example. For quick results we won&rsquo;t reinvent the wheel and use code from OpenCV samples. I will just refactor it slightly. Here&rsquo;s our public interface of calibration algorithm:</p>
+
+<pre><code class="language-cpp">enum PatternType {
+    CHESSBOARD = 0,
+    CIRCLES_GRID = 1,
+    ACIRCLES_GRID = 2
+};
+
+class CameraCalibrationAlgorithm
+{
+public:
+    typedef std::vector&lt;cv::Point3f&gt;               VectorOf3DPoints;
+    typedef std::vector&lt;cv::Point2f&gt;               VectorOf2DPoints;
+    typedef std::vector&lt;std::vector&lt;cv::Point3f&gt; &gt; VectorOfVectorOf3DPoints;
+    typedef std::vector&lt;std::vector&lt;cv::Point2f&gt; &gt; VectorOfVectorOf2DPoints;
+    typedef std::vector&lt;cv::Mat&gt;                   VectorOfMat;
+
+    CameraCalibrationAlgorithm(cv::Size patternSize, PatternType type);
+
+    bool detectCorners(const cv::Mat&amp; frame, VectorOf2DPoints&amp; corners2d) const;
+
+    bool calibrateCamera(
+        const VectorOfVectorOf2DPoints&amp; gridCorners,
+        const cv::Size imageSize,
+        cv::Mat&amp; cameraMatrix,
+        cv::Mat&amp; distCoeffs
+    ) const;
+
+protected:
+
+    // .. plenty of helper methods
+
+private:
+    cv::Size                 m_patternSize;
+    PatternType              m_pattern;
+};
+</code></pre>
+
+<p>We want to wrap it into V8 code. First, we need to register corresponding function that we will expose to JS:</p>
+
+<pre><code class="language-cpp">void RegisterModule(Handle&lt;Object&gt; target)
+{
+    // ...
+
+    NODE_SET_METHOD(target, &quot;calibrationPatternDetect&quot;, calibrationPatternDetect);
+    NODE_SET_METHOD(target, &quot;calibrateCamera&quot;,          calibrateCamera);
+}
+</code></pre>
+
+<p>Implementation of <code>calibrationPatternDetect</code> and <code>calibrateCamera</code> needs to parse input arguments, schedule a task to thread pool and invoke a user-passed callback on completition.
+Marshalling between C++ and V8 is tricky.
+Fortunately, NaN module does a great help on data marshalling.
+To simplity developer&rsquo;s life even more <a href="https://github.com/CloudCV/cloudcv-bootstrap">cloudcv-bootstrap</a> offers complex data marshalling and argument checking:</p>
+
+<pre><code class="language-cpp">NAN_METHOD(calibrationPatternDetect)
+{
+    TRACE_FUNCTION;
+    NanEscapableScope();
+
+    Local&lt;Object&gt;   imageBuffer;
+    Local&lt;Function&gt; callback;
+    cv::Size        patternSize;
+    PatternType     pattern;
+    std::string     error;
+
+    if (NanCheck(args)
+        .Error(&amp;error)
+        .ArgumentsCount(4)
+        .Argument(0).IsBuffer().Bind(imageBuffer)
+        .Argument(1).Bind(patternSize)
+        .Argument(2).StringEnum&lt;PatternType&gt;({ 
+            { &quot;CHESSBOARD&quot;,     PatternType::CHESSBOARD }, 
+            { &quot;CIRCLES_GRID&quot;,   PatternType::CIRCLES_GRID }, 
+            { &quot;ACIRCLES_GRID&quot;,  PatternType::ACIRCLES_GRID } }).Bind(pattern)
+        .Argument(3).IsFunction().Bind(callback))
+    {
+        LOG_TRACE_MESSAGE(&quot;Parsed function arguments&quot;);
+        NanCallback *nanCallback = new NanCallback(callback);
+        NanAsyncQueueWorker(new DetectPatternTask(
+            CreateImageSource(imageBuffer), 
+            patternSize, 
+            pattern, 
+            nanCallback));
+    }
+    else if (!error.empty())
+    {
+        LOG_TRACE_MESSAGE(error);
+        NanThrowTypeError(error.c_str());
+    }
+
+    NanReturnUndefined();
+}
+</code></pre>
+
+<p>You may read about NanCheck in separate post: <a href="http://computer-vision-talks.com/articles/how-to-convert-args-from-js-to-cpp">NanCheck</a>.</p>
+
+<h2 id="data-marshalling">Data marshalling</h2>
+
+<p>Natively, marshaller supports:</p>
+
+<p><strong>C++ plain types</strong>:
+ - char, unsigned char
+ - short, unsighed short
+ - int, unsigned int
+ - long, unsigned long
+ - float, double
+ - T[N]</p>
+
+<p><strong>STL types</strong>:
+ - std::array<T,N>
+ - std::pair<A,B>
+ - std::vector<T>
+ - std::map<K,V></p>
+
+<p><strong>OpenCV types</strong>:
+ - cv::Point2i, cv::Point2f, cv::Point2d
+ - cv::Size<em><int>, cv::Size</em><float>, cv::Size_<double>
+ - cv::Mat</p>
+
+<p>Data marshalling of user-defined structures implemented in similar to boost::serialization fashion:</p>
+
+<pre><code class="language-cpp">struct CalibrationResult
+{
+    cv::Mat  m_distCoeffs;
+    cv::Mat  m_cameraMatrix;
+    bool     m_calibrationSuccess;
+
+    template &lt;typename Archive&gt;
+    void serialize(Archive&amp; ar)
+    {
+        ar &amp; serialization::make_nvp(&quot;calibrationSuccess&quot;, m_calibrationSuccess);
+
+        if (Archive::is_loading::value || m_calibrationSuccess)
+        {
+            ar &amp; serialization::make_nvp(&quot;cameraMatrix&quot;,m_cameraMatrix);
+            ar &amp; serialization::make_nvp(&quot;distCoeffs&quot;,  m_distCoeffs);
+        }
+    }
+};
+</code></pre>
+
+<p>User-defined types will be marshalled to regular V8 object containing fields serialized within <code>serialize()</code> function.</p>
+
+<p>To marshal C++ object to V8 object:</p>
+
+<pre><code class="language-cpp">CalibrationResult cpp_result = ...;
+auto v8_result = marshal(cpp_result);
+</code></pre>
+
+<p>To marshal from V8 object to C++ object:</p>
+
+<pre><code class="language-cpp">v8::Local&lt;v8::Value&gt; v8_result = ...;
+auto cpp_result = marshal&lt;CalibrationResult&gt;(v8_result);
+</code></pre>
+
+<h2 id="roadmap">Roadmap</h2>
+
+<p>This is very beta version of cloudcv-bootstrap and it&rsquo;s codebase about to change.
+Please keep in mind that and feel free to ask for help in <a href="https://twitter.com/cvtalks">twitter</a> or on <a href="https://github.com/CloudCV/cloudcv-bootstrap/issues">GitHub</a>.</p>
+
+<p>According to plan:</p>
+
+<ol>
+<li>Add Dockerfile to run this code in a container environment</li>
+<li>Write more documentation on data marshalling</li>
+<li>Implement easier REST API mapping and arguments checking</li>
+</ol>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/tutorials/">tutorials</a>
+            
+                 <a href="/tags/nodejs/">nodejs</a>
+            
+                 <a href="/tags/cloudcv/">cloudcv</a>
+            
+                 <a href="/tags/opencv/">opencv</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=Introducing%20CloudCV%20bootstrap&url=https%3a%2f%2fexample.com%2fintroducing-cloudcv-bootstrap%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2fintroducing-cloudcv-bootstrap%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2fintroducing-cloudcv-bootstrap%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

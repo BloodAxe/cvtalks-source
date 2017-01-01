@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2013-01-21-are-you-still-using-cvputtext-to-render-debug-text-on-the-image-rsses on Ghostwriter example</title>
+    <link>https://example.com/2013-01-21-are-you-still-using-cvputtext-to-render-debug-text-on-the-image/index.xml</link>
+    <description>Recent content in 2013-01-21-are-you-still-using-cvputtext-to-render-debug-text-on-the-image-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Mon, 21 Jan 2013 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2013-01-21-are-you-still-using-cvputtext-to-render-debug-text-on-the-image/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Are you still using cv::putText to render debug text on the image?</title>
+      <link>https://example.com/2013-01-21-are-you-still-using-cvputtext-to-render-debug-text-on-the-image/</link>
+      <pubDate>Mon, 21 Jan 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2013-01-21-are-you-still-using-cvputtext-to-render-debug-text-on-the-image/</guid>
+      <description>
+
+&lt;p&gt;During my research and development work i often have to display a lot of text infromation on top of the OpenCV images. You know what i mean. Suppose you&amp;rsquo;re writing video stabilization algorithm. On each frame you want to display number of features visible on current frame, number of features matched with previois frame, camera motion parameters, recent twitters, name of your pet, etc.. In the OpenCV you can use &lt;strong&gt;cv::putText&lt;/strong&gt; function to print formatted std::string at the desired position on the image. It&amp;rsquo;s easy when you have a fixed string that won&amp;rsquo;t change. But what should you do if you need to dynamically construct this string depending on the processing results?&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;For unpatinet&lt;/strong&gt;: Here is a pull request: &lt;a href=&#34;https://github.com/Itseez/opencv/pull/313&#34;&gt;https://github.com/Itseez/opencv/pull/313&lt;/a&gt; for this feature. In this case you have to write next:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;{
+    std::ostringstream str;
+    str &amp;lt; &amp;lt; &amp;quot;Number of features visible:&amp;quot; &amp;lt;&amp;lt; numFeatures;
+    cv::putText(image, cv::Point(10,10), str.str(), CV_FONT_HERSHEY_PLAIN, CV_RGB(0,0,250));
+}
+
+{
+    std::ostringstream str;
+    str &amp;lt;&amp;lt; &amp;quot;Tracked features:&amp;quot; &amp;lt;&amp;lt; trackedFeaturesCount;
+    cv::putText(image, cv::Point(10,30), str.str(), CV_FONT_HERSHEY_PLAIN, CV_RGB(0,0,250));
+}
+
+{
+    std::ostringstream str;
+    str &amp;lt;&amp;lt; &amp;quot;Camera motion:&amp;quot; &amp;lt;&amp;lt; camMotionMat;
+    cv::putText(image, cv::Point(10,50), str.str(), CV_FONT_HERSHEY_PLAIN, CV_RGB(0,0,250));
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I can&amp;rsquo;t count how many times i wrote this mess. Unfortunately, cv::putText cannot deal with &lt;strong&gt;\n&lt;/strong&gt; and wrap lines. Personally, i wasn&amp;rsquo;t satisfied with text output interface that OpenCV provide. So i decided to contribute a small improvement that helps to solve mentioned problems. The proposed patch allows to print text using &lt;strong&gt;operator&amp;lt; &amp;lt;&lt;/strong&gt; idiom. **&lt;strong&gt;Printing text on the image can be done exactly as printing to std::cout&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cv::putText(image2, cv::Point(100,100), CV_FONT_HERSHEY_COMPLEX, 1, Scalar(i, i, 255))
+    &amp;lt; &amp;lt; &amp;quot;cv::putText() Demo!&amp;quot; &amp;lt;&amp;lt; std::endl 
+    &amp;lt;&amp;lt; &amp;quot;cv::putText(...) &amp;lt;&amp;lt; \&amp;quot;Hello\\nWorld\&amp;quot;;&amp;quot; &amp;lt;&amp;lt; std::endl 
+    &amp;lt;&amp;lt; &amp;quot;You can use std::endl&amp;quot; &amp;lt;&amp;lt; std::endl 
+    &amp;lt;&amp;lt; &amp;quot;or even\\n symbol\nto format text&amp;quot; &amp;lt;&amp;lt; std::endl
+    &amp;lt;&amp;lt; &amp;quot;And we support formatters:\n&amp;quot;
+    &amp;lt;&amp;lt; &amp;quot;std::setprecision(5)&amp;quot; &amp;lt;&amp;lt; std::setprecision(5) &amp;lt;&amp;lt; CV_PI &amp;lt;&amp;lt; std::endl
+    &amp;lt;&amp;lt; &amp;quot;std::scientific &amp;quot; &amp;lt;&amp;lt; std::scientific &amp;lt;&amp;lt; CV_PI &amp;lt;&amp;lt; std::endl
+    &amp;lt;&amp;lt; &amp;quot;So you can use cv::putText like regular std::cout!&amp;quot;;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The result will be: &lt;img src=&#34;putTextOstream.png&#34; alt=&#34;putTextOstream&#34; /&gt; The new cv::putText allows you to:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Use ostream-like operator&amp;lt; &amp;lt; to print text on cv::Mat like you print &amp;ldquo;Hello world&amp;rdquo; to std::cout&lt;/li&gt;
+&lt;li&gt;Ostream-like cv::putText supports newline (&lt;strong&gt;\n&lt;/strong&gt;) character and &lt;strong&gt;std::endl&lt;/strong&gt; manipulator and wraps text to the next line&lt;/li&gt;
+&lt;li&gt;Support printing of all OpenCV types like &lt;strong&gt;cv::Mat&lt;/strong&gt;, &lt;strong&gt;cv::Point&lt;/strong&gt;, &lt;strong&gt;cv::Scalar&lt;/strong&gt; and so on
+I made a pull-request to OpenCV repository on Github and i hope it will be added into the distribution soon. You can access it by following this link: &lt;a href=&#34;https://github.com/Itseez/opencv/pull/313&#34;&gt;https://github.com/Itseez/opencv/pull/313&lt;/a&gt;. You can find a demonstration of the new putText in the samples (&lt;a href=&#34;https://github.com/BloodAxe/opencv/blob/a546d1ffcbd69902cc99b04ad94bc24065e2b184/samples/cpp/drawing.cpp&#34;&gt;drawing.cpp&lt;/a&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;implementation-details&#34;&gt;Implementation details&lt;/h2&gt;
+
+&lt;p&gt;The magic begins in the new cv::putText function:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;//! Creates and return image_ostream object to render text on the image like the std::cout does.
+//! An image_ostream class supports operator&amp;lt; &amp;lt; for both primitive and opencv types.
+static inline image_ostream putText( Mat&amp;amp; img, Point org,
+    int fontFace, double fontScale, Scalar color,
+    int thickness=1, int lineType=8,
+    bool bottomLeftOrigin=false )
+{
+    return image_ostream(img, org, fontFace, fontScale, color, thickness, lineType, bottomLeftOrigin);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As you can see, the new putText function does not have string argument to print. Instead of it it returns a &lt;strong&gt;image_ostream&lt;/strong&gt; object. This is a special type that behaves like the regular std::ostream class. This means you can use the same operator&amp;lt; &amp;lt; and iostream manipulators to do text printing. The main difference between std::ostream and image_ostream that the last one redirects the text output to the cv::Mat object.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;//! Define the custom class that behaves like the std::basic_ostream but renders the text on the cv::Mat
+class CV_EXPORTS image_ostream
+{
+public:
+    image_ostream(Mat&amp;amp; img, Point org, int fontFace, double fontScale, Scalar color, int thickness=1, int lineType=8, bool bottomLeftOrigin=false);
+    ~image_ostream();
+
+    //! Defalt operator&amp;lt; &amp;lt; to take everything
+    template 
+    image_ostream&amp;amp; operator&amp;lt; &amp;lt;(const T&amp;amp; x)
+    {
+        _str &amp;lt;&amp;lt; x;
+        return *this;
+    }
+
+    // this is the type of std::cout
+    typedef std::basic_ostream&amp;lt;char, std::char_traits &amp;gt; CoutType;
+
+    // this is the function signature of std::endl
+    typedef CoutType&amp;amp; (*StandardEndLine)(CoutType&amp;amp;);
+
+    // define an operator&amp;lt; &amp;lt; to take in std::endl
+    inline image_ostream&amp;amp; operator&amp;lt;&amp;lt;(StandardEndLine  manip)
+    {
+        // This check allows to correctly handle endline manipulator
+        if (manip == ::std::endl)
+            nextLine();
+        else
+            manip(_str);      
+
+        return *this;
+    }
+
+private:
+    void nextLine();
+
+private:
+    Mat&amp;amp; _img;
+    Point _org;
+    int _fontFace;
+    double _fontScale;
+    Scalar _color;
+    int _thickness;
+    int _lineType;
+    bool _bottomLeftOrigin;
+
+    int                _offset;
+    std::stringstream _str;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;By overloading operator&amp;lt; &amp;lt; this class uses std::stringstream to store the internal string buffer until the end of line is encountered. Each line of text is printed on the image and cursor position is adjusted to the next line:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;void image_ostream::nextLine()
+{
+    std::string line;
+    do
+    {
+        std::getline(_str, line);
+
+        int baseLine;
+        cv::Size textSize = cv::getTextSize(line, _fontFace, _fontScale, _thickness, &amp;amp;baseLine;);
+        cv::putText(_img, line, _org + cv::Point(0, _offset), _fontFace, _fontScale, _color,_thickness, _lineType, _bottomLeftOrigin);
+
+        _offset += textSize.height + baseLine;
+    } while (!_str.eof());
+
+    _str = std::stringstream();
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I hope this small improvement will help you next time you will need to print a complex-formatted text on the image using OpenCV. The pull-request for this feature is here: &lt;a href=&#34;https://github.com/Itseez/opencv/pull/313&#34;&gt;https://github.com/Itseez/opencv/pull/313&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

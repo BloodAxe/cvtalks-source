@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cloud-haartaining-rsses on Ghostwriter example</title>
+    <link>https://example.com/cloud-haartaining/index.xml</link>
+    <description>Recent content in Cloud-haartaining-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Tue, 20 May 2014 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/cloud-haartaining/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Training Haar cascade in the cloud</title>
+      <link>https://example.com/cloud-haartaining/</link>
+      <pubDate>Tue, 20 May 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/cloud-haartaining/</guid>
+      <description>
+
+&lt;p&gt;In this post I&amp;rsquo;ll show you how you can train cascade classifier with OpenCV very quickly even if you have low-end hardware using virtual machine in the cloud.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;why-clouds&#34;&gt;Why Clouds?&lt;/h2&gt;
+
+&lt;p&gt;Well, training a descriptor takes a lot of time. Depending on template size, number of samples and stages, it can take from several ours to a couple of days to train such cascade! Be prepared that during training stage your PC will likely be unusuable due to high RAM usage and CPU load. If you&amp;rsquo;re on laptop - it will become hot really quick. So, what if you have to train your cascade, but you don&amp;rsquo;t have either time or spare machine to do this?&lt;/p&gt;
+
+&lt;p&gt;Recently I&amp;rsquo;ve faced this problem in one of my personal projects. What even more funny, a 10 hours flight was approaching, but I didn&amp;rsquo;t wanted to waste this time for nothing. I only had a laptop, but this task will drain my battery for sure. So I&amp;rsquo;ve decided to use virtual server to do this.&lt;/p&gt;
+
+&lt;h2 id=&#34;step-1-environment-setup&#34;&gt;Step 1 - Environment setup&lt;/h2&gt;
+
+&lt;p&gt;First, I&amp;rsquo;ve created a basic droplet in &lt;a href=&#34;https://www.digitalocean.com/?refcode=b93faa829f80&#34;&gt;DigitalOcean&lt;/a&gt;.
+Yep, for 5$/month you can have your droplet that can do much!
+It takes only 55 seconds to deploy a new instance (I assume you&amp;rsquo;re familiar with SSH keys, terminal, Git and so on.) and we&amp;rsquo;re ready to rock!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;image1.png&#34; alt=&#34;Create DigitalOcean droplet&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;step-2-install-latest-opencv-release&#34;&gt;Step 2 - Install latest OpenCV release&lt;/h2&gt;
+
+&lt;p&gt;There are two ways to do this: either using package managers (homebrew, yum or apt-get) or builiding it from scratch.
+Personally I prefer second option since you can configure OpenCV. Usually I build static libs whith apps but without tests, java, cuda, python, OpenEXR, Jasper and Tiff. Regardless of the way you choose to install OpenCV, ensure that opencv apps (opencv_createsamples, opencv_traincascade) are also installed!.&lt;/p&gt;
+
+&lt;h2 id=&#34;step-3-prepare-your-train-data&#34;&gt;Step 3 - Prepare your train data&lt;/h2&gt;
+
+&lt;p&gt;There are a lot of tutorials &lt;a href=&#34;http://note.sonots.com/SciSoftware/haartraining.html&#34;&gt;1&lt;/a&gt;, &lt;a href=&#34;http://coding-robin.de/2013/07/22/train-your-own-opencv-haar-classifier.html&#34;&gt;2&lt;/a&gt;, &lt;a href=&#34;http://answers.opencv.org/question/7141/about-traincascade-paremeters-samples-and-other/&#34;&gt;3&lt;/a&gt; on how to train cascade with OpenCV: which images are good for positive and negative samples and which settings should be used for cascade training. Let&amp;rsquo;s assume you have everything in a single folder on your load machine and there is a script called &amp;ldquo;train.sh&amp;rdquo; that starts training stage:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;opencv_traincascade -data classifier \
+                    -vec &amp;lt;positive samples file&amp;gt; \
+                    -bg &amp;lt;negative samples file&amp;gt; \
+                    -numStages 12 \
+                    -minHitRate 0.999 \
+                    -maxFalseAlarmRate 0.5 \
+                    -numPos 15000 -numNeg 17000 \
+                    -w 24 \
+                    -h 24 \
+                    -mode ALL \
+                    -nonsym 1 \
+                    -featureType LBP
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;step-4-deploy-train-data-to-cloud&#34;&gt;Step 4 - Deploy train data to cloud&lt;/h2&gt;
+
+&lt;p&gt;The easiest way to upload this folder to your virtual droplet is to use the &lt;a href=&#34;http://en.wikipedia.org/wiki/Rsync&#34;&gt;rsync&lt;/a&gt; tool.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;rsync -avz &amp;lt;source&amp;gt; &amp;lt;destination&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;For instance, the following command will upload the traindata/ folder with it&amp;rsquo;s content to ~haartraining.example.com~ webserver to /traindata directory. This example assumes that your public key has been added to haartraining.example.com during droplet creation.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;rsync -avz ~/Develop/traindata root@haartraining.example.com:/traindata
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;step-5-start-training&#34;&gt;Step 5 - Start training&lt;/h2&gt;
+
+&lt;p&gt;The easiest way to execute training is to login to remote maching using ssh and execute the train script with a simple command:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;ssh root@haartraining.example.com
+sh /traindata/train.sh
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;However, this will require you to keep SSH-session open all the time. If you log-out, the process will terminate and training will be terminated as well.
+To prevent this we can use &lt;a href=&#34;http://en.wikipedia.org/wiki/Nohup&#34;&gt;nohup&lt;/a&gt; UNIX utility:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;ssh root@haartraining.example.com
+nohup sh /traindata/train.sh &amp;gt; /traindata/train.log
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Training will continue to work regardless of the user&amp;rsquo;s connection to the terminal, and log results to the file train.log.&lt;/p&gt;
+
+&lt;h2 id=&#34;step-6-getting-the-results&#34;&gt;Step 6 - Getting the results&lt;/h2&gt;
+
+&lt;p&gt;After trainign is done (you can check this by top command output or looking at the train.log), we can download trainresults back with rsync command:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;rsync -avz root@haartraining.example.com:/traindata ~/Develop/traindata 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;step-7-speeding-up-training&#34;&gt;Step 7 - Speeding up training&lt;/h2&gt;
+
+&lt;p&gt;To speed-up training stage I recommend to pass additional options to opencv_traincascade tool:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;precalcValBufSize=2048&lt;/li&gt;
+&lt;li&gt;precalcIdxBufSize=2048&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Ideally you want to use all available memory of your instance for these buffers, so if you have 4Gb of RAM installed, pass at least a 1Gb to each of these buffers.&lt;/p&gt;
+
+&lt;p&gt;It also may be a good idea to &amp;ldquo;shrink&amp;rdquo; the DigitalOcean&amp;rsquo;s droplet to more powerful configuration which gives you 16Gb of RAM and 8 CPU&amp;rsquo;s.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;resize.png&#34; alt=&#34;Resize droplet&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This task can be done on few clicks:&lt;/p&gt;
+
+&lt;h3 id=&#34;stop-your-droplet&#34;&gt;Stop your droplet&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&#34;poweroff.png&#34; alt=&#34;Poweroff droplet&#34; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;choose-resize-and-pick-a-necessary-configuration&#34;&gt;Choose &amp;ldquo;Resize&amp;rdquo; and pick a necessary configuration&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&#34;resize2.png&#34; alt=&#34;Resize droplet&#34; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;power-up-your-resized-droplet&#34;&gt;Power-up your resized droplet&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;Please be advised, that DigitalOcean will charge you regardless whether your droplet is powered on or off. So if you&amp;rsquo;re not using it - make a snapshot of it and delete unused droplet to save money&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;That&amp;rsquo;s all. I hope you enjoyed reading this post. Please, leave your comments.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

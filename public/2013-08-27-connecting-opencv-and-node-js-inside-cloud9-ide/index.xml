@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2013-08-27-connecting-opencv-and-node-js-inside-cloud9-ide-rsses on Ghostwriter example</title>
+    <link>https://example.com/2013-08-27-connecting-opencv-and-node-js-inside-cloud9-ide/index.xml</link>
+    <description>Recent content in 2013-08-27-connecting-opencv-and-node-js-inside-cloud9-ide-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Tue, 27 Aug 2013 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2013-08-27-connecting-opencv-and-node-js-inside-cloud9-ide/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Connecting OpenCV and Node.js inside Cloud9 IDE</title>
+      <link>https://example.com/2013-08-27-connecting-opencv-and-node-js-inside-cloud9-ide/</link>
+      <pubDate>Tue, 27 Aug 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2013-08-27-connecting-opencv-and-node-js-inside-cloud9-ide/</guid>
+      <description>
+
+&lt;p&gt;Vacation time is over, and now i&amp;rsquo;m on my way from Tartu, Estonia where i participated in 48 km. inline speedskating marathon to Odessa. My bus have Wi-Fi onboard, so i decided to write a short success-story how i managed to build a C++ addon module for Node.js and run it on the real server inside the Cloud9 IDE.  You may also want to check the &lt;strong&gt;&lt;a href=&#34;http://computer-vision-talks.com/2013/08/cloud-image-processing-using-opencv-and-node-js/&#34;&gt;first tutorial&lt;/a&gt;&lt;/strong&gt; since this guid relies on it.  The detailed step-by-step guide will be written in the next few days, but here is a key steps:&lt;/p&gt;
+
+&lt;h2 id=&#34;prerequisites&#34;&gt;Prerequisites&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Cloud9 account&lt;/li&gt;
+&lt;li&gt;Node.js&lt;/li&gt;
+&lt;li&gt;Express framework&lt;/li&gt;
+&lt;li&gt;CMake&lt;/li&gt;
+&lt;li&gt;OpenCV&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;building-opencv&#34;&gt;Building OpenCV&lt;/h2&gt;
+
+&lt;p&gt;I built OpenCV manually. This is necessary since i had to configure OpenCV to fit the server configuration:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Used static build instead of shared one&lt;/li&gt;
+&lt;li&gt;Disable all tests, samples and apps&lt;/li&gt;
+&lt;li&gt;Disable use of precompiled headers&lt;/li&gt;
+&lt;li&gt;Disable GPU and CUDA modules&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;disk-space-limit&#34;&gt;Disk space limit&lt;/h3&gt;
+
+&lt;p&gt;You have only 1G of disk quota. When i ran OpenCV build for the first time it exit on 80% with &amp;ldquo;out of space&amp;rdquo; message. So it&amp;rsquo;s better to disable all unused modules. &lt;strong&gt;Don&amp;rsquo;t clone OpenCV repository.&lt;/strong&gt; Download opencv archive instead! This will require small experience with shell, but nothing complicated:&lt;/p&gt;
+
+&lt;h2 id=&#34;demonstration&#34;&gt;Demonstration&lt;/h2&gt;
+
+&lt;p&gt;A minimal Node.js demo that does nothing expect printing OpenCV build information can be seen here: &lt;a href=&#34;http://cloudcv.computer-vision-talks.com/&#34;&gt;OpenCV Cloud9 demo&lt;/a&gt;. It&amp;rsquo;s ok to see &amp;ldquo;No app running&amp;rdquo; message from time to time. As i understood Cloud9 shuts down the apps if they are not used for some period.  Tweet me if you have interesting suggestions for the demonstration samples.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

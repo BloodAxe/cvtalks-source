@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Introducing-cloudcv-bootstrap-rsses on Ghostwriter example</title>
+    <link>https://example.com/introducing-cloudcv-bootstrap/index.xml</link>
+    <description>Recent content in Introducing-cloudcv-bootstrap-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Tue, 14 Apr 2015 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/introducing-cloudcv-bootstrap/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Introducing CloudCV bootstrap</title>
+      <link>https://example.com/introducing-cloudcv-bootstrap/</link>
+      <pubDate>Tue, 14 Apr 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/introducing-cloudcv-bootstrap/</guid>
+      <description>
+
+&lt;p&gt;Here&amp;rsquo;s an open-source ready to use bootstrap project written in Node.js that lets
+you to quickly build a REST service to host your image processing and computer vision code
+in a cloud environment.
+Please welcome: &lt;a href=&#34;https://github.com/CloudCV/cloudcv-bootstrap&#34;&gt;cloudcv-bootstrap&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;cloudcv-bootstrap.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I made this project aside of CloudCV to keep it simple but functionaly. It is self-contained
+Node.js project that helps you to get quick results on building and deploying your first
+server-based image processing service.&lt;/p&gt;
+
+&lt;h2 id=&#34;features&#34;&gt;Features&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Ready to use. No need to download extra dependencies. Just run &lt;code&gt;npm install&lt;/code&gt; and that&amp;rsquo;s all.&lt;/li&gt;
+&lt;li&gt;Built-in REST-API support. As a bonus, a Swagger 2.0 specification file comes too. You can use it as a template to build client SDKs.&lt;/li&gt;
+&lt;li&gt;Shipped with OpenCV 3.0.0&lt;/li&gt;
+&lt;li&gt;Interopability between C++ and Node.js code&lt;/li&gt;
+&lt;li&gt;Covered with unit tests&lt;/li&gt;
+&lt;li&gt;Logging support&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;With cloudcv-bootstrap you can quickly wrap your C++ code into web-service using simple and
+clear syntax:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;app.post(&#39;/api/v1/image/analyze/dominantColors/&#39;, function (req, res) {
+    cv.analyzeImage(req.files.image.buffer, function(error, result) {
+        res.setHeader(&amp;quot;Content-Type&amp;quot;, &amp;quot;application/json&amp;quot;);
+        res.write(JSON.stringify(MapAnalyzeResult(result)));
+        res.end();
+    });
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Error handling and logging here omited for the sake of simplicity, but this is full-functional snippet.
+It accepts uploaded image using POST request and transfers image data to C++ backend.
+&lt;a href=&#34;https://github.com/CloudCV/cloudcv-bootstrap&#34;&gt;cloudcv-bootstrap&lt;/a&gt; fully follows Node.js programming paradigm and schedule C++ code on libuv thread pool and leave main thread free for requests processing.&lt;/p&gt;
+
+&lt;h2 id=&#34;quick-start&#34;&gt;Quick start&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;git clone https://github.com/CloudCV/cloudcv-bootstrap.git
+npm install
+npm start &amp;amp;
+curl localhost:3000/api/v1/image/analyze/dominantColors?image=https%3A%2F%2Fraw.githubusercontent.com%2FCloudCV%2Fcloudcv-bootstrap%2Fmaster%2Ftest%2Fdata%2Fopencv-logo.jpg
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Produces:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;{
+    &amp;quot;aspect&amp;quot;:
+    {
+        &amp;quot;width&amp;quot;:599,
+        &amp;quot;height&amp;quot;:555
+    },
+    &amp;quot;size&amp;quot;:
+    {
+        &amp;quot;width&amp;quot;:0,
+        &amp;quot;height&amp;quot;:0
+    },
+    &amp;quot;dominantColors&amp;quot;:
+    [
+        {&amp;quot;color&amp;quot;:[252,252,252],&amp;quot;totalPixels&amp;quot;:201655,&amp;quot;interclassVariance&amp;quot;:7.83907795204613e-37,&amp;quot;error&amp;quot;:0},
+        {&amp;quot;color&amp;quot;:[252,0,0],&amp;quot;totalPixels&amp;quot;:43612,&amp;quot;interclassVariance&amp;quot;:7.83907795204613e-37,&amp;quot;error&amp;quot;:0},
+        {&amp;quot;color&amp;quot;:[0,0,252],&amp;quot;totalPixels&amp;quot;:43591,&amp;quot;interclassVariance&amp;quot;:7.83907795204613e-37,&amp;quot;error&amp;quot;:0},
+        {&amp;quot;color&amp;quot;:[0,252,0],&amp;quot;totalPixels&amp;quot;:43587,&amp;quot;interclassVariance&amp;quot;:7.83907795204613e-37,&amp;quot;error&amp;quot;:0}
+    ]
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Congratulations, you&amp;rsquo;ve just computed dominant colors of the OpenCV logo image:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/CloudCV/cloudcv-bootstrap/master/test/data/opencv-logo.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;extending-with-your-code&#34;&gt;Extending with your code&lt;/h2&gt;
+
+&lt;p&gt;This module uses node-gyp build system. It produces Node C++ addon and require you to do minimal changes into this module:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Have C++ code you want to host&lt;/li&gt;
+&lt;li&gt;Write module binding&lt;/li&gt;
+&lt;li&gt;Register it&lt;/li&gt;
+&lt;li&gt;Write unit tests&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Let&amp;rsquo;s go step by step using camera calibration as example. For quick results we won&amp;rsquo;t reinvent the wheel and use code from OpenCV samples. I will just refactor it slightly. Here&amp;rsquo;s our public interface of calibration algorithm:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;enum PatternType {
+    CHESSBOARD = 0,
+    CIRCLES_GRID = 1,
+    ACIRCLES_GRID = 2
+};
+
+class CameraCalibrationAlgorithm
+{
+public:
+    typedef std::vector&amp;lt;cv::Point3f&amp;gt;               VectorOf3DPoints;
+    typedef std::vector&amp;lt;cv::Point2f&amp;gt;               VectorOf2DPoints;
+    typedef std::vector&amp;lt;std::vector&amp;lt;cv::Point3f&amp;gt; &amp;gt; VectorOfVectorOf3DPoints;
+    typedef std::vector&amp;lt;std::vector&amp;lt;cv::Point2f&amp;gt; &amp;gt; VectorOfVectorOf2DPoints;
+    typedef std::vector&amp;lt;cv::Mat&amp;gt;                   VectorOfMat;
+
+    CameraCalibrationAlgorithm(cv::Size patternSize, PatternType type);
+
+    bool detectCorners(const cv::Mat&amp;amp; frame, VectorOf2DPoints&amp;amp; corners2d) const;
+
+    bool calibrateCamera(
+        const VectorOfVectorOf2DPoints&amp;amp; gridCorners,
+        const cv::Size imageSize,
+        cv::Mat&amp;amp; cameraMatrix,
+        cv::Mat&amp;amp; distCoeffs
+    ) const;
+
+protected:
+
+    // .. plenty of helper methods
+
+private:
+    cv::Size                 m_patternSize;
+    PatternType              m_pattern;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We want to wrap it into V8 code. First, we need to register corresponding function that we will expose to JS:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;void RegisterModule(Handle&amp;lt;Object&amp;gt; target)
+{
+    // ...
+
+    NODE_SET_METHOD(target, &amp;quot;calibrationPatternDetect&amp;quot;, calibrationPatternDetect);
+    NODE_SET_METHOD(target, &amp;quot;calibrateCamera&amp;quot;,          calibrateCamera);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Implementation of &lt;code&gt;calibrationPatternDetect&lt;/code&gt; and &lt;code&gt;calibrateCamera&lt;/code&gt; needs to parse input arguments, schedule a task to thread pool and invoke a user-passed callback on completition.
+Marshalling between C++ and V8 is tricky.
+Fortunately, NaN module does a great help on data marshalling.
+To simplity developer&amp;rsquo;s life even more &lt;a href=&#34;https://github.com/CloudCV/cloudcv-bootstrap&#34;&gt;cloudcv-bootstrap&lt;/a&gt; offers complex data marshalling and argument checking:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;NAN_METHOD(calibrationPatternDetect)
+{
+    TRACE_FUNCTION;
+    NanEscapableScope();
+
+    Local&amp;lt;Object&amp;gt;   imageBuffer;
+    Local&amp;lt;Function&amp;gt; callback;
+    cv::Size        patternSize;
+    PatternType     pattern;
+    std::string     error;
+
+    if (NanCheck(args)
+        .Error(&amp;amp;error)
+        .ArgumentsCount(4)
+        .Argument(0).IsBuffer().Bind(imageBuffer)
+        .Argument(1).Bind(patternSize)
+        .Argument(2).StringEnum&amp;lt;PatternType&amp;gt;({ 
+            { &amp;quot;CHESSBOARD&amp;quot;,     PatternType::CHESSBOARD }, 
+            { &amp;quot;CIRCLES_GRID&amp;quot;,   PatternType::CIRCLES_GRID }, 
+            { &amp;quot;ACIRCLES_GRID&amp;quot;,  PatternType::ACIRCLES_GRID } }).Bind(pattern)
+        .Argument(3).IsFunction().Bind(callback))
+    {
+        LOG_TRACE_MESSAGE(&amp;quot;Parsed function arguments&amp;quot;);
+        NanCallback *nanCallback = new NanCallback(callback);
+        NanAsyncQueueWorker(new DetectPatternTask(
+            CreateImageSource(imageBuffer), 
+            patternSize, 
+            pattern, 
+            nanCallback));
+    }
+    else if (!error.empty())
+    {
+        LOG_TRACE_MESSAGE(error);
+        NanThrowTypeError(error.c_str());
+    }
+
+    NanReturnUndefined();
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You may read about NanCheck in separate post: &lt;a href=&#34;http://computer-vision-talks.com/articles/how-to-convert-args-from-js-to-cpp&#34;&gt;NanCheck&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;data-marshalling&#34;&gt;Data marshalling&lt;/h2&gt;
+
+&lt;p&gt;Natively, marshaller supports:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;C++ plain types&lt;/strong&gt;:
+ - char, unsigned char
+ - short, unsighed short
+ - int, unsigned int
+ - long, unsigned long
+ - float, double
+ - T[N]&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;STL types&lt;/strong&gt;:
+ - std::array&lt;T,N&gt;
+ - std::pair&lt;A,B&gt;
+ - std::vector&lt;T&gt;
+ - std::map&lt;K,V&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;OpenCV types&lt;/strong&gt;:
+ - cv::Point2i, cv::Point2f, cv::Point2d
+ - cv::Size&lt;em&gt;&lt;int&gt;, cv::Size&lt;/em&gt;&lt;float&gt;, cv::Size_&lt;double&gt;
+ - cv::Mat&lt;/p&gt;
+
+&lt;p&gt;Data marshalling of user-defined structures implemented in similar to boost::serialization fashion:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;struct CalibrationResult
+{
+    cv::Mat  m_distCoeffs;
+    cv::Mat  m_cameraMatrix;
+    bool     m_calibrationSuccess;
+
+    template &amp;lt;typename Archive&amp;gt;
+    void serialize(Archive&amp;amp; ar)
+    {
+        ar &amp;amp; serialization::make_nvp(&amp;quot;calibrationSuccess&amp;quot;, m_calibrationSuccess);
+
+        if (Archive::is_loading::value || m_calibrationSuccess)
+        {
+            ar &amp;amp; serialization::make_nvp(&amp;quot;cameraMatrix&amp;quot;,m_cameraMatrix);
+            ar &amp;amp; serialization::make_nvp(&amp;quot;distCoeffs&amp;quot;,  m_distCoeffs);
+        }
+    }
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;User-defined types will be marshalled to regular V8 object containing fields serialized within &lt;code&gt;serialize()&lt;/code&gt; function.&lt;/p&gt;
+
+&lt;p&gt;To marshal C++ object to V8 object:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;CalibrationResult cpp_result = ...;
+auto v8_result = marshal(cpp_result);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To marshal from V8 object to C++ object:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;v8::Local&amp;lt;v8::Value&amp;gt; v8_result = ...;
+auto cpp_result = marshal&amp;lt;CalibrationResult&amp;gt;(v8_result);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;roadmap&#34;&gt;Roadmap&lt;/h2&gt;
+
+&lt;p&gt;This is very beta version of cloudcv-bootstrap and it&amp;rsquo;s codebase about to change.
+Please keep in mind that and feel free to ask for help in &lt;a href=&#34;https://twitter.com/cvtalks&#34;&gt;twitter&lt;/a&gt; or on &lt;a href=&#34;https://github.com/CloudCV/cloudcv-bootstrap/issues&#34;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;According to plan:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Add Dockerfile to run this code in a container environment&lt;/li&gt;
+&lt;li&gt;Write more documentation on data marshalling&lt;/li&gt;
+&lt;li&gt;Implement easier REST API mapping and arguments checking&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

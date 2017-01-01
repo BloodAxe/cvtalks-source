@@ -1,0 +1,2462 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ghostwriter example</title>
+    <link>https://example.com/tags/opencv/index.xml</link>
+    <description>Recent content on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <atom:link href="https://example.com/tags/opencv/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Introducing CloudCV bootstrap</title>
+      <link>https://example.com/introducing-cloudcv-bootstrap/</link>
+      <pubDate>Tue, 14 Apr 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/introducing-cloudcv-bootstrap/</guid>
+      <description>
+
+&lt;p&gt;Here&amp;rsquo;s an open-source ready to use bootstrap project written in Node.js that lets
+you to quickly build a REST service to host your image processing and computer vision code
+in a cloud environment.
+Please welcome: &lt;a href=&#34;https://github.com/CloudCV/cloudcv-bootstrap&#34;&gt;cloudcv-bootstrap&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;cloudcv-bootstrap.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I made this project aside of CloudCV to keep it simple but functionaly. It is self-contained
+Node.js project that helps you to get quick results on building and deploying your first
+server-based image processing service.&lt;/p&gt;
+
+&lt;h2 id=&#34;features&#34;&gt;Features&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Ready to use. No need to download extra dependencies. Just run &lt;code&gt;npm install&lt;/code&gt; and that&amp;rsquo;s all.&lt;/li&gt;
+&lt;li&gt;Built-in REST-API support. As a bonus, a Swagger 2.0 specification file comes too. You can use it as a template to build client SDKs.&lt;/li&gt;
+&lt;li&gt;Shipped with OpenCV 3.0.0&lt;/li&gt;
+&lt;li&gt;Interopability between C++ and Node.js code&lt;/li&gt;
+&lt;li&gt;Covered with unit tests&lt;/li&gt;
+&lt;li&gt;Logging support&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;With cloudcv-bootstrap you can quickly wrap your C++ code into web-service using simple and
+clear syntax:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;app.post(&#39;/api/v1/image/analyze/dominantColors/&#39;, function (req, res) {
+    cv.analyzeImage(req.files.image.buffer, function(error, result) {
+        res.setHeader(&amp;quot;Content-Type&amp;quot;, &amp;quot;application/json&amp;quot;);
+        res.write(JSON.stringify(MapAnalyzeResult(result)));
+        res.end();
+    });
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Error handling and logging here omited for the sake of simplicity, but this is full-functional snippet.
+It accepts uploaded image using POST request and transfers image data to C++ backend.
+&lt;a href=&#34;https://github.com/CloudCV/cloudcv-bootstrap&#34;&gt;cloudcv-bootstrap&lt;/a&gt; fully follows Node.js programming paradigm and schedule C++ code on libuv thread pool and leave main thread free for requests processing.&lt;/p&gt;
+
+&lt;h2 id=&#34;quick-start&#34;&gt;Quick start&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;git clone https://github.com/CloudCV/cloudcv-bootstrap.git
+npm install
+npm start &amp;amp;
+curl localhost:3000/api/v1/image/analyze/dominantColors?image=https%3A%2F%2Fraw.githubusercontent.com%2FCloudCV%2Fcloudcv-bootstrap%2Fmaster%2Ftest%2Fdata%2Fopencv-logo.jpg
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Produces:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;{
+    &amp;quot;aspect&amp;quot;:
+    {
+        &amp;quot;width&amp;quot;:599,
+        &amp;quot;height&amp;quot;:555
+    },
+    &amp;quot;size&amp;quot;:
+    {
+        &amp;quot;width&amp;quot;:0,
+        &amp;quot;height&amp;quot;:0
+    },
+    &amp;quot;dominantColors&amp;quot;:
+    [
+        {&amp;quot;color&amp;quot;:[252,252,252],&amp;quot;totalPixels&amp;quot;:201655,&amp;quot;interclassVariance&amp;quot;:7.83907795204613e-37,&amp;quot;error&amp;quot;:0},
+        {&amp;quot;color&amp;quot;:[252,0,0],&amp;quot;totalPixels&amp;quot;:43612,&amp;quot;interclassVariance&amp;quot;:7.83907795204613e-37,&amp;quot;error&amp;quot;:0},
+        {&amp;quot;color&amp;quot;:[0,0,252],&amp;quot;totalPixels&amp;quot;:43591,&amp;quot;interclassVariance&amp;quot;:7.83907795204613e-37,&amp;quot;error&amp;quot;:0},
+        {&amp;quot;color&amp;quot;:[0,252,0],&amp;quot;totalPixels&amp;quot;:43587,&amp;quot;interclassVariance&amp;quot;:7.83907795204613e-37,&amp;quot;error&amp;quot;:0}
+    ]
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Congratulations, you&amp;rsquo;ve just computed dominant colors of the OpenCV logo image:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/CloudCV/cloudcv-bootstrap/master/test/data/opencv-logo.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;extending-with-your-code&#34;&gt;Extending with your code&lt;/h2&gt;
+
+&lt;p&gt;This module uses node-gyp build system. It produces Node C++ addon and require you to do minimal changes into this module:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Have C++ code you want to host&lt;/li&gt;
+&lt;li&gt;Write module binding&lt;/li&gt;
+&lt;li&gt;Register it&lt;/li&gt;
+&lt;li&gt;Write unit tests&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Let&amp;rsquo;s go step by step using camera calibration as example. For quick results we won&amp;rsquo;t reinvent the wheel and use code from OpenCV samples. I will just refactor it slightly. Here&amp;rsquo;s our public interface of calibration algorithm:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;enum PatternType {
+    CHESSBOARD = 0,
+    CIRCLES_GRID = 1,
+    ACIRCLES_GRID = 2
+};
+
+class CameraCalibrationAlgorithm
+{
+public:
+    typedef std::vector&amp;lt;cv::Point3f&amp;gt;               VectorOf3DPoints;
+    typedef std::vector&amp;lt;cv::Point2f&amp;gt;               VectorOf2DPoints;
+    typedef std::vector&amp;lt;std::vector&amp;lt;cv::Point3f&amp;gt; &amp;gt; VectorOfVectorOf3DPoints;
+    typedef std::vector&amp;lt;std::vector&amp;lt;cv::Point2f&amp;gt; &amp;gt; VectorOfVectorOf2DPoints;
+    typedef std::vector&amp;lt;cv::Mat&amp;gt;                   VectorOfMat;
+
+    CameraCalibrationAlgorithm(cv::Size patternSize, PatternType type);
+
+    bool detectCorners(const cv::Mat&amp;amp; frame, VectorOf2DPoints&amp;amp; corners2d) const;
+
+    bool calibrateCamera(
+        const VectorOfVectorOf2DPoints&amp;amp; gridCorners,
+        const cv::Size imageSize,
+        cv::Mat&amp;amp; cameraMatrix,
+        cv::Mat&amp;amp; distCoeffs
+    ) const;
+
+protected:
+
+    // .. plenty of helper methods
+
+private:
+    cv::Size                 m_patternSize;
+    PatternType              m_pattern;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We want to wrap it into V8 code. First, we need to register corresponding function that we will expose to JS:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;void RegisterModule(Handle&amp;lt;Object&amp;gt; target)
+{
+    // ...
+
+    NODE_SET_METHOD(target, &amp;quot;calibrationPatternDetect&amp;quot;, calibrationPatternDetect);
+    NODE_SET_METHOD(target, &amp;quot;calibrateCamera&amp;quot;,          calibrateCamera);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Implementation of &lt;code&gt;calibrationPatternDetect&lt;/code&gt; and &lt;code&gt;calibrateCamera&lt;/code&gt; needs to parse input arguments, schedule a task to thread pool and invoke a user-passed callback on completition.
+Marshalling between C++ and V8 is tricky.
+Fortunately, NaN module does a great help on data marshalling.
+To simplity developer&amp;rsquo;s life even more &lt;a href=&#34;https://github.com/CloudCV/cloudcv-bootstrap&#34;&gt;cloudcv-bootstrap&lt;/a&gt; offers complex data marshalling and argument checking:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;NAN_METHOD(calibrationPatternDetect)
+{
+    TRACE_FUNCTION;
+    NanEscapableScope();
+
+    Local&amp;lt;Object&amp;gt;   imageBuffer;
+    Local&amp;lt;Function&amp;gt; callback;
+    cv::Size        patternSize;
+    PatternType     pattern;
+    std::string     error;
+
+    if (NanCheck(args)
+        .Error(&amp;amp;error)
+        .ArgumentsCount(4)
+        .Argument(0).IsBuffer().Bind(imageBuffer)
+        .Argument(1).Bind(patternSize)
+        .Argument(2).StringEnum&amp;lt;PatternType&amp;gt;({ 
+            { &amp;quot;CHESSBOARD&amp;quot;,     PatternType::CHESSBOARD }, 
+            { &amp;quot;CIRCLES_GRID&amp;quot;,   PatternType::CIRCLES_GRID }, 
+            { &amp;quot;ACIRCLES_GRID&amp;quot;,  PatternType::ACIRCLES_GRID } }).Bind(pattern)
+        .Argument(3).IsFunction().Bind(callback))
+    {
+        LOG_TRACE_MESSAGE(&amp;quot;Parsed function arguments&amp;quot;);
+        NanCallback *nanCallback = new NanCallback(callback);
+        NanAsyncQueueWorker(new DetectPatternTask(
+            CreateImageSource(imageBuffer), 
+            patternSize, 
+            pattern, 
+            nanCallback));
+    }
+    else if (!error.empty())
+    {
+        LOG_TRACE_MESSAGE(error);
+        NanThrowTypeError(error.c_str());
+    }
+
+    NanReturnUndefined();
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You may read about NanCheck in separate post: &lt;a href=&#34;http://computer-vision-talks.com/articles/how-to-convert-args-from-js-to-cpp&#34;&gt;NanCheck&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;data-marshalling&#34;&gt;Data marshalling&lt;/h2&gt;
+
+&lt;p&gt;Natively, marshaller supports:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;C++ plain types&lt;/strong&gt;:
+ - char, unsigned char
+ - short, unsighed short
+ - int, unsigned int
+ - long, unsigned long
+ - float, double
+ - T[N]&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;STL types&lt;/strong&gt;:
+ - std::array&lt;T,N&gt;
+ - std::pair&lt;A,B&gt;
+ - std::vector&lt;T&gt;
+ - std::map&lt;K,V&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;OpenCV types&lt;/strong&gt;:
+ - cv::Point2i, cv::Point2f, cv::Point2d
+ - cv::Size&lt;em&gt;&lt;int&gt;, cv::Size&lt;/em&gt;&lt;float&gt;, cv::Size_&lt;double&gt;
+ - cv::Mat&lt;/p&gt;
+
+&lt;p&gt;Data marshalling of user-defined structures implemented in similar to boost::serialization fashion:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;struct CalibrationResult
+{
+    cv::Mat  m_distCoeffs;
+    cv::Mat  m_cameraMatrix;
+    bool     m_calibrationSuccess;
+
+    template &amp;lt;typename Archive&amp;gt;
+    void serialize(Archive&amp;amp; ar)
+    {
+        ar &amp;amp; serialization::make_nvp(&amp;quot;calibrationSuccess&amp;quot;, m_calibrationSuccess);
+
+        if (Archive::is_loading::value || m_calibrationSuccess)
+        {
+            ar &amp;amp; serialization::make_nvp(&amp;quot;cameraMatrix&amp;quot;,m_cameraMatrix);
+            ar &amp;amp; serialization::make_nvp(&amp;quot;distCoeffs&amp;quot;,  m_distCoeffs);
+        }
+    }
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;User-defined types will be marshalled to regular V8 object containing fields serialized within &lt;code&gt;serialize()&lt;/code&gt; function.&lt;/p&gt;
+
+&lt;p&gt;To marshal C++ object to V8 object:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;CalibrationResult cpp_result = ...;
+auto v8_result = marshal(cpp_result);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To marshal from V8 object to C++ object:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;v8::Local&amp;lt;v8::Value&amp;gt; v8_result = ...;
+auto cpp_result = marshal&amp;lt;CalibrationResult&amp;gt;(v8_result);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;roadmap&#34;&gt;Roadmap&lt;/h2&gt;
+
+&lt;p&gt;This is very beta version of cloudcv-bootstrap and it&amp;rsquo;s codebase about to change.
+Please keep in mind that and feel free to ask for help in &lt;a href=&#34;https://twitter.com/cvtalks&#34;&gt;twitter&lt;/a&gt; or on &lt;a href=&#34;https://github.com/CloudCV/cloudcv-bootstrap/issues&#34;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;According to plan:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Add Dockerfile to run this code in a container environment&lt;/li&gt;
+&lt;li&gt;Write more documentation on data marshalling&lt;/li&gt;
+&lt;li&gt;Implement easier REST API mapping and arguments checking&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Hacking OpenCV for fun and profit</title>
+      <link>https://example.com/hacking-opencv-for-fun-and-profit/</link>
+      <pubDate>Thu, 25 Dec 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/hacking-opencv-for-fun-and-profit/</guid>
+      <description>
+
+&lt;div class=&#34;featured-image&#34;&gt;
+![](logo.png)
+&lt;/div&gt;
+
+&lt;p&gt;This post convers very specific but important topic about writing memory-efficient code.
+I will show you how to collect and analyze memory allocations that happens in OpenCV.&lt;/p&gt;
+
+&lt;p&gt;When it comes to writing efficient code we usually care about CPU-efficiency. However there are
+many times, when memory-efficiency is more important. A limited amount of RAM is not so rare as
+one can think. On iOS and Android there are a strict memory usage restrictions, and of your app
+uses more memory than allowed your app can get killed by the system. Embedded hardware systems
+used in IoT, Raspberri Pi and others also have very limited amount of RAM. So you should be very
+careful when porting code from desktop with gigabytes of memory to mobile platform.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;why-memory-matters&#34;&gt;Why memory matters&lt;/h2&gt;
+
+&lt;p&gt;Let&amp;rsquo;s start with a small example of &lt;a href=&#34;https://en.wikipedia.org/wiki/Unsharp_masking&#34;&gt;unsharp masking&lt;/a&gt; to illustrate the problem:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;cv::Mat source, gray, grayFloat, blurred, unsharped;
+source = cv::imread(&amp;quot;/some/path/to/image.png&amp;quot;);
+cv::cvtColor(m, gray, cv::COLOR_BGR2GRAY)
+gray.convertTo(grayFloat, CV_32F, 1.0 / 255.0);
+cv::GaussianBlur(grayFloat, blurred, cv::Size(3,3));
+unsharped = blurred * 1.5f - grayFloat * 0.5f;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;How much additional memory required for this piece of code to work? Let&amp;rsquo;s count:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;source = cv::imread(&amp;quot;/some/path/to/image.png&amp;quot;);         // N*M*3 bytes
+cv::cvtColor(m, gray, cv::COLOR_BGR2GRAY)               // N*M bytes
+gray.convertTo(grayFloat, CV_32F, 1.0 / 255.0);         // N*M*4
+cv::GaussianBlur(grayFloat, blurred, cv::Size(3,3));    // N*M*4
+unsharped = blurred * 1.5f - grayFloat * 0.5f;          // N*M*4   (in the best case)
+                                                        // N*M*4*3 (in the worst case)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;For NxM sized image we require at least sixteen (16!) times more memory in temporary variables.
+Funny, but the code looks harmless for the first look. Now you can think what will happen if you
+put this snippet into iOS application. Pictures made with iPhone 5S are about 3200x2400 pixels.
+On such image this code will allocate 128Mb of memory!&lt;/p&gt;
+
+&lt;p&gt;I will leave it for you as a home-work to figure out a solution to minimize memory usage by this function.
+In this post I want to demonstrate how to measure memory usage in OpenCV automatically. Complex projects are
+harder to analyze like example above, so you definitely not going to re-calculate it after each change.&lt;/p&gt;
+
+&lt;h2 id=&#34;hacking-opencv&#34;&gt;Hacking OpenCV&lt;/h2&gt;
+
+&lt;p&gt;Typically, when it comes to memory allocation tracing, we usually overload &lt;code&gt;new operator&lt;/code&gt; to intercept all
+allocations. In OpenCV it becomes even easier. There is a &lt;code&gt;cv::fastMalloc&lt;/code&gt; function that is a memory allocator for
+all OpenCV project. This means every &lt;code&gt;cv::Mat&lt;/code&gt; allocation use it. So our goal is to change cv::fastMalloc to &amp;lsquo;save&amp;rsquo;
+allocations somewhere where we can access it in runtime.&lt;/p&gt;
+
+&lt;p&gt;To serve this purpose, I will write a helper class to store allocations/deallocations data. For analysys purposes,
+it records peak memory usage, allocations count, current memory usage and number of live objects:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;// modules\core\include\opencv2\core.hpp
+struct CV_EXPORTS MemorySnapshot
+{
+    //! Total amount of allocated memory.
+    size_t allocatedMemory;
+
+    //! Maximum amount of allocated memory for the whole time.
+    size_t peakMemoryUsage;
+
+    //! Maximum amount of allocated memory since last snapshot.
+    size_t peakMemoryUsageSinceLastSnapshot;
+    
+    //! Number of memory allocations count for the whole program running time.
+    size_t allocationsCount;
+
+    //! Number of memory deallocations for the whole program running time.
+    size_t deallocationsCount;
+    
+    //! Number of allocated objects that are still live (e.g not deallocated).
+    size_t liveObjects;
+};
+
+CV_EXPORTS MemorySnapshot memorySnapshot();
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;An implementation of &lt;code&gt;MemoryManager&lt;/code&gt; is very trivial and can be extended to collect statistics on individual allocations.
+However for my needs this implementation was more than enough:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;// modules\core\alloc.cpp
+class MemoryManager
+{
+public:
+    //! Key - pointer to allocated memory, Value - it&#39;s size
+    typedef std::map&amp;lt;void*, size_t&amp;gt;     AllocationTable;
+    typedef std::lock_guard&amp;lt;std::mutex&amp;gt; LockType;
+
+    void recordAlloc(void* ptr, size_t size)
+    {
+        LockType guard(mAllocMutex);
+        mAllocatedMemory.insert(std::make_pair(ptr, size));
+
+        mCurrentMemoryUsage += size;
+        mPeakMemoryUsage = std::max(mPeakMemoryUsage, mCurrentMemoryUsage);
+        mPeakMemoryUsageSinceLastSnapshot = std::max(mPeakMemoryUsageSinceLastSnapshot, mCurrentMemoryUsage);
+        mAllocationsCount++;
+    }
+
+    void recordFree(void* ptr)
+    {
+        LockType guard(mAllocMutex);
+
+        auto block = mAllocatedMemory.find(ptr);
+        CV_Assert(block != mAllocatedMemory.end());
+    
+        mCurrentMemoryUsage -= block-&amp;gt;second;
+        mDeallocationsCount++;
+        mAllocatedMemory.erase(block);
+    }
+
+   
+
+    static MemoryManager&amp;amp; Instance()
+    {
+        std::call_once(mInitFlag, []() {
+            if (mInstance == nullptr)
+            {
+                mInstance = new MemoryManager();
+            }
+        });
+
+        return *mInstance;
+    }
+
+    MemorySnapshot makeSnapshot()
+    {
+        LockType guard(mAllocMutex);
+        
+        MemorySnapshot snapshot;
+        snapshot.peakMemoryUsage = mPeakMemoryUsage;
+        snapshot.peakMemoryUsageSinceLastSnapshot = mPeakMemoryUsageSinceLastSnapshot;
+        snapshot.allocatedMemory = mCurrentMemoryUsage;
+        snapshot.allocationsCount = mAllocationsCount;
+        snapshot.deallocationsCount = mDeallocationsCount;
+        snapshot.liveObjects = mAllocationsCount - mDeallocationsCount;
+        
+        mPeakMemoryUsageSinceLastSnapshot = 0;
+
+        return std::move(snapshot);
+    }
+private:
+
+    MemoryManager()
+        : mCurrentMemoryUsage(0)
+        , mPeakMemoryUsage(0)
+        , mPeakMemoryUsageSinceLastSnapshot(0)
+        , mAllocationsCount(0)
+        , mDeallocationsCount(0)
+    {
+    }
+
+private:
+    std::mutex      mAllocMutex;
+    AllocationTable mAllocatedMemory;
+
+    size_t          mCurrentMemoryUsage;
+    size_t          mPeakMemoryUsage;
+    size_t          mPeakMemoryUsageSinceLastSnapshot;
+
+    size_t          mAllocationsCount;
+    size_t          mDeallocationsCount;
+
+    static std::once_flag  mInitFlag;
+    static MemoryManager * mInstance;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now it&amp;rsquo;s time to inject our MemoryManager into &lt;code&gt;cv::fastAlloc&lt;/code&gt; / &lt;code&gt;cv::fastFree&lt;/code&gt; functions and create new function &lt;code&gt;cv::memorySnaphot&lt;/code&gt; to retrieve memory snapshots:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;// modules\core\alloc.cpp
+void* fastMalloc( size_t size )
+{
+    uchar* udata = (uchar*)malloc(size + sizeof(void*) + CV_MALLOC_ALIGN);
+
+    if(!udata)
+        return OutOfMemoryError(size);
+
+    MemoryManager::Instance().recordAlloc(udata, size);
+    uchar** adata = alignPtr((uchar**)udata + 1, CV_MALLOC_ALIGN);
+    adata[-1] = udata;
+    return adata;
+}
+
+void fastFree(void* ptr)
+{
+    if(ptr)
+    {
+        uchar* udata = ((uchar**)ptr)[-1];
+        CV_DbgAssert(udata &amp;lt; (uchar*)ptr &amp;amp;&amp;amp;
+               ((uchar*)ptr - udata) &amp;lt;= (ptrdiff_t)(sizeof(void*)+CV_MALLOC_ALIGN));
+
+        MemoryManager::Instance().recordFree(udata);
+        free(udata);
+    }
+}
+
+MemorySnapshot memorySnapshot()
+{
+    return std::move(MemoryManager::Instance().makeSnapshot());
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;That&amp;rsquo;s all with hacking OpenCV. One last step is to rebuild OpenCV with any C++11 conformant compiler and we can use memory manager for analyzing our code.&lt;/p&gt;
+
+&lt;h2 id=&#34;fun-profit&#34;&gt;Fun &amp;amp; Profit&lt;/h2&gt;
+
+&lt;p&gt;Back to first example, we want to measure memory usage after each step. Here&amp;rsquo;s how C++ macros can help us:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;cv::Mat source, gray, grayFloat, blurred, unsharped;
+MEASURE_MEMORY(m = cv::imread(&amp;quot;/some/path/to/image.png&amp;quot;));
+MEASURE_MEMORY(cv::cvtColor(m, gray, cv::COLOR_BGR2GRAY));
+MEASURE_MEMORY(gray.convertTo(grayFloat, CV_32F, 1.0 / 255.0));
+MEASURE_MEMORY(cv::GaussianBlur(grayFloat, blurred, cv::Size(5, 5), 5));
+MEASURE_MEMORY(unsharped = blurred * 1.5f - grayFloat * 0.5f);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Where &lt;code&gt;MEASURE_MEMORY&lt;/code&gt; is a helper macro defined as follows:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;#define MEASURE_MEMORY(x) { size_t memOnStart = cv::memorySnapshot().allocatedMemory; x; \
+                            size_t memOnEnd = cv::memorySnapshot().allocatedMemory;      \
+                            std::cout &amp;lt;&amp;lt; #x &amp;lt;&amp;lt; &amp;quot;\t&amp;quot; &amp;lt;&amp;lt; memOnStart &amp;lt;&amp;lt; &amp;quot;/&amp;quot; &amp;lt;&amp;lt; memOnEnd &amp;lt;&amp;lt; std::endl; }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Example output is the following (The image was 3200x2400):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;m = cv::imread(&amp;quot;/some/path/to/image.png&amp;quot;)               //      743/ 23971559 +23Mb
+cv::cvtColor(m, gray, cv::COLOR_BGR2GRAY)               // 23971559/ 31961831 +7.6Mb
+gray.convertTo(grayFloat, CV_32F, 1.0 / 255.0)          // 31961831/ 63922919 +30Mb
+cv::GaussianBlur(grayFloat, blurred, cv::Size(5, 5), 5) // 63922919/ 95884007 +30Mb
+unsharped = blurred * 1.5f - grayFloat * 0.5f           // 95884007/127845095 +30Mb
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As you can see, numbers are really close to predicted. This way you can measure memory usage, peak usage,
+number of allocations in your program easily, spot memory-related issues and fix them before they appear on
+customer&amp;rsquo;s hardware.&lt;/p&gt;
+
+&lt;h2 id=&#34;source-code&#34;&gt;Source code&lt;/h2&gt;
+
+&lt;p&gt;The modified OpenCV source code can be found here: &lt;a href=&#34;https://github.com/BloodAxe/opencv/tree/memory-snapshots&#34;&gt;https://github.com/BloodAxe/opencv/tree/memory-snapshots&lt;/a&gt;. Don&amp;rsquo;t forget to enable it by building OpenCV with ENABLE_MEMORY_SNAPSHOTS=YES option.&lt;/p&gt;
+
+&lt;p&gt;I have sent pull-request to OpenCV team, so there is a chance it will be included into official OpenCV. Let&amp;rsquo;s keep fingers crossed.&lt;/p&gt;
+
+&lt;h2 id=&#34;license&#34;&gt;License&lt;/h2&gt;
+
+&lt;p&gt;The code is available for use any commercial and non-commercial purposes, but please keep a credit by providing a
+link to my website &lt;a href=&#34;http://computer-vision-talks.com&#34;&gt;computer-vision-talks.com&lt;/a&gt; and email &lt;a href=&#34;ekhvedchenya@gmail.com&#34;&gt;ekhvedchenya@gmail.com&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Tile-based image processing</title>
+      <link>https://example.com/tile-based-image-processing/</link>
+      <pubDate>Thu, 04 Dec 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/tile-based-image-processing/</guid>
+      <description>
+
+&lt;p&gt;How would you design an algorithm to process 40Mpx image? 100Mpx? What about gigapixel-sized panorams? Obviously, it should differs from those that are intended for 640x480 images. Here I want to present you implementation of the very simple but powerful approach called &amp;ldquo;Tile-based image processing&amp;rdquo;. I will show you how to make this using OpenCV.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;tiles.png&#34; alt=&#34;Tile based image processing&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;First, let&amp;rsquo;s define a few restrictions in order to simplify our implementation. In this tutorial I will consider a &amp;lsquo;pass-through&amp;rsquo; pipeline - when we apply some function to input image and give an output image of the same size as an output.&lt;/p&gt;
+
+&lt;p&gt;It is possible to extend this approach to work with many input images, but for the sake of simplicity I&amp;rsquo;ll omit this for now.&lt;/p&gt;
+
+&lt;p&gt;Consider a following algorithm:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Take a source image for RGB color space.&lt;/li&gt;
+&lt;li&gt;Convert in to grayscale color space (unsigned byte).&lt;/li&gt;
+&lt;li&gt;Compute Sobel derivatives (signed short).&lt;/li&gt;
+&lt;li&gt;Take a Dx, Dy for each pixel and compute it&amp;rsquo;s magnitude and orientation.&lt;/li&gt;
+&lt;li&gt;Leave only those, which magnitude is larger than threshold.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Using OpenCV it could look like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;cv::Mat source = cv::imread(&amp;quot;input.jpg&amp;quot;);
+cv::Mat grayscale, dx, dy;
+cv::cvtColor(source, grayscale);
+cv::Sobel(grayscale, dx, 1, 0);
+cv::Sobel(grayscale, dy, 0, 1);
+...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;problems-with-straighforward-implementation&#34;&gt;Problems with straighforward implementation&lt;/h2&gt;
+
+&lt;p&gt;This routine require &lt;code&gt;N + 2 * N * sizeof(signed short)&lt;/code&gt; bytes of additional memory for straightforward implementation, where N is number of pixels in source image. Large number of intermediate buffers can cause memory issues for memory restricted devices (mobile phones, embedded systems).&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;On iOS, in particular, your app might get terminated by iOS watchdog for high peak RAM usage, despite the fact you use this memory only for a temp buffers.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Second issue with large amount of buffers is cache-misses. Large buffers are likely to sit near each other, therefore cache performance will be low and algorithm performance will suffer.&lt;/p&gt;
+
+&lt;p&gt;To adress those two issues, I suggest to divide input image into &amp;ldquo;Tiles&amp;rdquo; - regions of the original image of equal size, let&amp;rsquo;s say 64x64. The processing function remains the same, but we reuse all temporary buffers and process only 64x64 pixels at one time.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;algorithm.png&#34; alt=&#34;Tile based image processing&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s say we&amp;rsquo;re processing &lt;code&gt;1280x720&lt;/code&gt; frame, using regular approach, the total amount of
+additional memory is &lt;strong&gt;4.6 megabytes&lt;/strong&gt; (&lt;code&gt;4608000&lt;/code&gt; bytes). With tile-based approach, we need only &lt;strong&gt;20 kilobytes&lt;/strong&gt; (&lt;code&gt;20480&lt;/code&gt; bytes). 20K are likely to fit entirely in L2 cache and therefore give a significant performance boost.&lt;/p&gt;
+
+&lt;h2 id=&#34;tile-based-implementation&#34;&gt;Tile-based implementation&lt;/h2&gt;
+
+&lt;p&gt;To implement tile-based implementation, we iterate over the image, copy tiles from source image to our local source tile, process it and write to corresponding area in the
+destination image.&lt;/p&gt;
+
+&lt;p&gt;A pseudo-code for this routine is follows:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;template&amp;lt;int TileSize, typename Algorithm&amp;gt;
+void process(const cv::Mat&amp;amp; sourceImage, cv::Mat&amp;amp; resultImage, Algorithm algorithm) const
+{
+    assert(!resultImage.empty());
+    assert(sourceImage.rows == resultImage.rows);
+    assert(sourceImage.cols == resultImage.cols);
+
+    const int rows = (sourceImage.rows / TileSize) + (sourceImage.rows % TileSize ? 1 : 0);
+    const int cols = (sourceImage.cols / TileSize) + (sourceImage.cols % TileSize ? 1 : 0);
+
+    cv::Mat tileInput, tileOutput;
+
+    for (int rowTile = 0; rowTile &amp;lt; rows; rowTile++)
+    {
+        for (int colTile = 0; colTile &amp;lt; cols; colTile++)
+        {
+            copyTileFromSource(sourceImage, tileInput, rowTile, colTile);
+            algorithm(tileInput, tileOutput);
+            copyTileToResultImage(tileOutput, resultImage, rowTile, colTile);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I hope it&amp;rsquo;s clear to understand what is happening in code above. The &lt;code&gt;Algorithm&lt;/code&gt; here represents some algorithm that we want to run on our tiles. There are two functions &lt;code&gt;copyTileFromSource&lt;/code&gt; and &lt;code&gt;copyTileToResultImage&lt;/code&gt; that will be covered a bit later.&lt;/p&gt;
+
+&lt;h2 id=&#34;dealing-with-out-of-tile-reads&#34;&gt;Dealing with out-of-tile reads&lt;/h2&gt;
+
+&lt;p&gt;You may ask yourself - what should we do with border pixels? Sobel operator use neighbor pixels around each pixel. When we construct a tile shouldn&amp;rsquo;t we take this into account? Sure we are. So that&amp;rsquo;s why there is a padding parameter that controls amount of additional pixels that are added to top, left, bottom and right of the tile in order to make functions that require additional pixels work correct.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;tile_with_paddings.png&#34; alt=&#34;Tile with paddings&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Padding makes tile overlap each other, but we pay this price for good cache locality.&lt;/p&gt;
+
+&lt;p&gt;I will use a slightly modified version of code from above:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;struct TiledAlgorithm
+{
+    TiledAlgorithm(int tileSize, int padding, int borderType)
+        : mTileSize(tileSize)
+        , mPadding(padding)
+        , mBorderType(borderType)
+    {
+    }
+
+    void process(const cv::Mat&amp;amp; sourceImage, cv::Mat&amp;amp; resultImage) const
+    {
+        assert(!resultImage.empty());
+        assert(sourceImage.rows == resultImage.rows);
+        assert(sourceImage.cols == resultImage.cols);
+
+        int rows = (sourceImage.rows / mTileSize) + (sourceImage.rows % mTileSize ? 1 : 0);
+        int cols = (sourceImage.cols / mTileSize) + (sourceImage.cols % mTileSize ? 1 : 0);
+
+        cv::Mat tileInput, tileOutput;
+
+        for (int rowTile = 0; rowTile &amp;lt; rows; rowTile++)
+        {
+            for (int colTile = 0; colTile &amp;lt; cols; colTile++)
+            {
+                cv::Rect srcTile(colTile * mTileSize - mPadding, 
+                                 rowTile * mTileSize - mPadding, 
+                                 mTileSize + 2 * mPadding, 
+                                 mTileSize + 2 * mPadding);
+
+                cv::Rect dstTile(colTile * mTileSize,            
+                                 rowTile * mTileSize, 
+                                 mTileSize, 
+                                 mTileSize);
+
+                copySourceTile(sourceImage, tileInput, srcTile);
+                processTileImpl(tileInput, tileOutput);
+                copyTileToResultImage(tileOutput, resultImage, dstTile);
+            }
+        }
+    }
+
+protected:
+    virtual void processTileImpl(const cv::Mat&amp;amp; srcTile, cv::Mat&amp;amp; dstTile) const = 0;
+    
+    void copySourceTile(const cv::Mat&amp;amp; src, cv::Mat&amp;amp; srcTile, cv::Rect &amp;amp;tile) const;
+    void copyTileToResultImage(const cv::Mat&amp;amp; tileImage, cv::Mat&amp;amp; resultImage, cv::Rect resultRoi);
+
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;processing_with_paddings.png&#34; alt=&#34;Processing with paddings&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;To fill a tile with source image we should check whether tile is close to image border. In this case OpenCV will come to help with cv::copyMakeBorder function that helps us to fill the missing pixels with given border fill method. If tile including paddings are entirely in the image boundary, it&amp;rsquo;s enough to just copy image region to a tile:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;void copySourceTile(const cv::Mat&amp;amp; src, cv::Mat&amp;amp; srcTile, cv::Rect &amp;amp;tile)
+{
+    auto tl = tile.tl();
+    auto br = tile.br();
+
+    cv::Point tloffset, broffset;
+
+    //Take care of border cases
+    if (tile.x &amp;lt; 0)
+    {
+        tloffset.x = -tile.x;
+        tile.x = 0;
+    }
+
+    if (tile.y &amp;lt; 0)
+    {
+        tloffset.y = -tile.y;
+        tile.y = 0;
+    }
+
+    if (br.x &amp;gt;= src.cols)
+    {
+        broffset.x = br.x - src.cols + 1;
+        tile.width -= broffset.x;
+    }
+
+    if (br.y &amp;gt;= src.rows)
+    {
+        broffset.y = br.y - src.rows + 1;
+        tile.height -= broffset.y;
+    }
+
+    // If any of the tile sides exceed source image boundary we must use copyMakeBorder to make proper paddings for this side
+    if (tloffset.x &amp;gt; 0 || tloffset.y &amp;gt; 0 || broffset.x &amp;gt; 0 || broffset.y &amp;gt; 0)
+    {
+        cv::Rect paddedTile(tile.tl(), tile.br());
+        assert(paddedTile.x &amp;gt;= 0);
+        assert(paddedTile.y &amp;gt;= 0);
+        assert(paddedTile.br().x &amp;lt; src.cols);
+        assert(paddedTile.br().y &amp;lt; src.rows);
+
+        cv::copyMakeBorder(src(paddedTile), srcTile, tloffset.y, broffset.y, tloffset.x, broffset.x, mBorderType);
+    }
+    else
+    {
+        // Entire tile (with paddings lies inside image and it&#39;s safe to just take a region:
+        src(tile).copyTo(srcTile);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;For non-zero padding case we add additional pixels to source tile, therefore it has effective width and height of &lt;code&gt;TileSize + Padding + Padding&lt;/code&gt;, but after processing we write only central segment of the tile of size &lt;code&gt;TileSize x TileSize&lt;/code&gt; to destination image. In case of Sobel, we need a padding of &lt;code&gt;1&lt;/code&gt;, because Sobel uses 3x3 kernel by default.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;void copyTileToResultImage(const cv::Mat&amp;amp; tileImage, cv::Mat&amp;amp; resultImage, cv::Rect resultRoi)
+{
+    cv::Rect srcTile(mPadding, mPadding, mTileSize, mTileSize);
+
+    auto br = resultRoi.br();
+
+    if (br.x &amp;gt;= resultImage.cols)
+    {
+        resultRoi.width -= br.x - resultImage.cols;
+        srcTile.width -= br.x - resultImage.cols;
+    }
+
+    if (br.y &amp;gt;= resultImage.rows)
+    {
+        resultRoi.height -= br.y - resultImage.rows;
+        srcTile.height -= br.y - resultImage.rows;
+    }
+
+    cv::Mat tileView = tileImage(srcTile);
+    cv::Mat dstView = resultImage(resultRoi);
+
+    assert(tileView.rows == dstView.rows);
+    assert(tileView.cols == dstView.cols);
+
+    tileView.copyTo(dstView);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;application&#34;&gt;Application&lt;/h2&gt;
+
+&lt;p&gt;This approach can be used when you need to guarantee low-memory footprint of your algorithm or you want to use data locality without changing a lot in your code. In this
+case I suggest to pre-allocate data buffers as a continuous block of memory:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;// Our algorithm need three intermediate buffers: a,b,c that
+// we want to store close to each other
+class MyAlgorithm : public TiledAlgorithm
+{
+public:
+    MyAlgorithm(int tileSize, int padding)
+    {
+        int size = tileSize + padding * 2;
+
+        // Allocate all buffer as continuous array
+        mBuffer.create(size * 3, size, CV_8UC1);
+            
+        // Create views to sub-regions of mBuffer
+        a = mBuffer.rowRange(0,      size);
+        b = mBuffer.rowRange(size,   2*size);
+        c = mBuffer.rowRange(2*size, 3*size);
+    }
+
+private:
+    cv::Mat mBuffer;
+
+    cv::Mat a, b c;
+}
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Did you know, that JPEG-2000 coded use tile-based encoding and it allows this codec to retrieve (decode) an arbitrary region of the image? Also, tiles are widely used in aerial photography to stich images.&lt;/p&gt;
+
+&lt;p&gt;I hope you find this post interesting. Pleas let me know on which topics you would like to see in my blog. Feel free to drop a ping on &lt;a href=&#34;https://twitter.com/cvtalks&#34;&gt;@cvtalks&lt;/a&gt; or leave a comment. Thanks!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Mapping data from Eigen to OpenCV and back</title>
+      <link>https://example.com/mapping-eigen-to-opencv/</link>
+      <pubDate>Sat, 16 Aug 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/mapping-eigen-to-opencv/</guid>
+      <description>
+
+&lt;div class=&#34;featured-image&#34;&gt;
+![Eigen2CV](eigen2cv.png)
+&lt;/div&gt;
+
+&lt;p&gt;Eigen is a C++ template library for matrix and vector operations.
+It is highly optimized for numeric operations and support vectorization and
+use aligned memory allocators.&lt;/p&gt;
+
+&lt;p&gt;When it comes to matrix operations, Eigen is much faster than OpenCV.
+However, it can be situations when it is necessary to pass Eigen data
+to OpenCV functions.&lt;/p&gt;
+
+&lt;p&gt;In this post I will show how to map Eigen data to OpenCV with easy and efficient
+way. No copy, minimal overhead and maximum syntax sugar:
+&lt;div class=&#34;clearfix&#34;&gt;&lt;/div&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Simple case&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;Eigen::ArrayXXd img(480, 640);
+...
+cv::imshow(&amp;quot;test&amp;quot;, eigen2cv(img));
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Proposed approach does not limited to continuous memory layout - it support expression and blocks
+as well. If given expression has to be evaluated - it will be evaluated into temporary dense storage
+and then mapped to OpenCV structure:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Expressions&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;// Unsharp mask
+Eigen::ArrayXXd img, blur;    
+cv::GaussianBlur(eigen2cv(img), eigen2cv(blur));
+
+cv::imshow(&amp;quot;sharpened&amp;quot;, eigen2cv(1.5 * img - 0.5 * blur));
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;idea&#34;&gt;Idea&lt;/h2&gt;
+
+&lt;p&gt;In fact, Eigen heavily use &lt;a href=&#34;#1&#34;&gt;C++ templates magic&lt;/a&gt; to create expression structures with delayed evaluation and &lt;a href=&#34;#2&#34;&gt;type traits&lt;/a&gt; to detect type of derived objects in compile time.
+This approach gives compiler a lot of hints on actual data layout which helps to generate more efficient code.
+The drawback of this - if you want to deep dive in Eigen internals be prepared to hardcore.&lt;/p&gt;
+
+&lt;p&gt;I will use templates as well. We will have template class &lt;code&gt;Eigen2CV&lt;/code&gt; and several specializations of this class - for planar types, for blocks, for expression and so on&amp;hellip;
+In addition we will specialize this class with mutable specification which will
+let us to define &lt;u&gt;at compile time&lt;/u&gt; whether mapped object is allowed for writing or not. Awesome.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;template&amp;lt;
+    typename Derived, 
+    typename Base, 
+    typename ConstPolicy, 
+    typename StorageKind = typename Eigen::internal::traits&amp;lt;Derived&amp;gt;::StorageKind 
+    &amp;gt;
+class Eigen2CV;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To interact with OpenCV, we can declare implicit conversion operators for &lt;code&gt;cv::Mat&lt;/code&gt;, &lt;code&gt;cv::InputArray&lt;/code&gt; and &lt;code&gt;cv::OutputArray&lt;/code&gt;.
+Some of the mapped objects can have read/write access while the rest  - read-only.
+Therefore we will introduce the base class &lt;code&gt;Eigen2CVBase&lt;/code&gt; to provide a &amp;ldquo;read-only&amp;rdquo; access for all derived objects.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;class Eigen2CVBase
+{
+public:
+    
+    operator cv::Mat() const
+    {
+        return mBody;
+    }
+    
+    operator cv::_InputArray() const
+    {
+        return cv::_InputArray(mBody);
+    }
+    
+protected:
+    
+    template&amp;lt;typename Derived&amp;gt;
+    void mapPlaneMemory(const Derived&amp;amp; src)
+    {
+        const bool isRowMajor = int(Derived::Flags) &amp;amp; Eigen::RowMajorBit;
+        const int stride = src.outerStride() * sizeof(typename Derived::Scalar);
+        
+        if (isRowMajor)
+            this-&amp;gt;mapPlaneMemoryRowMajor(src.data(),
+                                         src.rows(),
+                                         src.cols(),
+                                         stride);
+        else
+            this-&amp;gt;mapPlaneMemoryColMajor(src.data(),
+                                         src.rows(),
+                                         src.cols(),
+                                         stride);
+    }
+
+    template &amp;lt;typename Scalar&amp;gt;
+    void mapPlaneMemoryRowMajor(const Scalar* planeData, int rows, int cols, int stride)
+    {
+        this-&amp;gt;mBody = cv::Mat(rows, 
+                              cols, 
+                              opencv_matrix&amp;lt;Scalar&amp;gt;::type, 
+                              const_cast&amp;lt;Scalar*&amp;gt;(planeData), 
+                              stride);
+    }
+    
+    template &amp;lt;typename Scalar&amp;gt;
+    void mapPlaneMemoryColMajor(const Scalar* planeData, int rows, int cols, int stride)
+    {
+        this-&amp;gt;mBody = cv::Mat(cols, 
+                              rows, 
+                              opencv_matrix&amp;lt;Scalar&amp;gt;::type, 
+                              const_cast&amp;lt;Scalar*&amp;gt;(planeData), 
+                              stride);
+    }
+
+    template &amp;lt;typename Derived, typename T&amp;gt;
+    void assignMatrix(Eigen::DenseBase&amp;lt;Derived&amp;gt;&amp;amp; dst, const cv::Mat_&amp;lt;T&amp;gt;&amp;amp; src)
+    {
+        typedef typename Derived::Scalar Scalar;
+        typedef Eigen::Matrix&amp;lt;T, 
+                              Eigen::Dynamic, 
+                              Eigen::Dynamic, 
+                              Eigen::RowMajor&amp;gt; PlainMatrixType;
+        
+        dst = Eigen::Map&amp;lt;PlainMatrixType&amp;gt;((T*)src.data, 
+                                          src.rows, 
+                                          src.cols).
+                                          template cast&amp;lt;Scalar&amp;gt;();
+    }
+    
+    cv::Mat mBody;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;For those Eigen types that allows read/write access, we will have additional conversion operator to cv::OutputArray. By default all derived types will have read-only access.&lt;/p&gt;
+
+&lt;h2 id=&#34;mapping-eigen-plain-objects&#34;&gt;Mapping Eigen plain objects&lt;/h2&gt;
+
+&lt;p&gt;Let&amp;rsquo;s start from mapping continuous block of memory represented by &lt;code&gt;Eigen::Matrix&lt;/code&gt; of &lt;code&gt;Eigen::Array&lt;/code&gt;.
+These two classes derives from &lt;code&gt;Eigen::PlainObjectBase&lt;/code&gt; class which provides methods to access internal storage
+buffer.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;template&amp;lt;typename Derived&amp;gt;
+class Eigen2CV&amp;lt;
+    Derived, 
+    Eigen::PlainObjectBase&amp;lt;Derived&amp;gt;, 
+    details::Const&amp;gt; : public Eigen2CVBase
+{
+public:
+    
+    typedef typename Derived::Scalar Scalar;
+    typedef Eigen2CV&amp;lt;Derived, Eigen::PlainObjectBase&amp;lt;Derived&amp;gt;, details::Mutable&amp;gt; Self;
+    
+    Eigen2CV(const Eigen::PlainObjectBase&amp;lt;Derived&amp;gt;&amp;amp; src)
+    : mMappedView(src)
+    {
+        this-&amp;gt;mapPlaneMemory(mMappedView);
+    }
+           
+private:
+    const Eigen::PlainObjectBase&amp;lt;Derived&amp;gt;&amp;amp; mMappedView;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is &lt;code&gt;Eigen2CV&lt;/code&gt; specialization for constant &lt;code&gt;Eigen::PlainObjectBase&lt;/code&gt; object. This specialization of &lt;code&gt;Eigen2CV&lt;/code&gt; can return constant reference to &lt;code&gt;cv::Mat&lt;/code&gt; and &lt;code&gt;cv::InputArray&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Now we can write two overloads of &lt;code&gt;eigen2cv&lt;/code&gt; function for &lt;code&gt;Eigen::Matrix&lt;/code&gt; and &lt;code&gt;Eigen::Array&lt;/code&gt;. The goal of &lt;code&gt;eigen2cv&lt;/code&gt; is simple - take an argument and create &amp;lsquo;right&amp;rsquo; Eigen2CV&amp;lt;&amp;hellip;&amp;gt; mapper.
+Here is how it looks like for planar data:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;template&amp;lt;typename E&amp;gt;
+Eigen2CV&amp;lt;E, Eigen::PlainObjectBase&amp;lt;E&amp;gt;, details::Mutable&amp;gt; 
+eigen2cv(Eigen::PlainObjectBase&amp;lt;E&amp;gt;&amp;amp; src) 
+{
+    return Eigen2CV&amp;lt;E, 
+                    Eigen::PlainObjectBase&amp;lt;E&amp;gt;, 
+                    details::Mutable
+                    &amp;gt;(src));
+}
+
+template&amp;lt;typename E&amp;gt;
+Eigen2CV&amp;lt;E, Eigen::PlainObjectBase&amp;lt;E&amp;gt;, details::Const&amp;gt;
+eigen2cv(const Eigen::PlainObjectBase&amp;lt;E&amp;gt;&amp;amp; src) 
+{
+    return Eigen2CV&amp;lt;E, 
+                    Eigen::PlainObjectBase&amp;lt;E&amp;gt;, 
+                    details::Const
+                    &amp;gt;(src);
+}  
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I want to draw your attention to how elegant C++ allows us to distinct mutable and constant objects.
+Compiler will choose right function depending on the context of &lt;code&gt;src&lt;/code&gt;.
+In case of access right conflicts you will get compile-time error.&lt;/p&gt;
+
+&lt;h2 id=&#34;assigning-opencv-matrix-to-eigen-object&#34;&gt;Assigning OpenCV matrix to Eigen object&lt;/h2&gt;
+
+&lt;p&gt;What if someone write:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;eigen2cv(a) = cv::imread(&amp;quot;lena.jpg&amp;quot;, cv::IMREAD_GRAYSCALE);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Well, it&amp;rsquo;s legal and I see no problems with this code while we follow few restrictions:
+1. &lt;code&gt;data&lt;/code&gt; has dynamic size or fixed one which match cv::Mat size.
+2. Image is single channel - there is no way to map multi-channel images to Eigen now.&lt;/p&gt;
+
+&lt;p&gt;Assignment operator is also quite simple:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;template &amp;lt;typename T&amp;gt;
+Self&amp;amp; operator=(const cv::Mat_&amp;lt;T&amp;gt;&amp;amp; src)
+{
+    assignMatrix&amp;lt;Derived, T&amp;gt;(mMappedView, src);
+    return *this;
+}
+
+/**
+ * @brief Assignment operator to copy OpenCV Mat data to mapped Eigen object.
+ */
+Self&amp;amp; operator= (const cv::Mat&amp;amp; m)
+{
+    switch (m.type())
+    {
+        case CV_8U:  return *this = (cv::Mat_&amp;lt;uint8_t&amp;gt;)m;
+        case CV_16U: return *this = (cv::Mat_&amp;lt;uint16_t&amp;gt;)m;
+        case CV_16S: return *this = (cv::Mat_&amp;lt;int16_t&amp;gt;)m;
+        case CV_32S: return *this = (cv::Mat_&amp;lt;int32_t&amp;gt;)m;
+        case CV_32F: return *this = (cv::Mat_&amp;lt;float&amp;gt;)m;
+        case CV_64F: return *this = (cv::Mat_&amp;lt;double&amp;gt;)m;
+        default:
+            throw std::runtime_error(&amp;quot;Unsupported OpenCV matrix type&amp;quot;);
+    };
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;mapping-eigen-expressions&#34;&gt;Mapping Eigen expressions&lt;/h2&gt;
+
+&lt;p&gt;Dealing with expressions is not much harder.
+Depending on the expression type, we must either evaluate it into dense storage (when it&amp;rsquo;s real expression like &lt;code&gt;AX + B&lt;/code&gt;, or &lt;code&gt;cast&amp;lt;float&amp;gt;()&lt;/code&gt;)
+or use underlying storage with regards to expression operator (&lt;code&gt;block()&lt;/code&gt;, &lt;code&gt;transpose()&lt;/code&gt;, &lt;code&gt;array()&lt;/code&gt;, &lt;code&gt;matrix()&lt;/code&gt;).
+We will get to mapping blocks in a next section.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s map expression that require evaluation first. For the sake of simplicity,
+I will not implement write expressions, e.g expressions that require eval/update/write-back.
+Eigen2CV will be able map Eigen expressions in read-only mode.
+And here&amp;rsquo;s how:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;template&amp;lt;typename Derived&amp;gt;
+class Eigen2CV&amp;lt;Derived, Eigen::EigenBase&amp;lt;Derived&amp;gt;, details::Const&amp;gt; : public Eigen2CVBase
+{
+public:
+    typedef typename Derived::Scalar Scalar;
+    typedef typename Eigen::internal::plain_matrix_type&amp;lt;Derived&amp;gt;::type StorageType;
+
+    Eigen2CV(const Eigen::EigenBase&amp;lt;Derived&amp;gt;&amp;amp; src)
+    {
+        mStorage = src; // All magic happens here
+        this-&amp;gt;mapPlaneMemory(mStorage);
+    }
+
+protected:
+
+    void mapPlaneMemory(StorageType&amp;amp; src)
+    {
+        if ( ( StorageType::Options &amp;amp; Eigen::RowMajor) == Eigen::RowMajor)
+            this-&amp;gt;mapPlaneMemoryRowMajor(src.data(), 
+                                         src.rows(), 
+                                         src.cols(), 
+                                         src.outerStride() * sizeof(Scalar));
+        else
+            this-&amp;gt;mapPlaneMemoryColMajor(src.data(), 
+                                         src.rows(), 
+                                         src.cols(), 
+                                         src.outerStride() * sizeof(Scalar));
+    }
+
+private:
+    StorageType mStorage;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;For the first look, it is almost the same as specialization for planar data types. A few differences make this specialization very other one.
+First, &lt;code&gt;Eigen::internal::plain_matrix_type&amp;lt;Derived&amp;gt;::type&lt;/code&gt; type trait helps us to infer type of dense storage for given expression.
+Second, line &lt;code&gt;mStorage = src&lt;/code&gt; looks really simple right? But hold on, &lt;code&gt;src&lt;/code&gt; is an expression, and &lt;code&gt;mStorage&lt;/code&gt; is dense matrix.
+Assignment operator makes our like much easier by performing evaluation step inside this assignment.&lt;/p&gt;
+
+&lt;p&gt;And here is &lt;code&gt;eigen2cv&lt;/code&gt; overload for Eigen expressions:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;template&amp;lt;typename E&amp;gt;
+Eigen2CV&amp;lt;E, Eigen::EigenBase&amp;lt;E&amp;gt;, details::Const&amp;gt;
+eigen2cv(const Eigen::EigenBase&amp;lt;E&amp;gt;&amp;amp; src) 
+{
+    return Eigen2CV&amp;lt;E, 
+                    Eigen::EigenBase&amp;lt;E&amp;gt;, 
+                    details::Const
+                    &amp;gt;(src);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;mapping-eigen-views&#34;&gt;Mapping Eigen views&lt;/h2&gt;
+
+&lt;p&gt;User can create sub-view for the Eigen storage using &lt;code&gt;block()&lt;/code&gt;.
+Eigen block create view that points to the same memory region, but has different size and stride.
+Blocks can be read and written.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;template&amp;lt;typename Derived&amp;gt;
+class Eigen2CV&amp;lt;Derived, 
+               Eigen::Block&amp;lt;Derived&amp;gt;, 
+               details::Mutable, 
+               Eigen::Dense&amp;gt; : public Eigen2CVBase
+{
+public:
+    typename Derived::Scalar Scalar;
+    typedef Eigen2CV&amp;lt;Derived, Eigen::Block&amp;lt;Derived&amp;gt;, details::Mutable&amp;gt; Self;
+
+    Eigen2CV(const Eigen::Block&amp;lt;Derived&amp;gt;&amp;amp; src)
+        : mMappedView(src)
+    {
+        this-&amp;gt;mapPlaneMemory(mMappedView);
+    }
+    
+    operator cv::_OutputArray()
+    {
+        return cv::_OutputArray(this-&amp;gt;mBody);
+    }
+    
+    template &amp;lt;typename T&amp;gt;
+    Self&amp;amp; operator=(const cv::Mat_&amp;lt;T&amp;gt;&amp;amp; src)
+    {
+        MatrixAssign&amp;lt;Derived, T&amp;gt;(mMappedView, src);
+        return *this;
+    }
+    
+    /**
+     * @brief Assignment operator to copy OpenCV Mat data to mapped Eigen object.
+     */
+    Self&amp;amp; operator= (const cv::Mat&amp;amp; m) throw ()
+    {
+        switch (m.type())
+        {
+            case CV_8U:  return *this = (cv::Mat_&amp;lt;uint8_t&amp;gt;)m;
+            case CV_16U: return *this = (cv::Mat_&amp;lt;uint16_t&amp;gt;)m;
+            case CV_16S: return *this = (cv::Mat_&amp;lt;int16_t&amp;gt;)m;
+            case CV_32S: return *this = (cv::Mat_&amp;lt;int32_t&amp;gt;)m;
+            case CV_32F: return *this = (cv::Mat_&amp;lt;float&amp;gt;)m;
+            case CV_64F: return *this = (cv::Mat_&amp;lt;double&amp;gt;)m;
+            default:
+                throw std::runtime_error(&amp;quot;Unsupported OpenCV matrix type&amp;quot;);
+        };
+    }
+    
+private:
+    const Eigen::Block&amp;lt;Derived&amp;gt;&amp;amp; mMappedView;
+};
+
+template&amp;lt;typename E&amp;gt;
+Eigen2CV&amp;lt;E, Eigen::Block&amp;lt;E&amp;gt;, details::Mutable&amp;gt;
+eigen2cv(const Eigen::Block&amp;lt;E&amp;gt;&amp;amp; src)
+{
+    return Eigen2CV&amp;lt;E, 
+                    Eigen::Block&amp;lt;E&amp;gt;, 
+                    details::Mutable
+                    &amp;gt;(src);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;eigen-memory-organization&#34;&gt;Eigen memory organization&lt;/h2&gt;
+
+&lt;p&gt;Eigen can use column-major or row-major ordering of internal data storage.
+By default it&amp;rsquo;s column-major, but OpenCV use row-major ordering.&lt;/p&gt;
+
+&lt;p class=&#34;info info-warning&#34;&gt;
+&lt;span class=&#34;label label-info&#34;&gt;Notice&lt;/span&gt;
+This mapping implementation will NOT convert underlying Eigen memory to meet OpenCV convention. 
+For column-major order of Eigen data type this will lead to transposed matrices in OpenCV. 
+&lt;/p&gt;
+
+&lt;h2 id=&#34;demonstration&#34;&gt;Demonstration&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;Image8u_t a(512, 512); // Eigen::Matrix&amp;lt;uint8_t, Dynamic, Dynamic&amp;gt;
+
+for (size_t i = 0; i &amp;lt; 512; i++)
+{
+    for (size_t j = 0; j &amp;lt; 512; j++)
+    {
+        a(i,j) = 255.0f * (sin(0.04f * i) * sin(0.04f * i) + 
+                           cos(0.04f * j) * cos(0.04f * j));
+    }
+}
+
+cv::GaussianBlur(eigen2cv(a.block(128, 128, 256, 256)),
+                 eigen2cv(a.block(128, 128, 256, 256)), cv::Size(25,25), 0);
+cv::imshow(&amp;quot;Blur image region&amp;quot;, eigen2cv(a));
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;blur_roi.png&#34; alt=&#34;Blur image region&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;source-code&#34;&gt;Source code&lt;/h2&gt;
+
+&lt;p&gt;Source code for this post can be found on GitHub: &lt;a href=&#34;https://gist.github.com/BloodAxe/c94d65d5977fb1d3e53f&#34;&gt;Eigen2CV.h&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;License: &lt;a href=&#34;https://tldrlegal.com/license/bsd-3-clause-license-(revised)#summary&#34;&gt;BSD-3&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;references&#34;&gt;References&lt;/h2&gt;
+
+&lt;p&gt;&lt;a name=&#34;#1&#34; /&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.amazon.com/gp/product/0201704315/ref=as_li_tl?ie=UTF8&amp;camp=1789&amp;creative=9325&amp;creativeASIN=0201704315&amp;linkCode=as2&amp;tag=compvisitalk-20&amp;linkId=2ZA2JDQNEDOQJZFL&#34;&gt;Modern C++ Design: Generic Programming and Design Patterns Applied&lt;/a&gt;&lt;img src=&#34;http://ir-na.amazon-adsystem.com/e/ir?t=compvisitalk-20&amp;l=as2&amp;o=1&amp;a=0201704315&#34; width=&#34;1&#34; height=&#34;1&#34; border=&#34;0&#34; alt=&#34;&#34; style=&#34;border:none !important; margin:0px !important;&#34; /&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;a name=&#34;#2&#34; /&gt;
+2. &lt;a href=&#34;http://www.drdobbs.com/cpp/c-type-traits/184404270&#34;&gt;http://www.drdobbs.com/cpp/c-type-traits/184404270&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>A good resource on image processing using Python</title>
+      <link>https://example.com/pyimagesearch.com/</link>
+      <pubDate>Thu, 07 Aug 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/pyimagesearch.com/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;http://www.pyimagesearch.com/&#34;&gt;&lt;img src=&#34;logo.png&#34; alt=&#34;www.pyimagesearch.com&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Let me introduce you &lt;a href=&#34;http://www.pyimagesearch.com/about/&#34;&gt;Adrian Rosebrock&lt;/a&gt; and his &lt;a href=&#34;http://www.pyimagesearch.com/&#34;&gt;http://www.pyimagesearch.com/&lt;/a&gt; website.
+It&amp;rsquo;s about computer vision and image processing using Python and OpenCV.
+Looks like there are more than one person that like to share programming experience via blogging :)&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s how &lt;a href=&#34;http://www.pyimagesearch.com/&#34;&gt;Adrian&lt;/a&gt; position himself:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;This blog is dedicated to helping other programmers understand how image search engines work.
+While a lot of computer vision concepts are theoretical in nature,
+I’m a big fan of “learning by example”. My goal is to distill my life experiences in building image search engines into concise, easy to understand examples.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I hope you will enjoy reading Adrian&amp;rsquo;s posts on &lt;a href=&#34;http://www.pyimagesearch.com/2014/07/28/a-slic-superpixel-tutorial-using-python/&#34;&gt;superpixels&lt;/a&gt;, &lt;a href=&#34;http://www.pyimagesearch.com/2014/07/14/3-ways-compare-histograms-using-opencv-python/&#34;&gt;histogram matching&lt;/a&gt; and &lt;a href=&#34;http://www.pyimagesearch.com/2014/05/26/opencv-python-k-means-color-clustering/&#34;&gt;color clustering&lt;/a&gt;.
+In addition, he wrote a book on using OpenCV in Python.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://www.pyimagesearch.com/practical-python-opencv/&#34;&gt;&lt;img src=&#34;practical_python_and_opencv_cover_green.png&#34; alt=&#34;Practical Python and OpenCV eBook&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Happy reading!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How to detect circles in noisy images</title>
+      <link>https://example.com/how-to-detect-circles-in-noisy-image/</link>
+      <pubDate>Mon, 14 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/how-to-detect-circles-in-noisy-image/</guid>
+      <description>&lt;p&gt;p
+    | This was a request from
+    a(href=&amp;ldquo;&lt;a href=&#34;http://www.reddit.com/r/computervision/comments/2a1lvi/help_how_to_process_this_image_to_find_the_circles/&amp;quot;&#34;&gt;http://www.reddit.com/r/computervision/comments/2a1lvi/help_how_to_process_this_image_to_find_the_circles/&amp;quot;&lt;/a&gt;) /r/computervision.
+    | A reddit member was asking on how to count number of eggs on quite
+    | noisy image like you may see below.
+    | I&amp;rsquo;ve decided to write a simple algorithm that does the job and explain how it works.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;div.beforeafter
+    img(src=&amp;quot;source.jpg&amp;quot;,alt=&amp;quot;before&amp;quot;)
+    img(src=&amp;quot;display.jpg&amp;quot;,alt=&amp;quot;after&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;span.more&lt;/p&gt;
+
+&lt;p&gt;h2 Step 1 - Filter image&lt;/p&gt;
+
+&lt;p&gt;p
+    img(src=&amp;ldquo;source.jpg&amp;rdquo;,alt=&amp;ldquo;Source image&amp;rdquo;)
+    | The original image has noticeable color noise and therefore it must be filtered before we pass it to further stages.
+    | Ideally you should choose filter algorithm based on your task and noise model. For the sake of simplicity,
+    | I will not use Weiner filter or deconvolution to deal with blur and artifacts that are present on source image.&lt;/p&gt;
+
+&lt;p&gt;p
+    | Instead, I will use pyramidal mean-shift filter.
+    | This algorithm works quite well on this problem and helps to get rid of artifacts.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;pre.
+    cv::Mat inputRgbImage = cv::imread(&amp;quot;input.jpg&amp;quot;);
+    cv::Mat filtered;
+    cv::pyrMeanShiftFiltering(inputRgbImage, 
+                              filtered, 
+                              spatialWindowRadius, 
+                              colorWindowRadius, 
+                              2);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;strong Result of filtering
+div.beforeafter.twentytwenty-container
+    img(src=&amp;ldquo;source.jpg&amp;rdquo;,alt=&amp;ldquo;before&amp;rdquo;)
+    img(src=&amp;ldquo;filtered.jpg&amp;rdquo;,alt=&amp;ldquo;after&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;h2 Step 2 - Increase sharpness&lt;/p&gt;
+
+&lt;p&gt;p
+    | As you may see - eggs edges are not too sharp. For circle detection we will use Hough transform. OpenCV&amp;rsquo; Hough algorithm implementation use Canny edge detector to
+    | detect edges. Unfortunately it&amp;rsquo;s not possible to pass manually computed binary image.
+    | Instead we have to pass 8-bit grayscale image for circle detection.
+    | Therefore we may want to increase their sharpness to make the image more friendly for Canny detector.&lt;/p&gt;
+
+&lt;p&gt;p
+    | Sharpening can be easily done via unsharp mask.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;pre.
+    // Perform in-place unsharp masking operation
+    // http://opencv-code.com/quick-tips/sharpen-image-with-unsharp-mask/
+    void unsharpMask(cv::Mat&amp;amp; im) 
+    {
+        cv::Mat tmp;
+        cv::GaussianBlur(im, tmp, cv::Size(5,5), 5);
+        cv::addWeighted(im, 1.5, tmp, -0.5, 0, im);
+    }
+
+| However, unsharp mask can cause artifacts on edge borders which may lead to double edge.
+| I&#39;m dealing with it by adding laplaccian component to final result:
+
+pre.
+    cv::cvtColor(filtered, grayImg, cv::COLOR_BGR2GRAY);
+    grayImg.convertTo(grayscale, CV_32F);
+
+    cv::GaussianBlur(grayscale, blurred, cv::Size(5,5), 0);
+
+    cv::Laplacian(blurred, laplaccian, CV_32F);
+
+    cv::Mat sharpened = 1.5f * grayscale
+                      - 0.5f * blurred
+                      - weight * grayscale.mul(scale * laplaccian);
+
+strong Result of sharpening
+div.beforeafter.twentytwenty-container
+    img(src=&amp;quot;filtered.jpg&amp;quot;,alt=&amp;quot;before&amp;quot;)
+    img(src=&amp;quot;filteredGray.jpg&amp;quot;,alt=&amp;quot;after&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;h3 Step 3 - Detect circles&lt;/p&gt;
+
+&lt;p&gt;p
+    | After we got nicely filtered and enchanced image we can pass it to cv::HoughCircles to detect circles on the image.
+    | According to problem task, we can limit the maximum radius of circles that we are interested in (we need only small circles).
+    | In addition eggs can be close to each other, so it make sense to set minimal distance between two circles to minimal
+    | allowed diameter of the circle.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;pre.
+   cv::HoughCircles(filteredGray, 
+                    circles, 
+                    cv::HOUGH_GRADIENT, 
+                    2,   // Accumulator resolution
+                    12,  // Minimum distance between the centers of the detected circles.
+                    cannyThreshold, 
+                    accumulatorThreshold, 
+                    5,   // Minimum circle radius
+                    20); // Maximum circle radius
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;h4 Step 4 - Validate eggs&lt;/p&gt;
+
+&lt;p&gt;p
+    | I&amp;rsquo;ve skipped validation step since I don&amp;rsquo;t know what are the requirements to detected eggs.
+    | But I suppose that after detection of possible candidates using Hough the algorithm should validate each contour
+    | to verify it is exactly what we were looking for. Here are some hints what we can check:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ul
+    li Contour defects - how egg shape is close to ideal circle
+    li Contour breaks - is there any breaks in egg boundary or not
+    li Egg color - perhaps we need to count objects only of particular color
+    li Neighbours - maybe (or maybe not) we need only isolated objects.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;h4 Step 5 - GPU Speed-up&lt;/p&gt;
+
+&lt;p&gt;p
+    | The given implementation is very slow since it use CPU and doing a lot of stuff that can be efficiently computed on GPU.
+    | Fortunately, OpenCV has GPU implementations for mean-shift segmentation and hough transform and image blending.
+    | You can easily speed-up this algorithm by using cv::gpu types and functions instead.&lt;/p&gt;
+
+&lt;p&gt;h4 Bonus content&lt;/p&gt;
+
+&lt;p&gt;p
+    | Readed to the end of article? I&amp;rsquo;m impressed :) Here you go, the full source code of the algorithm and small playground to
+    | tweak setting in runtime:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;script(src=&amp;quot;https://gist.github.com/BloodAxe/943fb14220021113d405.js&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Training Haar cascade in the cloud</title>
+      <link>https://example.com/cloud-haartaining/</link>
+      <pubDate>Tue, 20 May 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/cloud-haartaining/</guid>
+      <description>
+
+&lt;p&gt;In this post I&amp;rsquo;ll show you how you can train cascade classifier with OpenCV very quickly even if you have low-end hardware using virtual machine in the cloud.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;why-clouds&#34;&gt;Why Clouds?&lt;/h2&gt;
+
+&lt;p&gt;Well, training a descriptor takes a lot of time. Depending on template size, number of samples and stages, it can take from several ours to a couple of days to train such cascade! Be prepared that during training stage your PC will likely be unusuable due to high RAM usage and CPU load. If you&amp;rsquo;re on laptop - it will become hot really quick. So, what if you have to train your cascade, but you don&amp;rsquo;t have either time or spare machine to do this?&lt;/p&gt;
+
+&lt;p&gt;Recently I&amp;rsquo;ve faced this problem in one of my personal projects. What even more funny, a 10 hours flight was approaching, but I didn&amp;rsquo;t wanted to waste this time for nothing. I only had a laptop, but this task will drain my battery for sure. So I&amp;rsquo;ve decided to use virtual server to do this.&lt;/p&gt;
+
+&lt;h2 id=&#34;step-1-environment-setup&#34;&gt;Step 1 - Environment setup&lt;/h2&gt;
+
+&lt;p&gt;First, I&amp;rsquo;ve created a basic droplet in &lt;a href=&#34;https://www.digitalocean.com/?refcode=b93faa829f80&#34;&gt;DigitalOcean&lt;/a&gt;.
+Yep, for 5$/month you can have your droplet that can do much!
+It takes only 55 seconds to deploy a new instance (I assume you&amp;rsquo;re familiar with SSH keys, terminal, Git and so on.) and we&amp;rsquo;re ready to rock!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;image1.png&#34; alt=&#34;Create DigitalOcean droplet&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;step-2-install-latest-opencv-release&#34;&gt;Step 2 - Install latest OpenCV release&lt;/h2&gt;
+
+&lt;p&gt;There are two ways to do this: either using package managers (homebrew, yum or apt-get) or builiding it from scratch.
+Personally I prefer second option since you can configure OpenCV. Usually I build static libs whith apps but without tests, java, cuda, python, OpenEXR, Jasper and Tiff. Regardless of the way you choose to install OpenCV, ensure that opencv apps (opencv_createsamples, opencv_traincascade) are also installed!.&lt;/p&gt;
+
+&lt;h2 id=&#34;step-3-prepare-your-train-data&#34;&gt;Step 3 - Prepare your train data&lt;/h2&gt;
+
+&lt;p&gt;There are a lot of tutorials &lt;a href=&#34;http://note.sonots.com/SciSoftware/haartraining.html&#34;&gt;1&lt;/a&gt;, &lt;a href=&#34;http://coding-robin.de/2013/07/22/train-your-own-opencv-haar-classifier.html&#34;&gt;2&lt;/a&gt;, &lt;a href=&#34;http://answers.opencv.org/question/7141/about-traincascade-paremeters-samples-and-other/&#34;&gt;3&lt;/a&gt; on how to train cascade with OpenCV: which images are good for positive and negative samples and which settings should be used for cascade training. Let&amp;rsquo;s assume you have everything in a single folder on your load machine and there is a script called &amp;ldquo;train.sh&amp;rdquo; that starts training stage:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;opencv_traincascade -data classifier \
+                    -vec &amp;lt;positive samples file&amp;gt; \
+                    -bg &amp;lt;negative samples file&amp;gt; \
+                    -numStages 12 \
+                    -minHitRate 0.999 \
+                    -maxFalseAlarmRate 0.5 \
+                    -numPos 15000 -numNeg 17000 \
+                    -w 24 \
+                    -h 24 \
+                    -mode ALL \
+                    -nonsym 1 \
+                    -featureType LBP
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;step-4-deploy-train-data-to-cloud&#34;&gt;Step 4 - Deploy train data to cloud&lt;/h2&gt;
+
+&lt;p&gt;The easiest way to upload this folder to your virtual droplet is to use the &lt;a href=&#34;http://en.wikipedia.org/wiki/Rsync&#34;&gt;rsync&lt;/a&gt; tool.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;rsync -avz &amp;lt;source&amp;gt; &amp;lt;destination&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;For instance, the following command will upload the traindata/ folder with it&amp;rsquo;s content to ~haartraining.example.com~ webserver to /traindata directory. This example assumes that your public key has been added to haartraining.example.com during droplet creation.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;rsync -avz ~/Develop/traindata root@haartraining.example.com:/traindata
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;step-5-start-training&#34;&gt;Step 5 - Start training&lt;/h2&gt;
+
+&lt;p&gt;The easiest way to execute training is to login to remote maching using ssh and execute the train script with a simple command:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;ssh root@haartraining.example.com
+sh /traindata/train.sh
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;However, this will require you to keep SSH-session open all the time. If you log-out, the process will terminate and training will be terminated as well.
+To prevent this we can use &lt;a href=&#34;http://en.wikipedia.org/wiki/Nohup&#34;&gt;nohup&lt;/a&gt; UNIX utility:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;ssh root@haartraining.example.com
+nohup sh /traindata/train.sh &amp;gt; /traindata/train.log
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Training will continue to work regardless of the user&amp;rsquo;s connection to the terminal, and log results to the file train.log.&lt;/p&gt;
+
+&lt;h2 id=&#34;step-6-getting-the-results&#34;&gt;Step 6 - Getting the results&lt;/h2&gt;
+
+&lt;p&gt;After trainign is done (you can check this by top command output or looking at the train.log), we can download trainresults back with rsync command:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;rsync -avz root@haartraining.example.com:/traindata ~/Develop/traindata 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;step-7-speeding-up-training&#34;&gt;Step 7 - Speeding up training&lt;/h2&gt;
+
+&lt;p&gt;To speed-up training stage I recommend to pass additional options to opencv_traincascade tool:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;precalcValBufSize=2048&lt;/li&gt;
+&lt;li&gt;precalcIdxBufSize=2048&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Ideally you want to use all available memory of your instance for these buffers, so if you have 4Gb of RAM installed, pass at least a 1Gb to each of these buffers.&lt;/p&gt;
+
+&lt;p&gt;It also may be a good idea to &amp;ldquo;shrink&amp;rdquo; the DigitalOcean&amp;rsquo;s droplet to more powerful configuration which gives you 16Gb of RAM and 8 CPU&amp;rsquo;s.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;resize.png&#34; alt=&#34;Resize droplet&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This task can be done on few clicks:&lt;/p&gt;
+
+&lt;h3 id=&#34;stop-your-droplet&#34;&gt;Stop your droplet&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&#34;poweroff.png&#34; alt=&#34;Poweroff droplet&#34; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;choose-resize-and-pick-a-necessary-configuration&#34;&gt;Choose &amp;ldquo;Resize&amp;rdquo; and pick a necessary configuration&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&#34;resize2.png&#34; alt=&#34;Resize droplet&#34; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;power-up-your-resized-droplet&#34;&gt;Power-up your resized droplet&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;Please be advised, that DigitalOcean will charge you regardless whether your droplet is powered on or off. So if you&amp;rsquo;re not using it - make a snapshot of it and delete unused droplet to save money&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;That&amp;rsquo;s all. I hope you enjoyed reading this post. Please, leave your comments.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Integration of KAZE 1.6 in OpenCV</title>
+      <link>https://example.com/kaze-1.6-in-opencv/</link>
+      <pubDate>Thu, 03 Apr 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/kaze-1.6-in-opencv/</guid>
+      <description>
+
+&lt;div class=&#34;featured-image&#34;&gt;
+![AKAZE logo][akaze-logo]
+&lt;/div&gt;
+
+&lt;p&gt;A new version of KAZE and AKAZE features is a good candidate to become a part of OpenCV.
+So i decided to update KAZE port i made a while ago with a new version of these features
+and finally make a pull request to make it a part of OpenCV.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more clearfix&#34; /&gt;&lt;/p&gt;
+
+&lt;div class=&#34;alert alert-info&#34;&gt;
+&lt;p class=&#34;lead&#34;&gt;KAZE are now a part of OpenCV library&lt;/p&gt;
+
+The OpenCV has accepted my pull-request and merged KAZE port into master branch of the OpenCV library. KAZE and AKAZE features will become available in OpenCV 3.0. Of course, you can grab development branch and build it from scratch to access it now.    
+&lt;/div&gt;
+
+&lt;p class=lead&gt;
+** Looking for source code? It&#39;s all there: [KAZE &amp;amp; AKAZE in OpenCV][kaze-branch]. **
+&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#results&#34;&gt;TL;DR; Scroll down to estimation charts&lt;/a&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h1 id=&#34;integration-roadmap&#34;&gt;Integration roadmap&lt;/h1&gt;
+
+&lt;p&gt;I&amp;rsquo;m going to keep KAZE sources intact if possible to simplify their further support.
+Original KAZE and AKAZE implementations will be placed in &lt;code&gt;kaze/&lt;/code&gt; and &lt;code&gt;akaze/&lt;/code&gt; folders under &lt;code&gt;features2/&lt;/code&gt; module and what we want is to write a facade-wrappers for these algorithms.&lt;/p&gt;
+
+&lt;p&gt;To integrate KAZE featues we need to adopt sources code to OpenCV coding guidelines, make consistent with headers include system,
+integrate into build system, implement wrapped from KAZE to Features2D API and add unit tests. This will be split into three steps:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Adopt KAZE and AKAZE sources (Remove unused functions, fix includes, macros)&lt;/li&gt;
+&lt;li&gt;Implement Features2D wrappers and expose properties for runtime configuration of KAZE.&lt;/li&gt;
+&lt;li&gt;Add unit tests and remove duplicate functions that are already exists in OpenCV.&lt;/li&gt;
+&lt;li&gt;Replace OpenMP with cv::parallel&lt;em&gt;for&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;changes-in-kaze-sources&#34;&gt;Changes in KAZE sources&lt;/h2&gt;
+
+&lt;p&gt;First, we need to adopt existing sources.&lt;/p&gt;
+
+&lt;h3 id=&#34;step-1-update-opencv-includes&#34;&gt;Step 1 -Update OpenCV includes&lt;/h3&gt;
+
+&lt;p&gt;Since we&amp;rsquo;re making KAZE a part of the library, it&amp;rsquo;s impossible to reference OpenCV types using standard.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;#include &amp;quot;opencv2/opencv.h&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Instead one may want to use precomp.hpp header like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;#include &amp;quot;precomp.hpp&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;step-2-cleaning-up-the-code&#34;&gt;Step 2 - Cleaning up the code&lt;/h3&gt;
+
+&lt;p&gt;p There is a C-style assert(cond) macro that I will replace with CV_Assert for convinience.&lt;/p&gt;
+
+&lt;h4 id=&#34;dump-of-kaze-internal-structures&#34;&gt;Dump of KAZE internal structures&lt;/h4&gt;
+
+&lt;p&gt;KAZE and AKAZE algorithm can &amp;lsquo;dump&amp;rsquo; internal buffers to disk using imwrite function.
+But features2d module can not be available and i assume the goal of this feature was to simplify debugging of KAZE features.
+Since we may expect it is mature enough, we will remove these functions (&lt;code&gt;Save_Scale_Space&lt;/code&gt;, &lt;code&gt;Save_Detector_Responses&lt;/code&gt;, &lt;code&gt;Save_Flow_Responses&lt;/code&gt;, &lt;code&gt;Save_Nonlinear_Scale_Space&lt;/code&gt;) from sources.&lt;/p&gt;
+
+&lt;h4 id=&#34;fixing-the-pi-constant&#34;&gt;Fixing the PI constant&lt;/h4&gt;
+
+&lt;p&gt;KAZE uses &lt;code&gt;M_PI&lt;/code&gt; symbol to represent Pi number. We will use &lt;code&gt;CV_PI&lt;/code&gt; replacement instead.&lt;/p&gt;
+
+&lt;h4 id=&#34;cleanup-utils-cpp&#34;&gt;Cleanup utils.cpp&lt;/h4&gt;
+
+&lt;p&gt;Helper file utils.cpp contains auxilar functions that is not used by KAZE directly but rather used for precision esitmation.
+We don&amp;rsquo;t need these functions in OpenCV packages. So we say goodbye to following functions:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;void draw_keypoints(cv::Mat&amp;amp; img, const std::vector&amp;lt;cv::KeyPoint&amp;gt;&amp;amp; kpts);
+int save_keypoints(const std::string&amp;amp; outFile,
+                   const std::vector&amp;lt;cv::KeyPoint&amp;gt;&amp;amp; kpts,
+                   const cv::Mat&amp;amp; desc, bool save_desc);
+
+void matches2points_nndr(const std::vector&amp;lt;cv::KeyPoint&amp;gt;&amp;amp; train,
+                         const std::vector&amp;lt;cv::KeyPoint&amp;gt;&amp;amp; query,
+                         const std::vector&amp;lt;std::vector&amp;lt;cv::DMatch&amp;gt; &amp;gt;&amp;amp; matches,
+                         std::vector&amp;lt;cv::Point2f&amp;gt;&amp;amp; pmatches, float nndr);
+void compute_inliers_ransac(const std::vector&amp;lt;cv::Point2f&amp;gt;&amp;amp; matches,
+                            std::vector&amp;lt;cv::Point2f&amp;gt;&amp;amp; inliers,
+                            float error, bool use_fund);
+void compute_inliers_homography(const std::vector&amp;lt;cv::Point2f&amp;gt;&amp;amp; matches,
+                                std::vector&amp;lt;cv::Point2f&amp;gt; &amp;amp;inliers,
+                                const cv::Mat&amp;amp;H, float min_error);
+void draw_inliers(const cv::Mat&amp;amp; img1, const cv::Mat&amp;amp; img2, cv::Mat&amp;amp; img_com,
+                  const std::vector&amp;lt;cv::Point2f&amp;gt;&amp;amp; ptpairs);
+void draw_inliers(const cv::Mat&amp;amp; img1, const cv::Mat&amp;amp; img2, cv::Mat&amp;amp; img_com,
+                  const std::vector&amp;lt;cv::Point2f&amp;gt;&amp;amp; ptpairs, int color);
+void read_homography(const std::string&amp;amp; hFile, cv::Mat&amp;amp; H1toN);
+void show_input_options_help(int example);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;step-3-fix-constant-expression-bug-in-compute-derivative-kernels&#34;&gt;Step 3 - Fix constant expression bug in compute_derivative_kernels&lt;/h3&gt;
+
+&lt;p&gt;This is very similar to a bug - a static array get initialized with ksize that is not compile-time defined.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;void compute_derivative_kernels(cv::OutputArray _kx, 
+                                cv::OutputArray _ky,
+                                int dx, int dy, int scale) {
+
+    int ksize = 3 + 2*(scale-1);
+    ...
+    float kerI[ksize];
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We can quickly fix this issue with std::vector:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;void compute_derivative_kernels(cv::OutputArray _kx, 
+                                cv::OutputArray _ky,
+                                int dx, int dy, int scale) {
+
+    int ksize = 3 + 2*(scale-1);
+    ...
+    std::vector&amp;lt;float&amp;gt; kerI(ksize);
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;step-5-wrapping-kaze-for-opencv&#34;&gt;Step 5 - Wrapping KAZE for OpenCV&lt;/h3&gt;
+
+&lt;p&gt;OpenCV provides three base types for extending features2d API:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;cv::FeaturesDetector&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;cv::DescriptorExtractor&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;cv::Feature2D&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Since KAZE features provides both detector and descriptor extractor features, we will derive
+our class from &lt;code&gt;cv::Feature2D&lt;/code&gt;.
+First, we should implement helper functions to indicate depth and size of feature descriptor and matcher type:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;// returns the descriptor size in bytes
+int KAZE::descriptorSize() const
+{
+    return extended ? 128 : 64;
+}
+
+// returns the descriptor type
+int KAZE::descriptorType() const
+{
+    return CV_32F;
+}
+
+// returns the default norm type
+int KAZE::defaultNorm() const
+{
+    return NORM_L2;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In order to make OpenCV happy we need to implement three virtual functions from Feature2D: &lt;code&gt;detectImpl&lt;/code&gt;, &lt;code&gt;computeImpl&lt;/code&gt;
+and &lt;code&gt;operator()&lt;/code&gt; also known as &lt;strong&gt;detectAndCompute&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h3 id=&#34;step-6-detection-of-kaze-keypoints&#34;&gt;Step 6 - Detection of KAZE keypoints:&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;void KAZE::detectImpl(InputArray image, std::vector&amp;lt;KeyPoint&amp;gt;&amp;amp; keypoints, InputArray mask) const
+{
+    Mat img = image.getMat();
+    if (img.type() != CV_8UC1)
+        cvtColor(image, img, COLOR_BGR2GRAY);
+
+    Mat img1_32;
+    img.convertTo(img1_32, CV_32F, 1.0 / 255.0, 0);
+
+    KAZEOptions options;
+    options.img_width = img.cols;
+    options.img_height = img.rows;
+    options.extended = extended;
+
+    KAZEFeatures impl(options);
+    impl.Create_Nonlinear_Scale_Space(img1_32);
+    impl.Feature_Detection(keypoints);
+
+    if (!mask.empty())
+    {
+        cv::KeyPointsFilter::runByPixelsMask(keypoints, mask.getMat());
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Please note that we conver input image to grayscale normalized to [0;1] floating-point image.
+This is a requirement of KAZE algorithm.&lt;/p&gt;
+
+&lt;h3 id=&#34;step-7-extraction-of-kaze-descriptors&#34;&gt;Step 7 - Extraction of KAZE descriptors:&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;void KAZE::computeImpl(InputArray image, 
+                       std::vector&amp;lt;KeyPoint&amp;gt;&amp;amp; keypoints, 
+                       OutputArray descriptors) const
+{
+    cv::Mat img = image.getMat();
+    if (img.type() != CV_8UC1)
+        cvtColor(image, img, COLOR_BGR2GRAY);
+
+    Mat img1_32;
+    img.convertTo(img1_32, CV_32F, 1.0 / 255.0, 0);
+
+    cv::Mat&amp;amp; desc = descriptors.getMatRef();
+
+    KAZEOptions options;
+    options.img_width = img.cols;
+    options.img_height = img.rows;
+    options.extended = extended;
+
+    KAZEFeatures impl(options);
+    impl.Create_Nonlinear_Scale_Space(img1_32);
+    impl.Feature_Description(keypoints, desc);
+
+    CV_Assert(!desc.rows || desc.cols == descriptorSize() &amp;amp;&amp;amp; 
+              &amp;quot;Descriptor size does not match expected&amp;quot;);
+    CV_Assert(!desc.rows || (desc.type() &amp;amp; descriptorType()) &amp;amp;&amp;amp; 
+              &amp;quot;Descriptor type does not match expected&amp;quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Two asserts at the end of the function to ensure that KAZE returns consistent with &lt;code&gt;descriptorType()&lt;/code&gt; and &lt;code&gt;descriptorSize()&lt;/code&gt; results.&lt;/p&gt;
+
+&lt;h3 id=&#34;step-8-detection-and-extraction-at-single-call&#34;&gt;Step 8 - Detection and extraction at single call:&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;void KAZE::operator()(InputArray image, InputArray mask,
+    std::vector&amp;lt;KeyPoint&amp;gt;&amp;amp; keypoints,
+    OutputArray descriptors,
+    bool useProvidedKeypoints) const
+{
+    cv::Mat img = image.getMat();
+    if (img.type() != CV_8UC1)
+        cvtColor(image, img, COLOR_BGR2GRAY);
+
+    Mat img1_32;
+    img.convertTo(img1_32, CV_32F, 1.0 / 255.0, 0);
+
+    cv::Mat&amp;amp; desc = descriptors.getMatRef();
+
+    KAZEOptions options;
+    options.img_width = img.cols;
+    options.img_height = img.rows;
+    options.extended = extended;
+
+    KAZEFeatures impl(options);
+    impl.Create_Nonlinear_Scale_Space(img1_32);
+
+    if (!useProvidedKeypoints)
+    {
+        impl.Feature_Detection(keypoints);
+    }
+
+    if (!mask.empty())
+    {
+        cv::KeyPointsFilter::runByPixelsMask(keypoints, mask.getMat());
+    }
+
+    impl.Feature_Description(keypoints, desc);
+
+    CV_Assert(!desc.rows || desc.cols == descriptorSize() &amp;amp;&amp;amp; 
+              &amp;quot;Descriptor size does not match expected&amp;quot;);
+    CV_Assert(!desc.rows || (desc.type() &amp;amp; descriptorType()) &amp;amp;&amp;amp; 
+              &amp;quot;Descriptor type does not match expected&amp;quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;step-9-algorithm-configuration&#34;&gt;Step 9 - Algorithm configuration&lt;/h3&gt;
+
+&lt;p&gt;OpenCV provides an option to create and configure algorithm in runtime by it&amp;rsquo;s name. This is done by using special CV_INIT_ALGORITHM marco, that initialize all OpenCV algorithms during startup. Using this macro we register new KAZE and AKAZE algorithms under Feature2D module and expose additional properties that user can change in runtime:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;features2d_init.cpp&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;CV_INIT_ALGORITHM(KAZE, &amp;quot;Feature2D.KAZE&amp;quot;,
+                  obj.info()-&amp;gt;addParam(obj, &amp;quot;extended&amp;quot;, obj.extended))
+    
+CV_INIT_ALGORITHM(AKAZE, &amp;quot;Feature2D.AKAZE&amp;quot;,
+                  obj.info()-&amp;gt;addParam(obj, &amp;quot;descriptor_channels&amp;quot;, obj.descriptor_channels);
+                  obj.info()-&amp;gt;addParam(obj, &amp;quot;descriptor&amp;quot;, obj.descriptor);
+                  obj.info()-&amp;gt;addParam(obj, &amp;quot;descriptor_size&amp;quot;, obj.descriptor_size))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Please note, that KAZE and AKAZE has much more properties. They (and documentation for them) will be added later.&lt;/p&gt;
+
+&lt;h3 id=&#34;step-10-unit-tests&#34;&gt;Step 10 - Unit tests&lt;/h3&gt;
+
+&lt;p&gt;There is a nice feature detectors and descriptors unit testing system in OpenCV. Using it is very simple, but it performs many sanity checks and validates both parths of Features2D API.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;test_keypoints.cpp&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;p&gt;All we need to do is to add a new unit test suites:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;TEST(Features2d_Detector_Keypoints_KAZE, validation)
+{
+    CV_FeatureDetectorKeypointsTest test(Algorithm::create&amp;lt;FeatureDetector&amp;gt;(&amp;quot;Feature2D.KAZE&amp;quot;));
+    test.safe_run();
+}
+
+TEST(Features2d_Detector_Keypoints_AKAZE, validation)
+{
+    CV_FeatureDetectorKeypointsTest test(Algorithm::create&amp;lt;FeatureDetector&amp;gt;(&amp;quot;Feature2D.AKAZE&amp;quot;));
+    test.safe_run();
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In addition to simple checks that our implementation does some job, there are more sophisticaed tests to verify rotation and scale invariance of the computed features.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;test_rotation_and_scale_invariance.cpp&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;TEST(Features2d_ScaleInvariance_Detector_KAZE, regression)
+{
+    DetectorScaleInvarianceTest test(Algorithm::create&amp;lt;FeatureDetector&amp;gt;(&amp;quot;Feature2D.KAZE&amp;quot;),
+        0.08f,
+        0.49f);
+    test.safe_run();
+}
+
+TEST(Features2d_ScaleInvariance_Detector_AKAZE, regression)
+{
+    DetectorScaleInvarianceTest test(Algorithm::create&amp;lt;FeatureDetector&amp;gt;(&amp;quot;Feature2D.AKAZE&amp;quot;),
+        0.08f,
+        0.49f);
+    test.safe_run();
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;step-11-enabling-multithreading&#34;&gt;Step 11 - Enabling multithreading&lt;/h3&gt;
+
+&lt;p&gt;Both, feature detection and extraction stage can be made faster by using multi-threading.
+Fortunately, AKAZE designed very clear and one may are find OpenMP instructions in critical sections:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;#pragma omp parallel for
+for (int i = 0; i &amp;lt; (int)(kpts.size()); i++) {
+    Compute_Main_Orientation(kpts[i]);
+    Get_SURF_Descriptor_64(kpts[i], desc.ptr&amp;lt;float&amp;gt;(i));
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;But OpenCV uses abstraction layer for multithreading called &lt;code&gt;cv::parallel_for_&lt;/code&gt;. Personally I think it&amp;rsquo;s very wise architectural desing decision since it allows to get rid of specific cavetas for particular threading backends (OpenCV, TBB, Concurrency, GCD, etc). You can read more about using cv::parallel&lt;em&gt;for&lt;/em&gt; in one of my &lt;a href=&#34;https://example.com/articles/2012-11-06-maximizing-performance-grayscale-color-conversion-using-neon-and-cvparallel_for/&#34;&gt;previous posts&lt;/a&gt; or visit &lt;a href=&#34;http://answers.opencv.org/question/3730/how-to-use-parallel_for/&#34;&gt;OpenCV documentation&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;For instance, here is how to parallelize building of the nonlinear scale space for AKAZE. The old version of OpenMP version of &lt;code&gt;Compute_Multiscale_Derivatives&lt;/code&gt; function looked like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;/**
+ * @brief This method computes the multiscale derivatives for the nonlinear scale space
+ */
+void AKAZEFeatures::Compute_Multiscale_Derivatives(void) {
+
+    #pragma omp parallel for
+    for (int i = 0; i &amp;lt; (int)(evolution_.size()); i++) {
+
+        float ratio = pow(2.f, (float)evolution_[i].octave);
+        int sigma_size_ = fRound(evolution_[i].esigma*options_.derivative_factor / ratio);
+
+        compute_scharr_derivatives(evolution_[i].Lsmooth, evolution_[i].Lx, 1, 0, sigma_size_);
+        compute_scharr_derivatives(evolution_[i].Lsmooth, evolution_[i].Ly, 0, 1, sigma_size_);
+        compute_scharr_derivatives(evolution_[i].Lx, evolution_[i].Lxx, 1, 0, sigma_size_);
+        compute_scharr_derivatives(evolution_[i].Ly, evolution_[i].Lyy, 0, 1, sigma_size_);
+        compute_scharr_derivatives(evolution_[i].Lx, evolution_[i].Lxy, 0, 1, sigma_size_);
+
+        evolution_[i].Lx = evolution_[i].Lx*((sigma_size_));
+        evolution_[i].Ly = evolution_[i].Ly*((sigma_size_));
+        evolution_[i].Lxx = evolution_[i].Lxx*((sigma_size_)*(sigma_size_));
+        evolution_[i].Lxy = evolution_[i].Lxy*((sigma_size_)*(sigma_size_));
+        evolution_[i].Lyy = evolution_[i].Lyy*((sigma_size_)*(sigma_size_));
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Using &lt;code&gt;cv::parallel_for_&lt;/code&gt; we introduce an &amp;lsquo;invoker&amp;rsquo; function object that perform a discrete piece of job on small subset of whole data. Threading API does all job on scheduling multithreaded execution among worker threads:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;class MultiscaleDerivativesInvoker : public cv::ParallelLoopBody
+{
+public:
+    explicit MultiscaleDerivativesInvoker(std::vector&amp;lt;TEvolution&amp;gt;&amp;amp; ev, const AKAZEOptions&amp;amp; opt) 
+    : evolution_(ev)
+    , options_(opt)
+    {
+    }
+
+
+    void operator()(const cv::Range&amp;amp; range) const 
+    {
+        for (int i = range.start; i &amp;lt; range.end; i++)
+        {
+            float ratio = pow(2.f, (float)evolution_[i].octave);
+            int sigma_size_ = fRound(evolution_[i].esigma * options_.derivative_factor / ratio);
+
+            compute_scharr_derivatives(evolution_[i].Lsmooth, evolution_[i].Lx, 1, 0, sigma_size_);
+            compute_scharr_derivatives(evolution_[i].Lsmooth, evolution_[i].Ly, 0, 1, sigma_size_);
+            compute_scharr_derivatives(evolution_[i].Lx, evolution_[i].Lxx, 1, 0, sigma_size_);
+            compute_scharr_derivatives(evolution_[i].Ly, evolution_[i].Lyy, 0, 1, sigma_size_);
+            compute_scharr_derivatives(evolution_[i].Lx, evolution_[i].Lxy, 0, 1, sigma_size_);
+
+            evolution_[i].Lx = evolution_[i].Lx*((sigma_size_));
+            evolution_[i].Ly = evolution_[i].Ly*((sigma_size_));
+            evolution_[i].Lxx = evolution_[i].Lxx*((sigma_size_)*(sigma_size_));
+            evolution_[i].Lxy = evolution_[i].Lxy*((sigma_size_)*(sigma_size_));
+            evolution_[i].Lyy = evolution_[i].Lyy*((sigma_size_)*(sigma_size_));
+        }
+    }
+
+private:
+    mutable std::vector&amp;lt;TEvolution&amp;gt; &amp;amp; evolution_;
+    AKAZEOptions                      options_;
+};
+
+/**
+ * @brief This method computes the multiscale derivatives for the nonlinear scale space
+ */
+void AKAZEFeatures::Compute_Multiscale_Derivatives(void) {
+
+    cv::parallel_for_(cv::Range(0, evolution_.size()), 
+                      MultiscaleDerivativesInvoker(evolution_, options_));
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;a name=&#34;results&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h1 id=&#34;kaze-performance&#34;&gt;KAZE performance&lt;/h1&gt;
+
+&lt;p&gt;After integration I ran KAZE and AKAZE using &lt;a href=&#34;https://github.com/BloodAxe/OpenCV-Features-Comparison&#34;&gt;feature descriptor estimation framework&lt;/a&gt; to see how they perform. I was really impressed about matching precision on rotation and scaling tests. Look at these self-explaining charts where &lt;strong&gt;AKAZE beats all other features&lt;/strong&gt;!&lt;/p&gt;
+
+&lt;script type=&#34;text/javascript&#34; src=&#34;//ajax.googleapis.com/ajax/static/modules/gviz/1.0/chart.js&#34;&gt;
+{&#34;dataSourceUrl&#34;:&#34;//docs.google.com/spreadsheet/tq?key=0AuBBvmQlA4pfdGhzcWVFUWhqZkdzb01HTnIwQllIQlE&amp;transpose=0&amp;headers=1&amp;range=A41%3AG78&amp;gid=0&amp;pub=1&#34;,&#34;options&#34;:{&#34;titleTextStyle&#34;:{&#34;bold&#34;:true,&#34;color&#34;:&#34;#000&#34;,&#34;fontSize&#34;:16},&#34;curveType&#34;:&#34;&#34;,&#34;animation&#34;:{&#34;duration&#34;:0},&#34;width&#34;:900,&#34;lineWidth&#34;:2,&#34;hAxis&#34;:{&#34;useFormatFromData&#34;:true,&#34;title&#34;:&#34;Rotation degree&#34;,&#34;minValue&#34;:null,&#34;viewWindow&#34;:{&#34;max&#34;:null,&#34;min&#34;:null},&#34;maxValue&#34;:null},&#34;vAxes&#34;:[{&#34;useFormatFromData&#34;:true,&#34;title&#34;:&#34;Percent of correct matches&#34;,&#34;minValue&#34;:null,&#34;logScale&#34;:false,&#34;viewWindow&#34;:{&#34;max&#34;:null,&#34;min&#34;:null},&#34;maxValue&#34;:null},{&#34;useFormatFromData&#34;:true,&#34;minValue&#34;:null,&#34;logScale&#34;:false,&#34;viewWindow&#34;:{&#34;max&#34;:null,&#34;min&#34;:null},&#34;maxValue&#34;:null}],&#34;booleanRole&#34;:&#34;certainty&#34;,&#34;title&#34;:&#34;Rotation test&#34;,&#34;height&#34;:600,&#34;interpolateNulls&#34;:false,&#34;domainAxis&#34;:{&#34;direction&#34;:1},&#34;legend&#34;:&#34;right&#34;,&#34;focusTarget&#34;:&#34;series&#34;,&#34;annotations&#34;:{&#34;domain&#34;:{}},&#34;useFirstColumnAsDomain&#34;:true,&#34;tooltip&#34;:{&#34;trigger&#34;:&#34;none&#34;}},&#34;state&#34;:{},&#34;view&#34;:{},&#34;isDefaultVisualization&#34;:false,&#34;chartType&#34;:&#34;LineChart&#34;,&#34;chartName&#34;:&#34;Chart 1&#34;}
+&lt;/script&gt;
+
+&lt;script type=&#34;text/javascript&#34; src=&#34;//ajax.googleapis.com/ajax/static/modules/gviz/1.0/chart.js&#34;&gt;
+{&#34;dataSourceUrl&#34;:&#34;//docs.google.com/spreadsheet/tq?key=0AuBBvmQlA4pfdGhzcWVFUWhqZkdzb01HTnIwQllIQlE&amp;transpose=0&amp;headers=1&amp;range=A80%3AG98&amp;gid=0&amp;pub=1&#34;,&#34;options&#34;:{&#34;titleTextStyle&#34;:{&#34;bold&#34;:true,&#34;color&#34;:&#34;#000&#34;,&#34;fontSize&#34;:16},&#34;curveType&#34;:&#34;&#34;,&#34;animation&#34;:{&#34;duration&#34;:0},&#34;width&#34;:900,&#34;lineWidth&#34;:2,&#34;hAxis&#34;:{&#34;useFormatFromData&#34;:true,&#34;title&#34;:&#34;Scale factor&#34;,&#34;minValue&#34;:null,&#34;viewWindow&#34;:{&#34;max&#34;:null,&#34;min&#34;:null},&#34;maxValue&#34;:null},&#34;vAxes&#34;:[{&#34;useFormatFromData&#34;:true,&#34;title&#34;:&#34;Percent of correct matches&#34;,&#34;minValue&#34;:null,&#34;logScale&#34;:false,&#34;viewWindow&#34;:{&#34;max&#34;:null,&#34;min&#34;:null},&#34;maxValue&#34;:null},{&#34;useFormatFromData&#34;:true,&#34;minValue&#34;:null,&#34;logScale&#34;:false,&#34;viewWindow&#34;:{&#34;max&#34;:null,&#34;min&#34;:null},&#34;maxValue&#34;:null}],&#34;title&#34;:&#34;Scale invariance&#34;,&#34;booleanRole&#34;:&#34;certainty&#34;,&#34;height&#34;:600,&#34;legend&#34;:&#34;right&#34;,&#34;focusTarget&#34;:&#34;series&#34;,&#34;annotations&#34;:{&#34;domain&#34;:{}},&#34;useFirstColumnAsDomain&#34;:true,&#34;tooltip&#34;:{&#34;trigger&#34;:&#34;none&#34;}},&#34;state&#34;:{},&#34;view&#34;:{},&#34;isDefaultVisualization&#34;:false,&#34;chartType&#34;:&#34;LineChart&#34;,&#34;chartName&#34;:&#34;Chart 1&#34;}
+&lt;/script&gt;
+
+&lt;script type=&#34;text/javascript&#34; src=&#34;//ajax.googleapis.com/ajax/static/modules/gviz/1.0/chart.js&#34;&gt;
+{&#34;dataSourceUrl&#34;:&#34;//docs.google.com/spreadsheet/tq?key=0AuBBvmQlA4pfdGhzcWVFUWhqZkdzb01HTnIwQllIQlE&amp;transpose=0&amp;headers=1&amp;range=A30%3AG39&amp;gid=0&amp;pub=1&#34;,&#34;options&#34;:{&#34;titleTextStyle&#34;:{&#34;bold&#34;:true,&#34;color&#34;:&#34;#000&#34;,&#34;fontSize&#34;:16},&#34;series&#34;:{&#34;0&#34;:{&#34;hasAnnotations&#34;:true}},&#34;curveType&#34;:&#34;&#34;,&#34;animation&#34;:{&#34;duration&#34;:0},&#34;width&#34;:900,&#34;lineWidth&#34;:2,&#34;hAxis&#34;:{&#34;title&#34;:&#34;Half of the gaussian kernel size&#34;,&#34;useFormatFromData&#34;:true,&#34;minValue&#34;:null,&#34;viewWindow&#34;:{&#34;max&#34;:null,&#34;min&#34;:null},&#34;maxValue&#34;:null},&#34;vAxes&#34;:[{&#34;title&#34;:&#34;Percent of correct matches&#34;,&#34;useFormatFromData&#34;:true,&#34;minValue&#34;:null,&#34;viewWindow&#34;:{&#34;max&#34;:null,&#34;min&#34;:null},&#34;logScale&#34;:false,&#34;maxValue&#34;:null},{&#34;useFormatFromData&#34;:true,&#34;minValue&#34;:null,&#34;viewWindow&#34;:{&#34;max&#34;:null,&#34;min&#34;:null},&#34;logScale&#34;:false,&#34;maxValue&#34;:null}],&#34;booleanRole&#34;:&#34;certainty&#34;,&#34;title&#34;:&#34;Robustness to blur&#34;,&#34;height&#34;:600,&#34;legend&#34;:&#34;right&#34;,&#34;focusTarget&#34;:&#34;series&#34;,&#34;useFirstColumnAsDomain&#34;:true,&#34;tooltip&#34;:{&#34;trigger&#34;:&#34;none&#34;}},&#34;state&#34;:{},&#34;view&#34;:{},&#34;isDefaultVisualization&#34;:true,&#34;chartType&#34;:&#34;LineChart&#34;,&#34;chartName&#34;:&#34;Chart 3&#34;}
+&lt;/script&gt;
+
+&lt;script type=&#34;text/javascript&#34; src=&#34;//ajax.googleapis.com/ajax/static/modules/gviz/1.0/chart.js&#34;&gt;
+{&#34;dataSourceUrl&#34;:&#34;//docs.google.com/spreadsheet/tq?key=0AuBBvmQlA4pfdGhzcWVFUWhqZkdzb01HTnIwQllIQlE&amp;transpose=0&amp;headers=1&amp;range=A2%3AG28&amp;gid=0&amp;pub=1&#34;,&#34;options&#34;:{&#34;titleTextStyle&#34;:{&#34;bold&#34;:true,&#34;color&#34;:&#34;#000&#34;,&#34;fontSize&#34;:16},&#34;curveType&#34;:&#34;&#34;,&#34;animation&#34;:{&#34;duration&#34;:0},&#34;width&#34;:900,&#34;lineWidth&#34;:2,&#34;hAxis&#34;:{&#34;title&#34;:&#34;Change of brightness&#34;,&#34;useFormatFromData&#34;:true,&#34;minValue&#34;:null,&#34;viewWindow&#34;:{&#34;max&#34;:null,&#34;min&#34;:null},&#34;maxValue&#34;:null},&#34;vAxes&#34;:[{&#34;title&#34;:&#34;Percent of correct matches&#34;,&#34;useFormatFromData&#34;:false,&#34;formatOptions&#34;:{&#34;source&#34;:&#34;inline&#34;},&#34;minValue&#34;:null,&#34;format&#34;:&#34;0.##&#34;,&#34;logScale&#34;:false,&#34;viewWindow&#34;:{&#34;max&#34;:null,&#34;min&#34;:null},&#34;maxValue&#34;:null},{&#34;useFormatFromData&#34;:true,&#34;minValue&#34;:null,&#34;viewWindow&#34;:{&#34;max&#34;:null,&#34;min&#34;:null},&#34;maxValue&#34;:null}],&#34;title&#34;:&#34;Brightness invariance&#34;,&#34;booleanRole&#34;:&#34;certainty&#34;,&#34;height&#34;:600,&#34;legend&#34;:&#34;right&#34;,&#34;focusTarget&#34;:&#34;series&#34;,&#34;useFirstColumnAsDomain&#34;:true,&#34;tooltip&#34;:{&#34;trigger&#34;:&#34;none&#34;}},&#34;state&#34;:{},&#34;view&#34;:{},&#34;isDefaultVisualization&#34;:true,&#34;chartType&#34;:&#34;LineChart&#34;,&#34;chartName&#34;:&#34;Chart 4&#34;}
+&lt;/script&gt;
+
+&lt;h1 id=&#34;references&#34;&gt;References&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/BloodAxe/opencv/tree/kaze&#34;&gt;KAZE Integration branch on GitHub&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.robesafe.com/personal/pablo.alcantarilla/code/kaze_features_1.6.0.tar.gz&#34;&gt;KAZE 1.6 implementation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.robesafe.com/personal/pablo.alcantarilla/code/akaze_features_1.1.0.tar.gz&#34;&gt;AKAZE 1.2 implementation&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>OpenCV is not a panacea</title>
+      <link>https://example.com/opencv-is-not-a-panacea/</link>
+      <pubDate>Sun, 16 Mar 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/opencv-is-not-a-panacea/</guid>
+      <description>&lt;p&gt;p.
+    Perhaps, someone may find this post provocative or offensive. But in fact it&amp;rsquo;s not.
+    Very often i receive offers from all kind of CXX (CEO, CTO, COO, C-bla-bla-bla) that can be formulated like &amp;ldquo;We want to build product X using OpenCV&amp;rdquo;.
+    What&amp;rsquo;s wrong with you guys? OpenCV is not a panacea. In this post i&amp;rsquo;ll try to reveal this myth.&lt;/p&gt;
+
+&lt;p&gt;span.more&lt;/p&gt;
+
+&lt;p&gt;p.
+    Although OpenCV does a great help on getting proof-of-concept software that every start-up needs most of all at early stages, it can make a nightmare for developers in production stage.
+    The first thing to remember - OpenCV is an open-source project, but there is an official maintainer Itseez company.
+    From one size this looks fine since you may expect that library development will not be abandoned one day.
+    From the other side do you think it&amp;rsquo;s a good idea to build your product around a product of another company that you cannot control?
+    No doubts, Itseez doing it best to fix bugs and add new features to OpenCV, but there is no SLA between you and OpenCV&amp;rsquo;s maintainers on terms of bug-fixing.
+    Even more - sometimes new releases (with critical bugfixes) break backward compatibility.&lt;/p&gt;
+
+&lt;p&gt;p
+    | Here are real-world issues related to OpenCV that I have encountered in past:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ul
+    li Implicit element type of the cv::Mat.
+    li Sick way of passing arguments to some functions. cv::Mat(2,4, CV_32FC1) != cv::Mat(1, 4, CV_32FC2).        
+    li Somewhere in between 2.1 and 2.2 Lukas-canade optical flow (LKT tracker) algorithm returned different tracking results (coordinates of tracked points were slightly different).
+    li A cv::findHomography function clould to return empty homography matrix (zero rows, zero cols) in ~2.4. 
+    li Inconsistent ownership transfer with cv::Mat and cv::InputArray.
+    li Lack of OpenGL rendering on OSX platform (while CMake report everything&#39;s fine).
+    li Did ANYONE managed to get cv::VideoWriter working?
+
+    li 
+        | What will happen in this case (yes, the size of the destination matrix is 65x65):
+        pre.
+            cv::Mat src(480, 640, CV_8UC1);
+            src(cv::Rect(10,10, 64, 64)) = cv::Mat::eye(65,65, CV_8UC1);
+        | And in this:
+
+        pre.
+            cv::Mat src(480, 640, CV_8UC1);
+            cv::Mat roi = cv::Rect(10,10, 64, 64);
+            cv::Mat::eye(65,65, CV_8UC1).copyTo(roi);
+
+    li.
+        OpenCV&#39;s implementation of the SURF features are much weaker (and slower) than OpenSURF.
+
+    li.
+        cv::Ptr&amp;lt;T&amp;gt; ? O&#39;RLY? What about std::shared_ptr and boost::shared_ptr?
+
+    li.
+        OpenCV&#39;s non-linear solver used for homography and PnP problem gives bad precision and poor stability. Reason? Straighforward implementation. 
+        No special care taken to deal with numeric precision. 
+
+| If your code is heavily coupled with OpenCV data types or API calls - you&#39;re in trouble. 
+| If you don&#39;t use regression testing for your project you&#39;re in a big trouble - there is a chance that you&#39;ll know that your product isn&#39;t working anymore form customers.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;p.lead Encapsulate OpenCV calls into a kind of service.&lt;/p&gt;
+
+&lt;p&gt;p.
+    A sign of a good design when you able to change the implementation of this service easily.
+    Imagine that you replace OpenCV with EgmuCV for instance. How much work has to be done for this?&lt;/p&gt;
+
+&lt;p&gt;h1 Avoid &amp;lsquo;Not invented here&amp;rsquo;&lt;/p&gt;
+
+&lt;p&gt;p.
+    Don&amp;rsquo;t get me wrong, for many cases using OpenCV is ok. Even more, use OpenCV unless you have strong reasons to implement Lev-Mar algorithm by yourself.
+    Personally I&amp;rsquo;m using OpenCV if I want to make a quick proof-of-concept application.
+    However, for performance-critical applications sometimes you have to throw OpenCV away and write it from scratch.
+    Motivation to make this step could vary from low-level code optimization using Assembly language for example.&lt;/p&gt;
+
+&lt;p&gt;p
+    | It&amp;rsquo;s a bad sign when third-party libraries affect the design of your application.
+    strong Don&amp;rsquo;t let the cv::Mat spread across your codebase!
+    | OpenCV is a external dependency so try to keep it deep inside and don&amp;rsquo;t expose it&amp;rsquo;s API to public code please.
+    | There is a big temptation to use cv::Mat for storing images, matrices everywhere. Think twice before doing that.
+    | A question that you ask yourself before doing this - &amp;ldquo;how much code I&amp;rsquo;ll have to change if we replace OpenCV with something other someday?&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;p.
+    If you&amp;rsquo;re looking for a good containers for matrices, please take a look on Eigen library or boost::ublas.
+    You may want to use Eigen for storing images too since it guarantee memory alignment and there is a nice benefit on accessing aligned pointers.
+    Also take a look on boost::gil library.&lt;/p&gt;
+
+&lt;p&gt;h1 So how to hide OpenCV?&lt;/p&gt;
+
+&lt;p&gt;p
+    | It&amp;rsquo;s relatively simple with a facade in your business logic. Suppose one may want to have a function to compute strong corners on the input image.
+    | The implementation can looks like this (The Image8U and Corner are used-defined types):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;pre.
+    int ComputeStrongCorners(Image8U&amp;amp; src, std::vector&amp;lt;Corner&amp;gt;&amp;amp; corners)
+    {
+        corners.clear();
+
+        #if HAS_NEON_SUPPORT
+            return ComputeStrongCornersNeon(src, corners);
+        #elif HAS_AVX_SUPPORT 
+            return ComputeStrongCornersAVX(src, corners);
+        #elif HAS_OPENCL_SUPPORT
+            return ComputeStrongCornersOpenCL(src, corners);        
+        #endif
+
+        return ComputeStrongCornersDefault(src, corners);
+    }
+
+    int ComputeStrongCornersDefault(src, corners)
+    {
+        cv::goodFeaturesToTrack( Map&amp;lt; cv::Mat &amp;gt;(src), Map&amp;lt; std::vector&amp;lt;cv::Keypoint&amp;gt; &amp;gt;(corners) );
+    }
+
+| This code snippet illustrate an idea of compile-time call dispatching to particular implementation. 
+| Pleas note, that public API of ComputeStrongCorners function does not expose OpenCV types to the user code. 
+| During build compiler will use one of the optimized routines if they are available or default one. 
+| The Map&amp;lt;T&amp;gt; class is a service class for mapping user types to OpenCV and vice versa. 
+| I&#39;ll publish a post on how to map user structures to OpenCV without data copy some day.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;h1 OpenCV is a trend, nothing more&lt;/p&gt;
+
+&lt;p&gt;p.lead
+    | It&amp;rsquo;s important to remember that OpenCV is just a library with a set of standard functions, nothing more.
+    | No one is looking for &amp;lsquo;STL programmer&amp;rsquo;, but why &amp;lsquo;OpenCV programmer&amp;rsquo; is a top trending search in linked-in?
+p
+    | Dozens of examples on object recognition, tracking, face detection makes a fake illusion of understanding computer vision.
+    | The fact that someone called two functions with right arguments doesn&amp;rsquo;t make this person a computer vision pro.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Instant OpenCV for iOS</title>
+      <link>https://example.com/2013-10-17-instant-opencv-for-ios/</link>
+      <pubDate>Thu, 17 Oct 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2013-10-17-instant-opencv-for-ios/</guid>
+      <description>&lt;p&gt;img.pull-left.img-thumbnail(src=&amp;ldquo;instant-opencv-cover.jpg&amp;rdquo;,alt=&amp;ldquo;Instant OpenCV for iOS&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;p
+    | A new book from authors of OpenCV targeted on iOS development using OpenCV.
+    ul
+        li Learn something new instantly. A short, fast, focused guide delivering immediate results
+        li Build and run your OpenCV code on iOS
+        li Become familiar with iOS fundamentals and make your application interact with the GUI, camera, and gallery
+        li Build your library of computer vision effects, including photo and video filters&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;| You can buy 
+a(href=&amp;quot;http://www.packtpub.com/to-build-real-time%20computer%20vision%20applications%20for-ios-using-opencv/book&amp;quot;) [Instant OpenCV for iOS]
+| from Packtpub.
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>CloudCV - Cloud image processing platform</title>
+      <link>https://example.com/2013-09-05-cloudcv/</link>
+      <pubDate>Thu, 05 Sep 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2013-09-05-cloudcv/</guid>
+      <description>&lt;p&gt;p
+    | Hey everyone! I continue to play with clouds and today it&amp;rsquo;s time to reveal the CloudCV - a cloud-based image processing project.
+    | Based on my previous posts i host a server in the Digital Ocean&amp;rsquo;s cloud.
+    | I have to say, everything is working like a charm.
+    | The cheapest 5$/month plan gives me whatever i may need for this project.
+    | All the source-code is already sits on Github and you are more than welcome to study it.
+    | This is my goal - to share the experience. So i&amp;rsquo;m looking forward to see you in the comments!&lt;/p&gt;
+
+&lt;p&gt;img.full-width(src=&amp;ldquo;cloudcv-image-processing-platform.png&amp;rdquo;, alt=&amp;ldquo;CloudCV - Cloud image processing platform&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;p Inside of this post you&amp;rsquo;ll find the detailed instructions how to deploy the Node.js and OpenCV in your personal cloud.&lt;/p&gt;
+
+&lt;p&gt;h2 Configuring your instance&lt;/p&gt;
+
+&lt;p&gt;p First, you need to create a Droplet - instance of your virtual machine running in Digital Ocean&amp;rsquo;s cloud. You can find the big &amp;ldquo;Create Droplet&amp;rdquo; button in top right corner of your control panel. For our needs a smallest 1 core instance will be enough:&lt;/p&gt;
+
+&lt;p&gt;img.full-width(src=&amp;ldquo;Screen-Shot-2013-09-13-at-5.42.20-PM-1024x805.png&amp;rdquo;, alt=&amp;ldquo;Create droplet&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;p Next we choose the image for the new Droplet, region and SSH keys. You can pick the closest region to your location to have lower latency:&lt;/p&gt;
+
+&lt;p&gt;img.full-width(src=&amp;ldquo;Screen-Shot-2013-09-13-at-5.44.27-PM-1024x805.png&amp;rdquo;, alt=&amp;ldquo;&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;p One word about your choice for the OS for Droplets. Actually you can pick any of them. Since i more familiar with Ubuntu i&amp;rsquo;ll use it, but the following steps should be very similar to other Linux distributives (Of course, you&amp;rsquo;ll have to change &lt;em&gt;apt-get&lt;/em&gt; on Debian). And let&amp;rsquo;s pick Ubuntu 64-bit, since we&amp;rsquo;re tough guys, aren&amp;rsquo;t we?&lt;/p&gt;
+
+&lt;p&gt;img.full-width(src=&amp;ldquo;Screen-Shot-2013-09-13-at-5.44.33-PM-1024x805.png&amp;rdquo;, alt=&amp;ldquo;&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;p Don&amp;rsquo;t forget to add SSH keys to this Droplet, otherwise you&amp;rsquo;ll have to add them manually after your droplet is ready. When you&amp;rsquo;re done hit &amp;ldquo;Create Droplet&amp;rdquo; and it will be ready in a minute. It&amp;rsquo;s the fastest deployment i&amp;rsquo;ve ever seen! When it&amp;rsquo;s done you should be able to login using &lt;em&gt;ssh&lt;/em&gt; client to your virtual machine. From this moment, we will use only a console to configure our server.&lt;/p&gt;
+
+&lt;p&gt;h2 Node.js and OpenCV installation&lt;/p&gt;
+
+&lt;p&gt;p Let&amp;rsquo;s recap the plan. Our goal is to make image processing using OpenCV library possible in the cloud environment. This means your Droplet will be executing a native code, but it needs a public API to communicate with the others. Such things as REST API and JSON may come in handy here. We will be serving user requests that comes as HTTP requests. For this we need a server software to route requests to native code. Actually, i think, Apache, ngnix or any other web server can do it for us. But i&amp;rsquo;ve chosen Node.js for two reasons - first of all, i want to study JavaScript and the second one - it&amp;rsquo;s kind of a trend now :) I wrote a helper snippet that install all dependencies for Node.js and OpenCV. First of all we update the package list and install git, cmake and build essentials. As a next step this script configure an OpenCV in a proper way (disable unsued image codecs, disable tests and apps and turns on static builds). And finally this script install latest Node.js (this recipe was found somewhere in the Google).&lt;/p&gt;
+
+&lt;p&gt;h2 Source Code&lt;/p&gt;
+
+&lt;p&gt;p
+    | There are two source code repositories for this project:
+    ul
+        li
+            a(href=&amp;lsquo;&lt;a href=&#34;https://github.com/BloodAxe/CloudCV&#39;&#34;&gt;https://github.com/BloodAxe/CloudCV&#39;&lt;/a&gt;) CloudCV
+            span  - is web-application written in Node.js.
+        li
+            a(href=&amp;lsquo;&lt;a href=&#34;https://github.com/BloodAxe/CloudCVBackend&#39;&#34;&gt;https://github.com/BloodAxe/CloudCVBackend&#39;&lt;/a&gt;) CloudCVBackend
+            span  - is a C++ Module for Node.js. This module contains all image processing stuff inside of it.&lt;/p&gt;
+
+&lt;p&gt;h2 Architecture overview&lt;/p&gt;
+
+&lt;p&gt;img(src=&amp;lsquo;cloudcv_architecture-1.png&amp;rsquo;)&lt;/p&gt;
+
+&lt;p&gt;h2 Disclaimer&lt;/p&gt;
+
+&lt;p&gt;p
+    | You can support this project by following this referral link to purchase a cloud hosting.
+    | A really recommend Digital Ocean for both production and testing purposes due to their low prices,
+    | SSD disks, good support and intuitive administration console.
+    a.btn.btn-primary(href=&amp;lsquo;&lt;a href=&#34;https://www.digitalocean.com/?refcode=b93faa829f80&#39;&#34;&gt;https://www.digitalocean.com/?refcode=b93faa829f80&#39;&lt;/a&gt;) Buy Digital Ocean cloud hosting&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Connecting OpenCV and Node.js inside Cloud9 IDE</title>
+      <link>https://example.com/2013-08-27-connecting-opencv-and-node-js-inside-cloud9-ide/</link>
+      <pubDate>Tue, 27 Aug 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2013-08-27-connecting-opencv-and-node-js-inside-cloud9-ide/</guid>
+      <description>
+
+&lt;p&gt;Vacation time is over, and now i&amp;rsquo;m on my way from Tartu, Estonia where i participated in 48 km. inline speedskating marathon to Odessa. My bus have Wi-Fi onboard, so i decided to write a short success-story how i managed to build a C++ addon module for Node.js and run it on the real server inside the Cloud9 IDE.  You may also want to check the &lt;strong&gt;&lt;a href=&#34;http://computer-vision-talks.com/2013/08/cloud-image-processing-using-opencv-and-node-js/&#34;&gt;first tutorial&lt;/a&gt;&lt;/strong&gt; since this guid relies on it.  The detailed step-by-step guide will be written in the next few days, but here is a key steps:&lt;/p&gt;
+
+&lt;h2 id=&#34;prerequisites&#34;&gt;Prerequisites&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Cloud9 account&lt;/li&gt;
+&lt;li&gt;Node.js&lt;/li&gt;
+&lt;li&gt;Express framework&lt;/li&gt;
+&lt;li&gt;CMake&lt;/li&gt;
+&lt;li&gt;OpenCV&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;building-opencv&#34;&gt;Building OpenCV&lt;/h2&gt;
+
+&lt;p&gt;I built OpenCV manually. This is necessary since i had to configure OpenCV to fit the server configuration:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Used static build instead of shared one&lt;/li&gt;
+&lt;li&gt;Disable all tests, samples and apps&lt;/li&gt;
+&lt;li&gt;Disable use of precompiled headers&lt;/li&gt;
+&lt;li&gt;Disable GPU and CUDA modules&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;disk-space-limit&#34;&gt;Disk space limit&lt;/h3&gt;
+
+&lt;p&gt;You have only 1G of disk quota. When i ran OpenCV build for the first time it exit on 80% with &amp;ldquo;out of space&amp;rdquo; message. So it&amp;rsquo;s better to disable all unused modules. &lt;strong&gt;Don&amp;rsquo;t clone OpenCV repository.&lt;/strong&gt; Download opencv archive instead! This will require small experience with shell, but nothing complicated:&lt;/p&gt;
+
+&lt;h2 id=&#34;demonstration&#34;&gt;Demonstration&lt;/h2&gt;
+
+&lt;p&gt;A minimal Node.js demo that does nothing expect printing OpenCV build information can be seen here: &lt;a href=&#34;http://cloudcv.computer-vision-talks.com/&#34;&gt;OpenCV Cloud9 demo&lt;/a&gt;. It&amp;rsquo;s ok to see &amp;ldquo;No app running&amp;rdquo; message from time to time. As i understood Cloud9 shuts down the apps if they are not used for some period.  Tweet me if you have interesting suggestions for the demonstration samples.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Cloud image processing using OpenCV and Node.js</title>
+      <link>https://example.com/2013-08-19-cloud-image-processing-using-opencv-and-node-js/</link>
+      <pubDate>Mon, 19 Aug 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2013-08-19-cloud-image-processing-using-opencv-and-node-js/</guid>
+      <description>
+
+&lt;p&gt;A long time ago i was playing with cloud-based image processing. The first reason why i didn&amp;rsquo;t shared a reciple how to compile OpenCV as native app for windows azure cloud was trycky build process. It was too complicated and this tutorial will become outdated very quickly. The second one - Azure hosting wants a lot of money. So i put my research in this area on hold for better times.&lt;/p&gt;
+
+&lt;p&gt;And i think the time has come. You probably heard about Node.js - server-side asynchronous Java Script library. I have very small experience with Java-Script, but Node.js attracted me so strong i decided to study it. In this post i will describe how to connect Node.js and OpenCV together. On server-side OpenCV libary can be used for many things - generating CAPTCHA&amp;rsquo;s recognizing scans, counting people in video streams.. So i beleive my tutorial will come in handy to people who is looking how to do image processing in the cloud environment.&lt;/p&gt;
+
+&lt;p&gt;Node.js is written in Java-script, and follows asynchronous programming model, where events and callbacks plays dominant role. OpenCV is a C++ library written in good old C and C++ and it don&amp;rsquo;t bother with asynchronous and event-based programming model. Fortunately Node.js can interop with external modules written in C++. It&amp;rsquo;s made via V8 engine which is a core of Node.js.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;disclaimer&#34;&gt;Disclaimer&lt;/h2&gt;
+
+&lt;p&gt;I will be using Mac OS as host platform. Keep in mind this since some commands may differs for Ubuntu or Debian. &lt;strong&gt;Windows users&lt;/strong&gt; - you aren&amp;rsquo;t lucky ones. I had no luck to build Node and OpenCV on windows so far. Please, post your comments if you succeed to build OpenCV module for Node.&lt;/p&gt;
+
+&lt;h2 id=&#34;prerequisites&#34;&gt;Prerequisites&lt;/h2&gt;
+
+&lt;p&gt;In this tutorial we will need the following software:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&#34;https://developer.apple.com/xcode/&#34;&gt;XCode&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.cmake.org/&#34;&gt;CMake&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://nodejs.org&#34;&gt;Node.js&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://opencv.org&#34;&gt;OpenCV&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;I assume you already installed XCode and CMake. In next two sections we describe installation of Node.js and OpenCV.&lt;/p&gt;
+
+&lt;h2 id=&#34;installing-node-js&#34;&gt;Installing Node.js&lt;/h2&gt;
+
+&lt;p&gt;To install Node.js i used &lt;a href=&#34;http://www.macports.org/&#34;&gt;macports&lt;/a&gt; software package manager. It&amp;rsquo;s very similar to &lt;code&gt;apt-get&lt;/code&gt; command from Unix.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;This command will install latests stable Node.js:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo port install nodejs
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;After running this command your Node.js is ready to use. It&amp;rsquo;s not mandatory to use macports, you can install it using homebrew or build Node from the sources. It&amp;rsquo;s up to you and will not affect further steps.&lt;/p&gt;
+
+&lt;p&gt;Node.js can be extended by C++ Modules. This is a way to interop with OpenCV library. To use OpenCV from Node.js we have to write C++ Mobule that Node.js can use. To build this module a special build system is used. We install it via Node Package Manager using following command:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;This command will install a GYP build system:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo npm install -g node-gyp
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Take a note on &amp;ldquo;-g&amp;rdquo; flag which means &amp;ldquo;Install globally&amp;rdquo;. By default npm installs new package to current directory.&lt;/p&gt;
+
+&lt;p&gt;On this step we are done with setting up Node.js.&lt;/p&gt;
+
+&lt;h3 id=&#34;installing-opencv&#34;&gt;Installing OpenCV&lt;/h3&gt;
+
+&lt;p&gt;OpenCV can be build as &lt;strong&gt;static&lt;/strong&gt; or &lt;strong&gt;shared&lt;/strong&gt;. I describe my experience using both options with Node.js:&lt;/p&gt;
+
+&lt;h4 id=&#34;shared&#34;&gt;Shared&lt;/h4&gt;
+
+&lt;p&gt;By default, macports install shared libraries that are linked at run-time during application load. I was able to build a bare miminum Node.js module, but when i run it i got dyld load error. Maybe it&amp;rsquo;s necessary to tell Node somehow where to search for OpenCV libs. But i decided to put this on hold and build a static OpenCV instead.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;If you know how to fix this easily your comments and suggestions are welcome!&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&#34;static&#34;&gt;Static&lt;/h4&gt;
+
+&lt;p&gt;Building OpenCV as static libs is very trivial if you used CMake. Here is full stack of commands that clone latests OpenCV snapshot and build the final distribution package:&lt;/p&gt;
+
+&lt;p&gt;Upon completition you shoudl have a folder named &lt;code&gt;opencv-node-bin&lt;/code&gt; with following contents:&lt;/p&gt;
+
+&lt;h3 id=&#34;writing-your-first-c-module-for-node-js&#34;&gt;Writing your first C++ Module for Node.js&lt;/h3&gt;
+
+&lt;p&gt;It&amp;rsquo;s actuall a very easy to interop between JavaScript and C++, since JS uses V8 engine which is written in C++ too. I used the &lt;a href=&#34;http://nodejs.org/api/addons.html&#34;&gt;official documentation&lt;/a&gt; and &lt;a href=&#34;https://github.com/kkaefer/node-cpp-modules&#34;&gt;good examples&lt;/a&gt; by Konstantin Käfer.&lt;/p&gt;
+
+&lt;p&gt;Node.js uses it&amp;rsquo;s own build system to C++ modules - &lt;strong&gt;node-gyp&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;There is a .gyp file which contains build options of your module. A GYP file is looks like JSON-like file where you specify your build targets.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;binding.gyp&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;{
+  &amp;quot;targets&amp;quot;: [
+    {
+      &amp;quot;target_name&amp;quot;: &amp;quot;cv&amp;quot;,
+      &amp;quot;sources&amp;quot;: [ &amp;quot;main.cpp&amp;quot; ],
+      &amp;quot;include_dirs&amp;quot;: [ &amp;quot;/users/BloodAxe/Develop/opencv-node-bin/lib/inlcude/&amp;quot; ],  
+      &amp;quot;link_settings&amp;quot;: {
+                        &#39;libraries&#39;:    [&#39;-lopencv_core -lopencv_features2d -lopencv_contrib&#39;],
+                        &#39;library_dirs&#39;: [&#39;/users/BloodAxe/Develop/opencv-node-bin/lib/&#39;],
+                       },
+    }
+  ]
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let&amp;rsquo;s look at it in more details:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;We define a single target with name &lt;code&gt;cv&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;The target includes a single source file &lt;code&gt;main.cpp&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;We adjust &lt;code&gt;include_dirs&lt;/code&gt; and &lt;code&gt;link_settings&lt;/code&gt; options to point our static OpenCV build.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Second mandatory file is package.json - it contains meta-information about our module:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;package.json&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;{
+    &amp;quot;name&amp;quot;: &amp;quot;cv&amp;quot;,
+    &amp;quot;version&amp;quot;: &amp;quot;1.0.0&amp;quot;,
+    &amp;quot;main&amp;quot;: &amp;quot;./build/Release/cv&amp;quot;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Finally, a source code of our module. For sake of simplicity, let&amp;rsquo;s export a single function that prints OpenCV build information from Node.js:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;main.cpp&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;To build your module you can write the following command (assuming your current directory contains binding.gyp):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;npm build .
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If you see the following output - your Node.js module that uses OpenCV has been built!&lt;/p&gt;
+
+&lt;p&gt;Now it&amp;rsquo;s time to check how it works.&lt;/p&gt;
+
+&lt;p&gt;Here is a simple run script:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;run.js&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var cv = require(&#39;./build/Release/cv&#39;);
+
+console.warn(cv.buildInformation());
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To run it:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;node run.js
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;
+
+&lt;p&gt;I hope after reading this post you understood how to write a simple OpenCV wrapper for Node.js. In the next tutorial i will show how to perform simple image processing inside our Node module. Your comments for this post are welcome!&lt;/p&gt;
+
+&lt;p&gt;You can find an bare minimum Node.js module example here: &lt;strong&gt;&lt;a href=&#34;https://github.com/BloodAxe/CloudCV/tree/bare-minimum&#34;&gt;OpenCV module for Node.js&lt;/a&gt;&lt;/strong&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Success-story: Fueling ARBasketball up with NEON</title>
+      <link>https://example.com/2013-06-30-success-story-fueling-arbasketball-up-with-neon/</link>
+      <pubDate>Sun, 30 Jun 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2013-06-30-success-story-fueling-arbasketball-up-with-neon/</guid>
+      <description>&lt;p&gt;img.pull-left.img-thumbnail(src=&amp;ldquo;arbasketball-logo.jpg&amp;rdquo;,alt=&amp;ldquo;ARBasketball&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;p ARBasketball was one of the first augmented reality-based games in App Store. It has been published in 2010. In these days not many people have even heard about AR. I mean it wasn&amp;rsquo;t so popular as it became now. But there were people who saw the great potential in this growing market. One of them was Konstantin Tarovik, the author of &lt;a href=&#34;https://itunes.apple.com/ru/app/arbasketball-augmented-reality/id393333529?mt=8&#34;&gt;ARBasketball&lt;/a&gt;. I must confess - I saw this application before, but had no idea it&amp;rsquo;s author lives in Ukraine, and in the same city as I am! It was really surprising to discover there is another passionate person in Odessa and is also interested in computer-vision and AR! While I was concentrating on back-end development and most of my projects were under NDA, Konstantin aimed for product development. Actually that was the reason he contacted me&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;h2 First contact&lt;/p&gt;
+
+&lt;p&gt;p Konstantin contacted me in fall 2012. He wanted me to help him optimize performance of ARBasketball on iOS devices. I agreed, because it was very interesting task and I was happy to help countryman. There were two problems we were going to solve: - Performance - Robustness&lt;/p&gt;
+
+&lt;p&gt;p In computer vision choice of any algorithm is a trade-off between speed and quality: you lower the frame resolution and get more speed, but lose precision; you increase the number of features and get more robust tracking but lose speed, etc. In our case we had an issue that game was not very stable in low-light or in over saturated scenes. The second issue was performance of marker detection algorithm. To provide the best game experience you should have at least 25 fps. In other words, you have only 30 milliseconds to acquire the new frame, find the marker on it, update physics and render the frame. Real-time is always a challenge.&lt;/p&gt;
+
+&lt;p&gt;h2 Wrong way&lt;/p&gt;
+
+&lt;p&gt;p
+    | To provide lighting-invariant marker detection I decided to apply &lt;a href=&#34;http://docs.opencv.org/modules/imgproc/doc/miscellaneous_transformations.html?highlight=threshold#adaptivethreshold&#34;&gt;adaptive threshold&lt;/a&gt; since this filter can easily deal with non-uniform lighting and it works perfect for low-light cases too. Speed of adaptive threshold depends on window size, in our case the best results were achieved with window size of 7 pixels. Unfortunately, OpenCV implementation of adaptive threshold was too slow and we decided to utilize GPU for thresholding. Unfortunately, the OpenCL technology is not yet supported by iOS devices, so we had to use OpenGL ES 2.0 shaders and textures to simulate GPGPU. A great Brad Larson&amp;rsquo;s library &lt;a href=&#34;https://github.com/BradLarson/GPUImage&#34;&gt;GPUImage&lt;/a&gt; helped us a lot in this. After we performed the test it became clearly visible there is a huge lag when you try to access the result of GPU processing:
+    img(src=&amp;ldquo;chart_1-2.png&amp;rdquo;,alt=&amp;ldquo;GPU-accelerated adaptive threshold&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;p While thresholding took less than 5 milliseconds per frame (including gray-scale conversion), the frame download took almost twice more time. This news was really discouraging for us. Of course, I spent a lot of time trying to identify the reason of this lag. It can be a topic for another post, but cutting a long story shorter - the GPU is shared between applications and OS itself. Each application can have multiple GPU contexts (EAGLContext). In GPGPU you can get result of your operation using render-to-texture technique. To get valid results you should call &lt;strong&gt;glFlush&lt;/strong&gt; and &lt;strong&gt;glFinish&lt;/strong&gt; commands before you access your texture. These calls are blocking operations - they force the CPU to wait until GPU pipeline is empty. This synchronization can take really long time. In our case it took almost 10 ms per frame. In addition we have found that low-end devices like iPhone touch or iPhone 4 does not have GPU powerful enough. So we decided to look for an alternative approach.&lt;/p&gt;
+
+&lt;p&gt;h2 NEON comes in scene&lt;/p&gt;
+
+&lt;p&gt;p It was logical that rendering and GPGPU-processing would fight each other for resources. So why not to separate these tasks? Let the whole GPU be occupied with the scene rendering and utilize CPU for image processing. Starting from this point I cannot reveal particular optimization details. But in general we re-designed existing algorithm to process less data and re-wrote most heavy functions with assembly language using NEON SIMD instructions. This was a win:
+    ul
+        li iPhone3Gs: 24ms per frame
+        li iPod touch: 17 ms per frame
+        li iPad 2: 8ms per frame
+        li iPhone 4S: 8 ms per frame&lt;/p&gt;
+
+&lt;p&gt;p Remember I was talking about speed-quality trade-off? Since we had enough spare time we could spent it to compute final basket pose more precisely. In particular, our algorithm is choosing the optimal pose estimation parameters depending on the current hardware ARBasketball is running on. On low-end hardware pose estimation is not too-precise, but anyway it is still providing smooth 30 FPS gameplay. On modern devices we have more power and can do more work. This adaptive parameter tuning is really helpful when you have to secure the same level of performance on many devices.&lt;/p&gt;
+
+&lt;p&gt;h2 Conclusion&lt;/p&gt;
+
+&lt;p&gt;p Optimize wisely and remember about your environment. Your application cannot not always have 100% of hardware power, besides there are other tasks that require CPU and GPU power: user-interaction handling, 3D rendering, audio decoding, device motion updates, notifications, network, physic simulation, threading. Keep in mind that algorithm you optimize can (and it will) interfere to the environment. It was very interesting to work with Konstantin on ARBasketball and I&amp;rsquo;m glad I had this opportunity.&lt;/p&gt;
+
+&lt;p&gt;p Recently, Paladone has announced &lt;a href=&#34;http://www.ebay.com/itm/AR-BASKETBALL-APP-MUG-Augmented-Reality-Tea-Coffee-Mug-for-iPhone-5-4-3-iPad-/350786629462?pt=UK_HG_Crockery_RL&amp;amp;hash=item51ac832f56&#34;&gt;ARBasketball Mug&lt;/a&gt;. A coffee/tea mug with printed marker on it&amp;rsquo;s side that allow you to play ARBasketball. Really amazing idea. By the way, I&amp;rsquo;ve already got mine ;)&lt;/p&gt;
+
+&lt;p&gt;[4]:&lt;/p&gt;
+
+&lt;p&gt;[6]:&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>KAZE 1.5.1</title>
+      <link>https://example.com/2013-06-17-kaze-1-5-1/</link>
+      <pubDate>Mon, 17 Jun 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2013-06-17-kaze-1-5-1/</guid>
+      <description>&lt;div class=&#34;alert alert-danger&#34;&gt;
+    &lt;p class=&#34;lead&#34;&gt;This post is outdated.&lt;/p&gt;
+    &lt;p&gt;
+        Please, visit updated post: 
+        &lt;a href=&#34;https://example.com/articles/kaze-1.6-in-opencv/&#34;&gt;Integration of KAZE 1.6 in OpenCV&lt;/a&gt;
+    &lt;/p&gt;
+&lt;/div&gt;
+
+&lt;p&gt;A new version of KAZE features has been integrated my private fork of OpenCV (You can find it&amp;rsquo;s here: &lt;a href=&#34;https://github.com/BloodAxe/opencv/tree/kaze-features&#34;&gt;https://github.com/BloodAxe/opencv/tree/kaze-features&lt;/a&gt;). We&amp;rsquo;re on the way to make pull-request and integrate KAZE features to official OpenCV repository.&lt;/p&gt;
+
+&lt;p&gt;There only few things are left:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Include KAZE into features2d unit tests.&lt;/li&gt;
+&lt;li&gt;Rewrite KAZE to support OpenCV threading API.&lt;/li&gt;
+&lt;li&gt;Expose adjustable parameters of KAZE algorithm.&lt;/li&gt;
+&lt;li&gt;Do code cleanup and documentation for pull request.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I think we (Pablo, KAZE author) and me complete these steps in a near future. During our hard work you can enjoy these nice charts that shows how awesome KAZE features are:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;chart_1.png&#34; alt=&#34;KAZE 1.5.1 Rotation Test&#34; /&gt; &lt;img src=&#34;chart_1-1.png&#34; alt=&#34;KAZE 1.5.1 Scale Test&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

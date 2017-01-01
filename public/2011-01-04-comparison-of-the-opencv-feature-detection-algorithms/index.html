@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Comparison of the OpenCV’s feature detection algorithms &middot; My Name</title>
+        <meta name="description" content="Introduction
+ “In computer vision and image processing the concept of feature detection refers to methods that aim at computing abstractions of image information and making local decisions at every image point whether there is an image feature of a given type at that point or not. The resulting features will be subsets of the image domain, often in the form of isolated points, continuous curves or connected regions.”">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="Comparison of the OpenCV’s feature detection algorithms">
+<meta property="og:description" content="Introduction
+ “In computer vision and image processing the concept of feature detection refers to methods that aim at computing abstractions of image information and making local decisions at every image point whether there is an image feature of a given type at that point or not. The resulting features will be subsets of the image domain, often in the form of isolated points, continuous curves or connected regions.”">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/2011-01-04-comparison-of-the-opencv-feature-detection-algorithms/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">Comparison of the OpenCV’s feature detection algorithms</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    
+
+<p><strong>Introduction</strong></p>
+
+<blockquote>
+<p>“In computer vision and image processing the concept of <strong>feature detection</strong> refers to methods that aim at computing abstractions of image information and making local decisions at every image point whether there is an image feature of a given type at that point or not.
+The resulting features will be subsets of the image domain, often in the form of isolated points, continuous curves or connected regions.”</p>
+</blockquote>
+
+<p>Wikipedia</p>
+
+<p><span class="more"></span></p>
+
+<p><strong>Update</strong>: Here is <a href="http://computer-vision-talks.com/2011/07/comparison-of-the-opencvs-feature-detection-algorithms-ii/">Updated Post</a> with added new detectors (ORB and SIFT).    </p>
+
+<h2 id="overview">Overview</h2>
+
+<p>OpenCV is free open-source library intended for use in image processing, computer vision and machine learning areas. It have a huge amount of different algorithms, but in this topic i will compare their existing feature detectors. At this moment OpenCV has stable 2.2 version and following types of descriptors: <strong>Fast</strong>, <strong>GoodFeaturesToTrack</strong>, <strong>Mser</strong>, <strong>Star</strong>, <strong>Sift</strong>, <strong>Surf</strong>. And few Adapters over detectors: GridAdapted, PyramidAdapted, DynamicAdapted. In this article noticed above detectors will be compared by speed, quality and repeatability in different lighting and scale.</p>
+
+<h2 id="test-images">Test images</h2>
+
+<p> <img src="mandril_thumb.jpg" alt="mandril" title="mandril" /><img src="barbara_thumb.jpg" alt="barbara" title="barbara" /> <img src="lena_thumb.jpg" alt="lena" title="lena" /><img src="peppers_thumb.jpg" alt="peppers" title="peppers" /></p>
+
+<p>All images are 512x512 size. Processing was done on grayscale images.</p>
+
+<h2 id="criteria">Criteria</h2>
+
+<p><strong>Speed</strong> – the most important criteria for real-time image processing. To achieve smooth real time processing your code must process single frame in less than 30 milliseconds! It’s quite enough for four cores of Core i7 processor, but imagine your code will be running on mobile device, which have ten times lower computation power. We will test how fast our detectors are on the laptop CPU and on the mobile processor.</p>
+
+<p>Test case: Detect feature points on the given image and measure spent time.</p>
+
+<p><strong>Quality</strong> – detected features usually used in further tracking or matching (for SLAM, panorama stitching, object detection, etc..). So “feature consumer” expects that detected features are good enough for it. Detectors will be tested for Optical Flow KLT tracking and two-frames matching using SIFT and SURF descriptors. For tracking test I will apply some affine transformation for original image and detected on the previous step keypoints. With transformed image and transformed keypoints we can estimate quality of tracking.</p>
+
+<p>Here is screenshots demonstrating transformed images and tracks of the features.</p>
+
+<p><img src="Mandril-GFTT-Tracking_thumb.jpg" alt="Mandril-GFTT-Tracking" title="Mandril-GFTT-Tracking" /><img src="Barbara-SURF-Tracking_thumb.jpg" alt="Barbara-SURF-Tracking" title="Barbara-SURF-Tracking" /><img src="Lena-FAST-Tracking_thumb.jpg" alt="Lena-FAST-Tracking" title="Lena-FAST-Tracking" /><img src="Peppers-FAST-Tracking_thumb.jpg" alt="Peppers-FAST-Tracking" title="Peppers-FAST-Tracking" /></p>
+
+<p>**Lighting and scale invariant – **feature detectors are expected to detect the same features either on large or small images of one object. That’s true also for lighting – slight brightness and contrast fluctuations shouldn’t affect on the feature detector significantly. Almost all modern cameras have automatic gain control which automatically adjust exposure trying to avoid over- or underexposed areas in image. Robust detection is critical for further processing.</p>
+
+<p>Here is explanation screenshot:</p>
+
+<p><img src="Barbara-STAR-Matching_thumb.jpg" alt="Barbara-STAR-Matching" title="Barbara-STAR-Matching" /><img src="Peppers-GFTT-Pyramid-Matching_thumb.jpg" alt="Peppers-GFTT Pyramid-Matching" title="Peppers-GFTT Pyramid-Matching" /></p>
+
+<p>As you can see, the second picture for each pair are slightly brighter. This test simulates automatic camera gain option for many modern web-cams.</p>
+
+<h2 id="estimation-marks">Estimation marks</h2>
+
+<p><strong>Speed per frame</strong> – absolute total time in milliseconds spent to the feature detection of the single frame.</p>
+
+<p><strong>Speed per keypoint</strong> – detection time for single keypoint. Evaluated as total time divided to number of detected keypoints. Helps us to estimate how cheap the detection actually is.</p>
+
+<p><strong>Percent of tracked features</strong> – percent of successfully tracked features from original to transformed image. In ideal situation, value of this mark should be near 100%.</p>
+
+<p><strong>Average tracking error</strong> – this is the average distance between position of tracked feature and their calculated position on transformed frame. This mark indicates accuracy of the feature detection. Large values indicates large number of false positive tracking or “drift” of feature point among frames.</p>
+
+<p><strong>Features count deviation</strong> – difference between number of keypoints on reference frame and number of detected keypoints on transformed frame divided by number of keypoints on reference frame. Helps estimate how slight exposure changes affects feature detection.</p>
+
+<p><strong>Average detection error</strong> – average distance between nearest keypoints on original and transformed frame.</p>
+
+<h2 id="testing-hardware-configuration">Testing hardware configuration</h2>
+
+<p>We will test all set of feature detectors on two configurations – laptop and mobile on the same data sets to compare performance and ensure that detection results are identical for both platforms.</p>
+
+<p> 
+<strong>MacBook Pro</strong>
+<strong>iPhone 3GS</strong></p>
+
+<p>CPU Model
+Core 2 Duo T7400
+ARM Cortex A8</p>
+
+<p>CPU Clock
+2160 MHz
+600 MHz</p>
+
+<p>CPU Cores number
+2
+1</p>
+
+<h2 id="results">Results</h2>
+
+<p>We start our analysis from number of detected feature points. And on the chart below we see that FAST detector finds thousands of keypoints, while other detectors finds only hundreds. Unlike the other detectors, keypoints  detected by FAST can contain too many “noise” features – which are not appropriate for further tracking.<img src="Number-of-detected-features_thumb.png" alt="Number of detected features" title="Number of detected features" /></p>
+
+<p>Speed of feature detection will be examined using two criteria&rsquo;s – by total amount of time spent for the detection of keypoint on the whole frame and a time per single keypoint which is simply total time divided by number of detected keypoints. As expected, FAST detector provides best detection time per feature.</p>
+
+<p><img src="Detection-cost_thumb.png" alt="Detection cost" title="Detection cost" /></p>
+
+<p>Finally the last performance tests – how fast are feature detectors on mobile devices? Here is four charts (for four different images) that will answer this question:</p>
+
+<p><img src="Feature-detection-comparison-peppers_thumb.png" alt="Feature detection comparison - peppers" title="Feature detection comparison - peppers" /></p>
+
+<p><img src="Speed-comparision-barbara_thumb.png" alt="Speed comparision - barbara" title="Speed comparision - barbara" /></p>
+
+<p><img src="Speed-comparison-lena_thumb.png" alt="Speed comparison - lena" title="Speed comparison - lena" /></p>
+
+<p><img src="Speed-comparison-mandrill_thumb.png" alt="Speed comparison - mandrill" title="Speed comparison - mandrill" /></p>
+
+<p>As we can see from charts above - on the mobile platform all feature detectors works ~3-5 times slower than on desktop. So without optimization for architecture of concrete processor real-time performance can’t be achieved (see conclusion).</p>
+
+<p>Now to quality estimation. Following chart demonstrates average tracking error (in pixels) between reference frame and slightly transformed. Pyramid KLT tracker was used (cvCalcOpticalFlowPyrLK). STAR (Also known as CenSurE) detector found keypoints that were tracked best than other detectors.</p>
+
+<p><img src="Average-tracking-error_thumb.png" alt="Average tracking error" title="Average tracking error" /></p>
+
+<p>Chart below  gives us information about how many of features were tracked successfully. All detectors provide very good feature points, except for MSER detectors, which score is less that other’s detectors for all test images.</p>
+
+<p><img src="Percent-of-tracked-feature_thumb.png" alt="Percent of tracked feature" title="Percent of tracked feature" /></p>
+
+<p>A last chart shows how feature detectors co-variant with brightness changes. STAR and MSER detectors are very sensible to brightness variation, while the other detectors are not.</p>
+
+<p><img src="Average-feature-point-drift_thumb.png" alt="Average feature point drift" title="Average feature point drift" /></p>
+
+<p> </p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>The choice of the feature detector very much depends on a problem. For example, if you doing monocular SLAM, FAST detector is weapon of choice, because it’s fast and detects a lot of features. For image stitching, pattern recognition and other feature-descriptor related tasks, scale- and rotation-invariant detectors are preferable.</p>
+
+<p>For desktop applications almost all feature detectors guarantee real-time (25 fps+) performance. But for mobile device the fastest detector (FAST) works only with ~10fps. Why such huge difference? First of all, laptop CPU is much more powerful. But also, cache size and processor architecture does matter. OpenCV supports SSE/SSE2/SSE3 intrinsic instructions which can deal 10x speedup because of instruction vectorization. Unfortunately, OpenCV supports intrinsic instructions only for x86 architecture. There are ARM NEON SIMD engine, and theoretically with their help we can significantly improve performance of feature detection on mobile platforms. But this require a lot of experience and low-level knowledge of CPU architecture. I will reveal benefits of the NEON intrinsic in my further posts.</p>
+
+<p>This article highlights only few performance and quality aspects of the feature detection problem. I highly recommend you to read the article “<a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.157.4126&amp;rep=rep1&amp;type=pdf">Local Invariant Feature Detectors: A Survey</a>” the get much more knowledge of how different feature detectors work.</p>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/opencv/">opencv</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=Comparison%20of%20the%20OpenCV%e2%80%99s%20feature%20detection%20algorithms&url=https%3a%2f%2fexample.com%2f2011-01-04-comparison-of-the-opencv-feature-detection-algorithms%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2f2011-01-04-comparison-of-the-opencv-feature-detection-algorithms%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2f2011-01-04-comparison-of-the-opencv-feature-detection-algorithms%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

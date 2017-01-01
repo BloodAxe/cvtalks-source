@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2011-06-07-a-few-thoughts-about-cvround-rsses on Ghostwriter example</title>
+    <link>https://example.com/2011-06-07-a-few-thoughts-about-cvround/index.xml</link>
+    <description>Recent content in 2011-06-07-a-few-thoughts-about-cvround-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Tue, 07 Jun 2011 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2011-06-07-a-few-thoughts-about-cvround/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>A few thoughts about cvRound</title>
+      <link>https://example.com/2011-06-07-a-few-thoughts-about-cvround/</link>
+      <pubDate>Tue, 07 Jun 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2011-06-07-a-few-thoughts-about-cvround/</guid>
+      <description>
+
+&lt;p&gt;During writing commercial iPhone app for one of my customers i noticed really strange slowdown in Surf descriptors. Cutting a long story shorter - while matching two frames usign SURF algorithm more than half of overall time (4, FOUR seconds!) was spent in cvRound function! Read more to know what it was and how did i fixed it.  I noticed that matching takes a while and decided to dug into profiler. When i saw the results i was a bit surprised.
+&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;opencv-surf-profile.png&#34; alt=&#34;OpenCV Surf descriptor extraction on iPhone&#34; title=&#34;OpenCV Surf descriptor extraction on iPhone&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As you can see from figure 1 - more than 4 seconds was spent in lrint1 function. After walking through a call stack i discovered that this function is called from cvRound:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;    CV_INLINE  int  cvRound( double value )
+    {
+    #if (defined _MSC_VER &amp;amp;&amp;amp; defined _M_X64) || (defined __GNUC__ &amp;amp;&amp;amp; defined __x86_64__ &amp;amp;&amp;amp; !defined __APPLE__)
+        __m128d t = _mm_set_sd( value );
+        return _mm_cvtsd_si32(t);
+    #elif defined _MSC_VER &amp;amp;&amp;amp; defined _M_IX86
+        int t;
+        __asm
+        {
+            fld value;
+            fistp t;
+        }
+        return t;
+    #elif defined HAVE_LRINT || defined CV_ICC || defined __GNUC__
+        return (int)lrint(value);
+    #else
+        // while this is not IEEE754-compliant rounding, it&#39;s usually a good enough approximation
+        return (int)(value + (value &amp;gt;= 0 ? 0.5 : -0.5));
+    #endif
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The main problem with this function - it accepts doubles. Even if inlined, there is implicit conversion to double.  The problem is that SURF descriptor extraction is performed in floats, not doubles! Therefore additional float-to-double conversion occurs hundreds times per feature. I&amp;rsquo;ve added overloaded cvRound(float):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;    CV_INLINE  int  cvRound( float value )
+    {
+    #if defined HAVE_LRINT || defined CV_ICC || defined __GNUC__
+      return (int)lrint(value);
+    #else
+      // while this is not IEEE754-compliant rounding, it&#39;s usually a good enough approximation
+      return (int)(value + (value &amp;gt;= 0 ? 0.5f : -0.5f));
+    #endif
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;After adding single precision floating point overload for cvRound and rebuilding OpenCV with my script i measured performance again. Descriptor extraction works &lt;strong&gt;three seconds faster&lt;/strong&gt; (9 seconds against 12 on iPhone 3Gs). PROFIT! I&amp;rsquo;ve submitted a &lt;a href=&#34;https://code.ros.org/trac/opencv/ticket/1123&#34;&gt;patch&lt;/a&gt; to into willowgarage. Hope they will integrate it faster than my previous patch :) PS: Update of OpenCV for iOS build script is coming - new optimization flags for armv7 release mode will be added.&lt;/p&gt;
+
+&lt;h3 id=&#34;remarks&#34;&gt;Remarks&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;**lrint **- round to nearest integer value using current rounding direction. More info: &lt;a href=&#34;http://pubs.opengroup.org/onlinepubs/009695399/functions/lrint.html&#34;&gt;http://pubs.opengroup.org/onlinepubs/009695399/functions/lrint.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

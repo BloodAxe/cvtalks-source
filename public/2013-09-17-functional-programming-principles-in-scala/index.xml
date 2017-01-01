@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2013-09-17-functional-programming-principles-in-scala-rsses on Ghostwriter example</title>
+    <link>https://example.com/2013-09-17-functional-programming-principles-in-scala/index.xml</link>
+    <description>Recent content in 2013-09-17-functional-programming-principles-in-scala-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Tue, 17 Sep 2013 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2013-09-17-functional-programming-principles-in-scala/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Functional Programming Principles in Scala</title>
+      <link>https://example.com/2013-09-17-functional-programming-principles-in-scala/</link>
+      <pubDate>Tue, 17 Sep 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2013-09-17-functional-programming-principles-in-scala/</guid>
+      <description>&lt;p&gt;img.pull-left.img-thumbnail(src=&amp;ldquo;small-icon.png&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;p
+    | Meanwhile, after watching this brilliant talk of the Alexander Soloviov on &amp;ldquo;Functional Reactive Programming and Closure Script&amp;rdquo; i decided to study Functional Programming.
+    | Fortunately, there was a active course
+    a(href=&amp;ldquo;&lt;a href=&#34;https://class.coursera.org/progfun-003/class/index&amp;quot;&#34;&gt;https://class.coursera.org/progfun-003/class/index&amp;quot;&lt;/a&gt;) Functional Programming Principles in Scala
+    |.&lt;/p&gt;
+
+&lt;p&gt;p
+    | My first impressions on Scala is&amp;hellip; it&amp;rsquo;s fun!
+    | Thinking in functional programming paradigm makes you think different about your objects and their connection to each other.
+    | And i&amp;rsquo;m curious how Scala can be used for solving main computer vision problems. I will try to write marker detection algorithm in Scala for curiosity.
+    | PS: My russian-speaking readers can watch the inspirational talk on YouTube:
+    a(href=&amp;ldquo;&lt;a href=&#34;https://www.youtube.com/watch?v=R4sTvHXkToQ&amp;quot;&#34;&gt;https://www.youtube.com/watch?v=R4sTvHXkToQ&amp;quot;&lt;/a&gt;) &lt;a href=&#34;https://www.youtube.com/watch?v=R4sTvHXkToQ&#34;&gt;https://www.youtube.com/watch?v=R4sTvHXkToQ&lt;/a&gt;
+    |.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

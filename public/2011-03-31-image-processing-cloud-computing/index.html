@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Image processing &amp; cloud computing &middot; My Name</title>
+        <meta name="description" content="It&rsquo;s time to write something interesting. Today I will begin a series of articles on the development of a system of identification of human faces in the cloud. During development, I will describe the key points, details and aspects of running image processing algorithms in the cloud environment. During development face identification system will be created. It has no commercial purpose so don’t expect it will be robust enough :) I create it just for fun, so there are no time plans for this project.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="Image processing &amp; cloud computing">
+<meta property="og:description" content="It&rsquo;s time to write something interesting. Today I will begin a series of articles on the development of a system of identification of human faces in the cloud. During development, I will describe the key points, details and aspects of running image processing algorithms in the cloud environment. During development face identification system will be created. It has no commercial purpose so don’t expect it will be robust enough :) I create it just for fun, so there are no time plans for this project.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/2011-03-31-image-processing-cloud-computing/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">Image processing &amp; cloud computing</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    
+
+<p><img src="opencv-azure-mix-small.png" class="pull-left img-thumbnail" /></p>
+
+<p>It&rsquo;s time to write something interesting. Today I will begin a series of articles on the development of a system of identification of human faces in the cloud. During development, I will describe the key points, details and aspects of running image processing algorithms in the cloud environment. During development face identification system will be created. It has no commercial purpose so don’t expect it will be robust enough :) I create it just for fun, so there are no time plans for this project. But i&rsquo;ll try to create it as fast as possible.</p>
+
+<h5 id="key-facts">Key facts</h5>
+
+<ul>
+<li>Will use Windows Azure cloud service – it supports native code exectution.</li>
+<li>Will use Visual Studio 2010 for development.</li>
+<li>Will use OpenCV for face identification.</li>
+<li>Native code in C++ will be wrapped with C# library to make it accessible as webservice.</li>
+<li>Silverlight application as front-end.</li>
+<li>User registration and some social sharing – just for fun.</li>
+<li>Public online demo will be published for 30 days (time of the free trial subscription in Azure).</li>
+</ul>
+
+<p>So stay tuned and <a href="http://twitter.com/#!/cvtalks">follow me on twitter</a> !</p>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/opencv/">opencv</a>
+            
+                 <a href="/tags/cloud-computing/">cloud-computing</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=Image%20processing%20%26%20cloud%20computing&url=https%3a%2f%2fexample.com%2f2011-03-31-image-processing-cloud-computing%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2f2011-03-31-image-processing-cloud-computing%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2f2011-03-31-image-processing-cloud-computing%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

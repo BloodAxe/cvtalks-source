@@ -1,0 +1,1903 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ghostwriter example</title>
+    <link>https://example.com/tags/xcode/index.xml</link>
+    <description>Recent content on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <atom:link href="https://example.com/tags/xcode/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Success-story: Fueling ARBasketball up with NEON</title>
+      <link>https://example.com/2013-06-30-success-story-fueling-arbasketball-up-with-neon/</link>
+      <pubDate>Sun, 30 Jun 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2013-06-30-success-story-fueling-arbasketball-up-with-neon/</guid>
+      <description>&lt;p&gt;img.pull-left.img-thumbnail(src=&amp;ldquo;arbasketball-logo.jpg&amp;rdquo;,alt=&amp;ldquo;ARBasketball&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;p ARBasketball was one of the first augmented reality-based games in App Store. It has been published in 2010. In these days not many people have even heard about AR. I mean it wasn&amp;rsquo;t so popular as it became now. But there were people who saw the great potential in this growing market. One of them was Konstantin Tarovik, the author of &lt;a href=&#34;https://itunes.apple.com/ru/app/arbasketball-augmented-reality/id393333529?mt=8&#34;&gt;ARBasketball&lt;/a&gt;. I must confess - I saw this application before, but had no idea it&amp;rsquo;s author lives in Ukraine, and in the same city as I am! It was really surprising to discover there is another passionate person in Odessa and is also interested in computer-vision and AR! While I was concentrating on back-end development and most of my projects were under NDA, Konstantin aimed for product development. Actually that was the reason he contacted me&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;h2 First contact&lt;/p&gt;
+
+&lt;p&gt;p Konstantin contacted me in fall 2012. He wanted me to help him optimize performance of ARBasketball on iOS devices. I agreed, because it was very interesting task and I was happy to help countryman. There were two problems we were going to solve: - Performance - Robustness&lt;/p&gt;
+
+&lt;p&gt;p In computer vision choice of any algorithm is a trade-off between speed and quality: you lower the frame resolution and get more speed, but lose precision; you increase the number of features and get more robust tracking but lose speed, etc. In our case we had an issue that game was not very stable in low-light or in over saturated scenes. The second issue was performance of marker detection algorithm. To provide the best game experience you should have at least 25 fps. In other words, you have only 30 milliseconds to acquire the new frame, find the marker on it, update physics and render the frame. Real-time is always a challenge.&lt;/p&gt;
+
+&lt;p&gt;h2 Wrong way&lt;/p&gt;
+
+&lt;p&gt;p
+    | To provide lighting-invariant marker detection I decided to apply &lt;a href=&#34;http://docs.opencv.org/modules/imgproc/doc/miscellaneous_transformations.html?highlight=threshold#adaptivethreshold&#34;&gt;adaptive threshold&lt;/a&gt; since this filter can easily deal with non-uniform lighting and it works perfect for low-light cases too. Speed of adaptive threshold depends on window size, in our case the best results were achieved with window size of 7 pixels. Unfortunately, OpenCV implementation of adaptive threshold was too slow and we decided to utilize GPU for thresholding. Unfortunately, the OpenCL technology is not yet supported by iOS devices, so we had to use OpenGL ES 2.0 shaders and textures to simulate GPGPU. A great Brad Larson&amp;rsquo;s library &lt;a href=&#34;https://github.com/BradLarson/GPUImage&#34;&gt;GPUImage&lt;/a&gt; helped us a lot in this. After we performed the test it became clearly visible there is a huge lag when you try to access the result of GPU processing:
+    img(src=&amp;ldquo;chart_1-2.png&amp;rdquo;,alt=&amp;ldquo;GPU-accelerated adaptive threshold&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;p While thresholding took less than 5 milliseconds per frame (including gray-scale conversion), the frame download took almost twice more time. This news was really discouraging for us. Of course, I spent a lot of time trying to identify the reason of this lag. It can be a topic for another post, but cutting a long story shorter - the GPU is shared between applications and OS itself. Each application can have multiple GPU contexts (EAGLContext). In GPGPU you can get result of your operation using render-to-texture technique. To get valid results you should call &lt;strong&gt;glFlush&lt;/strong&gt; and &lt;strong&gt;glFinish&lt;/strong&gt; commands before you access your texture. These calls are blocking operations - they force the CPU to wait until GPU pipeline is empty. This synchronization can take really long time. In our case it took almost 10 ms per frame. In addition we have found that low-end devices like iPhone touch or iPhone 4 does not have GPU powerful enough. So we decided to look for an alternative approach.&lt;/p&gt;
+
+&lt;p&gt;h2 NEON comes in scene&lt;/p&gt;
+
+&lt;p&gt;p It was logical that rendering and GPGPU-processing would fight each other for resources. So why not to separate these tasks? Let the whole GPU be occupied with the scene rendering and utilize CPU for image processing. Starting from this point I cannot reveal particular optimization details. But in general we re-designed existing algorithm to process less data and re-wrote most heavy functions with assembly language using NEON SIMD instructions. This was a win:
+    ul
+        li iPhone3Gs: 24ms per frame
+        li iPod touch: 17 ms per frame
+        li iPad 2: 8ms per frame
+        li iPhone 4S: 8 ms per frame&lt;/p&gt;
+
+&lt;p&gt;p Remember I was talking about speed-quality trade-off? Since we had enough spare time we could spent it to compute final basket pose more precisely. In particular, our algorithm is choosing the optimal pose estimation parameters depending on the current hardware ARBasketball is running on. On low-end hardware pose estimation is not too-precise, but anyway it is still providing smooth 30 FPS gameplay. On modern devices we have more power and can do more work. This adaptive parameter tuning is really helpful when you have to secure the same level of performance on many devices.&lt;/p&gt;
+
+&lt;p&gt;h2 Conclusion&lt;/p&gt;
+
+&lt;p&gt;p Optimize wisely and remember about your environment. Your application cannot not always have 100% of hardware power, besides there are other tasks that require CPU and GPU power: user-interaction handling, 3D rendering, audio decoding, device motion updates, notifications, network, physic simulation, threading. Keep in mind that algorithm you optimize can (and it will) interfere to the environment. It was very interesting to work with Konstantin on ARBasketball and I&amp;rsquo;m glad I had this opportunity.&lt;/p&gt;
+
+&lt;p&gt;p Recently, Paladone has announced &lt;a href=&#34;http://www.ebay.com/itm/AR-BASKETBALL-APP-MUG-Augmented-Reality-Tea-Coffee-Mug-for-iPhone-5-4-3-iPad-/350786629462?pt=UK_HG_Crockery_RL&amp;amp;hash=item51ac832f56&#34;&gt;ARBasketball Mug&lt;/a&gt;. A coffee/tea mug with printed marker on it&amp;rsquo;s side that allow you to play ARBasketball. Really amazing idea. By the way, I&amp;rsquo;ve already got mine ;)&lt;/p&gt;
+
+&lt;p&gt;[4]:&lt;/p&gt;
+
+&lt;p&gt;[6]:&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Maximizing performance of CV_BGRA2GRAY conversion using NEON and cv::parallel_for</title>
+      <link>https://example.com/2012-11-06-maximizing-performance-grayscale-color-conversion-using-neon-and-cvparallel_for/</link>
+      <pubDate>Tue, 06 Nov 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2012-11-06-maximizing-performance-grayscale-color-conversion-using-neon-and-cvparallel_for/</guid>
+      <description>
+
+&lt;p&gt;I continue playing with powerful NEON engine in iPhone and iPad devices. Recently i bought iPhone 4S that replaced my HTC Mozart and i decided to check how to speed up BGRA to GRAY color conversion procedure using multithreading.
+&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;Recently Itseez announced a minor release of OpenCV 2.4.3 with a lot of new major features:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Added universal parallel_for implementation using various backends: TBB, OpenMP, GCD, Concurrency&lt;/li&gt;
+&lt;li&gt;Improved OpenCV Manager, new Java samples framework, better camera support on Android,&lt;/li&gt;
+&lt;li&gt;opencv2.framework is now iOS6- and iPhone5- (armv7s) compatible.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The rest of changes can be seen here: &lt;a href=&#34;http://code.opencv.org/projects/opencv/wiki/ChangeLog&#34;&gt;http://code.opencv.org/projects/opencv/wiki/ChangeLog&lt;/a&gt;. In the past i wrote a NEON-optimized grayscale conversion algorithm (&lt;a href=&#34;http://computer-vision-talks.com/2011/02/a-very-fast-bgra-to-grayscale-conversion-on-iphone/&#34;&gt;http://computer-vision-talks.com/2011/02/a-very-fast-bgra-to-grayscale-conversion-on-iphone/&lt;/a&gt;) which showed a pretty nice speed-up (About 2x times faster than cv::cvtColor(input, output, CV_BGRA2GRAY)). In this post we will use these results as a baseline and try to write something faster. To be fair we start from defining a set of rules for all implementations:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;We will process square images of size (8, 10, 12, 14, 16, 18, &amp;hellip;., 1596, 1598, 1600) pixels. Processing small and big images will reveal hidden bottlenecks of each implementation.&lt;/li&gt;
+&lt;li&gt;Each image will be processed 1000 to avoid measurement fluctuations.&lt;/li&gt;
+&lt;li&gt;The destination image will be preallocated prior the test to exclude memory allocations influence.&lt;/li&gt;
+&lt;li&gt;We use mach_absolute_time() to measure processing time. As far as i know it&amp;rsquo;s the most precise measuring method.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Our main test method looks like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;typedef void ConversionFunctionPrototype(const cv::Mat&amp;amp; input, cv::Mat&amp;amp; output);
+
+void testConversion(const cv::Mat&amp;amp; input, int numRuns, int&amp;amp; avgTimeInMicroseconds, ConversionFunctionPrototype conversionFn)
+{
+    assert(input.type() == CV_8UC4);
+    assert(input.empty() == false);
+
+    cv::Mat output(input.size(), CV_8UC1);
+
+    uint64_t conversionStart, conversionFinish;
+    uint64_t totalTime = 0;
+
+    for (int i = 0; i &amp;lt; numRuns ; i++)
+    {
+        conversionStart = mach_absolute_time();
+        conversionFn(input, output);
+        conversionFinish = mach_absolute_time();
+
+        totalTime += (conversionFinish - conversionStart);
+    }
+
+    mach_timebase_info_data_t timebase;
+    mach_timebase_info(&amp;amp;timebase);
+
+    avgTimeInMicroseconds = (int) ((double)totalTime * (double)timebase.numer / ((double)timebase.denom * (double)numRuns));
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The testConversion function computes the average BGRA2GRAY conversion time of the input image by doing color conversion N times (specified by numRuns argument).&lt;/p&gt;
+
+&lt;h2 id=&#34;opencv-implementation&#34;&gt;OpenCV implementation&lt;/h2&gt;
+
+&lt;p&gt;The reference color conversion function from OpenCV:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;static void convert_opencv(const cv::Mat&amp;amp; input, cv::Mat&amp;amp; output)
+{
+    cv::cvtColor(input, output, CV_BGRA2GRAY);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;arm-neon-using-assembler&#34;&gt;ARM NEON using assembler&lt;/h2&gt;
+
+&lt;p&gt;The old assembler version of NEON-accelerated color conversion from my old post:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;static void convert_neon_asm_8px(const cv::Mat&amp;amp; input, cv::Mat&amp;amp; output)
+{
+    uint8_t __restrict * dest = output.data;
+    uint8_t __restrict * src  = input.data;
+    int numPixels             = input.total();
+
+    __asm__ volatile(&amp;quot;lsr          %2, %2, #3      \n&amp;quot;
+                     &amp;quot;# build the three constants: \n&amp;quot;
+                     &amp;quot;mov         r4, #28          \n&amp;quot; // Blue channel multiplier
+                     &amp;quot;mov         r5, #151         \n&amp;quot; // Green channel multiplier
+                     &amp;quot;mov         r6, #77          \n&amp;quot; // Red channel multiplier
+                     &amp;quot;vdup.8      d4, r4           \n&amp;quot;
+                     &amp;quot;vdup.8      d5, r5           \n&amp;quot;
+                     &amp;quot;vdup.8      d6, r6           \n&amp;quot;
+                     &amp;quot;0:                           \n&amp;quot;
+                     &amp;quot;# load 8 pixels:             \n&amp;quot;
+                     &amp;quot;vld4.8      {d0-d3}, [%1]!   \n&amp;quot;
+                     &amp;quot;# do the weight average:     \n&amp;quot;
+                     &amp;quot;vmull.u8    q7, d0, d4       \n&amp;quot;
+                     &amp;quot;vmlal.u8    q7, d1, d5       \n&amp;quot;
+                     &amp;quot;vmlal.u8    q7, d2, d6       \n&amp;quot;
+                     &amp;quot;# shift and store:           \n&amp;quot;
+                     &amp;quot;vshrn.u16   d7, q7, #8       \n&amp;quot; // Divide q3 by 256 and store in the d7
+                     &amp;quot;vst1.8      {d7}, [%0]!      \n&amp;quot;
+                     &amp;quot;subs        %2, %2, #1       \n&amp;quot; // Decrement iteration count
+                     &amp;quot;bne         0b            \n&amp;quot; // Repeat until iteration count is not zero
+                     :
+                     : &amp;quot;r&amp;quot;(dest), &amp;quot;r&amp;quot;(src), &amp;quot;r&amp;quot;(numPixels)
+                     : &amp;quot;r4&amp;quot;, &amp;quot;r5&amp;quot;, &amp;quot;r6&amp;quot;
+                     );
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;arm-neon-using-intrinsics&#34;&gt;ARM NEON using intrinsics&lt;/h2&gt;
+
+&lt;p&gt;You know you can write the same code using arm intrinsics? Here it is:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;static void convert_neon8px_int(const cv::Mat&amp;amp; input, cv::Mat&amp;amp; output)
+{
+    uint8_t __restrict * dest = output.data;
+    uint8_t __restrict * src  = input.data;
+    int numPixels             = input.total();
+
+    uint8x8_t rfac = vdup_n_u8 (77);
+    uint8x8_t gfac = vdup_n_u8 (151);
+    uint8x8_t bfac = vdup_n_u8 (28);
+
+    register int n = numPixels / 8;
+    uint16x8_t  temp;
+    uint8x8_t result;
+    uint8x8x4_t rgb;
+
+    for (register int i = 0; i &amp;lt; n; i++, src += 8*4, dest += 8)
+    {
+        rgb  = vld4_u8 (src);
+
+        temp = vmull_u8 (rgb.val[0],      rfac);
+        temp = vmlal_u8 (temp,rgb.val[1], gfac);
+        temp = vmlal_u8 (temp,rgb.val[2], bfac);
+
+        result = vshrn_n_u16 (temp, 8);
+        vst1_u8 (dest, result);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;parallel-neon-version&#34;&gt;Parallel NEON version&lt;/h2&gt;
+
+&lt;p&gt;Both &lt;strong&gt;convert_neon_asm_8px&lt;/strong&gt; and &lt;strong&gt;convert_neon8px_int&lt;/strong&gt; functions process 8 pixels at once. This color conversion function is a great candidate for multithreading optimization. Since iPhone 4S and iPad 2 have two Cortex A8 CPU we can run our color conversion in two threads. For this purpose we want to use Grand Central Dispatch mechanism from iOS. It provides easy mechanism to execute tasks in multithreaded environment. OpenCV developers offers new nice feature to perform parallel calculation - &lt;strong&gt;cv::parallel_for&lt;/strong&gt;. This function provides abstraction layer between multithreading backend and user code. To use &lt;strong&gt;cv::parallel_for&lt;/strong&gt; you have to implement a cv::ParallelLoopBody functor:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;// a base body class
+class CV_EXPORTS ParallelLoopBody
+{
+public:
+    virtual ~ParallelLoopBody();
+    virtual void operator() (const Range&amp;amp; range) const = 0;
+};
+
+CV_EXPORTS void parallel_for_(const Range&amp;amp; range, const ParallelLoopBody&amp;amp; body, double nstripes=-1.);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Our color conversion function simply wraps the code from the ARM NEON version with slight modifications. When counting the number of pixels to process we take into account the range argument passed to the function body.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;struct convert_ParallelLoopBody : public cv::ParallelLoopBody
+{
+    convert_ParallelLoopBody(const cv::Mat&amp;amp; input, cv::Mat&amp;amp; output)
+    : _in(input)
+    , _out(output)
+    {
+    }
+
+    void operator() (const cv::Range&amp;amp; range) const
+    {
+        uint8_t __restrict * dest = _out.data + range.start;
+        uint8_t __restrict * src  = _in.data  + range.start * 4;
+
+        int numPixels             = range.size();
+
+        uint8x8_t rfac = vdup_n_u8 (77);
+        uint8x8_t gfac = vdup_n_u8 (151);
+        uint8x8_t bfac = vdup_n_u8 (28);
+
+        register int n = numPixels / 8;
+        uint16x8_t  temp;
+        uint8x8_t result;
+        uint8x8x4_t rgb;
+
+        for (register int i = 0; i &amp;lt; n; i++, src += 8*4, dest += 8)
+        {
+            rgb  = vld4_u8 (src);
+
+            temp = vmull_u8 (rgb.val[0],      rfac);
+            temp = vmlal_u8 (temp,rgb.val[1
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>OpenCV Tutorial Part 7</title>
+      <link>https://example.com/2012-10-22-opencv-tutorial-part-7/</link>
+      <pubDate>Mon, 22 Oct 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2012-10-22-opencv-tutorial-part-7/</guid>
+      <description>
+
+&lt;p&gt;After a long delay i&amp;rsquo;m happy to resume posting OpenCV tutorials in my blog. In Part 7 i will present you a new way of generation of icons for samples. Also i&amp;rsquo;ll show how to use NEON and assembly language to speed-up cv::transform function twice! Also there are three new samples i have to say few words about each.&lt;/p&gt;
+
+&lt;h2 id=&#34;interface-improvements&#34;&gt;Interface improvements&lt;/h2&gt;
+
+&lt;h3 id=&#34;default-sample-icons&#34;&gt;Default sample icons&lt;/h3&gt;
+
+&lt;p&gt;I think each sample has to have it&amp;rsquo;s own unique icon image. Unfortunately, i&amp;rsquo;m not a cool graphic designer and i&amp;rsquo;m lazy. And i found brillant solution how to create unique icon for almost any sample with minimal efforts. Our sample will generate it for us! It&amp;rsquo;s so easy, right? We write a new sample that implements some cool effect. So it would be great if it&amp;rsquo;s icon will inform user about it. To do this we take a default image we use for icons and pass it through our sample. Result image is the best visual demonstration we can ever imagine. Let&amp;rsquo;s take a look on result of processing default icon with Cartoon Filter Sample: &lt;strong&gt;Default Image&lt;/strong&gt;: &lt;img src=&#34;IMG_0044.png&#34; alt=&#34;&#34; title=&#34;Mandrill (Original)&#34; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;generated-cartoon-filter-icon&#34;&gt;&lt;strong&gt;Generated Cartoon Filter Icon&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&#34;IMG_0045.jpg&#34; alt=&#34;&#34; title=&#34;Mandrill (Cartoon)&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Also, these icons are now used in the rest of UI. The final picture looks much more user-friendly:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;Screen-Shot-2012-08-19-at-9.05.33-PM-1024x813.png&#34; alt=&#34;&#34; title=&#34;OpenCV Tutorial Part 7 Sample Icons&#34; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;in-case-you-looking-for-a-code&#34;&gt;In case you looking for a code&lt;/h3&gt;
+
+&lt;p&gt;While working on this chapter i noticed that UI-realted code has a lot of duplicates connected with converting of std::string to NSString, loading UIImage objects from bundle. To remove such duplicates i added a special facade class which performs all conversion and implements sample icon generation as described above.&lt;/p&gt;
+
+&lt;h4 id=&#34;samplefacade-interface&#34;&gt;&lt;strong&gt;SampleFacade interface&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;@interface SampleFacade : NSObject
+
+- (id) initWithSample:(SampleBase*) sample;
+
+@property (readonly) SampleBase * sample;
+
+- (NSString *) title;
+- (NSString *) description;
+- (NSString *) friendlyName;
+
+- (UIImage*)   smallIcon;
+- (UIImage*)   largeIcon;
+
+- (bool) processFrame:(const cv::Mat&amp;amp;) inputFrame into:(cv::Mat&amp;amp;) outputFrame;
+- (UIImage*) processFrame:(UIImage*) source;
+
+@end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;icons-generation&#34;&gt;Icons generation&lt;/h4&gt;
+
+&lt;p&gt;When the data table is populated with a sample list it creates a cell for each sample. A cell contains a sample thumbnail image queried from [SampleFacade smallIcon].&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;- (UIImage*)   smallIcon
+{
+    if (!m_smallIcon)
+    {
+        if (self.sample-&amp;gt;;hasIcon())
+        {
+            NSString * iconStr = [NSString stringWithStdString:self.sample-&amp;gt;;getSampleIcon()];
+            m_smallIcon = [[UIImage imageNamed:iconStr] thumbnailWithSize:80];
+        }
+        else
+        {
+            UIImage * srcImage = [UIImage imageNamed:@&amp;quot;DefaultSampleIcon.png&amp;quot;];
+            m_smallIcon = [self processFrame:[srcImage thumbnailWithSize:80]];
+        }
+    }
+
+    return m_smallIcon;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Obviously, this method of generating sample icon image cannot be applied to any sample. It&amp;rsquo;s applicable only to samples that can process single image without any additional data input. For example, we can&amp;rsquo;t use this method to generate icon for video tracking, because it will give us exactly the same picture. But for samples that does manipulate with pixels it&amp;rsquo;s the ideal solution. ;&lt;/p&gt;
+
+&lt;h3 id=&#34;more-friendly-ipad-interface&#34;&gt;More friendly iPad interface&lt;/h3&gt;
+
+&lt;p&gt;When in landscape mode iPad&amp;rsquo;s application interface shows list of samples and result of sample processing simultaneously. In the previous versions of the app, selecting new sample while previous was running had no effect. You had go back to sample information window and then click again &amp;ldquo;run&amp;rdquo; to start using new sample. Now it&amp;rsquo;s fixed - you can switch to any sample any time you want. Watch this great demonstration video:  Implementation was very trivial - when user taps &amp;ldquo;Run on Video&amp;rdquo; or &amp;ldquo;Run on Image&amp;rdquo; button we save new view controller in DetailViewController&amp;rsquo;s private property:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([[segue identifier] isEqualToString:@&amp;quot;processVideo&amp;quot;])
+    {
+        VideoViewController * sampleController = [segue destinationViewController];
+        [sampleController setSample:currentSample];
+        self.activeVideoController = sampleController;
+    }
+    else if ([[segue identifier] isEqualToString:@&amp;quot;processImage&amp;quot;])
+    {
+        ImageViewController * sampleController = [segue destinationViewController];
+        [sampleController setSample:currentSample];
+        self.activeImageController = sampleController;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And modified configureView function now updates active image or video view if it&amp;rsquo;s not null:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;- (void)configureView
+{
+    // Update the user interface for the detail item.
+
+    if (currentSample)
+    {
+        self.sampleDescriptionTextView.text = [currentSample description];
+        self.title = [currentSample title];
+        self.sampleIconView.image = [currentSample largeIcon];
+
+        if (self.activeImageController)
+            [self.activeImageController setSample:currentSample];
+
+        if (self.activeVideoController)
+            [self.activeVideoController setSample:currentSample];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;performance-optimization&#34;&gt;Performance optimization&lt;/h2&gt;
+
+&lt;h3 id=&#34;optimizing-cv-transform-with-arm-neon&#34;&gt;Optimizing cv::transform with ARM NEON&lt;/h3&gt;
+
+&lt;p&gt;Assembly language and architecture-specific code was always a subject of my special attention. After i got my first iPhone i started learning ARM Assembly and it&amp;rsquo;s SIMD engine called NEON. As a result of my first attempts to write something useful i wrote &lt;a href=&#34;https://example.com/articles/2011-02-08-a-very-fast-bgra-to-grayscale-conversion-on-iphone/&#34; title=&#34;A very fast BGRA to Grayscale conversion on Iphone&#34;&gt;fast BGRA to Grayscale color conversion&lt;/a&gt; function. It was a long time ago, but this function is still actual. NEON-accelerated BGRA to Grayscale conversion is being used in this project too. In this section i will show you how to improve performance of the cv::transform function. Linear transform is useful function. In our samples we use it for Sepia effect for example. Also it can perform BGRA to Gray conversion without reducing number of image channels, adjust contrast and swap channels. A brief theory if you forgot what this function does. A cv::transform function multiplies each image pixel on 4x4 matrix and puts resulting vector to destination image. Input pixel is vector of 4 elements (unsigned bytes), each element contains channel intensity in following order: B, G, R, A. The matrix is represented by a 4x4 floating point (single precision) array. Our goal is to rewrite multiplication of 4x4 matrix on 4-element Vector. First, a wrapping function:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;namespace cv 
+{
+  void neon_transform_bgra(const cv::Mat&amp;amp; input, cv::Mat&amp;amp; result, const cv::Mat_&amp;amp; m)
+  {
+    assert(input.type() == CV_8UC4);
+    
+    if (result.rows != input.rows || result.cols != input.cols || result.type() != CV_8UC4)
+    {
+      result.create(input.rows, input.cols, CV_8UC4);
+    }
+    //result = input.clone();
+    //initSameSizeAlignedIfNecessary(m, result);
+    
+    //cv::Mat trans;
+    //cv::transpose(m, trans);
+    
+    float * matrix = reinterpret_cast&amp;lt;float*&amp;gt;(m.data);
+    
+    int v[4];
+    int out[4];
+    
+    for (int row = 0; row &amp;lt; input.rows; row++)
+    {
+      cv::Vec4b * srcRow = reinterpret_cast&amp;lt;cv::Vec4b*&amp;gt;(input.row(row).data);
+      cv::Vec4b * dstRow = reinterpret_cast&amp;lt;cv::Vec4b*&amp;gt;(result.row(row).data);
+      
+      for (int col = 0; col &amp;lt; input.cols; col++)
+      {
+        const cv::Vec4b&amp;amp; src = srcRow[col];
+        cv:Vec4b&amp;amp; dst        = dstRow[col];
+        
+        v[0] =  src[0];
+        v[1] =  src[1];
+        v[2] =  src[2];
+        v[3] =  src[3];
+        
+        neon_asm_mat4_vec4_mul(matrix, v, out);
+        
+        dst[0] = cv::saturate_cast&amp;lt;unsigned char&amp;gt;(out[0]);
+        dst[1] = cv::saturate_cast&amp;lt;unsigned char&amp;gt;(out[1]);
+        dst[2] = cv::saturate_cast&amp;lt;unsigned char&amp;gt;(out[2]);
+        dst[3] = cv::saturate_cast&amp;lt;unsigned char&amp;gt;(out[3]);
+      }
+    }
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>A battle of three descriptors: SURF, FREAK and BRISK</title>
+      <link>https://example.com/2012-08-18-a-battle-of-three-descriptors-surf-freak-and-brisk/</link>
+      <pubDate>Sat, 18 Aug 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2012-08-18-a-battle-of-three-descriptors-surf-freak-and-brisk/</guid>
+      <description>
+
+&lt;p&gt;I think developers and research guys who works with object recognition, image registration and other areas that uses keypoint extraction can find this post useful. Recently (from 2.4.2) a new feature descriptor algorithm was added to OpenCV library. FREAK descriptor is claimed to be superior to ORB and SURF descriptors, yet it&amp;rsquo;s very fast (comparable to ORB). Also people in comments on my blog mentioned BRISK descriptor which is also new and more efficient than SURF. Well, finally i find a time to compare them and publish my research results.&lt;/p&gt;
+
+&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+
+&lt;p&gt;This post will be very similar to &lt;a href=&#34;http://computer-vision-talks.com/2011/08/feature-descriptor-comparison-report/&#34; title=&#34;Feature descriptor comparison report&#34;&gt;OpenCV comparison reports&lt;/a&gt; i made in past. Although those reports were published years ago, they are still somewhat actual. For this test i decided to rewrite the whole testing framework from scratch. The source code will be available soon. But for now, let me explain what i did to find a best of three algorithms. What is main goal of converting image to descriptors? Move from pixel domain to more compact form of representation the same data. In addition we would like our representation be rotation and scale invariant (e.g representation remains the same or changes slightly when source image rotated or scaled). SURF, FREAK and BRISK descriptors claims they are rotation and scale invariant.&lt;/p&gt;
+
+&lt;h2 id=&#34;transformations&#34;&gt;Transformations&lt;/h2&gt;
+
+&lt;p&gt;Like in the OpenCV comparison report, test application works with test pattern image. And we have four basic transformations: rotation, scale, blur and brightness adjustment. Here how the rotation transformation class looks like:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;class ImageRotationTransformation : public ImageTransformation
+{
+public:
+    ImageRotationTransformation(float startAngleInDeg, float endAngleInDeg, float step, cv::Point2f rotationCenterInUnitSpace)
+    : ImageTransformation(&amp;quot;Rotation&amp;quot;)
+    , m_startAngleInDeg(startAngleInDeg)
+    , m_endAngleInDeg(endAngleInDeg)
+    , m_step(step)
+    , m_rotationCenterInUnitSpace(rotationCenterInUnitSpace)
+    {
+        // Fill the arguments
+        for (float arg = startAngleInDeg; arg &amp;lt; = endAngleInDeg; arg += step)
+            m_args.push_back(arg);
+    }
+
+    virtual std::vector getX() const
+    {
+        return m_args;
+    }
+
+    virtual void transform(float t, const cv::Mat&amp;amp; source, cv::Mat&amp;amp; result) const
+    {
+        cv::Point2f center(source.cols * m_rotationCenterInUnitSpace.x, source.cols * m_rotationCenterInUnitSpace.y);
+        cv::Mat rotationMat = cv::getRotationMatrix2D(center, t, 1);
+        cv::warpAffine(source, result, rotationMat, source.size());
+    }
+
+private:
+    float m_startAngleInDeg;
+    float m_endAngleInDeg;
+    float m_step;
+
+    cv::Point2f m_rotationCenterInUnitSpace;
+
+    std::vector m_args;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Other types of transformations looks similar. But it shows the idea.&lt;/p&gt;
+
+&lt;h2 id=&#34;featurealgorithm&#34;&gt;FeatureAlgorithm&lt;/h2&gt;
+
+&lt;p&gt;As you may know we need three components when dealing with descriptors:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Feature detector - class derived from cv::FeatureDetector class that implements particular detection algorithm. For example, cv::SurfFeatureDetector implements detection algorithm described in SURF paper.&lt;/li&gt;
+&lt;li&gt;Descriptor extractor - class derived from cv::DescriptorExtractor. It computes descriptors from passed keypoints. cv::SurfDescriptorExtractor will computer SURF descriptors.&lt;/li&gt;
+&lt;li&gt;Descriptor matcher - An instance of cv::BFMatcher of cv::FlannBasedMatcher classes is used to match two sets of descriptors.
+We store these three objects in FeatureAlgorithm class:
+&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;class FeatureAlgorithm
+{
+public:
+    FeatureAlgorithm(std::string name, cv::FeatureDetector* d, cv::DescriptorExtractor* e, cv::DescriptorMatcher* m);
+
+    std::string name;
+
+    bool knMatchSupported;
+
+    bool extractFeatures(const cv::Mat&amp;amp; image, Keypoints&amp;amp; kp, Descriptors&amp;amp; desc) const;
+
+    void matchFeatures(const Descriptors&amp;amp; train, const Descriptors&amp;amp; query, Matches&amp;amp; matches) const;
+    void matchFeatures(const Descriptors&amp;amp; train, const Descriptors&amp;amp; query, int k, std::vector&amp;amp; matches) const;
+
+private:
+    cv::FeatureDetector*     detector;
+    cv::DescriptorExtractor* extractor;
+    cv::DescriptorMatcher*   matcher;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;test-routine&#34;&gt;Test routine&lt;/h2&gt;
+
+&lt;p&gt;The main test function takes FeatureAlgorithm, Transformation and test image. As output we return list of matching statistics for each run. Here is a brief sequence:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Convert input image to grayscale&lt;/li&gt;
+&lt;li&gt;Detect keypoints and extract descriptors from input grayscale image&lt;/li&gt;
+&lt;li&gt;Generate all transformed images using passed transformation algorithm&lt;/li&gt;
+&lt;li&gt;For each of the transformed image:
+
+&lt;ul&gt;
+&lt;li&gt;Detect keypoints and extract descriptors&lt;/li&gt;
+&lt;li&gt;Match train descriptors and query&lt;/li&gt;
+&lt;li&gt;Split matches to inliers and outliers using homography estimation&lt;/li&gt;
+&lt;li&gt;Compute statistics (consumed time, total percent of matches, percent of correct matches, etc)
+The main cycle is paralleled using OpenMP, on my Quad Core i5 it loads all cores for 100% while doing test. Feature Algoritms:
+&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;algorithms.push_back(FeatureAlgorithm(&amp;quot;SURF/BRISK/BF&amp;quot;,
+        new cv::SurfFeatureDetector(),
+        new cv::BriskDescriptorExtractor(),
+        new cv::BFMatcher(cv::NORM_HAMMING, true)));
+
+algorithms.push_back(FeatureAlgorithm(&amp;quot;SURF/FREAK/BF&amp;quot;,
+        new cv::SurfFeatureDetector(),
+        new cv::FREAK(),
+        new cv::BFMatcher(cv::NORM_HAMMING, true)));
+
+algorithms.push_back(FeatureAlgorithm(&amp;quot;SURF/SURF/BF&amp;quot;,
+        new cv::SurfFeatureDetector(),
+        new cv::SurfDescriptorExtractor(),
+        new cv::BFMatcher(cv::NORM_L2, true)));
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Image transformations:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;transformations.push_back(new GaussianBlurTransform(9));
+transformations.push_back(new BrightnessImageTransform(-127, +127, 10));
+transformations.push_back(new ImageRotationTransformation(0, 360, 10, cv::Point2f(0.5f,0.5f)));
+transformations.push_back(new ImageScalingTransformation(0.25f, 2.0f, 0.1f));
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt; &lt;/p&gt;
+
+&lt;h2 id=&#34;metrics&#34;&gt;Metrics&lt;/h2&gt;
+
+&lt;p&gt;The following metrics are calculated:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Percent of matches&lt;/strong&gt; - quotient of dividing matches count on the minimum of keypoints count on two frames in percents.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Percent of correct matches&lt;/strong&gt; - quotient of dividing correct matches count on total matches count in percents.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Matching ratio&lt;/strong&gt; - percent of matches * percent of correct matches.
+In all charts i will use &amp;ldquo;Matching ratio&amp;rdquo; ( in percents) value for Y-axis.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;statistics&#34;&gt;Statistics&lt;/h2&gt;
+
+&lt;p&gt;After running all tests we collect statistics for each transformation and algorithm. The report table for particular transformation algorithm looks like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Argument SURF/BRISK/BF    SURF/FREAK/BF    SURF/SURF/BF
+       1           100          88.5965         82.6752
+       2           100          86.9608         79.1689
+       3           100          85.6069         70.6731
+       4           100          85.0897         64.9057
+       5           100          83.1528         59.4776
+       6           100          85.1648         58.9763
+       7           100          88.6447         59.3066
+       8           100          94.9109         64.8019
+       9           100          95.9707         69.1154
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To make a graphic representation i used Google Spreadsheets to import CSV tables and generate charts. You can find this spreadsheet here: &lt;a href=&#34;https://docs.google.com/spreadsheet/ccc?key=0AuBBvmQlA4pfdGtPRHM5alBkQUowZEVBNlFrZ1dIa0E#gid=2&#34;&gt;OpenCV 2.4.9 Features Comparison Report&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;results&#34;&gt;Results&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;chart_6.png&#34; alt=&#34;&#34; title=&#34;SURF vs FREAK vs BRISK descriptors comparison (rotation)&#34; /&gt; &lt;img src=&#34;chart_6-1.png&#34; alt=&#34;&#34; title=&#34;SURF vs FREAK vs BRISK descriptors comparison (scale)&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>OpenCV Tutorial - Part 6</title>
+      <link>https://example.com/2012-07-22-opencv-tutorial-part-6/</link>
+      <pubDate>Sun, 22 Jul 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2012-07-22-opencv-tutorial-part-6/</guid>
+      <description>
+
+&lt;p&gt;[toc] Hi folks! I’m glad to publish a sixth part of the OpenCV Tutorial cycle. In this post I will describe how to implement interesting non-photorealistic effect that makes image looks like a cartoon. It has numerous names: cartoon filter or simply “toon” also it known as rotoscoping. In addition we will refactor application interface and add tweeting feature to share your results across the web. According to the roadmap I promised to put the video recording module too, but due to lack of free time I decided to put it on hold for now. To compensate this in this part I will demonstrate how to get Sepia effect using simple matrix multiplication. Don’t afraid, video recording will be added, but later. I think after part 9, when most of the samples will be optimized using ARM NEON I will add this feature.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;interface-improvements&#34;&gt;Interface improvements&lt;/h2&gt;
+
+&lt;p&gt;I will never get tired to repeat that user experience is a top 1 priority for mobile apps. As a developer you have to think about users in the first order. Will the user be satisfied with your app or deletes it after using for 30 seconds – this depends only from you. I was unsatisfied with previous interface. Especially with those unintuitive icons and text labels. Many thanks for free icon packs where I got new toolbar icons for my app. With new interface I tried to make image and video views looks similar. The left toolbar button for image view responsible for selecting a photo; in the video mode I put a button that switches between front and back cameras to this position. The central place on a toolbar is taken by “options” button that shows the options for selected sample view (iPhone interface). The right button is a special action button that presents a list of action you can do: save image to album, tweet it or do anything else. Let’s take a look how our interface did evolved:&lt;/p&gt;
+
+&lt;h3 id=&#34;iphone-interface-improvements&#34;&gt;iPhone interface improvements&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&#34;Screen-Shot-2012-07-23-at-3.12.49-PM.png&#34; alt=&#34;&#34; title=&#34;Cartoon filter using Machine Eye&#34; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;ipad-interface-improvements&#34;&gt;iPad interface improvements&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&#34;Screen-Shot-2012-07-23-at-3.14.26-PM-1024x815.png&#34; alt=&#34;&#34; title=&#34;Sepia effect with Machine Eye&#34; /&gt; To eliminate duplicate code for two processing modes (image and video) we introduce a base class to store common data for derived views:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;typedef void (^TweetImageCompletionHandler)(); 
+typedef void (^SaveImageCompletionHandler)(); 
+
+#define kSaveImageActionTitle  @&amp;quot;Save image&amp;quot;
+#define kComposeTweetWithImage @&amp;quot;Tweet image&amp;quot;
+
+@interface BaseSampleViewController : UIViewController
+
+@property (readonly) SampleBase * currentSample;
+
+- (void) configureView;
+- (void) setSample:(SampleBase*) sample;
+- (void) tweetImage:(UIImage*) image withCompletionHandler: (TweetImageCompletionHandler) handler;
+- (void) saveImage:(UIImage*) image  withCompletionHandler: (SaveImageCompletionHandler) handler;
+
+@end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We will consider implementation of the tweetImage and saveImage function a little bit later. &lt;strong&gt;BaseSampleViewController&lt;/strong&gt; has a public readonly property to current sample, and a special &lt;strong&gt;setSample&lt;/strong&gt; function to change it. When a new sample is assigned it calls configureView to update the view title and perform other actions.&lt;/p&gt;
+
+&lt;h3 id=&#34;action-sheet-easy-way-to-perform-typical-actions&#34;&gt;Action sheet – easy way to perform typical actions&lt;/h3&gt;
+
+&lt;p&gt;You could notice that I’ve removed “Save” button from the toolbar. The main reason for this – I wanted to avoid adding “Tweet”, “Share”, “Save and email” buttons. All these actions should be grouped somewhere else. The ideal solution is to use &lt;strong&gt;UIActionSheet&lt;/strong&gt; control that will present available actions. Using this class is very easy: First, you need to instantiate action sheet with a list of available actions. For our case it will looks like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;self.actionSheet = [[UIActionSheet alloc] initWithTitle:@&amp;quot;Actions&amp;quot; 
+                                               delegate:self 
+                                      cancelButtonTitle:@&amp;quot;Cancel&amp;quot; 
+                                 destructiveButtonTitle:nil 
+                                      otherButtonTitles:kSaveImageActionTitle, 
+                                      kComposeTweetWithImage, nil];
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;String constants kSaveImageActionTitle and kComposeTweetWithImage has corresponding values &amp;ldquo;Save image&amp;rdquo; and &amp;ldquo;Tweet image&amp;rdquo;. The key step when we instantiate action sheet - to specify a delegate that will handle interaction with this action sheet. To implement &lt;strong&gt;UIActionSheetDelegate&lt;/strong&gt; protocol you must provide implementation at least for &lt;strong&gt;actionSheet:clickedButtonAtIndex:&lt;/strong&gt; method:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;- (void)actionSheet:(UIActionSheet *)senderSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+  NSString * title = [senderSheet buttonTitleAtIndex:buttonIndex];
+
+  if (title == kSaveImageActionTitle)
+  {
+    [self saveImage:self.imageView.image withCompletionHandler:nil];
+  }
+  else if (title == kComposeTweetWithImage)
+  {
+    [self tweetImage:self.imageView.image withCompletionHandler:nil];
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let&amp;rsquo;s imagine we are running a video processing and decide to save image. We press actions button on a toolbar then tap on &amp;ldquo;Save image&amp;rdquo; button, but the video source continue generating new frames. Expected behavior in this case is to suspend processing. To do this we pause video source when action sheet is shown and resume when it dismissed. &lt;strong&gt;UIActionSheetDelegate&lt;/strong&gt; provides a method &lt;strong&gt;willPresentActionSheet&lt;/strong&gt; called before action sheet will appear:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;- (void)willPresentActionSheet:(UIActionSheet *)actionSheet;  // before animation and showing view
+{
+  [videoSource stopRunning];
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So we pause video source when action sheet appears. To resume processing frames we will use &lt;strong&gt;actionSheet:clickedButtonAtIndex&lt;/strong&gt; method. If clicked button index does not corresponds to known action we simply resume video source because action sheet will be dismissed soon. But if user ask to tweet or save image, we invoke corresponding method and resume video source only after this action is complete. Since tweeting involves presenting tweet compose view it&amp;rsquo;s reasonable to pause all processing and continue when the all work is done.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;- (void)actionSheet:(UIActionSheet *)senderSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+  NSString * title = [senderSheet buttonTitleAtIndex:buttonIndex];
+
+  if (title == kSaveImageActionTitle)
+  {
+    UIImage * image = [UIImage imageWithMat:outputFrame.clone() andDeviceOrientation:[[UIDevice currentDevice] orientation]];
+    [self saveImage:image withCompletionHandler: ^{ [videoSource startRunning]; }];
+  }
+  else if (title == kComposeTweetWithImage)
+  {
+    UIImage * image = [UIImage imageWithMat:outputFrame.clone() andDeviceOrientation:[[UIDevice currentDevice] orientation]];
+    [self tweetImage:image withCompletionHandler:^{ [videoSource startRunning]; }];
+  }
+  else
+  {
+    [videoSource startRunning];
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;sepia-negative-and-other-simple-effects&#34;&gt;Sepia, negative and other simple effects&lt;/h2&gt;
+
+&lt;h3 id=&#34;brightness-and-contrast-adjustments&#34;&gt;Brightness and contrast adjustments&lt;/h3&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>OpenCV Tutorial - Part 5</title>
+      <link>https://example.com/2012-07-14-opencv-tutorial-part-5/</link>
+      <pubDate>Sat, 14 Jul 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2012-07-14-opencv-tutorial-part-5/</guid>
+      <description>
+
+&lt;p&gt;&lt;img src=&#34;Screen-Shot-2012-07-11-at-12.12.42-AM.png&#34; alt=&#34;&#34; title=&#34;OpenCV Tutorial Options&#34; /&gt; Hello readers! The fifth part of the OpenCV Tutorial is here! In this post we will add options pane for our samples. In the end of this chapter our application will receive options interface as shown on screenshot. But first, let me remind you (if you came here for the first time) what is happening here. The &amp;ldquo;OpenCV Tutorial&amp;rdquo; is a open-source project maintained by me (Eugene Khvedchenya). My goal - create a  iPhone/iPad application to demonstrate various image processing algorithms of OpenCV library and how to use them in iOS applications. Please check previous parts if you haven&amp;rsquo;t done this yet:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://computer-vision-talks.com/2012/06/opencv-tutorial-a-collection-of-opencv-samples-for-iphoneipad-part-1/&#34; title=&#34;OpenCV Tutorial – a collection of OpenCV samples for iPhone/iPad – Part 1&#34;&gt;Part 1 - Introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://computer-vision-talks.com/2012/06/opencv-tutorial-part-2/&#34; title=&#34;OpenCV Tutorial – Part 2&#34;&gt;Part 2 - Writing a base UI&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://computer-vision-talks.com/2012/06/opencv-tutorial-part-3/&#34; title=&#34;OpenCV Tutorial – Part 3&#34;&gt;Part 3 - Video and image processing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://computer-vision-talks.com/2012/07/opencv-tutorial-part-4/&#34; title=&#34;OpenCV Tutorial – Part 4&#34;&gt;Part 4 - Correction of mistakes&lt;/a&gt;
+Also, there is great &lt;a href=&#34;http://computer-vision-talks.com/opencv-tutorial-roadmap/&#34; title=&#34;OpenCV Tutorial roadmap&#34;&gt;OpenCV Tutorial roadmap&lt;/a&gt;. I&amp;rsquo;m trying to follow it. As usually, all source code can be found on a GitHub: &lt;a href=&#34;https://github.com/BloodAxe/OpenCV-Tutorial&#34;&gt;OpenCV Tutorial&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;sample-options&#34;&gt;Sample options&lt;/h2&gt;
+
+&lt;p&gt;To expose algorithm options to user code we add a bunch of &amp;ldquo;registerOption&amp;rdquo; functions that allows to register properties. Registered properties can be changed in future using user interface. Our application will support four property types: boolean, integer, float and string enum types.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Boolean&lt;/strong&gt; - this option can be used as a switch to enable or disable particular sample features.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Integer&lt;/strong&gt; - this option allows adjust any kind of thresholds of integer type.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Float&lt;/strong&gt; - this option allows adjust any kind of thresholds of real type.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;String enum&lt;/strong&gt; - this option is ideal choice if you want to select one of available options.
+Let&amp;rsquo;s take a look to SampleBase::registerOption functions. Each overload allows to register option of each supported property type. Overloaded functions of Integer and Float types also allows you to specify minimum and maximum allowed values. Each option has it&amp;rsquo;s unique name, section that allows to group options to logical sections and pointer to property value.
+&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;//! Base class for all samples
+class SampleBase
+{
+public:
+  ...
+
+  const OptionsMap&amp;amp; getOptions() const;
+
+protected:
+  void registerOption(std::string name, std::string section, bool  * value);
+  void registerOption(std::string name, std::string section, int   *  value, int min, int max);
+  void registerOption(std::string name, std::string section, float *  value, float min, float max);
+  void registerOption(std::string name, std::string section, std::string* value, std::vector stringEnums, int defaultValue = 0);
+
+private:
+  OptionsMap m_optionsWithSections;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Typical use of these functions is shown in EdgeDetectionSample constructor. This this method we register available edge detection algorithm (String Enum), algorithm parameters (Integer and Real types), a switch to control how the output image looks - edges only or blended one (Boolean).&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;EdgeDetectionSample::EdgeDetectionSample()
+: m_showOnlyEdges(true)
+, m_algorithmName(&amp;quot;Canny&amp;quot;)
+, m_cannyLoThreshold(50)
+, m_cannyHiThreshold(150)
+, m_harrisBlockSize(2)
+, m_harrisapertureSize(3)
+, m_harrisK(0.04f)
+, m_harrisThreshold(200)
+{
+  std::vector algos;
+  algos.push_back(&amp;quot;Canny&amp;quot;);
+  algos.push_back(&amp;quot;Sobel&amp;quot;);
+  algos.push_back(&amp;quot;Schaar&amp;quot;);
+
+  registerOption(&amp;quot;Algorithm&amp;quot;,       &amp;quot;&amp;quot;, &amp;amp;m;_algorithmName, algos);  
+  registerOption(&amp;quot;Show only edges&amp;quot;, &amp;quot;&amp;quot;, &amp;amp;m;_showOnlyEdges);
+
+  // Canny detector options
+  registerOption(&amp;quot;Threshold 1&amp;quot;, &amp;quot;Canny&amp;quot;, &amp;amp;m;_cannyLoThreshold, 0, 100); 
+  registerOption(&amp;quot;Threshold 2&amp;quot;, &amp;quot;Canny&amp;quot;, &amp;amp;m;_cannyHiThreshold, 0, 200); 
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;All properties are stored in the m_optionsWithSections class field. There is a potential memory leak, because options are not deleted, but since each sample is created only once and deleted only when application exits we leave this as is. To access registered properties we expose public function getOptions().&lt;/p&gt;
+
+&lt;h2 id=&#34;presenting-options-in-ui&#34;&gt;Presenting options in UI&lt;/h2&gt;
+
+&lt;p&gt;To present registered options we will use UITableView class, where each table row corresponds to single option. Filling table view with dynamic data a little bit tricky. We have to complete few steps:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Implement UITableViewDelegate and UITableViewDataSource interfaces and connect them to our table. The first protocol provides a data four out table from the registered options. The second protocol modifies default table behavior as we wants to.&lt;/li&gt;
+&lt;li&gt;For each property type we have to create a custom cell view that allows modifying underlying value. During data binding we will be responsible to create a view that corresponds to property type.&lt;/li&gt;
+&lt;li&gt;When the property is changed from the user interface we have to inform our view controller about this via callback.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Let&amp;rsquo;s start from creating a custom cells.&lt;/p&gt;
+
+&lt;h3 id=&#34;optioncell&#34;&gt;OptionCell&lt;/h3&gt;
+
+&lt;p&gt;Each cell has a notification delegate used to inform a user code when algorithm property has been changed. Also there will be a readonly property cellHeight that define a designed cell height:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;@protocol OptionCellDelegate 
+
+- (void) optionDidChanged:(SampleOption*) option;
+
+@end 
+
+@interface OptionCell : UITableViewCell
+
+@property (readonly) float cellHeight;
+@property id delegate;
+
+@end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To create a custom cell we subclass from OptionCell type and add corresponding XIB file that contains it&amp;rsquo;s interface. We also assigne the reusable identifier for each cell type. Quote from &lt;a href=&#34;http://developer.apple.com/library/ios/#DOCUMENTATION/UIKit/Reference/UITableView_Class/Reference/Reference.html#//apple_ref/occ/instm/UITableView/dequeueReusableCellWithIdentifier&#34; title=&#34;UITableView Class Reference&#34;&gt;UITableView Class Reference&lt;/a&gt;:&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>OpenCV Tutorial - Part 4</title>
+      <link>https://example.com/2012-07-07-opencv-tutorial-part-4/</link>
+      <pubDate>Sat, 07 Jul 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2012-07-07-opencv-tutorial-part-4/</guid>
+      <description>
+
+&lt;p&gt;This is the fourth part of the OpenCV Tutorial. In this part the solution of the annoying iOS video capture orientation bug will be described. Of course that&amp;rsquo;s not all. There are some new features - we will add processing of saved photos from your photo album. Also to introduce minor interface improvements and I&amp;rsquo;ll show you how to disable unsupported API like video capture in your app and run in on iOS Simulator.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;startup-images&#34;&gt;Startup images&lt;/h2&gt;
+
+&lt;p&gt;  First of all, i would like to say a great thanks for my friend who made nice startup images for this project. I&amp;rsquo;m really loving them, good graphics make application looks like a pro. Thanks Eugene. By the way, if you looking for free-lance graphic designer - feel free to contact him anytime. So i got a bunch of startup images. With regards to iOS guidelines, to fulfill all possible cases you need 6 different images - two for iPhone (for old one and for retina display) and four for iPad family (in portrait and landscape orientation for both retina and non-retina displays). Assigning them to XCode project was a trivial task - just drag and drop them to project options:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;Screen-Shot-2012-07-07-at-10.56.47-AM.png&#34; alt=&#34;&#34; title=&#34;OpenCV Tutorial icons&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;device-interface-and-video-orientation&#34;&gt;Device, Interface and Video orientation&lt;/h2&gt;
+
+&lt;p&gt;In the part 3 we created video capture class that use AVFoundation to get raw data from camera capture input. To present our images we introduced GLESImageView class. The motivation was to have fast rendering of bitmaps. But we experienced a problem with video orientation. If we were using AVVideoCapturePreviewLayer then iOS API take care about video/device/interface orientation by itself. But since our choice to use low-level capture API it&amp;rsquo;s our headache. Fortunately, we have to do only one thing - apply the correct rotation for our texture with image with regards to the interface orientation. There is a slight difference between device orientation and interface orientation. The device orientation refers to physical orientation of your device in the world, while interface orientation refers to orientation of UI controls on the screen. To get the current interface orientation you will need an instance of UIViewController object that holds our GLESImageView. We can access interface orientation like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;UIInterfaceOrientation uiOrientation = [viewController interfaceOrientation];
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To follow SRP we put orientation handling code inside to GLESImageView class. To access the parent view controller from any view you can use following snippet code that i found somewhere on stackoverflow.com: &lt;strong&gt;GLESImageView.mm&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;- (UIViewController *)viewController
+{
+  UIResponder *responder = self;
+  while (![responder isKindOfClass:[UIViewController class]])
+  {
+  responder = [responder nextResponder];
+  if (nil == responder)
+  {
+    break;
+  }
+  }
+
+  return (UIViewController *)responder;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;camera-frame-orientation&#34;&gt;Camera frame orientation&lt;/h2&gt;
+
+&lt;p&gt;There is another one kind of orientation - AVCaptureVideoOrientation type. This enum defines the physical orientation of the images captured with particular capture device. The video orientation differs for front and rear cameras. Here is a proof link - &lt;a href=&#34;http://developer.apple.com/library/ios/#qa/qa1744/_index.html#//apple_ref/doc/uid/DTS40011134&#34;&gt;Technical Q&amp;amp;A QA1744&lt;/a&gt;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;The iPod touch, iPhone 4 and iPad 2 front facing camera is mounted AVCaptureVideoOrientationLandscapeLeft, and the back-facing camera is mounted AVCaptureVideoOrientationLandscapeRight.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Also i draw your attention that AVCaptureVideoDataOutput does not support setting video orientation using API:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Currently, the capture outputs for a movie file (AVCaptureMovieFileOutput) and still image (AVCaptureStillImageOutput) support setting the orientation, but the data output for processing video frames (AVCaptureVideoDataOutput) does not.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Well, it&amp;rsquo;s not so bat, actually. To handle different orientation of rear and front camera we can use simple flip operation. This brings AVCaptureVideoOrientationLandscapeLeft to AVCaptureVideoOrientationLandscapeRight. We&amp;rsquo;ll use this video orientation as a standard orientation: &lt;strong&gt;VideoSource.mm&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;- (void)captureOutput:(AVCaptureOutput *)captureOutput 
+didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer 
+       fromConnection:(AVCaptureConnection *)connection 
+{ 
+  ... 
+
+  cv::Mat frame(height, width, CV_8UC4, (void*)baseAddress, stride);
+
+  if ([self videoOrientation] == AVCaptureVideoOrientationLandscapeLeft)
+  {
+    cv::flip(frame, frame, 0);
+  }
+
+  ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;There is four possible interface orientations - Portrait, PortraitUpsideDown, LandscapeLeft, LandscapeRight. So we can define four sets of texture coordinates that does correct visualization of our bitmap. At every frame we choose right set of texture coordinates with regards to interface orientation. Here is a code that i use: &lt;strong&gt;GLESImageView.mm&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;- (void)drawFrame:(const cv::Mat&amp;amp;) bgraFrame
+{
+  ...
+
+  GLfloat * textureVertices;
+  static GLfloat textureVerticesPortrait[] =
+  {
+    1, 1,   1, 0,
+    0, 1,   0, 0
+  };  
+
+  static GLfloat textureVerticesPortraitUpsideDown[] =
+  {
+    0, 0,   0, 1,
+    1, 0,   1, 1
+  };
+
+  static GLfloat textureVerticesLandscapeLeft[] =
+  {
+    1, 0,   0, 0,
+    1, 1,   0, 1
+  };  
+
+  static GLfloat textureVerticesLandscapeRight[] =
+  {
+    0, 1,   1, 1,
+    0, 0,   1, 0
+  }; 
+
+  switch (uiOrientation)
+  {
+    case UIInterfaceOrientationPortrait:
+      textureVertices = textureVerticesPortrait;
+      break;
+
+    case UIInterfaceOrientationPortraitUpsideDown:
+      textureVertices = textureVerticesPortraitUpsideDown;
+      break;
+
+    case UIInterfaceOrientationLandscapeLeft:
+      textureVertices = textureVerticesLandscapeLeft;
+      break;
+
+    case UIInterfaceOrientationLandscapeRight:
+    default:
+      textureVertices = textureVerticesLandscapeRight;
+      break;
+  };
+    ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Using this we select correct texture coordinates. The rest of drawing code left without changes. Great, now it seems that video looks correct at every orientation. Cool! Let&amp;rsquo;s move on.&lt;/p&gt;
+
+&lt;h2 id=&#34;processing-saved-photos&#34;&gt;Processing saved photos&lt;/h2&gt;
+
+&lt;p&gt;Although processing video frames in real-time is awesome by itself, i though that adding a possibility to process a saved picture is also worth to be implemented. All the more so it&amp;rsquo;s easier to implement than video processing. As usual, we start from creating a new ImageViewController class. Our view will contains UIImageView control to present processed result on the View. Like the VideoViewController, our class also requires a SampleBase object and input image to process.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;Screen-Shot-2012-07-07-at-11.14.25-AM.png&#34; alt=&#34;&#34; title=&#34;Edge detection of saved photo&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This is how it looks. Two buttons in the top right corner is action buttons - the &amp;ldquo;Save&amp;rdquo; button puts a processed image to a saved photos album, the second button with camera picture - allows you to select another one image for processing.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;ImageViewController.h&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;@interface ImageViewController : UIViewController 
+
+- (void) setSample:(SampleBase*) sample;
+- (void) setImage:(UIImage*) image;
+
+@property (weak, nonatomic) IBOutlet UIImageView *imageView;
+
+@end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;ImageViewController.mm&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;- (void)viewDidLoad
+{
+  [super viewDidLoad];
+  // Do any additional setup after loading the view.
+  self.navigationItem.rightBarButtonItems = [NSArray arrayWithObjects:
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>OpenCV Tutorial - Part 3</title>
+      <link>https://example.com/2012-06-27-opencv-tutorial-part-3/</link>
+      <pubDate>Wed, 27 Jun 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2012-06-27-opencv-tutorial-part-3/</guid>
+      <description>
+
+&lt;p&gt;In &lt;a href=&#34;http://computer-vision-talks.com/2012/06/opencv-tutorial-a-collection-of-opencv-samples-for-iphoneipad-part-1/&#34; title=&#34;OpenCV Tutorial – a collection of OpenCV samples for iPhone/iPad – Part 1&#34;&gt;Part 1&lt;/a&gt; and &lt;a href=&#34;http://computer-vision-talks.com/2012/06/opencv-tutorial-part-2/&#34; title=&#34;OpenCV Tutorial – Part 2&#34;&gt;Part 2&lt;/a&gt; we created base application for our &amp;ldquo;OpenCV Tutorial&amp;rdquo; application. In this part we add video source to process frames using our samples and present the result to user. As usual, you can find source code for this application at &lt;a href=&#34;https://github.com/BloodAxe/OpenCV-Tutorial&#34; title=&#34;OpenCV Tutorial Repository&#34;&gt;github&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;video-capture-in-ios&#34;&gt;Video capture in iOS&lt;/h2&gt;
+
+&lt;p&gt;At this moment (as far as i know) there OpenCV&amp;rsquo;s cv::VideoCapture does not support iOS platform. Therefore we have to use iOS AVFoundation API to setup video capture. This is more complicated that write cv::VideoCapture(&amp;ldquo;YourVideoFileName.avi&amp;rdquo;) but it&amp;rsquo;s not a rocket science.  There is a great Apple documentation article &lt;a href=&#34;http://developer.apple.com/library/ios/#DOCUMENTATION/AudioVideo/Conceptual/AVFoundationPG/Articles/00_Introduction.html&#34; title=&#34;AV Foundation Programming Guide&#34;&gt;AV Foundation Programming Guide&lt;/a&gt; that i strongly advice you to read. &lt;strong&gt;By the way, before I forget - video capture is not supported on iOS simulator. You&amp;rsquo;ll need real device to test your app!&lt;/strong&gt; To manage the capture from a device such as a camera or microphone, you assemble objects to represent inputs and outputs, and use an instance of &lt;code&gt;AVCaptureSession&lt;/code&gt; to coordinate the data flow between them. Minimally you need:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;An instance of &lt;code&gt;AVCaptureDevice&lt;/code&gt; to represent the input device, such as a camera or microphone&lt;/li&gt;
+&lt;li&gt;An instance of a concrete subclass of &lt;code&gt;AVCaptureInput&lt;/code&gt; to configure the ports from the input device&lt;/li&gt;
+&lt;li&gt;An instance of a concrete subclass of &lt;code&gt;AVCaptureOutput&lt;/code&gt; to manage the output to a movie file or still image&lt;/li&gt;
+&lt;li&gt;An instance of &lt;code&gt;AVCaptureSession&lt;/code&gt; to coordinate the data flow from the input to the output
+&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;To put all things together we introduce VideoSource class which incapsulate initialization and video capture routine. Let&amp;rsquo;s take a look on it&amp;rsquo;s interface:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;@protocol VideoSourceDelegate 
+
+- (void) frameCaptured:(cv::Mat) frame;
+
+@end
+
+@interface VideoSource : NSObject
+
+@property id delegate;
+
+- (bool) hasMultipleCameras;
+- (void) toggleCamera;
+- (void) startRunning;
+- (void) stopRunning;
+
+@end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The VideoSourceDelegate protocol defines a callback procedure that user code can handle. The frameCaptured method is called when the frame is received from a camera device. We wrap it in cv::Mat structure for latter use. Initialization of VideoCamera is also not complicated: we create capture session, add video input and video output:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;- (id) init
+{
+  if (self = [super init])
+  {
+    currentCameraIndex = 0;
+    session = [[AVCaptureSession alloc] init];
+    [session setSessionPreset:AVCaptureSessionPreset640x480];
+    captureDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+
+    AVCaptureDevice *videoDevice = [captureDevices objectAtIndex:0];
+
+    NSError * error;
+    captureInput = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:&amp;amp;error];
+
+    if (error)
+    {
+      NSLog(@&amp;quot;Couldn&#39;t create video input&amp;quot;);
+    }
+
+    captureOutput = [[AVCaptureVideoDataOutput alloc] init];
+    captureOutput.alwaysDiscardsLateVideoFrames = YES; 
+
+    // Set the video output to store frame in BGRA (It is supposed to be faster)
+    NSString* key = (NSString*)kCVPixelBufferPixelFormatTypeKey; 
+    NSNumber* value = [NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA]; 
+    NSDictionary* videoSettings = [NSDictionary dictionaryWithObject:value forKey:key]; 
+    [captureOutput setVideoSettings:videoSettings];    
+
+    /*We create a serial queue to handle the processing of our frames*/
+    dispatch_queue_t queue;
+    queue = dispatch_queue_create(&amp;quot;com.computer-vision-talks.cameraQueue&amp;quot;, NULL);
+    [captureOutput setSampleBufferDelegate:self queue:queue];
+    dispatch_release(queue);
+
+    [session addInput:captureInput];
+    [session addOutput:captureOutput];
+  }
+
+  return self;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Please not that we query all video devices available using the [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo] call to get them all. This feature allows us to toggle between front and rear cameras in runtime. Also we set capture session preset to 640x480 because the larger the image the more it it need to be processed by our algorithms. 640x480 is a good choice. As our last step we configure capture output to pass our frames in BGRA format. For our image processing it&amp;rsquo;s the ideal case. In case when our video source has several video inputs we can toggle between them using toggleCamera method:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;- (void) toggleCamera
+{
+  currentCameraIndex++;
+  int camerasCount = [captureDevices count];
+  currentCameraIndex = currentCameraIndex % camerasCount;
+
+  AVCaptureDevice *videoDevice = [captureDevices objectAtIndex:currentCameraIndex];
+
+  [session beginConfiguration];
+
+  if (captureInput)
+  {
+    [session removeInput:captureInput];
+  }
+
+  NSError * error;
+  captureInput = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:&amp;amp;error];
+
+  if (error)
+  {
+    NSLog(@&amp;quot;Couldn&#39;t create video input&amp;quot;);
+  }
+
+  [session addInput:captureInput];
+  [session setSessionPreset:AVCaptureSessionPreset640x480];
+  [session commitConfiguration];
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In this function we cycle through available inputs and add them to capture session (do not forget to remove previous input) and set the capture preset again (just in case). Switching between from and rear camera is initiated by the user by tapping on toggle button (we will talk about it a bit later). Just one thing left - we should implement AVCaptureVideoDataOutputSampleBufferDelegate in our VideoSource class to receive frames from AVFoundation API like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;- (void)captureOutput:(AVCaptureOutput *)captureOutput 
+didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer 
+       fromConnection:(AVCaptureConnection *)connection 
+{ 
+  if (!delegate)
+    return;
+
+  CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer); 
+
+  /*Lock the image buffer*/
+  CVPixelBufferLockBaseAddress(imageBuffer,0); 
+
+  /*Get information about the image*/
+  uint8_t *baseAddress = (uint8_t *)CVPixelBufferGetBaseAddress(imageBuffer); 
+  size_t width = CVPixelBufferGetWidth(imageBuffer); 
+  size_t height = CVPixelBufferGetHeight(imageBuffer);  
+  size_t stride = CVPixelBufferGetBytesPerRow(imageBuffer);
+  //NSLog(@&amp;quot;Frame captured: %lu x %lu&amp;quot;, width,height);
+
+  cv::Mat frame(height, width, CV_8UC4, (void*)baseAddress);
+
+  [delegate frameCaptured:frame];
+
+  /*We unlock the  image buffer*/
+  CVPixelBufferUnlockBaseAddress(imageBuffer,0);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In this method we obtain raw data in BGRA format from CoreMedia and put them input cv::Mat (no data is copied here). And then we call [delegate frameCaptured:] to inform user code that new frame is available.&lt;/p&gt;
+
+&lt;h2 id=&#34;displaying-processed-frames&#34;&gt;Displaying processed frames&lt;/h2&gt;
+
+&lt;p&gt;Since we working with video processing it&amp;rsquo;s obviously to present the result of video processing in real-time on the screen. To secure the appropriate FPS we have to redraw our screen fast. The existing UIImageView control cannot be used here because we&amp;rsquo;ll spent to much time on unnecessary image conversion (cv::Mat to UIImage) and drawing UIImage on the ImageView. For our goal the fastest way to draw the picture is to use OpenGL ES and GLView to draw our bitmap using GPU. In this section i&amp;rsquo;ll show you how to create simple view that able to draw cv::Mat in real-time. To secure this&amp;rsquo;ll UIView and to EAGLContext using it. This allows us to use OpenGL API to draw textured rectangle on top of our view as fast as possible. For user code we expose only single function that is can use:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;@interface GLESImageView : UIView
+
+- (void)drawFrame:(const cv::Mat&amp;amp;) bgraFrame;
+
+@end
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>OpenCV Tutorial - Part 2</title>
+      <link>https://example.com/2012-06-24-opencv-tutorial-part-2/</link>
+      <pubDate>Sun, 24 Jun 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2012-06-24-opencv-tutorial-part-2/</guid>
+      <description>
+
+&lt;p&gt;&lt;img src=&#34;Screen-Shot-2012-06-24-at-1.27.46-PM-300x159.png&#34; alt=&#34;&#34; title=&#34;Screen Shot 2012-06-24 at 1.27.46 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In the &lt;a href=&#34;http://computer-vision-talks.com/2012/06/opencv-tutorial-a-collection-of-opencv-samples-for-iphoneipad-part-1/&#34; title=&#34;OpenCV Tutorial – a collection of OpenCV samples for iPhone/iPad – Part 1&#34;&gt;previous step&lt;/a&gt; we created Master-Detail XCode project and linked OpenCV library to it. Also we defined a base interface for all samples. Today we&amp;rsquo;ll write some UI logic to integrate our samples into the application. &lt;/p&gt;
+
+&lt;h2 id=&#34;one-ring-to-rule-them-all&#34;&gt;One ring to rule them all&lt;/h2&gt;
+
+&lt;p&gt;Since we are going to store a lot of samples (i hope so), we have to store them somewhere. I think for our application the ideal place to save them is our application delegate class. Since we create instance of each sample only once at startup and they required to be alive for all application lifecycle there is no better place to store them:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;@interface AppDelegate : UIResponder 
+{
+@public
+  std::vector allSamples;
+}
+@property (strong, nonatomic) UIWindow *window;
+
+@end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We initialize vector of samples at application startup point like that:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+
+  allSamples.push_back( new ContourDetectionSample() );
+  allSamples.push_back( new EdgeDetectionSample());
+  // Add a lot of other samples here ...
+
+    // Override point for customization after application launch.
+  if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
+  {
+      UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
+      UINavigationController *navigationController = [splitViewController.viewControllers lastObject];
+      splitViewController.delegate = (id)navigationController.topViewController;
+  }
+    return YES;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To access our sample collection we will use following snippet:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;AppDelegate * appDel = [UIApplication sharedApplication].delegate;
+appDel-&amp;gt;allSamples;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;displaying-samples-in-master-view&#34;&gt;Displaying samples in master view&lt;/h2&gt;
+
+&lt;p&gt;We use table view to display a list of sample titles. Table view controller allows us to control process of databinding by overriding few methods:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+  return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+  AppDelegate * appDel = [UIApplication sharedApplication].delegate;
+  return appDel-&amp;gt;allSamples.size();
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+  AppDelegate * appDel = [UIApplication sharedApplication].delegate;
+  SampleBase * sample = appDel-&amp;gt;allSamples[indexPath.row];
+
+  UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@&amp;quot;Cell&amp;quot;];
+
+  std::string sampleName = sample-&amp;gt;getName();
+
+  cell.textLabel.text = [NSString stringWithCString:sampleName.c_str() encoding:NSASCIIStringEncoding];
+
+  return cell;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+  // Return NO if you do not want the specified item to be editable.
+  return NO;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This will give us following look of the master view: &lt;img src=&#34;Screen-Shot-2012-06-24-at-1.39.37-PM.png&#34; alt=&#34;&#34; title=&#34;Screen Shot 2012-06-24 at 1.39.37 PM&#34; /&gt; Now we have to tell application how to react when user taps on particular sample. When this happes application should navigate to detail view and show sample detailed description, it&amp;rsquo;s icon and &amp;ldquo;Run Sample&amp;rdquo; button. To do this we override following selection callbacks:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+  if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
+  {
+    AppDelegate * appDel = [UIApplication sharedApplication].delegate;
+    SampleBase * sample = appDel-&amp;gt;allSamples[indexPath.row];
+
+    [self.detailViewController setDetailItem:sample];
+  }
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+  if ([[segue identifier] isEqualToString:@&amp;quot;showDetail&amp;quot;])
+  {
+    NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
+
+    AppDelegate * appDel = [UIApplication sharedApplication].delegate;
+    SampleBase * sample = appDel-&amp;gt;allSamples[indexPath.row];
+
+    [[segue destinationViewController] setDetailItem:sample];
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In these methods we initialize detail view with instance of selected sample and present it. Two different methods is necessary since our application supports both iPhone and iPad devices, so we have to support both idioms.&lt;/p&gt;
+
+&lt;h2 id=&#34;displaying-sample-in-detail-view&#34;&gt;Displaying sample in detail view&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;Screen-Shot-2012-06-24-at-1.43.34-PM.png&#34; alt=&#34;&#34; title=&#34;Screen Shot 2012-06-24 at 1.43.34 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The detail view has large text view to present sample description text, also it shows sample icon and a &amp;ldquo;Run Sample&amp;rdquo; button that starts this sample. The DetailViewController updates content of this view with the given sample using the configureView method, which is called when the sample is selected in master view. Each sample can have it&amp;rsquo;s own icon image (150x150 pixels for iPhone and 300x300 for iPad). To make our app look like a pro we add this feature since no one loves text without illustrations.&lt;/p&gt;
+
+&lt;p&gt;When a DetailViewController is shown it update it&amp;rsquo;s state with a corresponding sample object using following method:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;- (void)configureView
+{
+    // Update the user interface for the detail item.
+
+  if (currentSample)
+  {
+    std::string name = currentSample-&amp;gt;getName();
+    std::string desc = currentSample-&amp;gt;getDescription();
+    std::string icon = currentSample-&amp;gt;getSampleIcon();
+
+    NSString * nameStr = [NSString stringWithCString:desc.c_str() encoding:NSASCIIStringEncoding];
+    NSString * descStr = [NSString stringWithCString:name.c_str() encoding:NSASCIIStringEncoding];
+
+    self.sampleDescriptionTextView.text = descStr;
+    self.title = nameStr;     
+
+    if (!icon.empty())
+    {
+      NSString * iconStr = [NSString stringWithCString:icon.c_str() encoding:NSASCIIStringEncoding];
+      self.sampleIconView.image = [UIImage imageNamed:iconStr];
+    }
+    else
+    {
+      self.sampleIconView.image = nil;
+    }
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The &amp;ldquo;Run Sample&amp;rdquo; button will launch this sample, but now it does nothing since we haven&amp;rsquo;t wrote any image processing code. In the next part we create a SampleViewController to present results of image processing and write our first  sample - Edge Detection demonstration.&lt;/p&gt;
+
+&lt;p&gt;Let me stop right now and wish you good luck with studying OpenCV and iOS development. You can find project sources at &lt;a href=&#34;https://github.com/BloodAxe/OpenCV-Tutorial&#34; title=&#34;OpenCV Tutorial&#34;&gt;OpenCV Tutorial repository&lt;/a&gt; on GitHub.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>OpenCV Tutorial - Part 1</title>
+      <link>https://example.com/2012-06-23-opencv-tutorial-part-1/</link>
+      <pubDate>Sat, 23 Jun 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2012-06-23-opencv-tutorial-part-1/</guid>
+      <description>
+
+&lt;p&gt;As i recently mentioned, i decided to write a brand new OpenCV tutorial application for iPhone/iPad devies. This development is open-source and anyone can access it on &lt;a href=&#34;https://github.com/BloodAxe/OpenCV-Tutorial&#34;&gt;https://github.com/BloodAxe/OpenCV-Tutorial&lt;/a&gt; repository page. Your help are welcome to write a UI for this app and help writing sample demonstration cases. Feel free to clone repository and make your contribution!&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;opencv-tutorial&#34;&gt;OpenCV Tutorial&lt;/h2&gt;
+
+&lt;p&gt;The application startup screen will present master-detail view as a list of available samples. The master table view will present a list of samples available, while the detailed view - a sample description and it&amp;rsquo;s icon perhaps. For each sample a still image can be used as a input data for processing. Also, processing of a video source from device camera will be also supported. We start from creating a new XCode project as shown on next figure: &lt;img src=&#34;Screen-Shot-2012-06-23-at-2.59.18-PM.png&#34; alt=&#34;&#34; title=&#34;Master-detail XCode template project&#34; /&gt; Then we link OpenCV library with this project. Here is a brief task list: 1) Get a pre-build or build your own OpenCV static library using OpenCV build script and copy it to the same folder where XCode project is located like this: &lt;img src=&#34;Screen-Shot-2012-06-23-at-8.40.23-PM.png&#34; alt=&#34;&#34; title=&#34;Screen Shot 2012-06-23 at 8.40.23 PM&#34; /&gt; 2) Add $(SRCROOT)/opencv to header search path and $(SRCROOT)/opencv/lib/debug for library search path for debug configuration and $(SRCROOT)/opencv/lib/release for release build. 3) Add OpenCV libs to linker input by modifying &amp;ldquo;Other Linker Flags&amp;rdquo; option with &amp;ldquo;-lopencv_calib3d -lzlib -lopencv_contrib -lopencv_legacy -lopencv_features2d -lopencv_imgproc -lopencv_video -lopencv_core&amp;rdquo;. 4) Add OpenCV headers to precompiled header file like that:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;#ifdef __cplusplus
+#include &amp;lt;opencv2/opencv.hpp&amp;gt;
+#endif
+
+#ifdef __OBJC__
+  #import &amp;lt;UIKit/UIKit.h&amp;gt;
+  #import &amp;lt;Foundation/Foundation.h&amp;gt;
+#endif
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Please note that OpenCV include directive placed before import of iOS frameworks. It&amp;rsquo;s important to keep this order, otherwise you&amp;rsquo;ll get compilation errors caused by conflicts of MIN symbol.&lt;/p&gt;
+
+&lt;h2 id=&#34;sample-interface&#34;&gt;Sample interface&lt;/h2&gt;
+
+&lt;p&gt;Each demonstration of particular algorithm usually required some image as an input argument (which is obviously since we working with image processing, right?). To reflect this nature of our application and to make our application really flexible we introduce a base class for all sample scenarios. Derived classes should implement methods that provides generic information about this example and main processing routine. Here are it&amp;rsquo;s signature:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;//! Base class for all samples
+class SampleBase
+{
+public:
+  //! Gets a sample name
+  virtual std::string getName() const = 0;
+
+  //! Returns a detailed sample description
+  virtual std::string getDescription() const = 0;
+
+  //! Returns true if this sample requires setting a reference image for latter use
+  virtual bool isReferenceFrameRequired() const = 0;
+
+  //! Sets the reference frame for latter processing
+  virtual void setReferenceFrame(const cv::Mat&amp;amp; reference) = 0;
+
+  //! Processes a frame and returns output image 
+  virtual bool processFrame(const cv::Mat&amp;amp; inputFrame, cv::Mat&amp;amp; outputFrame) = 0;
+
+  const std::vector&amp;amp; getOptions();
+
+protected:
+  void registerOption(std::string name, bool  * value);
+  void registerOption(std::string name, int   *  value, int min, int max);
+  void registerOption(std::string name, float *  value, float min, float max);
+
+private:
+  std::vector m_options;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The processFrame function takes input image as first argument, performs some image processing and puts the result to the outputFrame argument. Our application can use either images taken with a camera or photo gallery or it can process frames from a camera in real-time mode.&lt;/p&gt;
+
+&lt;p&gt;Of course, almost every algorithm can have adjustable parameters that affects the processing result. To reflect this we introduce a bunch of registerOption functions that allows to expose parameters that can be modified in runtime.&lt;/p&gt;
+
+&lt;p&gt;In Part 2 we will create a Master-Detail view to present our samples on the iPad and iPhone screen and write first sample - Edge Detection Sample.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Rewriting OpenCV sample project for iOS</title>
+      <link>https://example.com/2012-06-19-rewriting-opencv-sample-project-for-ios/</link>
+      <pubDate>Tue, 19 Jun 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2012-06-19-rewriting-opencv-sample-project-for-ios/</guid>
+      <description>
+
+&lt;p&gt;A lot of changes been made since I posted a tutorial of using OpenCV library on iPhone/iPad devices. It was the time of iOS 4.x and OpenCV 2.1. The time to rewrite the whole sample project has come. With this post I announce that I going to update my sample project and I ask for your help. My idea is to write a project which will demonstrate use of several common computer vision algorithms. So the question is - which samples should I include? Now I can suggest following demo scenarios:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Keypoint matching&lt;/li&gt;
+&lt;li&gt;Feature tracking&lt;/li&gt;
+&lt;li&gt;Corner detection&lt;/li&gt;
+&lt;li&gt;Color operations
+Thanks in advance for your comments!&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;comments&#34;&gt;Comments&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1127&#34; title=&#34;2012-06-23 13:26:58&#34;&gt;Nicholas&lt;/a&gt;:&lt;/strong&gt; Hi, I only ask that you provide step by step instructions to get opencv on the machine and into any new project assuming no technical knowledge. I enthusiastically await the release of your up to date tutorial!&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1122&#34; title=&#34;2012-06-22 13:38:36&#34;&gt;EKhvedchenya&lt;/a&gt;:&lt;/strong&gt; I wish to refactor this application a bit, so each demo case will be represented with a class derived from some abstract class SampleBase. something like that: class SampleBase { bool run(&amp;hellip;); SampleInformation getInfo(); std::map &amp;gt;getOptions(); }; Each sample provide meta-infromation (name and its description) and exposes set of options that can be adjusted in run-time to see how they affect the sample routine. The main function run will run the sample either using video or still pictures and show the result to user returning processed image. The main benefit of this approach that we can add new samples easily into existing architecture really easy and fast.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1146&#34; title=&#34;2012-06-25 12:40:11&#34;&gt;Nicholas&lt;/a&gt;:&lt;/strong&gt; Thankyou so much that is a Godsend. I see you have put something up already and I am going to have a look at it now.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1147&#34; title=&#34;2012-06-25 13:41:49&#34;&gt;Sansuiso&lt;/a&gt;:&lt;/strong&gt; Thanks ! I cloned the new project today :-)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1102&#34; title=&#34;2012-06-19 21:23:19&#34;&gt;bittnt&lt;/a&gt;:&lt;/strong&gt; Do you mind if you could provide feature tracking? I am also trying to work on feature tracking stuff. :) I got some initial results.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1111&#34; title=&#34;2012-06-21 09:31:50&#34;&gt;EKhvedchenya&lt;/a&gt;:&lt;/strong&gt; I think, for this demonstration the simple KLT optical flow tracking will be used. It&amp;rsquo;s reasonably fast. The second option - a tracking using template matching but i&amp;rsquo;m afraid, cv::templateMatch is too slow for iPad processor.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1112&#34; title=&#34;2012-06-21 09:46:47&#34;&gt;Sansuiso&lt;/a&gt;:&lt;/strong&gt; Hello, KLT is fine, but may I suggest something around FAST+BRIEF maybe as an alternative ? The code is also usable from opencv straight from the box, and I feel like many people are using this combo now. Thanks again for the work!&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1113&#34; title=&#34;2012-06-21 10:11:59&#34;&gt;EKhvedchenya&lt;/a&gt;:&lt;/strong&gt; I appreciate any help for you! The design of this sample project will support easy add of new types of computer vision algorithm demonstations. The main screen of the application will show you the list of available samples. I&amp;rsquo;ll post this design on next week so anyone can make a contribution to it.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1117&#34; title=&#34;2012-06-21 16:49:49&#34;&gt;bittnt&lt;/a&gt;:&lt;/strong&gt; Yes. I tried the Optical flow from OpenCV to track hand with MyAVIController Example Code. It works quite well, most of time, it could reach above 15 frames per second.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1121&#34; title=&#34;2012-06-22 09:36:05&#34;&gt;Sansuiso&lt;/a&gt;:&lt;/strong&gt; I cloned your github iOS sample project, so that I can add another feature tracking module to the demo app. That way you can add the KLT, and I can add FAST later. Is it ok that way ?&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1355&#34; title=&#34;2012-07-08 21:09:16&#34;&gt;Josh&lt;/a&gt;:&lt;/strong&gt; &amp;hellip; since you asked - maybe a tutorial on using KLT as an alternative to PTAM, the idea is to use this with the gyroscope to provide smooth tracking of &amp;lsquo;dropped&amp;rsquo; virtual items. As far as I can see OpenCV gives you displacement on x and y (panning) but nothing for z. Cheers and thanks for the great blog - keep up the good work, Josh&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1361&#34; title=&#34;2012-07-09 10:00:44&#34;&gt;Ievgen Khvedchenia&lt;/a&gt;:&lt;/strong&gt; iPTAM would be definitely interesting sample! Thanks for this idea! Also i was thinking about video stabilization sample (OpenCV has such module) in connect with iDevices accelerometer.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1126&#34; title=&#34;2012-06-23 11:57:53&#34;&gt;EKhvedchenya&lt;/a&gt;:&lt;/strong&gt; Hi, i&amp;rsquo;ve created a new repository here &lt;a href=&#34;https://github.com/BloodAxe/OpenCV-Tutorial&#34;&gt;https://github.com/BloodAxe/OpenCV-Tutorial&lt;/a&gt; to write tutorial app from scratch. Feel free to add new samples dericed from SampleBase class. I continue writing application UI to get visualization as fast as possible.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1135&#34; title=&#34;2012-06-24 07:52:41&#34;&gt;EKhvedchenya&lt;/a&gt;:&lt;/strong&gt; Nicholas, i&amp;rsquo;m going to write a series of tutorias with detailed explanation of every step i make during writing this application. Hope you find it useful.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1453&#34; title=&#34;2012-07-13 23:08:45&#34;&gt;Josh&lt;/a&gt;:&lt;/strong&gt; &amp;hellip; a couple more requests; AR shadowing and tweaking luminosity to fit virtual object into the scene&amp;hellip; I&amp;rsquo;m tackling this problem now - to keep things simple, for shadowing I&amp;rsquo;m thinking of using the detected foreground for depth or change in plane and adjusting the shadow. For lighting - thinking of getting the HSV range and adjusting the ambient light based on this. Both interesting problems that require tricks to work in the real world.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>OpenCV &#43; iOS = Success</title>
+      <link>https://example.com/2011-12-23-opencv-ios-success/</link>
+      <pubDate>Fri, 23 Dec 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2011-12-23-opencv-ios-success/</guid>
+      <description>
+
+&lt;p&gt;It’s christmas time and i finally managed to deal with all my affairs before holidays. It’s probably the last post in the 2011 year. And i have a little present for you guys – it’s latest &lt;strong&gt;build of OpenCV library&lt;/strong&gt; for the iOS platform, an &lt;strong&gt;updated build scipt&lt;/strong&gt; and updated &lt;strong&gt;OpenCV in iPhone sample project&lt;/strong&gt; with iOS 5 SDK support!&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;opencv-build-script-for-ios-sdk&#34;&gt;OpenCV build script for iOS SDK&lt;/h4&gt;
+
+&lt;p&gt;Fortunately, OpenCV team has introduced toolchains for device and simulator builds. Now you don’t have to patch sources and make dirty hacks in CMakeLists.txt to build the library. Therefore build script become significatly shorter. You can download it as usual on github&amp;rsquo;s project page: &lt;a href=&#34;https://github.com/BloodAxe/OpenCV-iOS-build-script&#34; title=&#34;OpenCV build script&#34;&gt;OpenCV build script&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h4 id=&#34;prebuilt-opencv-binaries&#34;&gt;Prebuilt OpenCV binaries&lt;/h4&gt;
+
+&lt;p&gt;If you don’t have a time to write few commands in shell, i prepared precompiled OpenCV library for you. It was built from trunk revision (7083) with XCode version. &lt;a href=&#34;http://computer-vision-talks.com/download/opencv_precompiled_ios_rev7083.zip&#34;&gt;Download precompiled OpenCV library for iPhone/iPad&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h4 id=&#34;opencv-sample-project&#34;&gt;OpenCV Sample project&lt;/h4&gt;
+
+&lt;p&gt;I updated sample project too, to reflect breaking changes in iOS 5. Now it supports both iPhone and iPad devices. Sample project can be found on github too: &lt;a href=&#34;https://github.com/BloodAxe/opencv-ios-template-project&#34;&gt;OpenCV iPhone/iPad template project&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;![][4]&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>A complete iOS &#43; OpenCV sample project</title>
+      <link>https://example.com/2011-08-14-a-complete-ios-opencv-sample-project/</link>
+      <pubDate>Sun, 14 Aug 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2011-08-14-a-complete-ios-opencv-sample-project/</guid>
+      <description>
+
+&lt;p&gt;&lt;img src=&#34;img_thumb.png&#34; alt=&#34;OpenCV iOS Sample Project&#34; title=&#34;OpenCV iOS Sample Project&#34; /&gt;Hello everyone! Today i want to introduce the all new tutorial project of using OpenCV in your iOS projects. In this post i&amp;rsquo;ll show you the right and correct way of interoperation between native OpenCV C/C++ API and Objective-C. I know many of you asked me how to solve this nasty &amp;ldquo;statement-expressions are allowed only inside functions&amp;rdquo; error. Here is a solution.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;The conflict occurs because both UIKit.h and opencv_core.h define the same MIN symbol. But in UIKit it’s a function, and a macro in OpenCV. If you include bot iOS framework and core.h header file from OpenCV they will conflict with MIN symbol because iOS define MIN function, but the OpenCV has the MAX macros. The simple way would be to ask OpenCV maintainers to give other name to MIN macros. But it&amp;rsquo;s too easy and i do not believe it&amp;rsquo;s right solution.&lt;/p&gt;
+
+&lt;p&gt;The correct way is to split the business logic from the presentation layer into different parts of the project, so the iOS frameworks and OpenCV includes never appears in single compilation unit.&lt;/p&gt;
+
+&lt;p&gt;In this tutorial i consider a sample application, which takes images from the photo album, does some image processing and then displays the processed bitmaps to the user. So the idea to differentiate the UI from the image processing.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s do it in this way.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Declare the API interface used by the View. This API is the only thing that View know about.&lt;/li&gt;
+&lt;li&gt;Write and particular C++ implementation of the image processing component.&lt;/li&gt;
+&lt;li&gt;Write an implementation of the API protocol that implements desired methods and delegates calls to the C++ implementation doing data conversion if necessary.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;A small diagram that illustrates the idea:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;OpenCV-iOS-Architecture_thumb.png&#34; alt=&#34;OpenCV  iOS Architecture&#34; title=&#34;OpenCV  iOS Architecture&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Here is a code of the protocol declaration:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;@protocol ImageProcessingProtocol &amp;lt; NSObject &amp;gt;
+- (UIImage*) processImage:(UIImage*) src;
+@end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As you can see it&amp;rsquo;s pretty simple - it sends the image to processing component and return the result. I pay your attention to the fact that user code at this point know nothing about OpenCV. In the view you work with this API like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;- (void)imagePickerController:(UIImagePickerController *)picker
+        didFinishPickingImage:(UIImage *)image
+                  editingInfo:(NSDictionary *)editingInfo
+{
+  [picker dismissModalViewControllerAnimated:YES];
+
+  iOSplusOpenCVAppDelegate * appDelegate = [[UIApplication sharedApplication] delegate];
+
+  // Process the input image and present the result:
+  UIImage * processedImage = [appDelegate.imageProcessor processImage:image];
+  self.mainButton.imageView.image = processedImage;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now let&amp;rsquo;s write the actual processing code. In this project I use Boost.Gil to pass raw image data to OpenCV because I prefer this strongly typed image concepts very much and use Boost for it is a good choice. You can read about Boost.Gil here: &lt;a href=&#34;http://www.boost.org/doc/libs/1_46_1/libs/gil/doc/index.html&#34;&gt;Boost Gil library overview&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Declaration of OpenCVImageProcessor class:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;struct _IplImage;
+typedef _IplImage IplImage;
+
+class OpenCVImageProcessor
+{
+public:
+    void process(boost::gil::bgr8_view_t src, boost::gil::bgr8_view_t dst);
+
+private:
+    IplImage getIplImageView(boost::gil::bgr8_view_t srcView);
+    IplImage getIplImageView(boost::gil::gray8_view_t srcView);
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Implementation:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;// A helper macro
+#define GIL2CV(GilView) getIplImageView(GilView)
+
+void OpenCVImageProcessor::process(boost::gil::bgr8_view_t src, boost::gil::bgr8_view_t dst)
+{
+    BOOST_ASSERT(src.dimensions() == dst.dimensions());
+
+    boost::gil::gray8_image_t srcGray(src.dimensions());
+    boost::gil::gray8_image_t edges(src.dimensions());
+
+    IplImage srcIplImage     = GIL2CV(src);
+    IplImage srcGrayIplImage = GIL2CV(srcGray._view);
+    IplImage edgesIplImage   = GIL2CV(edges._view);
+    IplImage dstIplImage     = GIL2CV(dst);
+
+    cvCvtColor(&amp;amp;srcIplImage;, &amp;amp;srcGrayIplImage;, CV_BGR2GRAY);
+
+    cvCanny(&amp;amp;srcGrayIplImage;, &amp;amp;edgesIplImage;, 10, 50);
+
+    cvCvtColor(&amp;amp;edgesIplImage;, &amp;amp;dstIplImage;, CV_GRAY2BGR);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Almost done. Now we have write and implementation for the ImageProcessingProtocol (I omit the image conversion functions because they are pretty standard and simple):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;@interface ImageProcessingImpl : NSObject
+- (UIImage*) processImage:(UIImage*) src;
+@end
+
+@implementation ImageProcessingImpl
+
+- (UIImage*) processImage:(UIImage*) src
+{
+  OpenCVImageProcessor processor;
+
+  boost::gil::bgr8_image_t srcImage = [self convertUIImageToGILImage:src];
+  boost::gil::bgr8_image_t dstImage(srcImage.dimensions());
+
+  processor.process(view(srcImage), view(dstImage));
+
+  return [self convertGILImageToUIImage:dstImage];
+}
+
+@end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And that’s all. With this approach you receive flexible design with strict API and platform-independent implementation. You probably can even port it to Android platform by simply writing an adopted ImageProcessingAndroidImpl wrapper.&lt;/p&gt;
+
+&lt;p&gt;The final application looks like on this screenshots:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;1_thumb.png&#34; alt=&#34;1&#34; title=&#34;1&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;At startup user asked to choose the source image by tapping on screen and then the detected edges are shown. To choose another image – just tap on the screen again.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Advantages:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;No explicit dependency from OpenCV in your UI.&lt;/li&gt;
+&lt;li&gt;No violation of MVC and SRP paradigm.&lt;/li&gt;
+&lt;li&gt;The View code looks more clear and easy to understand.&lt;/li&gt;
+&lt;li&gt;Really cross-platform solution.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Disadvantages:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Need to write a bit more code.&lt;/li&gt;
+&lt;li&gt;You need some proxy types to pass Obj-C data (images) to the OpenCV. I use Boost.Gil for this.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;conclusion&#34;&gt;&lt;strong&gt;Conclusion:&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;p&gt;The source code for this sample can be found on my GitHub: &lt;a href=&#34;https://github.com/BloodAxe/opencv-ios-template-project&#34;&gt;https://github.com/BloodAxe/opencv-ios-template-project&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>OpenCV iOS FAQ</title>
+      <link>https://example.com/2011-04-27-opencv-ios-faq/</link>
+      <pubDate>Wed, 27 Apr 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2011-04-27-opencv-ios-faq/</guid>
+      <description>
+
+&lt;h1 id=&#34;opencv-ios-faq&#34;&gt;OpenCV iOS FAQ&lt;/h1&gt;
+
+&lt;p&gt;This FAQ contains answers to numerous similar questions I was asked after my posts about using OpenCV with iOS SDK.&lt;/p&gt;
+
+&lt;h2 id=&#34;step-by-step-opencv-tutorial&#34;&gt;Step by step OpenCV Tutorial&lt;/h2&gt;
+
+&lt;p&gt;OpenCV Tutorial  is a sample demonstration project for iOS devices that main goal is to show how to use OpenCV library in XCOde projects to write image processing code for iPhone and iPad devices. There are several step-by-step guides where i describe in details all development process.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://computer-vision-talks.com/2012/06/opencv-tutorial-a-collection-of-opencv-samples-for-iphoneipad-part-1/&#34; title=&#34;OpenCV Tutorial – a collection of OpenCV samples for iPhone/iPad – Part 1&#34;&gt;Part 1&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://computer-vision-talks.com/2012/06/opencv-tutorial-part-2/&#34; title=&#34;OpenCV Tutorial – Part 2&#34;&gt;Part 2&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://computer-vision-talks.com/2012/06/opencv-tutorial-part-3/&#34; title=&#34;OpenCV Tutorial – Part 3&#34;&gt;Part 3&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Part 4 - in progress&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;advanced-reading&#34;&gt;Advanced reading&lt;/h2&gt;
+
+&lt;p&gt;If you looking for more, here are some old posts i wrote about OpenCV and XCode. Some of them may become outdated, but they contains a lot of usefult infromationt too.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://computer-vision-talks.com/2010/12/building-opencv-for-ios/&#34;&gt;http://computer-vision-talks.com/2010/12/building-opencv-for-ios/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://computer-vision-talks.com/2011/01/using-opencv-in-objective-c-code/&#34;&gt;http://computer-vision-talks.com/2011/01/using-opencv-in-objective-c-code/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://computer-vision-talks.com/2011/02/building-opencv-for-iphone-in-one-click/&#34;&gt;http://computer-vision-talks.com/2011/02/building-opencv-for-iphone-in-one-click/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://computer-vision-talks.com/2011/03/opencv-build-script-with-xcode-4-support-is-here/&#34;&gt;http://computer-vision-talks.com/2011/03/opencv-build-script-with-xcode-4-support-is-here/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;necessary-knowledge&#34;&gt;Necessary knowledge&lt;/h2&gt;
+
+&lt;p&gt;To be able to understand what i&amp;rsquo;m talking about please ensure you have working experience with things listed below. In my posts i usually do not explain trivial things.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Basics of CMake build syntax&lt;/li&gt;
+&lt;li&gt;A little of bash shell scripting&lt;/li&gt;
+&lt;li&gt;XCode 4 build system&lt;/li&gt;
+&lt;li&gt;C++ and OpenCV experience&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;build-script&#34;&gt;Build Script&lt;/h2&gt;
+
+&lt;p&gt;Latest possible version is always here: [download id=&amp;ldquo;1&amp;rdquo;] Issue tracker: &lt;a href=&#34;https://github.com/BloodAxe/OpenCV-iOS-build-script/issues&#34;&gt;https://github.com/BloodAxe/OpenCV-iOS-build-script/issues&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;common-problems-and-their-solutions&#34;&gt;Common problems and their solutions&lt;/h2&gt;
+
+&lt;p&gt; &lt;/p&gt;
+
+&lt;h4 id=&#34;building-opencv-itself&#34;&gt;Building OpenCV itself&lt;/h4&gt;
+
+&lt;h6 id=&#34;problem-installing-opencv-headers-build-failed&#34;&gt;&lt;strong&gt;Problem&lt;/strong&gt;: “Installing OpenCV headers ** BUILD FAILED **”&lt;/h6&gt;
+
+&lt;p&gt;&lt;strong&gt;Solution&lt;/strong&gt;: This can happen if OpenCV build is broken. So build script will not be able to make OpenCV even for MacOS platform. Try to find stable revision.&lt;/p&gt;
+
+&lt;h6 id=&#34;problem-some-other-problems-not-listed-here&#34;&gt;&lt;strong&gt;Problem&lt;/strong&gt;: Some other problems, not listed here&lt;/h6&gt;
+
+&lt;p&gt;&lt;strong&gt;Solution&lt;/strong&gt;: Remember, this build script is still experimental, so no warranties at all. Guys from Willow Garage can change project structure, cmake scripts or whatever and build script will fail… The best thing you can do in this case – contact with me and describe your problem.&lt;/p&gt;
+
+&lt;h4 id=&#34;using-opencv-static-build-in-your-projects&#34;&gt;Using OpenCV static build in your projects:&lt;/h4&gt;
+
+&lt;h6 id=&#34;problem-how-to-setup-my-project&#34;&gt;Problem: How to setup my project?&lt;/h6&gt;
+
+&lt;p&gt;&lt;strong&gt;Solution&lt;/strong&gt;: There is template project on my github page. It already configured. Feel free to modify it as you want. Also you may want to do this manually be specifying additional search path and linker input. Here is detailed tutorial: &lt;a href=&#34;http://computer-vision-talks.com/2011/01/using-opencv-in-objective-c-code/&#34;&gt;http://computer-vision-talks.com/2011/01/using-opencv-in-objective-c-code/&lt;/a&gt;&lt;/p&gt;
+
+&lt;h5 id=&#34;problem-compile-time-error-statement-expressions-are-allowed-only-inside-functions&#34;&gt;&lt;strong&gt;Problem&lt;/strong&gt;: Compile-time error “statement-expressions are allowed only inside functions”&lt;/h5&gt;
+
+&lt;p&gt;**Solution: **The detailed explanation of the problem and it’s solution can be found here: &lt;a href=&#34;http://computer-vision-talks.com/2011/08/a-complete-ios-opencv-sample-project/&#34;&gt;Complete iOS + OpenCV sample project&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;comments&#34;&gt;Comments&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2611&#34; title=&#34;2013-01-14 07:45:07&#34;&gt;Arvind&lt;/a&gt;:&lt;/strong&gt; Hi Ievgen, thanks for the great post on computer-vision-talks but when I click download kinks to OpenCV Build Script (8974) or Precompiled OpenCV library (5467), I get a &amp;lsquo;Page Not Found&amp;rsquo; error. I also wanted to ask whether you have tried and succeeded in getting OpenCV functions IMREAD IMWRITE to work with iOS? If yes, how? I couldn&amp;rsquo;t. Thanks, Arvind&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2614&#34; title=&#34;2013-01-14 21:35:21&#34;&gt;Ievgen Khvedchenia&lt;/a&gt;:&lt;/strong&gt; Hi, sorry for this inconvenience. I recently moved my blog to another hoster. I recommend to download Opencv framework from opencv.org. Functions from highgui module a not supported on iOS. You have to use iOS API to perform image read/write operations.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Building OpenCV for iPhone in one click</title>
+      <link>https://example.com/2011-02-25-building-opencv-for-iphone-in-one-click/</link>
+      <pubDate>Fri, 25 Feb 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2011-02-25-building-opencv-for-iphone-in-one-click/</guid>
+      <description>
+
+&lt;p&gt;&lt;img src=&#34;build-opencv-script_thumb2.png&#34; alt=&#34;build-opencv-script&#34; title=&#34;build-opencv-script&#34; /&gt;&lt;br /&gt;
+My first post in this blog was about building OpenCV for iOS devices (iPhone, iPad, iPod and so on). But the build process that i used is not trivial at all. I received a lot of feedbacks and questions about building OpenCV, setting up XCode build environment. Today i made your life much easier. I have a gift - a build script, which will **build OpenCV **library for your iPhone, iPad, iPod or any other iOS based Apple device right &lt;strong&gt;in one click&lt;/strong&gt;!  &lt;strong&gt;Update: Now build script supports XCode 4 and iOS 4.3 SDK&lt;/strong&gt; Sounds cool, yeah? Well, It&amp;rsquo;s all true. Actually, my script does exactly the same things as i mentioned in original article. But without user interaction.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;
+&lt;div class=&#34;alert alert-danger&#34;&gt;
+    &lt;p class=&#34;lead&#34;&gt;This post is outdated.&lt;/p&gt;
+    &lt;p&gt;
+    Current version of OpenCV supports iOS toolchain and can be build in much easier way. You are welcome to read this post for educational purposes. It&amp;rsquo;s 99.9% chance that &lt;strong&gt;you will not be able to build OpenCV&lt;/strong&gt; using instructions decribed here.
+    &lt;/p&gt;
+&lt;/div&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;let-s-build-it&#34;&gt;Let&amp;rsquo;s build it!&lt;/h2&gt;
+
+&lt;p&gt;We start, as usual, from getting a fresh source code from OpenCV repository:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;svn co http://code.opencv.org/svn/opencv/trunk
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Or, if you already have checked out in the past, run svn update command:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;svn update
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To start build process you should call build script with two required arguments: directory, where OpenCV sources located and directory, where libraries and headers will be places:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sh BuildOpenCV.sh trunk/opencv/ opencv_ios_build
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Hit Enter and take a rest - it will take 5-10 minutes. There will be compilation errors. Something like:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;The following build commands failed:
+opencv_highgui:
+CompileC cap_qtkit.o cap_qtkit.mm normal armv7 objective-c++ com.apple.compilers.gcc.4_2
+opencv_ts:
+CompileC ts_gtest.o ts_gtest.cpp normal armv7 c++ com.apple.compilers.gcc.4_2
+(2 failures)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It&amp;rsquo;s okay. For now, OpenCV has to official iOS support, so some parts of code will cause compilation errors (highgui module). Maybe in future this will change, but ignore them now. If you are getting other errors, it looks like either you doing something wrong, or repository build is broken. When all is done, your build directory should looks like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;   opencv_build_ios_4771
+   |-include
+   |---opencv
+   |---opencv2
+   |-----calib3d
+   |-----contrib
+   |-----core
+   |-----features2d
+   |-----flann
+   |-----highgui
+   |-----imgproc
+   |-----legacy
+   |-----ml
+   |-----objdetect
+   |-----ts
+   |-----video
+   |-lib
+   |---Release-iphonesimulator
+   |---debug-iphoneos
+   |---debug-iphonesimulator
+   |---debug-universal
+   |---release-iphoneos
+   |---release-universal
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Lib folder contains all necessary static libraries, Include - OpenCV headers.&lt;/p&gt;
+
+&lt;h2 id=&#34;how-it-works&#34;&gt;How it works&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Configure OpenCV using CMake. I disabled enabled by default options like SSE, SSE2, support of video input libraries, because they are not actual for iOS&lt;/li&gt;
+&lt;li&gt;Run batch build process from command line using xcodebuild tool. With their help we build all necessary libs.&lt;/li&gt;
+&lt;li&gt;Copy libraries to appropriate directories and create universal ones.&lt;/li&gt;
+&lt;li&gt;Run Install target to get OpenCV headers.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&#34;script-source&#34;&gt;Script source&lt;/h2&gt;
+
+&lt;p&gt;Here is script listing. Don&amp;rsquo;t start copy&amp;amp;pasting it, there are download link at the end of the post.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;    #!/bin/bash
+    ################################################################################
+    # This script will create universal binaries for OpenCV library for
+    # iOS-based devices (iPhone, iPad, iPod, etc).
+    # As output you obtain debug/release static libraries and include headers.
+    #
+    # This script was written by Eugene Khvedchenya
+    # And distributed under GPL license
+    # Support site: http://computer-vision-talks.com
+    ################################################################################
+    
+    if [ $# -ne 2 ]
+    then
+        echo &amp;quot;Error in $0 - Invalid Argument Count&amp;quot;
+        echo &amp;quot;Syntax: $0 [OpenCV source directory] [Build destination directory]&amp;quot;
+        echo &amp;quot;If the destination directory already exists, it will be overwritten!&amp;quot;
+        exit
+    fi
+    
+    # Absolute path to the source code directory.
+    D=`dirname &amp;quot;$1&amp;quot;`
+    B=`basename &amp;quot;$1&amp;quot;`
+    SRC=&amp;quot;`cd \&amp;quot;$D\&amp;quot; 2&amp;gt;/dev/null &amp;amp;&amp;amp; pwd || echo \&amp;quot;$D\&amp;quot;`/$B&amp;quot;
+    
+    # Absolute path to the build directory.
+    D=`dirname &amp;quot;$2&amp;quot;`
+    B=`basename &amp;quot;$2&amp;quot;`
+    BUILD=&amp;quot;`cd \&amp;quot;$D\&amp;quot; 2&amp;gt;/dev/null &amp;amp;&amp;amp; pwd || echo \&amp;quot;$D\&amp;quot;`/$B&amp;quot;
+    
+    INTERMEDIATE=$BUILD/tmp
+    IOS_INSTALL_DIR=$INTERMEDIATE/ios-install
+    MAC_INSTALL_DIR=$INTERMEDIATE/mac-install
+    PATCHED_SRC_DIR=$INTERMEDIATE/ios-sources-patched
+    IOS_BUILD_DIR=$INTERMEDIATE/ios-build
+    MAC_BUILD_DIR=$INTERMEDIATE/mac-build
+    
+    echo &amp;quot;OpenCV source   :&amp;quot; $SRC
+    echo &amp;quot;Build directory :&amp;quot; $BUILD
+    echo &amp;quot;Intermediate dir:&amp;quot; $INTERMEDIATE
+    echo &amp;quot;Patched source  :&amp;quot; $PATCHED_SRC_DIR
+    
+    OPENCV_MODULES_TO_BUILD=(zlib libjpeg libpng libtiff libjasper opencv_lapack opencv_calib3d opencv_core opencv_features2d opencv_flann opencv_imgproc opencv_legacy opencv_contrib opencv_ml opencv_objdetect opencv_video)
+    
+    ################################################################################
+    # Clear the old build and recompile the new one.
+    rm -rf $BUILD
+    
+    ################################################################################
+    # Now we build OpenCV with macosx sdk.
+    # This will build opencv INSTALL target, which will
+    # copy headers to the $BUILD/include directory.
+    echo &amp;quot;Installing OpenCV headers&amp;quot;
+    mkdir -p $MAC_BUILD_DIR
+    cd $MAC_BUILD_DIR
+    cmake -DCMAKE_INSTALL_PREFIX=$MAC_INSTALL_DIR \
+    -DENABLE_SSE=NO \
+    -DENABLE_SSE2=NO \
+    -DBUILD_TESTS=OFF \
+    -DBUILD_EXAMPLES=NO \
+    -DBUILD_NEW_PYTHON_SUPPORT=NO \
+    -DWITH_EIGEN2=NO \
+    -DWITH_PVAPI=NO \
+    -DWITH_OPENEXR=NO \
+    -DWITH_QT=NO \
+    -DWITH_QUICKTIME=NO \
+    -DOPENCV_BUILD_3RDPARTY_LIBS=YES \
+    -G Xcode $SRC &amp;gt; /dev/null
+    
+    mkdir $BUILD/include
+    xcodebuild -sdk macosx -configuration Release -parallelizeTargets -target install &amp;gt; /dev/null
+    mv $MAC_INSTALL_DIR/include/* $BUILD/include
+    
+    ################################################################################
+    # We have to patch OpenCV source to exclude several modules form build
+    # because they prevent building other libs.
+    echo &amp;quot;Patching OpenCV sources&amp;quot;
+    mkdir -p $PATCHED_SRC_DIR
+    cp -R $SRC/ $PATCHED_SRC_DIR
+    sed &#39;/add_subdirectory(ts)/d&#39; $PATCHED_SRC_DIR/modules/CMakeLists.txt      &amp;gt; $PATCHED_SRC_DIR/modules/CMakeLists.txt.patched
+    mv $PATCHED_SRC_DIR/modules/CMakeLists.txt.patched                           $PATCHED_SRC_DIR/modules/CMakeLists.txt
+    sed &#39;/add_subdirectory(highgui)/d&#39; $PATCHED_SRC_DIR/modules/CMakeLists.txt &amp;gt; $PATCHED_SRC_DIR/modules/CMakeLists.txt.patched
+    mv $PATCHED_SRC_DIR/modules/CMakeLists.txt.patched                           $PATCHED_SRC_DIR/modules/CMakeLists.txt
+    
+    ################################################################################
+    # Configure OpenCV
+    mkdir -p $IOS_BUILD_DIR
+    cd $IOS_BUILD_DIR
+    
+    cmake -DCMAKE_INSTALL_PREFIX=$IOS_INSTALL_DIR \
+    -DENABLE_SSE=NO \
+    -DENABLE_SSE2=NO \
+    -DBUILD_TESTS=OFF \
+    -DBUILD_SHARED_LIBS=NO \
+    -DBUILD_NEW_PYTHON_SUPPORT=NO \
+    -DBUILD_EXAMPLES=NO \
+    -DWITH_EIGEN2=NO \
+    -DWITH_PVAPI=NO \
+    -DWITH_OPENEXR=NO \
+    -DWITH_QT=NO \
+    -DWITH_QUICKTIME=NO \
+    -DOPENCV_BUILD_3RDPARTY_LIBS=YES \
+    -G Xcode $PATCHED_SRC_DIR &amp;gt; /dev/null
+    
+    ################################################################################
+    # Build for device armv6 architecture :
+    echo &amp;quot;Building iphone release armv6 configuration&amp;quot;
+    for target in ${OPENCV_MODULES_TO_BUILD[*]}
+    do
+    echo &amp;quot;\tbuilding &amp;quot; $target
+    xcodebuild -sdk iphoneos -configuration Release -parallelizeTargets ARCHS=&amp;quot;armv6&amp;quot; -target $target &amp;gt; /dev/null
+    done
+    
+    mkdir -p $BUILD/lib/release-iphoneos-armv6
+    mv $IOS_BUILD_DIR/lib/Release/*.a          $BUILD/lib/release-iphoneos-armv6 &amp;gt; /dev/null
+    mv $IOS_BUILD_DIR/3rdparty/lib/Release/*.a $BUILD/lib/release-iphoneos-armv6 &amp;gt; /dev/null
+    
+    echo &amp;quot;Building iphone debug armv6 configuration&amp;quot;
+    for target in ${OPENCV_MODULES_TO_BUILD[*]}
+    do
+    echo &amp;quot;\tbuilding &amp;quot; $target
+    xcodebuild -sdk iphoneos -configuration Debug -parallelizeTargets   ARCHS=&amp;quot;armv6&amp;quot; -target $target &amp;gt; /dev/null
+    done
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

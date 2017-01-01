@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>OpenCV Tutorial - Part 3 &middot; My Name</title>
+        <meta name="description" content="In Part 1 and Part 2 we created base application for our &ldquo;OpenCV Tutorial&rdquo; application. In this part we add video source to process frames using our samples and present the result to user. As usual, you can find source code for this application at github.
+Video capture in iOS At this moment (as far as i know) there OpenCV&rsquo;s cv::VideoCapture does not support iOS platform. Therefore we have to use iOS AVFoundation API to setup video capture.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="OpenCV Tutorial - Part 3">
+<meta property="og:description" content="In Part 1 and Part 2 we created base application for our &ldquo;OpenCV Tutorial&rdquo; application. In this part we add video source to process frames using our samples and present the result to user. As usual, you can find source code for this application at github.
+Video capture in iOS At this moment (as far as i know) there OpenCV&rsquo;s cv::VideoCapture does not support iOS platform. Therefore we have to use iOS AVFoundation API to setup video capture.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/2012-06-27-opencv-tutorial-part-3/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">OpenCV Tutorial - Part 3</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    
+
+<p>In <a href="http://computer-vision-talks.com/2012/06/opencv-tutorial-a-collection-of-opencv-samples-for-iphoneipad-part-1/" title="OpenCV Tutorial – a collection of OpenCV samples for iPhone/iPad – Part 1">Part 1</a> and <a href="http://computer-vision-talks.com/2012/06/opencv-tutorial-part-2/" title="OpenCV Tutorial – Part 2">Part 2</a> we created base application for our &ldquo;OpenCV Tutorial&rdquo; application. In this part we add video source to process frames using our samples and present the result to user. As usual, you can find source code for this application at <a href="https://github.com/BloodAxe/OpenCV-Tutorial" title="OpenCV Tutorial Repository">github</a>.</p>
+
+<h2 id="video-capture-in-ios">Video capture in iOS</h2>
+
+<p>At this moment (as far as i know) there OpenCV&rsquo;s cv::VideoCapture does not support iOS platform. Therefore we have to use iOS AVFoundation API to setup video capture. This is more complicated that write cv::VideoCapture(&ldquo;YourVideoFileName.avi&rdquo;) but it&rsquo;s not a rocket science.  There is a great Apple documentation article <a href="http://developer.apple.com/library/ios/#DOCUMENTATION/AudioVideo/Conceptual/AVFoundationPG/Articles/00_Introduction.html" title="AV Foundation Programming Guide">AV Foundation Programming Guide</a> that i strongly advice you to read. <strong>By the way, before I forget - video capture is not supported on iOS simulator. You&rsquo;ll need real device to test your app!</strong> To manage the capture from a device such as a camera or microphone, you assemble objects to represent inputs and outputs, and use an instance of <code>AVCaptureSession</code> to coordinate the data flow between them. Minimally you need:</p>
+
+<ul>
+<li>An instance of <code>AVCaptureDevice</code> to represent the input device, such as a camera or microphone</li>
+<li>An instance of a concrete subclass of <code>AVCaptureInput</code> to configure the ports from the input device</li>
+<li>An instance of a concrete subclass of <code>AVCaptureOutput</code> to manage the output to a movie file or still image</li>
+<li>An instance of <code>AVCaptureSession</code> to coordinate the data flow from the input to the output
+<br /></li>
+</ul>
+
+<p>To put all things together we introduce VideoSource class which incapsulate initialization and video capture routine. Let&rsquo;s take a look on it&rsquo;s interface:</p>
+
+<pre><code class="language-objectivec">@protocol VideoSourceDelegate 
+
+- (void) frameCaptured:(cv::Mat) frame;
+
+@end
+
+@interface VideoSource : NSObject
+
+@property id delegate;
+
+- (bool) hasMultipleCameras;
+- (void) toggleCamera;
+- (void) startRunning;
+- (void) stopRunning;
+
+@end
+</code></pre>
+
+<p>The VideoSourceDelegate protocol defines a callback procedure that user code can handle. The frameCaptured method is called when the frame is received from a camera device. We wrap it in cv::Mat structure for latter use. Initialization of VideoCamera is also not complicated: we create capture session, add video input and video output:</p>
+
+<pre><code class="language-objectivec">- (id) init
+{
+  if (self = [super init])
+  {
+    currentCameraIndex = 0;
+    session = [[AVCaptureSession alloc] init];
+    [session setSessionPreset:AVCaptureSessionPreset640x480];
+    captureDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+
+    AVCaptureDevice *videoDevice = [captureDevices objectAtIndex:0];
+
+    NSError * error;
+    captureInput = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:&amp;error];
+
+    if (error)
+    {
+      NSLog(@&quot;Couldn't create video input&quot;);
+    }
+
+    captureOutput = [[AVCaptureVideoDataOutput alloc] init];
+    captureOutput.alwaysDiscardsLateVideoFrames = YES; 
+
+    // Set the video output to store frame in BGRA (It is supposed to be faster)
+    NSString* key = (NSString*)kCVPixelBufferPixelFormatTypeKey; 
+    NSNumber* value = [NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA]; 
+    NSDictionary* videoSettings = [NSDictionary dictionaryWithObject:value forKey:key]; 
+    [captureOutput setVideoSettings:videoSettings];    
+
+    /*We create a serial queue to handle the processing of our frames*/
+    dispatch_queue_t queue;
+    queue = dispatch_queue_create(&quot;com.computer-vision-talks.cameraQueue&quot;, NULL);
+    [captureOutput setSampleBufferDelegate:self queue:queue];
+    dispatch_release(queue);
+
+    [session addInput:captureInput];
+    [session addOutput:captureOutput];
+  }
+
+  return self;
+}
+</code></pre>
+
+<p>Please not that we query all video devices available using the [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo] call to get them all. This feature allows us to toggle between front and rear cameras in runtime. Also we set capture session preset to 640x480 because the larger the image the more it it need to be processed by our algorithms. 640x480 is a good choice. As our last step we configure capture output to pass our frames in BGRA format. For our image processing it&rsquo;s the ideal case. In case when our video source has several video inputs we can toggle between them using toggleCamera method:</p>
+
+<pre><code class="language-objectivec">- (void) toggleCamera
+{
+  currentCameraIndex++;
+  int camerasCount = [captureDevices count];
+  currentCameraIndex = currentCameraIndex % camerasCount;
+
+  AVCaptureDevice *videoDevice = [captureDevices objectAtIndex:currentCameraIndex];
+
+  [session beginConfiguration];
+
+  if (captureInput)
+  {
+    [session removeInput:captureInput];
+  }
+
+  NSError * error;
+  captureInput = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:&amp;error];
+
+  if (error)
+  {
+    NSLog(@&quot;Couldn't create video input&quot;);
+  }
+
+  [session addInput:captureInput];
+  [session setSessionPreset:AVCaptureSessionPreset640x480];
+  [session commitConfiguration];
+}
+</code></pre>
+
+<p>In this function we cycle through available inputs and add them to capture session (do not forget to remove previous input) and set the capture preset again (just in case). Switching between from and rear camera is initiated by the user by tapping on toggle button (we will talk about it a bit later). Just one thing left - we should implement AVCaptureVideoDataOutputSampleBufferDelegate in our VideoSource class to receive frames from AVFoundation API like this:</p>
+
+<pre><code class="language-objectivec">- (void)captureOutput:(AVCaptureOutput *)captureOutput 
+didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer 
+       fromConnection:(AVCaptureConnection *)connection 
+{ 
+  if (!delegate)
+    return;
+
+  CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer); 
+
+  /*Lock the image buffer*/
+  CVPixelBufferLockBaseAddress(imageBuffer,0); 
+
+  /*Get information about the image*/
+  uint8_t *baseAddress = (uint8_t *)CVPixelBufferGetBaseAddress(imageBuffer); 
+  size_t width = CVPixelBufferGetWidth(imageBuffer); 
+  size_t height = CVPixelBufferGetHeight(imageBuffer);  
+  size_t stride = CVPixelBufferGetBytesPerRow(imageBuffer);
+  //NSLog(@&quot;Frame captured: %lu x %lu&quot;, width,height);
+
+  cv::Mat frame(height, width, CV_8UC4, (void*)baseAddress);
+
+  [delegate frameCaptured:frame];
+
+  /*We unlock the  image buffer*/
+  CVPixelBufferUnlockBaseAddress(imageBuffer,0);
+}
+</code></pre>
+
+<p>In this method we obtain raw data in BGRA format from CoreMedia and put them input cv::Mat (no data is copied here). And then we call [delegate frameCaptured:] to inform user code that new frame is available.</p>
+
+<h2 id="displaying-processed-frames">Displaying processed frames</h2>
+
+<p>Since we working with video processing it&rsquo;s obviously to present the result of video processing in real-time on the screen. To secure the appropriate FPS we have to redraw our screen fast. The existing UIImageView control cannot be used here because we&rsquo;ll spent to much time on unnecessary image conversion (cv::Mat to UIImage) and drawing UIImage on the ImageView. For our goal the fastest way to draw the picture is to use OpenGL ES and GLView to draw our bitmap using GPU. In this section i&rsquo;ll show you how to create simple view that able to draw cv::Mat in real-time. To secure this&rsquo;ll UIView and to EAGLContext using it. This allows us to use OpenGL API to draw textured rectangle on top of our view as fast as possible. For user code we expose only single function that is can use:</p>
+
+<pre><code class="language-objectivec">@interface GLESImageView : UIView
+
+- (void)drawFrame:(const cv::Mat&amp;) bgraFrame;
+
+@end
+</code></pre>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/opencv/">opencv</a>
+            
+                 <a href="/tags/xcode/">xcode</a>
+            
+                 <a href="/tags/tutorials/">tutorials</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=OpenCV%20Tutorial%20-%20Part%203&url=https%3a%2f%2fexample.com%2f2012-06-27-opencv-tutorial-part-3%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2f2012-06-27-opencv-tutorial-part-3%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2f2012-06-27-opencv-tutorial-part-3%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

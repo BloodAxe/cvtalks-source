@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2012-06-19-rewriting-opencv-sample-project-for-ios-rsses on Ghostwriter example</title>
+    <link>https://example.com/2012-06-19-rewriting-opencv-sample-project-for-ios/index.xml</link>
+    <description>Recent content in 2012-06-19-rewriting-opencv-sample-project-for-ios-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Tue, 19 Jun 2012 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2012-06-19-rewriting-opencv-sample-project-for-ios/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Rewriting OpenCV sample project for iOS</title>
+      <link>https://example.com/2012-06-19-rewriting-opencv-sample-project-for-ios/</link>
+      <pubDate>Tue, 19 Jun 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2012-06-19-rewriting-opencv-sample-project-for-ios/</guid>
+      <description>
+
+&lt;p&gt;A lot of changes been made since I posted a tutorial of using OpenCV library on iPhone/iPad devices. It was the time of iOS 4.x and OpenCV 2.1. The time to rewrite the whole sample project has come. With this post I announce that I going to update my sample project and I ask for your help. My idea is to write a project which will demonstrate use of several common computer vision algorithms. So the question is - which samples should I include? Now I can suggest following demo scenarios:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Keypoint matching&lt;/li&gt;
+&lt;li&gt;Feature tracking&lt;/li&gt;
+&lt;li&gt;Corner detection&lt;/li&gt;
+&lt;li&gt;Color operations
+Thanks in advance for your comments!&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;comments&#34;&gt;Comments&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1127&#34; title=&#34;2012-06-23 13:26:58&#34;&gt;Nicholas&lt;/a&gt;:&lt;/strong&gt; Hi, I only ask that you provide step by step instructions to get opencv on the machine and into any new project assuming no technical knowledge. I enthusiastically await the release of your up to date tutorial!&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1122&#34; title=&#34;2012-06-22 13:38:36&#34;&gt;EKhvedchenya&lt;/a&gt;:&lt;/strong&gt; I wish to refactor this application a bit, so each demo case will be represented with a class derived from some abstract class SampleBase. something like that: class SampleBase { bool run(&amp;hellip;); SampleInformation getInfo(); std::map &amp;gt;getOptions(); }; Each sample provide meta-infromation (name and its description) and exposes set of options that can be adjusted in run-time to see how they affect the sample routine. The main function run will run the sample either using video or still pictures and show the result to user returning processed image. The main benefit of this approach that we can add new samples easily into existing architecture really easy and fast.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1146&#34; title=&#34;2012-06-25 12:40:11&#34;&gt;Nicholas&lt;/a&gt;:&lt;/strong&gt; Thankyou so much that is a Godsend. I see you have put something up already and I am going to have a look at it now.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1147&#34; title=&#34;2012-06-25 13:41:49&#34;&gt;Sansuiso&lt;/a&gt;:&lt;/strong&gt; Thanks ! I cloned the new project today :-)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1102&#34; title=&#34;2012-06-19 21:23:19&#34;&gt;bittnt&lt;/a&gt;:&lt;/strong&gt; Do you mind if you could provide feature tracking? I am also trying to work on feature tracking stuff. :) I got some initial results.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1111&#34; title=&#34;2012-06-21 09:31:50&#34;&gt;EKhvedchenya&lt;/a&gt;:&lt;/strong&gt; I think, for this demonstration the simple KLT optical flow tracking will be used. It&amp;rsquo;s reasonably fast. The second option - a tracking using template matching but i&amp;rsquo;m afraid, cv::templateMatch is too slow for iPad processor.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1112&#34; title=&#34;2012-06-21 09:46:47&#34;&gt;Sansuiso&lt;/a&gt;:&lt;/strong&gt; Hello, KLT is fine, but may I suggest something around FAST+BRIEF maybe as an alternative ? The code is also usable from opencv straight from the box, and I feel like many people are using this combo now. Thanks again for the work!&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1113&#34; title=&#34;2012-06-21 10:11:59&#34;&gt;EKhvedchenya&lt;/a&gt;:&lt;/strong&gt; I appreciate any help for you! The design of this sample project will support easy add of new types of computer vision algorithm demonstations. The main screen of the application will show you the list of available samples. I&amp;rsquo;ll post this design on next week so anyone can make a contribution to it.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1117&#34; title=&#34;2012-06-21 16:49:49&#34;&gt;bittnt&lt;/a&gt;:&lt;/strong&gt; Yes. I tried the Optical flow from OpenCV to track hand with MyAVIController Example Code. It works quite well, most of time, it could reach above 15 frames per second.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1121&#34; title=&#34;2012-06-22 09:36:05&#34;&gt;Sansuiso&lt;/a&gt;:&lt;/strong&gt; I cloned your github iOS sample project, so that I can add another feature tracking module to the demo app. That way you can add the KLT, and I can add FAST later. Is it ok that way ?&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1355&#34; title=&#34;2012-07-08 21:09:16&#34;&gt;Josh&lt;/a&gt;:&lt;/strong&gt; &amp;hellip; since you asked - maybe a tutorial on using KLT as an alternative to PTAM, the idea is to use this with the gyroscope to provide smooth tracking of &amp;lsquo;dropped&amp;rsquo; virtual items. As far as I can see OpenCV gives you displacement on x and y (panning) but nothing for z. Cheers and thanks for the great blog - keep up the good work, Josh&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1361&#34; title=&#34;2012-07-09 10:00:44&#34;&gt;Ievgen Khvedchenia&lt;/a&gt;:&lt;/strong&gt; iPTAM would be definitely interesting sample! Thanks for this idea! Also i was thinking about video stabilization sample (OpenCV has such module) in connect with iDevices accelerometer.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1126&#34; title=&#34;2012-06-23 11:57:53&#34;&gt;EKhvedchenya&lt;/a&gt;:&lt;/strong&gt; Hi, i&amp;rsquo;ve created a new repository here &lt;a href=&#34;https://github.com/BloodAxe/OpenCV-Tutorial&#34;&gt;https://github.com/BloodAxe/OpenCV-Tutorial&lt;/a&gt; to write tutorial app from scratch. Feel free to add new samples dericed from SampleBase class. I continue writing application UI to get visualization as fast as possible.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1135&#34; title=&#34;2012-06-24 07:52:41&#34;&gt;EKhvedchenya&lt;/a&gt;:&lt;/strong&gt; Nicholas, i&amp;rsquo;m going to write a series of tutorias with detailed explanation of every step i make during writing this application. Hope you find it useful.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1453&#34; title=&#34;2012-07-13 23:08:45&#34;&gt;Josh&lt;/a&gt;:&lt;/strong&gt; &amp;hellip; a couple more requests; AR shadowing and tweaking luminosity to fit virtual object into the scene&amp;hellip; I&amp;rsquo;m tackling this problem now - to keep things simple, for shadowing I&amp;rsquo;m thinking of using the detected foreground for depth or change in plane and adjusting the shadow. For lighting - thinking of getting the HSV range and adjusting the ambient light based on this. Both interesting problems that require tricks to work in the real world.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2013-08-19-cloud-image-processing-using-opencv-and-node-js-rsses on Ghostwriter example</title>
+    <link>https://example.com/2013-08-19-cloud-image-processing-using-opencv-and-node-js/index.xml</link>
+    <description>Recent content in 2013-08-19-cloud-image-processing-using-opencv-and-node-js-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Mon, 19 Aug 2013 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2013-08-19-cloud-image-processing-using-opencv-and-node-js/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Cloud image processing using OpenCV and Node.js</title>
+      <link>https://example.com/2013-08-19-cloud-image-processing-using-opencv-and-node-js/</link>
+      <pubDate>Mon, 19 Aug 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2013-08-19-cloud-image-processing-using-opencv-and-node-js/</guid>
+      <description>
+
+&lt;p&gt;A long time ago i was playing with cloud-based image processing. The first reason why i didn&amp;rsquo;t shared a reciple how to compile OpenCV as native app for windows azure cloud was trycky build process. It was too complicated and this tutorial will become outdated very quickly. The second one - Azure hosting wants a lot of money. So i put my research in this area on hold for better times.&lt;/p&gt;
+
+&lt;p&gt;And i think the time has come. You probably heard about Node.js - server-side asynchronous Java Script library. I have very small experience with Java-Script, but Node.js attracted me so strong i decided to study it. In this post i will describe how to connect Node.js and OpenCV together. On server-side OpenCV libary can be used for many things - generating CAPTCHA&amp;rsquo;s recognizing scans, counting people in video streams.. So i beleive my tutorial will come in handy to people who is looking how to do image processing in the cloud environment.&lt;/p&gt;
+
+&lt;p&gt;Node.js is written in Java-script, and follows asynchronous programming model, where events and callbacks plays dominant role. OpenCV is a C++ library written in good old C and C++ and it don&amp;rsquo;t bother with asynchronous and event-based programming model. Fortunately Node.js can interop with external modules written in C++. It&amp;rsquo;s made via V8 engine which is a core of Node.js.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;disclaimer&#34;&gt;Disclaimer&lt;/h2&gt;
+
+&lt;p&gt;I will be using Mac OS as host platform. Keep in mind this since some commands may differs for Ubuntu or Debian. &lt;strong&gt;Windows users&lt;/strong&gt; - you aren&amp;rsquo;t lucky ones. I had no luck to build Node and OpenCV on windows so far. Please, post your comments if you succeed to build OpenCV module for Node.&lt;/p&gt;
+
+&lt;h2 id=&#34;prerequisites&#34;&gt;Prerequisites&lt;/h2&gt;
+
+&lt;p&gt;In this tutorial we will need the following software:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&#34;https://developer.apple.com/xcode/&#34;&gt;XCode&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.cmake.org/&#34;&gt;CMake&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://nodejs.org&#34;&gt;Node.js&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://opencv.org&#34;&gt;OpenCV&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;I assume you already installed XCode and CMake. In next two sections we describe installation of Node.js and OpenCV.&lt;/p&gt;
+
+&lt;h2 id=&#34;installing-node-js&#34;&gt;Installing Node.js&lt;/h2&gt;
+
+&lt;p&gt;To install Node.js i used &lt;a href=&#34;http://www.macports.org/&#34;&gt;macports&lt;/a&gt; software package manager. It&amp;rsquo;s very similar to &lt;code&gt;apt-get&lt;/code&gt; command from Unix.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;This command will install latests stable Node.js:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo port install nodejs
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;After running this command your Node.js is ready to use. It&amp;rsquo;s not mandatory to use macports, you can install it using homebrew or build Node from the sources. It&amp;rsquo;s up to you and will not affect further steps.&lt;/p&gt;
+
+&lt;p&gt;Node.js can be extended by C++ Modules. This is a way to interop with OpenCV library. To use OpenCV from Node.js we have to write C++ Mobule that Node.js can use. To build this module a special build system is used. We install it via Node Package Manager using following command:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;This command will install a GYP build system:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo npm install -g node-gyp
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Take a note on &amp;ldquo;-g&amp;rdquo; flag which means &amp;ldquo;Install globally&amp;rdquo;. By default npm installs new package to current directory.&lt;/p&gt;
+
+&lt;p&gt;On this step we are done with setting up Node.js.&lt;/p&gt;
+
+&lt;h3 id=&#34;installing-opencv&#34;&gt;Installing OpenCV&lt;/h3&gt;
+
+&lt;p&gt;OpenCV can be build as &lt;strong&gt;static&lt;/strong&gt; or &lt;strong&gt;shared&lt;/strong&gt;. I describe my experience using both options with Node.js:&lt;/p&gt;
+
+&lt;h4 id=&#34;shared&#34;&gt;Shared&lt;/h4&gt;
+
+&lt;p&gt;By default, macports install shared libraries that are linked at run-time during application load. I was able to build a bare miminum Node.js module, but when i run it i got dyld load error. Maybe it&amp;rsquo;s necessary to tell Node somehow where to search for OpenCV libs. But i decided to put this on hold and build a static OpenCV instead.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;If you know how to fix this easily your comments and suggestions are welcome!&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&#34;static&#34;&gt;Static&lt;/h4&gt;
+
+&lt;p&gt;Building OpenCV as static libs is very trivial if you used CMake. Here is full stack of commands that clone latests OpenCV snapshot and build the final distribution package:&lt;/p&gt;
+
+&lt;p&gt;Upon completition you shoudl have a folder named &lt;code&gt;opencv-node-bin&lt;/code&gt; with following contents:&lt;/p&gt;
+
+&lt;h3 id=&#34;writing-your-first-c-module-for-node-js&#34;&gt;Writing your first C++ Module for Node.js&lt;/h3&gt;
+
+&lt;p&gt;It&amp;rsquo;s actuall a very easy to interop between JavaScript and C++, since JS uses V8 engine which is written in C++ too. I used the &lt;a href=&#34;http://nodejs.org/api/addons.html&#34;&gt;official documentation&lt;/a&gt; and &lt;a href=&#34;https://github.com/kkaefer/node-cpp-modules&#34;&gt;good examples&lt;/a&gt; by Konstantin Käfer.&lt;/p&gt;
+
+&lt;p&gt;Node.js uses it&amp;rsquo;s own build system to C++ modules - &lt;strong&gt;node-gyp&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;There is a .gyp file which contains build options of your module. A GYP file is looks like JSON-like file where you specify your build targets.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;binding.gyp&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;{
+  &amp;quot;targets&amp;quot;: [
+    {
+      &amp;quot;target_name&amp;quot;: &amp;quot;cv&amp;quot;,
+      &amp;quot;sources&amp;quot;: [ &amp;quot;main.cpp&amp;quot; ],
+      &amp;quot;include_dirs&amp;quot;: [ &amp;quot;/users/BloodAxe/Develop/opencv-node-bin/lib/inlcude/&amp;quot; ],  
+      &amp;quot;link_settings&amp;quot;: {
+                        &#39;libraries&#39;:    [&#39;-lopencv_core -lopencv_features2d -lopencv_contrib&#39;],
+                        &#39;library_dirs&#39;: [&#39;/users/BloodAxe/Develop/opencv-node-bin/lib/&#39;],
+                       },
+    }
+  ]
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let&amp;rsquo;s look at it in more details:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;We define a single target with name &lt;code&gt;cv&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;The target includes a single source file &lt;code&gt;main.cpp&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;We adjust &lt;code&gt;include_dirs&lt;/code&gt; and &lt;code&gt;link_settings&lt;/code&gt; options to point our static OpenCV build.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Second mandatory file is package.json - it contains meta-information about our module:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;package.json&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;{
+    &amp;quot;name&amp;quot;: &amp;quot;cv&amp;quot;,
+    &amp;quot;version&amp;quot;: &amp;quot;1.0.0&amp;quot;,
+    &amp;quot;main&amp;quot;: &amp;quot;./build/Release/cv&amp;quot;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Finally, a source code of our module. For sake of simplicity, let&amp;rsquo;s export a single function that prints OpenCV build information from Node.js:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;main.cpp&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;To build your module you can write the following command (assuming your current directory contains binding.gyp):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;npm build .
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If you see the following output - your Node.js module that uses OpenCV has been built!&lt;/p&gt;
+
+&lt;p&gt;Now it&amp;rsquo;s time to check how it works.&lt;/p&gt;
+
+&lt;p&gt;Here is a simple run script:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;run.js&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var cv = require(&#39;./build/Release/cv&#39;);
+
+console.warn(cv.buildInformation());
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To run it:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;node run.js
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;
+
+&lt;p&gt;I hope after reading this post you understood how to write a simple OpenCV wrapper for Node.js. In the next tutorial i will show how to perform simple image processing inside our Node module. Your comments for this post are welcome!&lt;/p&gt;
+
+&lt;p&gt;You can find an bare minimum Node.js module example here: &lt;strong&gt;&lt;a href=&#34;https://github.com/BloodAxe/CloudCV/tree/bare-minimum&#34;&gt;OpenCV module for Node.js&lt;/a&gt;&lt;/strong&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

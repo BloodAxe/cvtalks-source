@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Training Haar cascade in the cloud &middot; My Name</title>
+        <meta name="description" content="In this post I&rsquo;ll show you how you can train cascade classifier with OpenCV very quickly even if you have low-end hardware using virtual machine in the cloud.
+Why Clouds? Well, training a descriptor takes a lot of time. Depending on template size, number of samples and stages, it can take from several ours to a couple of days to train such cascade! Be prepared that during training stage your PC will likely be unusuable due to high RAM usage and CPU load.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="Training Haar cascade in the cloud">
+<meta property="og:description" content="In this post I&rsquo;ll show you how you can train cascade classifier with OpenCV very quickly even if you have low-end hardware using virtual machine in the cloud.
+Why Clouds? Well, training a descriptor takes a lot of time. Depending on template size, number of samples and stages, it can take from several ours to a couple of days to train such cascade! Be prepared that during training stage your PC will likely be unusuable due to high RAM usage and CPU load.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/cloud-haartaining/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">Training Haar cascade in the cloud</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    
+
+<p>In this post I&rsquo;ll show you how you can train cascade classifier with OpenCV very quickly even if you have low-end hardware using virtual machine in the cloud.</p>
+
+<p><span class="more" /></p>
+
+<h2 id="why-clouds">Why Clouds?</h2>
+
+<p>Well, training a descriptor takes a lot of time. Depending on template size, number of samples and stages, it can take from several ours to a couple of days to train such cascade! Be prepared that during training stage your PC will likely be unusuable due to high RAM usage and CPU load. If you&rsquo;re on laptop - it will become hot really quick. So, what if you have to train your cascade, but you don&rsquo;t have either time or spare machine to do this?</p>
+
+<p>Recently I&rsquo;ve faced this problem in one of my personal projects. What even more funny, a 10 hours flight was approaching, but I didn&rsquo;t wanted to waste this time for nothing. I only had a laptop, but this task will drain my battery for sure. So I&rsquo;ve decided to use virtual server to do this.</p>
+
+<h2 id="step-1-environment-setup">Step 1 - Environment setup</h2>
+
+<p>First, I&rsquo;ve created a basic droplet in <a href="https://www.digitalocean.com/?refcode=b93faa829f80">DigitalOcean</a>.
+Yep, for 5$/month you can have your droplet that can do much!
+It takes only 55 seconds to deploy a new instance (I assume you&rsquo;re familiar with SSH keys, terminal, Git and so on.) and we&rsquo;re ready to rock!</p>
+
+<p><img src="image1.png" alt="Create DigitalOcean droplet" /></p>
+
+<h2 id="step-2-install-latest-opencv-release">Step 2 - Install latest OpenCV release</h2>
+
+<p>There are two ways to do this: either using package managers (homebrew, yum or apt-get) or builiding it from scratch.
+Personally I prefer second option since you can configure OpenCV. Usually I build static libs whith apps but without tests, java, cuda, python, OpenEXR, Jasper and Tiff. Regardless of the way you choose to install OpenCV, ensure that opencv apps (opencv_createsamples, opencv_traincascade) are also installed!.</p>
+
+<h2 id="step-3-prepare-your-train-data">Step 3 - Prepare your train data</h2>
+
+<p>There are a lot of tutorials <a href="http://note.sonots.com/SciSoftware/haartraining.html">1</a>, <a href="http://coding-robin.de/2013/07/22/train-your-own-opencv-haar-classifier.html">2</a>, <a href="http://answers.opencv.org/question/7141/about-traincascade-paremeters-samples-and-other/">3</a> on how to train cascade with OpenCV: which images are good for positive and negative samples and which settings should be used for cascade training. Let&rsquo;s assume you have everything in a single folder on your load machine and there is a script called &ldquo;train.sh&rdquo; that starts training stage:</p>
+
+<pre><code class="language-bash">opencv_traincascade -data classifier \
+                    -vec &lt;positive samples file&gt; \
+                    -bg &lt;negative samples file&gt; \
+                    -numStages 12 \
+                    -minHitRate 0.999 \
+                    -maxFalseAlarmRate 0.5 \
+                    -numPos 15000 -numNeg 17000 \
+                    -w 24 \
+                    -h 24 \
+                    -mode ALL \
+                    -nonsym 1 \
+                    -featureType LBP
+</code></pre>
+
+<h2 id="step-4-deploy-train-data-to-cloud">Step 4 - Deploy train data to cloud</h2>
+
+<p>The easiest way to upload this folder to your virtual droplet is to use the <a href="http://en.wikipedia.org/wiki/Rsync">rsync</a> tool.</p>
+
+<pre><code class="language-bash">rsync -avz &lt;source&gt; &lt;destination&gt;
+</code></pre>
+
+<p>For instance, the following command will upload the traindata/ folder with it&rsquo;s content to ~haartraining.example.com~ webserver to /traindata directory. This example assumes that your public key has been added to haartraining.example.com during droplet creation.</p>
+
+<pre><code class="language-bash">rsync -avz ~/Develop/traindata root@haartraining.example.com:/traindata
+</code></pre>
+
+<h2 id="step-5-start-training">Step 5 - Start training</h2>
+
+<p>The easiest way to execute training is to login to remote maching using ssh and execute the train script with a simple command:</p>
+
+<pre><code class="language-bash">ssh root@haartraining.example.com
+sh /traindata/train.sh
+</code></pre>
+
+<p>However, this will require you to keep SSH-session open all the time. If you log-out, the process will terminate and training will be terminated as well.
+To prevent this we can use <a href="http://en.wikipedia.org/wiki/Nohup">nohup</a> UNIX utility:</p>
+
+<pre><code class="language-bash">ssh root@haartraining.example.com
+nohup sh /traindata/train.sh &gt; /traindata/train.log
+</code></pre>
+
+<p>Training will continue to work regardless of the user&rsquo;s connection to the terminal, and log results to the file train.log.</p>
+
+<h2 id="step-6-getting-the-results">Step 6 - Getting the results</h2>
+
+<p>After trainign is done (you can check this by top command output or looking at the train.log), we can download trainresults back with rsync command:</p>
+
+<pre><code class="language-bash">rsync -avz root@haartraining.example.com:/traindata ~/Develop/traindata 
+</code></pre>
+
+<h2 id="step-7-speeding-up-training">Step 7 - Speeding up training</h2>
+
+<p>To speed-up training stage I recommend to pass additional options to opencv_traincascade tool:</p>
+
+<ul>
+<li>precalcValBufSize=2048</li>
+<li>precalcIdxBufSize=2048</li>
+</ul>
+
+<p>Ideally you want to use all available memory of your instance for these buffers, so if you have 4Gb of RAM installed, pass at least a 1Gb to each of these buffers.</p>
+
+<p>It also may be a good idea to &ldquo;shrink&rdquo; the DigitalOcean&rsquo;s droplet to more powerful configuration which gives you 16Gb of RAM and 8 CPU&rsquo;s.</p>
+
+<p><img src="resize.png" alt="Resize droplet" /></p>
+
+<p>This task can be done on few clicks:</p>
+
+<h3 id="stop-your-droplet">Stop your droplet</h3>
+
+<p><img src="poweroff.png" alt="Poweroff droplet" /></p>
+
+<h3 id="choose-resize-and-pick-a-necessary-configuration">Choose &ldquo;Resize&rdquo; and pick a necessary configuration</h3>
+
+<p><img src="resize2.png" alt="Resize droplet" /></p>
+
+<h3 id="power-up-your-resized-droplet">Power-up your resized droplet</h3>
+
+<p><strong>Please be advised, that DigitalOcean will charge you regardless whether your droplet is powered on or off. So if you&rsquo;re not using it - make a snapshot of it and delete unused droplet to save money</strong>.</p>
+
+<p>That&rsquo;s all. I hope you enjoyed reading this post. Please, leave your comments.</p>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/opencv/">opencv</a>
+            
+                 <a href="/tags/cloud-computing/">cloud-computing</a>
+            
+                 <a href="/tags/tutorials/">tutorials</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=Training%20Haar%20cascade%20in%20the%20cloud&url=https%3a%2f%2fexample.com%2fcloud-haartaining%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2fcloud-haartaining%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2fcloud-haartaining%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

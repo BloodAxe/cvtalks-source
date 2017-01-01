@@ -1,0 +1,1499 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ghostwriter example</title>
+    <link>https://example.com/tags/news/index.xml</link>
+    <description>Recent content on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <atom:link href="https://example.com/tags/news/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>How to write a good code</title>
+      <link>https://example.com/how-to-write-good-code/</link>
+      <pubDate>Wed, 09 Sep 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/how-to-write-good-code/</guid>
+      <description>
+
+&lt;div class=&#34;featured-image&#34;&gt;
+![](featured-image.jpg)
+&lt;/div&gt;
+
+&lt;p&gt;This article is a quintessence of my all experience
+I&amp;rsquo;ve got for last years working as a computer vision consultant.
+I hope you will find this interesting and useful.
+My goal was to create set of rules I follow personally on daily basis.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34; /&gt;&lt;/p&gt;
+
+&lt;h1 id=&#34;1-prefer-functional-approach&#34;&gt;1. Prefer functional approach&lt;/h1&gt;
+
+&lt;p&gt;&lt;img src=&#34;fp.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Image processing is a place where functional paradigm shows it&amp;rsquo;s bests.
+In most cases, image processing algorithm depends only on input image and has no side effects.
+This fits perfectly to a &amp;lsquo;pure function&amp;rsquo; term. When possible try to follow this checklist when you define a function in your code:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Mark all input data with &lt;code&gt;const&lt;/code&gt; modifier to specify immutable arguments.&lt;/li&gt;
+&lt;li&gt;Prefer return by reference for large objects (especially for images) instead returning by value.&lt;/li&gt;
+&lt;li&gt;In case of class methods, mark methods that does not change class internal state with  &lt;code&gt;const&lt;/code&gt; modifier.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;These simple advice helps to understand what and when can you function change. You may remember tricky details of your code today, but who guarantees you&amp;rsquo;ll easily remember that in a month?&lt;/p&gt;
+
+&lt;p&gt;For instance, I want to write implementation of template matching. One may write it as follows:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;class TemplateMatchingAlgorithm
+{
+public:
+  TemplateMatchingAlgorithm(cv::Mat templateImage, int method);
+
+  cv::Point matchTemplate(cv::Mat queryImage) const;
+
+private:
+  cv::Mat _templateImage;
+  int   _method;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Compare it with function declaration that does the same job, but looks much cleaner:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;void MatchTemplate(cv::Mat templateImage, cv::Mat queryImage, cv::Point&amp;amp; minPoint, int method);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So you may ask, should I create class with const method or declare an ordinary function instead?
+The short answer - functions are better. I personally use simple decision algorithm:&lt;/p&gt;
+
+&lt;div class=&#34;alert alert-info&#34; role=&#34;alert&#34;&gt;
+  If the algorithm needs to preserve state between calls - use class; otherwise - use function.
+&lt;/div&gt;
+
+&lt;h2 id=&#34;2-don-t-use-virtual-methods&#34;&gt;2. Don&amp;rsquo;t use virtual methods&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;virtualmethods.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You may argue - with classes we can define various implementations for &lt;code&gt;TemplateMatching&lt;/code&gt; using SIDM, CUDA or use template matching in Fourier domain.
+Yes, we can. But the price we pay for each call of virtual method is too big for such small routine as template matching.
+Usually we use TemplateMatching on small patches like 11x11 pixels to track translation between two frames of video. Hence to achieve robust tracking, number of patches can be quite high - 500 and even 1000 per one frame. Further, coarse-to-fine matching and sub-pixel optimization can lead to ten or more calls for the same feature. In this case, virtual call is a big no-no that will kill your application&amp;rsquo;s performance.&lt;/p&gt;
+
+&lt;div class=&#34;alert alert-info&#34; role=&#34;alert&#34;&gt;
+As a rule of thumb: you *may* use virtual methods to execute big amount of work. Let&#39;s say one virtual call per frame looks totally fine. A thousand calls per frame is obviously a bad, bad idea.
+&lt;/div&gt;
+
+&lt;h2 id=&#34;3-write-regression-tests&#34;&gt;3. Write regression tests&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;regression.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Regression testing is a great tool to track all changes in your algorithm and measure it&amp;rsquo;s
+precision and performance. Here&amp;rsquo;s an idea:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Create a ground-truth input dataset&lt;/li&gt;
+&lt;li&gt;Process it with your algorithm.&lt;/li&gt;
+&lt;li&gt;Save output data and track it in your version control system.&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;Each time you make changes in implementation - run regression on same input data and compare results.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Regression testing can easily spot numeric stability problems on different compilers / platforms, introduced bugs, platform-dependent optimizations. It&amp;rsquo;s a good idea to include it as a part of regular unit testing:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;/*
+BOOST_AUTO_TEST_CASE(MyAlgorithm, createRegressionDatabaset)
+{
+    ...
+}
+/**/
+
+BOOST_AUTO_TEST_CASE(MyAlgorithm, checkRegression)
+{
+    ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I intentionally commented out first test case - in ideal world it should be executed only once.
+But sometimes it&amp;rsquo;s necessary to update ground-truth (you fixed a bug in original implementation).
+So you uncomment it, run tests, comment it back and check-in new ground-truth.&lt;/p&gt;
+
+&lt;p&gt;You may use any format you like for dumping ground truth data (usually it&amp;rsquo;s some matrices, vectors or images).
+Personally, I prefer YAML and JSON.
+Just ensure when dumping floating-point numbers to specify maximum output precision.
+Otherwise you will have funny weekend debugging absolutely correct algorithm with failing assertion check &lt;code&gt;
+0.1543642342365 != 0.154364&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div class=&#34;alert alert-info&#34; role=&#34;alert&#34;&gt;
+Once written, regression tests should be run on regular basis either manually or using automated CI system of your choice. 
+&lt;/div&gt;
+
+&lt;h2 id=&#34;4-add-logging-to-your-code&#34;&gt;4. Add logging to your code&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;logging.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In the simplest case, it could be trivial console logging.
+In debug mode you will have all messages in stdout, but in release it will be totally excluded from compilation step.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;#if _DEBUG
+#define LOG_MESSAGE(x) std::cout &amp;lt;&amp;lt; __FILE__ &amp;lt;&amp;lt; &amp;quot; (&amp;quot; &amp;lt;&amp;lt; __LINE__ &amp;lt;&amp;lt; &amp;quot;): &amp;quot; &amp;lt;&amp;lt; x &amp;lt;&amp;lt; std::endl;
+#else
+#define LOG_MESSAGE(x)
+#endif
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;For complex systems I suggest to use mature logging frameworks like Boost::Log or similar.
+They has separation of logging streams (info, trace, warning, errors) and deal with multi-threaded logging.
+Logging to file is also useful feature when you want to store program output for further analysis.&lt;/p&gt;
+
+&lt;p&gt;In one of my previous projects, there was a standalone program for logs analysis and data visualization. We logged
+all - matrices, vectors regular messages with timestamps. After program finishes we were able to trace program flow
+frame by frame and analyze how our algorithms behaved. I cannot count how much hours this tool saved to us on data analysis.&lt;/p&gt;
+
+&lt;p&gt;Logging also helps to spot nasty bugs when you have inconsistent behavior on different platforms. For instance, not so recently I faced a problem when optical flow tracker gave different results on iOS and OSX platforms. After logging all input/output and intermediate data including vectors, matrices I found the root of the evil. It was &lt;code&gt;std::log&lt;/code&gt; function.&lt;/p&gt;
+
+&lt;div class=&#34;alert alert-warning&#34; role=&#34;alert&#34;&gt;
+On OSX ``std::log(float)`` implicitly computes logarithm with double precision and returns truncated result (float). On iOS it computes logarithm using single precision leading to small difference in result. Like a butterfly effect, it affects all other parts of the algorithm. 
+&lt;br&gt;
+**Without logging it would be practically impossible to spot bug like this**.
+&lt;/div&gt;
+
+&lt;h2 id=&#34;5-profile-your-code&#34;&gt;5. Profile your code&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;profilerdump.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Algorithm performance usually a top-level priority since this kind of applications deal with real-time video processing and processing of huge amount of data.
+Therefore it&amp;rsquo;s crucial to know how fast your algorithms runs or do they become slower or faster with refactoring you perform.
+There are plenty of ways to collect this data.&lt;/p&gt;
+
+&lt;h3 id=&#34;xcode-instruments&#34;&gt;XCode Instruments&lt;/h3&gt;
+
+&lt;p&gt;If you&amp;rsquo;re targeting on OSX and iOS platform, Apple Xcode and Instruments can be your first choice due to natural integration of profiling tools to IDE.
+Instruments can be handy to spot problematic places in your code. But Instruments uses sampling technique, which is not precise.&lt;/p&gt;
+
+&lt;h3 id=&#34;vtune-visualstudio&#34;&gt;VTune/VisualStudio&lt;/h3&gt;
+
+&lt;p&gt;For Windows users Visual Studio offers integrated profiler as well.
+Unlike Instruments, it can do instrumentation of your binary.
+It means each function in your program modified with special prolog and epilog code that measure execution time of all your program.
+Instrumenting provides you a lot of information per each routine: calls count, execution time, inclusive / exclusive CPU time, call tread and CPU cores load.
+This is much more you have with Apple Instruments.&lt;/p&gt;
+
+&lt;h3 id=&#34;cv-gettickcount&#34;&gt;cv::getTickCount&lt;/h3&gt;
+
+&lt;p&gt;Sometimes you don&amp;rsquo;t want to profile entire application. Instead you want to &amp;lsquo;cherry-pick&amp;rsquo; only a single function and profile it. For this purpose you can use monotonic clock and measure execution time:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;#define MEASURE_TIME(x)                        \
+        { auto startTime = cv::getTickCount(); \ 
+          x;                                   \
+          auto endTime = cv::getTickCount();   \
+          std::cout &amp;lt;&amp;lt; #x &amp;lt;&amp;lt; &amp;quot; &amp;quot; &amp;lt;&amp;lt; (endTime - startTime) * cv::getTickFrequency() &amp;lt;&amp;lt; std::endl; }
+
+// Measure MatchTemplate
+MEASURE_TIME(MatchTemplate(a,b,result));
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;div class=&#34;alert alert-info&#34; role=&#34;alert&#34;&gt;
+  Profile your code. Always.
+&lt;/div&gt;
+
+&lt;h2 id=&#34;6-optimize-code&#34;&gt;6. Optimize code&lt;/h2&gt;
+
+&lt;h3 id=&#34;6-1-loop-vectorization&#34;&gt;6.1 Loop vectorization&lt;/h3&gt;
+
+&lt;p&gt;Compilers can do loops vectorization when data flow and iterations count are clear enough.
+This heuristic analysis depends on implementation, so CLang has different vectorization analysis engine than MSVC. But you can give your compiler a hint:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;void SSD(cv::Mat i1, cv::Mat i2)
+{
+  int i = 0;
+  const uint8_t * a = templateImage.data;
+  const uint8_t * b = templateImage.data;
+  
+  int ssd = 0;
+
+  for (; i &amp;lt; (length/4)*4; i+=4)
+  {
+    ssd += SQR(a[i+0] - b[i+0]);
+    ssd += SQR(a[i+1] - b[i+1]);
+    ssd += SQR(a[i+2] - b[i+2]);
+    ssd += SQR(a[i+3] - b[i+3]);
+  }
+
+  for (; i &amp;lt; length; i++, a++, b++)
+  {
+    ssd += SQR(a[i] - b[i]);
+  }
+
+  return ssd;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This partial loop unrolling gives enough information to compiler.
+As a result it can replace partially unrolled summation with SIMD instruction.&lt;/p&gt;
+
+&lt;h3 id=&#34;6-2-bring-constants-at-compile-time&#34;&gt;6.2 Bring constants at compile time&lt;/h3&gt;
+
+&lt;p&gt;If you have a priory knowledge on size of data you pass to particular function, it may make sense to write function that
+employs this information:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;template &amp;lt;typename TOut, typename TIn, int RowsAtCompileTime, int ColsAtCompileTime&amp;gt;
+inline TOut SSD(const cv::Matx_&amp;lt;TIn, RowsAtCompileTime, ColsAtCompileTime&amp;gt;&amp;amp; a, 
+                const cv::Matx_&amp;lt;TIn, RowsAtCompileTime, ColsAtCompileTime&amp;gt;&amp;amp; b) nothrow
+{
+  int i = 0;
+  const TIn * a = templateImage.data;
+  const TIn * b = templateImage.data;
+  
+  TOut ssd = 0;
+
+  for (int i = 0; i &amp;lt; RowsAtCompileTime * ColsAtCompileTime; i++, a++, b++)
+  {
+    ssd += (TOut)SQR(a[i] - b[i]);
+  }
+
+  return ssd;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Since compiler knows size of the array to process, it can easily generate vectorized code for this routine.
+The drawback of this approach is slightly increased code size if you instantiate this template function with many sizes.
+But you get better performance which usually worth it.&lt;/p&gt;
+
+&lt;h3 id=&#34;6-3-architecture-dependent-implementations&#34;&gt;6.3 Architecture-dependent implementations&lt;/h3&gt;
+
+&lt;p&gt;Architecture-specific features like SIMD instructions can make your code runs much, much faster than generic C++
+implementation.
+It is a must-have feature on mobile platforms since it makes your code faster and at the same time it
+conservate battery power of host device.
+There are more and more devices with CUDA and OpenCL support.
+And the question is - how do I manage all those possible architecture / platforms combinations of optimized functions in my code?&lt;/p&gt;
+
+&lt;p&gt;Here it&amp;rsquo;s how I solved this task for myself:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;namespace mypublicnamespace
+{
+    void MatchTemplate(cv::Mat templateImage, cv::Mat queryImage, cv::Point&amp;amp; minPoint, int method)
+    {
+#if TARGET_PLATFORM_HAS_NEON_SIMD
+        details::neon::MatchTemplate(templateImage, queryImage, minPoint, method);
+#elif TARGET_PLATFORM_HAS_SSE_SIMD
+        details::sse::MatchTemplate(templateImage, queryImage, minPoint, method);
+#elif TARGET_PLATFORM_HAS_OPENCL
+        details::opencl::MatchTemplate(templateImage, queryImage, minPoint, method);
+#else        
+        details::generic::MatchTemplate(templateImage, queryImage, minPoint, method);
+#endif    
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This code snippet demonstrate compile-time dispatching for particular implementation of a function declared in &lt;code&gt;mypublicnamespace&lt;/code&gt;. Of course, you should take care of preprocessor defines that declare platform / architecture capabilities. I&lt;/p&gt;
+
+&lt;h3 id=&#34;6-4-branch-prediction&#34;&gt;6.4 Branch prediction&lt;/h3&gt;
+
+&lt;p&gt;Suppose you have a-priory knowledge that condition expression will be almost always true.
+Why don&amp;rsquo;t give this intrinsic knowledge to compiler? By supplying &lt;em&gt;expected&lt;/em&gt; condition result compiler can
+generate more efficient code. As a result, CPU will start decoding instructions earlier.&lt;/p&gt;
+
+&lt;p&gt;Unfortunately, this feature supported only on GCC and CLANG.
+But according to measurements, it can provide significant speed-up up to ~15%. You can find more information here: &lt;a href=&#34;http://blog.man7.org/2012/10/how-much-do-builtinexpect-likely-and.html&#34;&gt;How much do __builtin_expect(), likely(), and unlikely() improve performance?&lt;/a&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;#define LIKELY(x)      __builtin_expect(!!(x), 1)
+#define UNLIKELY(x)    __builtin_expect(!!(x), 0)
+
+if (LIKELY(x &amp;gt;= 0 &amp;amp;&amp;amp; x &amp;lt;= image_width))
+{
+  // Compute something
+}
+
+if (UNLIKELY(std::fabs(value) &amp;lt;= std::numeric_limits&amp;lt;float&amp;gt;::epsilon()))
+{
+  throw std::runtime_error(&amp;quot;Value is zero&amp;quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;6-5-openmp&#34;&gt;6.5 OpenMP&lt;/h3&gt;
+
+&lt;p&gt;Starting from OpenMP 4.0, you can instruct compiler to generate vectorized code by adding new pragma instructions to your loops:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;void MatchTemplate(cv::Mat templateImage, cv::Mat queryImage, cv::Point&amp;amp; minPoint, int method)
+{
+  uint8_t * a = templateImage.data;
+  uint8_t * b = templateImage.data;
+  
+  int ssd = 0;
+
+#pragma omp simd reduction(+:x)
+  for (int i = 0; i &amp;lt; length; i++)
+  {
+    ssd += SQR(a[0] - b[0]);
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;With only single &lt;code&gt;#pragma&lt;/code&gt; instruction you made your code runs faster.
+I encourage you to visit &lt;a href=&#34;https://software.intel.com/en-us/articles/enabling-simd-in-program-using-openmp40&#34;&gt;Enabling SIMD in program using OpenMP4.0&lt;/a&gt; webpage for more information of supported OpenMP SIMD instructions.&lt;/p&gt;
+
+&lt;h3 id=&#34;7-use-imageview&#34;&gt;7. Use ImageView&lt;/h3&gt;
+
+&lt;p&gt;For Windows users there is a great Visual Studio plugin called &lt;a href=&#34;https://visualstudiogallery.msdn.microsoft.com/e682d542-7ef3-402c-b857-bbfba714f78d&#34;&gt;ImageWatch&lt;/a&gt; that makes our life so simple.
+This plugin can visualize OpenCV matrices right in IDE.
+It is hard to overestimate the usefulness of this plugin.
+You can see how images are changing while debugging.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;image_watch.png&#34; alt=&#34;Image watch&#34; /&gt;&lt;/p&gt;
+
+&lt;h1 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h1&gt;
+
+&lt;p&gt;Next time when you start development of new algorithm, keep in mind these simple steps.
+They will help you create fast, maintainable and clear code. Here they are:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Prefer functional approach&lt;/li&gt;
+&lt;li&gt;Try avoid virtual calls&lt;/li&gt;
+&lt;li&gt;Write vectorization-friendly code&lt;/li&gt;
+&lt;li&gt;Use all available debugging / profiling tools&lt;/li&gt;
+&lt;li&gt;Measure your code performance&lt;/li&gt;
+&lt;li&gt;Write tests and check regression&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Hope you found this post useful. Discussion is more than welcome. Please share your thoughts in comments.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Computer Vision Digest - September 2014</title>
+      <link>https://example.com/computer-vision-digest-september-2014/</link>
+      <pubDate>Wed, 01 Oct 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/computer-vision-digest-september-2014/</guid>
+      <description>
+
+&lt;p&gt;Third &lt;a href=&#34;https://example.com/tags/digest.html&#34;&gt;computer vision digest&lt;/a&gt;. Your monthly portion of news in computer vision for September 2014.&lt;/p&gt;
+
+&lt;p&gt;In this issue:
+ - &lt;a href=&#34;#1&#34;&gt;Real-time face 3D model reconstruction&lt;/a&gt;
+ - &lt;a href=&#34;#1&#34;&gt;Image color correction and contrast enhancement&lt;/a&gt;
+ - &lt;a href=&#34;#3&#34;&gt;Robust Optimization Techniques in Computer Vision&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Previous issues:
+ - &lt;a href=&#34;https://example.com/articles/2014-05-computer-vision-digest/&#34;&gt;Computer Vision Digest (May 2014)&lt;/a&gt;
+ - &lt;a href=&#34;https://example.com/articles/2014-06-computer-vision-digest/&#34;&gt;Computer Vision Digest (June 2014)&lt;/a&gt;
+ - &lt;a href=&#34;https://example.com/articles/computer-vision-digest-august-2014/&#34;&gt;Computer Vision Digest (August 2014)&lt;/a&gt;&lt;/p&gt;
+
+&lt;div class=&#34;alert alert-info&#34; role=&#34;alert&#34;&gt;
+Feel free to leave your suggestions on interesting materials in post comments 
+or via Twitter by mentioning [@cvtalks](https://twitter.com/cvtalks). 
+Best links will be included into next digest!
+&lt;/div&gt;
+
+&lt;p&gt;&lt;span class=&#34;more clearfix&#34; /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a name=&#34;1&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;real-time-face-3d-model-reconstruction&#34;&gt;Real-time face 3D model reconstruction&lt;/h2&gt;
+
+&lt;p&gt;Researchers from the University of Washington prepared interesting presentation for the European Conference on Computer Vision (ECCV-2014). It is a real-time &lt;a href=&#34;http://grail.cs.washington.edu/projects/totalmoving/&#34;&gt;3D face reconstruction from the video&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;15a03e37860948f9b2c4925b3c311c45.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Using the video from YouTube, the program automatically builds highly detailed face 3D-model for each video frame.&lt;/p&gt;
+
+&lt;p&gt;This is a very impressive result, given the complexity of the problem, because the facial expressions of the human face is very complex. For emotion recognition, it is important to see the exact position of the eyes, bending eyebrows, wrinkles. The smallest error in reconstructed 3D-model is highly noticeable.&lt;/p&gt;
+
+&lt;iframe width=&#34;800&#34; height=&#34;600&#34; src=&#34;//www.youtube.com/embed/C1iLVAUiC7s&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;
+
+&lt;p&gt;The vast majority of other programs for face 3D-tracking uses blend shapes method, when the shape of the object changes, &amp;ldquo;flowing&amp;rdquo; from one state to another. The method of smooth deformations has lack of the small details that are so important for the perception of faces. The authors of the new algorithm abandoned this approach.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;2639b10e54684d11b684d3257c8f400c.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;On the other hand, although the frame-independent reconstruction create a &amp;ldquo;separate&amp;rdquo; 3D mode from each frame, when you play on the &lt;sup&gt;30&lt;/sup&gt;&amp;frasl;&lt;sub&gt;60&lt;/sub&gt; frames per second, the result should be more realistic than in the case of a smooth modification.&lt;/p&gt;
+
+&lt;p&gt;And more. Unlike other technologies, it does not require human involvement in a test of a movie. Instead, a large archive of his photographs in different lighting conditions and poses, this method use video footrage that is tracked with optical flow (3D optical flow). Author research say that in our time for each person collected a large archive of photographs that can be used to reconstruct it&amp;rsquo;s face.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;28b4d17c1c65450faa683cc1afeddd89.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Source: &lt;a href=&#34;http://habrahabr.ru/post/237827/&#34;&gt;http://habrahabr.ru/post/237827/&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a name=&#34;2&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;image-color-correction-and-contrast-enhancement&#34;&gt;Image color correction and contrast enhancement&lt;/h2&gt;
+
+&lt;p&gt;A friend of mine shared a link to slideshare to the exhaustive research and analysis of color correction and contrast enchancement algorithms. How many of these have you worked with? I was impressed on how much algorithms has been developed so far. Just watch these slides, I bet - you&amp;rsquo;ll find new algorithms you&amp;rsquo;ve never heard about. Cheers to Yu Huang for collecting them for us!&lt;/p&gt;
+
+&lt;p&gt;&lt;iframe src=&#34;//www.slideshare.net/slideshow/embed_code/28271598?rel=0&#34; width=&#34;597&#34; height=&#34;486&#34; frameborder=&#34;0&#34; marginwidth=&#34;0&#34; marginheight=&#34;0&#34; scrolling=&#34;no&#34; style=&#34;border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;&#34; allowfullscreen&gt; &lt;/iframe&gt; &lt;div style=&#34;margin-bottom:5px&#34;&gt; &lt;strong&gt; &lt;a href=&#34;https://www.slideshare.net/yuhuang/image-color-correction-contrast-adjustment&#34; title=&#34;Image color correction and contrast enhancement&#34; target=&#34;_blank&#34;&gt;Image color correction and contrast enhancement&lt;/a&gt; &lt;/strong&gt; from &lt;strong&gt;&lt;a href=&#34;http://www.slideshare.net/yuhuang&#34; target=&#34;_blank&#34;&gt;Yu Huang&lt;/a&gt;&lt;/strong&gt; &lt;/div&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a name=&#34;3&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;robust-optimization-techniques-in-computer-vision&#34;&gt;Robust Optimization Techniques in Computer Vision&lt;/h2&gt;
+
+&lt;div class=&#34;alert alert-danger&#34; role=&#34;alert&#34;&gt;
+    &lt;strong&gt;Math warning.&lt;/strong&gt; Do not read this section unless you understand what damping function is and what is LevMar.
+&lt;/div&gt;
+
+&lt;p&gt;I&amp;rsquo;ve found nice slides from the ECCV 2014 workshop on non-linear optimization problems that happen in computer vision.&lt;/p&gt;
+
+&lt;p&gt;Course description&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;div class=&#34;pull-left&#34;&gt;
+![nl](nl.png)
+&lt;/div&gt;
+
+&lt;p&gt;Many important problems in computer vision, such as structure from motion and image registration, involve model estimation in presence of a significant number of outliers. Due to the outliers, simple estimation techniques such as least squares perform very poorly. To deal with this issue, vision researchers have come up with a number of techniques that are robust to outliers, such as Hough transform and RANSAC (random sample consensus). These methods will be analyzed with respect to statistical modeling, worst-case and average exectution times and how to choose the balance between the number of outliers and the number of inliers. Apart from these classical techniques we will also describe recent advances in robust model estimation. This includes sampling based techniques with guaranteed optimality for low-dimensional problems and optimization of semi-robust norms for high-dimensional problems. We will see how to solve low-dimensional estimation problems with over 99% outliers in a few seconds, as well as how to detect outliers in structure from motion problems with thousands of variables.
+Topics&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://www2.maths.lth.se/matematiklth/personal/fredrik/Session1.pdf&#34;&gt;Session 1&lt;/a&gt;: Statistical models of robust regression. Introduction, motivations and applications. Relation to robust statistics. Occasional vs. frequent large-scale measurement noise (outliers). Low- vs. high-dimensional model estimation. Optimal vs. approximate methods. Multiple model fitting. Computational complexity.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www2.maths.lth.se/matematiklth/personal/fredrik/Session2.pdf&#34;&gt;Session 2&lt;/a&gt;: Robust estimation with low-dimensional models. Hough transform. M-estimators. RANSAC and its variants. Branch and bound methods. Optimal methods. Fast approximate methods. Applications: Feature-based registration, multiple-view geometry, image-based localization.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www2.maths.lth.se/matematiklth/personal/fredrik/Session3.pdf&#34;&gt;Session 3&lt;/a&gt;: Robust estimation with high-dimensional models. Robust norms and convex optimization. L_infinity-norm optimization with outliers. L_1-norm optimization on manifolds. Applications: Multiple-view geometry, large-scale structure-from-motion and subspace estimation.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;You can read it here: &lt;a href=&#34;http://www2.maths.lth.se/matematiklth/personal/fredrik/eccv2014_tutorial.html&#34;&gt;http://www2.maths.lth.se/matematiklth/personal/fredrik/eccv2014_tutorial.html&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Computer Vision Digest - August 2014</title>
+      <link>https://example.com/computer-vision-digest-august-2014/</link>
+      <pubDate>Sat, 30 Aug 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/computer-vision-digest-august-2014/</guid>
+      <description>
+
+&lt;p&gt;Third &lt;a href=&#34;https://example.com/tags/digest.html&#34;&gt;computer vision digest&lt;/a&gt;. Your monthly portion of news in computer vision for August 2014.&lt;/p&gt;
+
+&lt;p&gt;In this issue:
+ - &lt;a href=&#34;#1&#34;&gt;Free Photo Editing Software Lets You Manipulate Objects in 3D&lt;/a&gt;
+ - &lt;a href=&#34;#2&#34;&gt;Real-Time Digital Makeup with Projection Mapping&lt;/a&gt;
+ - &lt;a href=&#34;#3&#34;&gt;Video stabilization through 3D scene recovery&lt;/a&gt;
+ - &lt;a href=&#34;#4&#34;&gt;Using OpenCV, Python and Template Matching to play “Where’s Waldo?”&lt;/a&gt;
+ - &lt;a href=&#34;#5&#34;&gt;OpenCV 3.0 alpha is out&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Previous issues:
+ - &lt;a href=&#34;https://example.com/articles/2014-05-computer-vision-digest/&#34;&gt;Computer Vision Digest (May 2014)&lt;/a&gt;
+ - &lt;a href=&#34;https://example.com/articles/2014-06-computer-vision-digest/&#34;&gt;Computer Vision Digest (June 2014)&lt;/a&gt;&lt;/p&gt;
+
+&lt;div class=&#34;alert alert-info&#34; role=&#34;alert&#34;&gt;
+Feel free to leave your suggestions on interesting materials in post comments 
+or via Twitter by mentioning [@cvtalks](https://twitter.com/cvtalks). 
+Best links will be included into next digest!
+&lt;/div&gt;
+
+&lt;p&gt;&lt;span class=&#34;more clearfix&#34; /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a name=&#34;1&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;free-photo-editing-software-lets-you-manipulate-objects-in-3d&#34;&gt;Free Photo Editing Software Lets You Manipulate Objects in 3D&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://i.kinja-img.com/gawker-media/image/upload/s--CtQ_vCt9--/c_fit,fl_progressive,q_80,w_636/sbuewdyltzbjdmfjvgof.gif&#34; alt=&#34;Free Photo Editing Software Lets You Manipulate Objects in 3D&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;How much Photoshop magic can you make with 2D photo? This software can do more! SIGGRAPH 2014 showed us a method that enables users to perform the full range of 3D manipulations, including scaling, rotation, translation, and nonrigid deformations, to an object in a photograph. Despite the fact it has limitations to use of stock 3D models set that are available for manipulation, it is great demonstration on how 2D and 3D can be combined together to bring image manipulation for the next level. I think Adobe is already buying these guys (and one girl).&lt;/p&gt;
+
+&lt;p&gt;The cool news, there are free demo, source code and publication paper that you can read:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.cs.cmu.edu/~om3d/sourcecodeversions.html&#34;&gt;Source code&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.cs.cmu.edu/~om3d/agreement.html&#34;&gt;OS X (Mavericks) Executable Code and Examples&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.cs.cmu.edu/~om3d/papers/SIGGRAPH2014.pdf&#34;&gt;Publication paper&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a name=&#34;2&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;real-time-digital-makeup-with-projection-mapping&#34;&gt;Real-Time Digital Makeup with Projection Mapping&lt;/h2&gt;
+
+&lt;p&gt;This is how state of the art technologies comes to real life. Well studied algorithms and a bit of tech = amazing results. Projection mapping in conjunction with real-time face tracking made possible a virtual make-up! No more words. Watch this:&lt;/p&gt;
+
+&lt;iframe src=&#34;//player.vimeo.com/video/103425574?byline=0&amp;amp;portrait=0&amp;amp;badge=0&amp;amp;color=cfcaca&#34; width=&#34;853&#34; height=&#34;480&#34; frameborder=&#34;0&#34; webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt; 
+
+&lt;p&gt;A true beauty of augmented reality. Girls, you don&amp;rsquo;t need to do a make-up for virtual date anymore :)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;So how did they made it?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;I assume this involves real-time frame tracker that outputs a face 3D model which is 99% tuned for particular person via offline training (Google: Active appearance model).
+Have you noticed white dots on her face? These are special markers that are used to &amp;ldquo;wire&amp;rdquo; face 3D model to real one.&lt;/p&gt;
+
+&lt;p&gt;And then they take virtual makeup (A texture that mapped onto 3D face model) and deform it to match tracked model. A projector then maps virtual makeup onto actor.&lt;/p&gt;
+
+&lt;p&gt;Well done, OMOTE. This was great demonstration!&lt;/p&gt;
+
+&lt;p&gt;Source: &lt;a href=&#34;http://www.augmentedrealitytrends.com/augmented-reality/projection-mapping.html&#34;&gt;Real-Time Digital Makeup with Projection Mapping&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a name=&#34;3&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;hyperlapse-video-stabilization-through-3d-scene-recovery&#34;&gt;Hyperlapse video stabilization through 3D scene recovery&lt;/h2&gt;
+
+&lt;p&gt;This is not about Instagram :)&lt;/p&gt;
+
+&lt;p&gt;Microsoft Research showed more sophisticated video stabilization algorithms for making Hyperlapse video from the raw footage made with ordinary handheld camera.&lt;/p&gt;
+
+&lt;iframe width=&#34;853&#34; height=&#34;480&#34; src=&#34;//www.youtube.com/embed/SOpwHaQnRSY?rel=0&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;
+
+&lt;p&gt;Developers claim that their result impossible to achieve using alternative ways of stabilization. The method is based on the reconstruction of the 3D-scene, and then algorithm optimize &amp;ldquo;movement&amp;rdquo; of the camera along the route in order to avoid vibration, and combines the images pixel by pixel to smooth video sequence.&lt;/p&gt;
+
+&lt;p&gt;For example, the figure below shows this route (in black) and an optimized route, which is generated by the application to render the video (red).&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;microsoft-hyperlapse-path-planning.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The result is a so-called hyperlapse-video (named by analogy with the time-lapse, slow-motion filming).&lt;/p&gt;
+
+&lt;iframe width=&#34;853&#34; height=&#34;480&#34; src=&#34;//www.youtube.com/embed/sA4Za3Hv6ng?rel=0&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;
+
+&lt;p&gt;Technicaly, the algorithm builds Hyperlapse video in three steps:
+ 1. &lt;strong&gt;Recover 3D scene&lt;/strong&gt; from the camera motion. This is well-known task called &amp;ldquo;Structure from Motion&amp;rdquo; and one camera is enough to recover 3D environment (Google: Monocular SLAM).
+ 2. &lt;strong&gt;Optimize route&lt;/strong&gt; (or Path Planning) - on previous step algorithm recover camera route that include shakes, vibration and occasion motions that should be exludede from result Hyperlapse. The goal of this step is to make smooth and stable transition from frame to frame by optimizing route.
+ 3. ** Render Hyperlapse**. This step doing reverse things - it sample pixel values from all visible frames that were used to reconstruct given pose and pick best ones that produce really nice stiched image. Having 3D environment has a great advantage when algorithm has to &amp;ldquo;inpaint&amp;rdquo; missing reginos - it can sample pixels from the other frames because system reallly knows what is the 3D structure around.&lt;/p&gt;
+
+&lt;p&gt;You can read publication of this approach from the Microsoft Research: &lt;a href=&#34;http://research.microsoft.com/en-us/um/redmond/projects/hyperlapse/paper/hyperlapse.pdf&#34;&gt;First-person Hyper-lapse Videos&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a name=&#34;4&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;using-opencv-python-and-template-matching-to-play-where-s-waldo&#34;&gt;Using OpenCV, Python and Template Matching to play “Where’s Waldo?”&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;puzzle_small.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This &lt;a href=&#34;http://machinelearningmastery.com/using-opencv-python-and-template-matching-to-play-wheres-waldo/&#34;&gt;article&lt;/a&gt; is for beginners who start learning computer vision. This tutorial describe very basic, but still powerful technique called template matching for object detection. “Where’s Waldo?” probably the best candidate for template matching demonstration - the task is very clear and this article contain step by step solution on detecting Waldo using computer vision.&lt;/p&gt;
+
+&lt;p&gt;Using Python it&amp;rsquo;s really simple to write your first algorithm:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;puzzle = cv2.imread(args[&amp;quot;puzzle&amp;quot;])
+waldo = cv2.imread(args[&amp;quot;waldo&amp;quot;])
+result = cv2.matchTemplate(puzzle, waldo, cv2.TM_CCOEFF)
+(_, _, minLoc, maxLoc) = cv2.minMaxLoc(result)
+# the puzzle image
+topLeft = maxLoc
+botRight = (topLeft[0] + waldoWidth, topLeft[1] + waldoHeight)
+roi = puzzle[topLeft[1]:botRight[1], topLeft[0]:botRight[0]]
+
+# construct a darkened transparent &#39;layer&#39; to darken everything
+# in the puzzle except for waldo
+mask = np.zeros(puzzle.shape, dtype = &amp;quot;uint8&amp;quot;)
+puzzle = cv2.addWeighted(puzzle, 0.25, mask, 0.75, 0)
+
+# put the original waldo back in the image so that he is
+# &#39;brighter&#39; than the rest of the image
+puzzle[topLeft[1]:botRight[1], topLeft[0]:botRight[0]] = roi
+
+# display the images
+cv2.imshow(&amp;quot;Puzzle&amp;quot;, imutils.resize(puzzle, height = 650))
+cv2.imshow(&amp;quot;Waldo&amp;quot;, waldo)
+cv2.waitKey(0)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;puzzle_found_waldo1.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Original article can be found here: &lt;a href=&#34;http://machinelearningmastery.com/using-opencv-python-and-template-matching-to-play-wheres-waldo/&#34;&gt;Using OpenCV, Python and Template Matching to play “Where’s Waldo?”&lt;/a&gt;.
+&lt;hr /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&#34;5&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;opencv-3-0-alpha-is-out&#34;&gt;OpenCV 3.0 alpha is out&lt;/h2&gt;
+
+&lt;p&gt;That&amp;rsquo;s it. OpenCV grows and going to college. 5 years has passed since OpenCV 2.0, which brought us a new C++ API, GPU-accelerated algorithms, iOS and Android platforms support, CUDA and OpenCL, Python and Java bindings.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Modular project architecture&lt;/strong&gt;. Since very beginning OpenCV was one solid project, built and shipped as a whole, and that was good strategy for many years. However, with constantly growing functionality, including bleeding-edge algorithms published a few minutes before a pull request has been submitted to our repository, and increasing number of contributors (thank you all very much, guys!) we came to the same conclusion and decision as many other big project – the solid model does not work anymore.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;T-API&lt;/strong&gt;. GPU acceleration made really easy with brand new T-API (“transparent API”) made in cooperation with Intel and AMD. &lt;a href=&#34;https://github.com/Itseez/opencv/tree/master/samples/tapi&#34;&gt;T-API Samples&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;OpenCV now linked with IPP by default&lt;/strong&gt;. Intel corporation gave OpenCV another exciting present. A subset of Intel Integrated Performance Primitives (IPP) is linked by default into OpenCV and is available at &lt;strong&gt;no charge for all our users&lt;/strong&gt;. And that includes the license to redistribute applications that use IPP-accelerated OpenCV. As you may see, for quite a few image processing functions we achieved very noticeable speedup with IPP (where IPP is compared with OpenCV built with all possible optimizations turned on):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;ocv3_ipp_speedup.jpg&#34; alt=&#34;IPP in OpenCV 3.0&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Last but not least, OpenCV 3.0 brings a lot of &lt;strong&gt;new functionality&lt;/strong&gt;, such as:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Text detection and recognition by Lluis Gomez and Stefano Fabri&lt;/li&gt;
+&lt;li&gt;HDR by Fedor Morozov and Alexander Shishkov&lt;/li&gt;
+&lt;li&gt;KAZE/A-KAZE by Eugene Khvedchenya, the algorithm author Pablo Alcantarilla and some improvements by F. Morozov.&lt;/li&gt;
+&lt;li&gt;Smart segmentation and edge-aware filters by Vitaly Lyudvichenko, Yuri Gitman, Alexander Shishkov and Alexander Mordvintsev&lt;/li&gt;
+&lt;li&gt;Car detection using Waldboost, ACF by Vlad Shakhuro and Nikita Manovich&lt;/li&gt;
+&lt;li&gt;TLD tracker and several common-use optimization algorithms by Alex Leontiev&lt;/li&gt;
+&lt;li&gt;Matlab bindings by Hilton Bristow, with support from Mathworks.&lt;/li&gt;
+&lt;li&gt;Greatly extended Python bindings, including Python 3 support, and several OpenCV+Python tutorials by Alexander Mordvintsev, Abid Rahman and others.&lt;/li&gt;
+&lt;li&gt;3D Visualization using VTK by Ozan Tonkal and Anatoly Baksheev.&lt;/li&gt;
+&lt;li&gt;RGBD module by Vincent Rabaud&lt;/li&gt;
+&lt;li&gt;Line Segment Detector by Daniel Angelov&lt;/li&gt;
+&lt;li&gt;Many useful Computational Photography algorithms by Siddharth Kherada&lt;/li&gt;
+&lt;li&gt;Shape descriptors, matching and morphing shapes (shape module) by Juan Manuel Perez Rua and Ilya Lysenkov&lt;/li&gt;
+&lt;li&gt;Long-term tracking + saliency-based improvements (tracking module) by Antonella Cascitelli and Francesco Puja&lt;/li&gt;
+&lt;li&gt;Another good pose estimation algorithm and the tutorial on pose estimation by Edgar Riba and Alexander Shishkov&lt;/li&gt;
+&lt;li&gt;Line descriptors and matchers by Biagio Montesano and Manuele Tamburanno&lt;/li&gt;
+&lt;li&gt;Myriads of improvements in various parts of the library by Steven Puttemans; thank you a lot, Steven!&lt;/li&gt;
+&lt;li&gt;Several NEON optimizations by Adrian Stratulat, Cody Rigney, Alexander Petrikov, Yury Gorbachev and others.&lt;/li&gt;
+&lt;li&gt;Fast foreach loop over cv::Mat by Kazuki Matsuda&lt;/li&gt;
+&lt;li&gt;Image alignment (ECC algorithm) by Georgios Evangelidis&lt;/li&gt;
+&lt;li&gt;GDAL image support by Marvin Smith&lt;/li&gt;
+&lt;li&gt;RGBD module by Vincent Rabaud&lt;/li&gt;
+&lt;li&gt;Fisheye camera model by Ilya Krylov&lt;/li&gt;
+&lt;li&gt;OSX framework build script by Eugene Khvedchenya&lt;/li&gt;
+&lt;li&gt;Multiple FLANN improvements by Pierre-Emmanuel Viel&lt;/li&gt;
+&lt;li&gt;Improved WinRT support by Gregory Morse&lt;/li&gt;
+&lt;li&gt;Latent SVM Cascade by Evgeniy Kozhinov and NNSU team (awaiting integration)&lt;/li&gt;
+&lt;li&gt;Logistic regression by Rahul Kavi&lt;/li&gt;
+&lt;li&gt;Five-point pose estimation algorithm by Bo Li&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The 3.0-alpha package can be downloaded:
+ - &lt;a href=&#34;https://github.com/Itseez/opencv/tree/3.0.0-alpha&#34;&gt;Source code as .zip package directly from github&lt;/a&gt;
+ - &lt;a href=&#34;https://sourceforge.net/projects/opencvlibrary/files/opencv-win/3.0.0-alpha/&#34;&gt;Precompiled, Windows&lt;/a&gt;
+ - &lt;a href=&#34;https://sourceforge.net/projects/opencvlibrary/files/opencv-ios/3.0.0-alpha/&#34;&gt;Precompiled, iOS&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>A good resource on image processing using Python</title>
+      <link>https://example.com/pyimagesearch.com/</link>
+      <pubDate>Thu, 07 Aug 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/pyimagesearch.com/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;http://www.pyimagesearch.com/&#34;&gt;&lt;img src=&#34;logo.png&#34; alt=&#34;www.pyimagesearch.com&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Let me introduce you &lt;a href=&#34;http://www.pyimagesearch.com/about/&#34;&gt;Adrian Rosebrock&lt;/a&gt; and his &lt;a href=&#34;http://www.pyimagesearch.com/&#34;&gt;http://www.pyimagesearch.com/&lt;/a&gt; website.
+It&amp;rsquo;s about computer vision and image processing using Python and OpenCV.
+Looks like there are more than one person that like to share programming experience via blogging :)&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s how &lt;a href=&#34;http://www.pyimagesearch.com/&#34;&gt;Adrian&lt;/a&gt; position himself:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;This blog is dedicated to helping other programmers understand how image search engines work.
+While a lot of computer vision concepts are theoretical in nature,
+I’m a big fan of “learning by example”. My goal is to distill my life experiences in building image search engines into concise, easy to understand examples.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I hope you will enjoy reading Adrian&amp;rsquo;s posts on &lt;a href=&#34;http://www.pyimagesearch.com/2014/07/28/a-slic-superpixel-tutorial-using-python/&#34;&gt;superpixels&lt;/a&gt;, &lt;a href=&#34;http://www.pyimagesearch.com/2014/07/14/3-ways-compare-histograms-using-opencv-python/&#34;&gt;histogram matching&lt;/a&gt; and &lt;a href=&#34;http://www.pyimagesearch.com/2014/05/26/opencv-python-k-means-color-clustering/&#34;&gt;color clustering&lt;/a&gt;.
+In addition, he wrote a book on using OpenCV in Python.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://www.pyimagesearch.com/practical-python-opencv/&#34;&gt;&lt;img src=&#34;practical_python_and_opencv_cover_green.png&#34; alt=&#34;Practical Python and OpenCV eBook&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Happy reading!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Computer vision Digest - June 2014</title>
+      <link>https://example.com/2014-06-computer-vision-digest/</link>
+      <pubDate>Sat, 05 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2014-06-computer-vision-digest/</guid>
+      <description>
+
+&lt;p&gt;This is a second issue of monthly computer vision digest - a list things that
+you don&amp;rsquo;t wanna miss, a list of what happened in computer vision in June 2014.&lt;/p&gt;
+
+&lt;p&gt;Previous issues:
+ - &lt;a href=&#34;https://example.com/articles/2014-05-computer-vision-digest/&#34;&gt;Computer Vision Digest (May 2014)&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;In this issue:
+ - &lt;a href=&#34;#1&#34;&gt;Signed Distance Field - converting raster masks to vector form&lt;/a&gt;
+ - &lt;a href=&#34;#2&#34;&gt;QVision: Computer Vision Library for Qt&lt;/a&gt;
+ - &lt;a href=&#34;#3&#34;&gt;Closer look on licence plate recognition&lt;/a&gt;
+ - &lt;a href=&#34;#4&#34;&gt;OpenCV 3.0&lt;/a&gt;&lt;/p&gt;
+
+&lt;div class=&#34;alert alert-info&#34; role=&#34;alert&#34;&gt;
+Feel free to leave your suggestions on interesting materials in post comments 
+or via Twitter by mentioning [@cvtalks](https://twitter.com/cvtalks). 
+Best links will be included into next digest!
+&lt;/div&gt;
+
+&lt;p&gt;&lt;span class=&#34;more clearfix&#34; /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a name=&#34;1&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h1 id=&#34;signed-distance-field-converting-raster-masks-to-vector-form&#34;&gt;Signed Distance Field - converting raster masks to vector form&lt;/h1&gt;
+
+&lt;p&gt;The original paper written in Russian, but the topic is rather interesting.
+It describe how to render high-resolution &amp;ldquo;vector&amp;rdquo; graphics from small raster images.
+That&amp;rsquo;s why I decided to include this into digest.&lt;/p&gt;
+
+&lt;p&gt;The key algorithm that allows to convert raster mask to vector repesentation
+form is &lt;a href=&#34;http://docs.opencv.org/modules/imgproc/doc/miscellaneous_transformations.html#distancetransform&#34;&gt;distance transform&lt;/a&gt; - algorithm, which calculates
+distance from every binary image pixel to the nearest zero pixel.&lt;/p&gt;
+
+&lt;p&gt;Consider following example:
+&lt;img src=&#34;41bad64c88d9a859d2ba0eb3b7b437bf.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The SDF image we compute from original image can be significatly scaled down to, but it still can be used to render
+image with large zoom without aliasing artifacts that typical for raster rendering.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;56cc184627964797b10b34687180a24b.gif&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Paper in russian: &lt;a href=&#34;http://habrahabr.ru/post/215905/&#34;&gt;Signed Distance Field или как сделать из растра вектор&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;This algorithm was developed by Valve and presented at SIGGRAPH 2007. You can read original paper:
+&lt;a href=&#34;http://www.valvesoftware.com/publications/2007/SIGGRAPH2007_AlphaTestedMagnification.pdf&#34;&gt;Improved Alpha-Tested Magniﬁcation for Vector Textures and Special Effects&lt;/a&gt;. Special thanks to @jin for the link.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a name=&#34;2&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h1 id=&#34;qvision-computer-vision-library-for-qt&#34;&gt;QVision: Computer Vision Library for Qt&lt;/h1&gt;
+
+&lt;p&gt;&lt;img src=&#34;qvisionpenguin.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href=&#34;http://qvision.sourceforge.net/index.html&#34;&gt;QVision&lt;/a&gt; is a free and open source library oriented to the development of computer vision, image/video processing, and scientific computing applications. It is based on the Qt application framework, so it is an object-oriented and cross-platform library for C++.&lt;/p&gt;
+
+&lt;p&gt;The library is mainly intended for educational and research purposes, usability and performance. It has a clean and well documented, Qt-style, object oriented API, which provides functionality for:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Video and image input/output.&lt;/li&gt;
+&lt;li&gt;Image processing.&lt;/li&gt;
+&lt;li&gt;Graphical interface programming.&lt;/li&gt;
+&lt;li&gt;Augmented reality visualization.&lt;/li&gt;
+&lt;li&gt;Performance evaluation.&lt;/li&gt;
+&lt;li&gt;Scientific computing (matrix, vector, quaternions, function optimization, etc..).&lt;/li&gt;
+&lt;li&gt;Visual data-path editor tool for rapid application development (RAD).&lt;/li&gt;
+&lt;li&gt;&amp;hellip; and so on.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I liked this library because it allows to desing algorithm using graph concept:
+&lt;img src=&#34;cannyBlockExample.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Visual designer allows you to connect data sources with image filters that transform one source
+to another and connect filters in a chain to build a computer vision pipeline without wiring
+any single line of code.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;qvdesignergui.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I beleive this kind of playground can be very useful for fast prototyping and learning basics
+of computer vision. The visual designer does not require any knowledge of any computer vision
+library (like OpenCV or Halcon).&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;hartley-combined-edge-movement-detector.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Project homepage: &lt;a href=&#34;http://qvision.sourceforge.net/index.html&#34;&gt;QVision&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a name=&#34;3&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h1 id=&#34;closer-look-on-licence-plate-recognition&#34;&gt;Closer look on licence plate recognition&lt;/h1&gt;
+
+&lt;p&gt;&lt;img src=&#34;d29e20441d4ab164a5fe13f881b684ce.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Again, another publication in Russian, but hey, it&amp;rsquo;s still worth reading it, even via Google Translate.
+License plate recognition is very demanded topic and there are many systems for that. But what about
+knowledge sharing? Guys from Recognitor share their experience with recognizing plate numbers in very,
+very unfriendly conditions - dirty numbers, dark and blurred.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;0d94a205fe806c8d57660ba35188df27.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Here are key features of their implementation:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Small rotation invariance to plate rotation (± 10 degree)&lt;/li&gt;
+&lt;li&gt;Perspective scale invariance (20%)&lt;/li&gt;
+&lt;li&gt;Robustness to partial occlusion of the license plate&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Usually, the first step in system like that is image binarisation. This works fine when we have a clean number and
+friendly lighting conditions. In other cases this method does not help at all. A better approach is to find top and
+bottom lines of the plate using brightness histogram.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Detect bottom border&lt;/li&gt;
+&lt;li&gt;Detect top border&lt;/li&gt;
+&lt;li&gt;Detect left and right borders&lt;/li&gt;
+&lt;li&gt;Increase contrast in ROI&lt;/li&gt;
+&lt;li&gt;Split symbols&lt;/li&gt;
+&lt;li&gt;Symbol matching&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;To attract your attention - here is an example of what their algorihtm is capable to recognize:
+&lt;img src=&#34;74314a4e67ab06faac8f1f5706433e33.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Impressed? So am I was. Original post: &lt;a href=&#34;http://habrahabr.ru/company/recognitor/blog/225913/&#34;&gt;Распознавание автомобильных номеров в деталях&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a name=&#34;4&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h1 id=&#34;opencv-3-0&#34;&gt;OpenCV 3.0&lt;/h1&gt;
+
+&lt;p&gt;No, it has not yet released. But if you build latest revision of master branch, CMake will happily report:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;OpenCV ARCH: x86
+OpenCV RUNTIME: vc12
+OpenCV STATIC: ON
+Found OpenCV 3.0.0 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As you may read in my blog I &lt;a href=&#34;https://example.com/articles/kaze-1.6-in-opencv/&#34;&gt;ported&lt;/a&gt; of KAZE features to OpenCV. And I proud that
+my contribution will be a part of next OpenCV release.&lt;/p&gt;
+
+&lt;p&gt;OpenCV team has not made any announcement about 3.0 release date. Personally I&amp;rsquo;d expect it
+to happed at the end of GSoC. So let&amp;rsquo;s keep fingers crossed.&lt;/p&gt;
+
+&lt;p&gt;Meanwhile, here is a presentation that can reveal some details of what you can expect from OpenCV 3.0:&lt;/p&gt;
+
+&lt;iframe src=&#34;//www.slideshare.net/slideshow/embed_code/36806594&#34; width=&#34;800&#34; height=&#34;600&#34; frameborder=&#34;0&#34; marginwidth=&#34;0&#34; marginheight=&#34;0&#34; scrolling=&#34;no&#34;&gt;&lt;/iframe&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Computer vision Digest - May 2014</title>
+      <link>https://example.com/2014-05-computer-vision-digest/</link>
+      <pubDate>Fri, 30 May 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2014-05-computer-vision-digest/</guid>
+      <description>
+
+&lt;p&gt;This is a first issue of monthly computer vision digest - a list things that you don&amp;rsquo;t wanna miss, a list of what happened
+in computer vision in May 2014.&lt;/p&gt;
+
+&lt;p&gt;In this issue:
+ - &lt;a href=&#34;#1&#34;&gt;Browser image processing - how fast is it?&lt;/a&gt;
+ - &lt;a href=&#34;#2&#34;&gt;Object recognition using neural networks via JavaScript&lt;/a&gt;
+ - &lt;a href=&#34;#3&#34;&gt;NASA shares it&amp;rsquo;s own computer vision library&lt;/a&gt;
+ - &lt;a href=&#34;#4&#34;&gt;Easy optimization of image processing pipelines using decoupling algorithms&lt;/a&gt;
+ - &lt;a href=&#34;#5&#34;&gt;OpenCV Apparel Store&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more clearfix&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&#34;1&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;browser-image-processing-how-fast-is-it&#34;&gt;Browser image processing - how fast is it?&lt;/h2&gt;
+
+&lt;p&gt;Real-time image processing gets more and more demanded and popular since computer power grows and now it&amp;rsquo;s possible to decode video, apply additional filters in real-time to play HD video smoothly. On desktop platforms this is not a &amp;ldquo;wow&amp;rdquo; anymore. In contrast, in web we cannot brag such results. So, Russian-speaking readers can stop reading here and visit original article: &lt;a href=&#34;http://habrahabr.ru/post/221619/&#34;&gt;Оценка возможности постобработки видео в браузере&lt;/a&gt;. For others I wrote a translation of this post in a free form with my 5 cents.&lt;/p&gt;
+
+&lt;p&gt;Strictly speaking there are two options at the moment: either we use JavaScripts (pure JS, Asm.js or SIMD.js) or apply WebGL to utilize GPU.&lt;/p&gt;
+
+&lt;h3 id=&#34;javascript-way&#34;&gt;JavaScript way&lt;/h3&gt;
+
+&lt;p&gt;The image processing in JavaScript using Canvas.getImageData is slow like hell. On 1080p frames, getting frame-buffer from canvas can take up to 30ms on the desktop.
+Regardless of the JavaScript runtime performance, the limiting factor for large images is Canvas - at the moment it is not optimized for frequent read/write access.&lt;/p&gt;
+
+&lt;p&gt;This is not all bad news - JavaScript is slow regardless of Canvas. Simple 3x3 box blur needs approximately 400ms to process single image frame:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;function blur(source, width, height) {
+    function blur_core(ptr, offset, stride) {
+        return (ptr[offset - stride - 4] +
+                ptr[offset - stride] +
+                ptr[offset - stride + 4] +
+                ptr[offset - 4] +
+                ptr[offset] +
+                ptr[offset + 4] +
+                ptr[offset + stride - 4] +
+                ptr[offset + stride] +
+                ptr[offset + stride + 4]
+                ) / 9;
+    }
+
+    var stride = width * 4;
+    for (var y = 1; y &amp;lt; (height - 1); ++y) {
+        var offset = y * stride;
+        for (var x = 1; x &amp;lt; stride - 4; x += 4) {
+            source[offset] = blur_core(source, offset, stride);
+            source[offset + 1] = blur_core(source, offset + 1, stride);
+            source[offset + 2] = blur_core(source, offset + 2, stride);
+            offset += 4;
+        }
+    }
+}  
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;asm-js&#34;&gt;asm.js&lt;/h3&gt;
+
+&lt;p&gt;This JavaScript subset from Mozilla pretends to be extraordinarily optimizable code. This sub-language effectively describes a safe virtual machine for memory-unsafe languages like C or C++. A combination of static and dynamic validation allows JavaScript engines to employ an ahead-of-time (AOT) optimizing compilation strategy for valid asm.js code.&lt;/p&gt;
+
+&lt;p&gt;Well, it&amp;rsquo;s hard to say writing asm.js code is fun. Be prepared to write code like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;for (i = 1; (i | 0) &amp;lt; (ntp | 0); i = (i | 0) + 1 | 0) {
+    // tp[i] = 2 * tp[i - 1]
+    tp[(i &amp;lt;&amp;lt; 3) &amp;gt;&amp;gt; 3] = +(+2 * tp[((i - 1) &amp;lt;&amp;lt; 3) &amp;gt;&amp;gt; 3]);
+}  
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Or this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;function f(x, y) {
+    // SECTION A: parameter type declarations
+    x = x|0;      // int parameter
+    y = +y;       // double parameter
+
+    // SECTION B: function body
+    log(x|0);     // call into FFI -- must force the sign
+    log(y);       // call into FFI -- already know it&#39;s a double
+    x = (x+3)|0;  // signed addition
+
+    // SECTION C: unconditional return
+    return ((((x+1)|0)&amp;gt;&amp;gt;&amp;gt;0)/(x&amp;gt;&amp;gt;&amp;gt;0))|0; // compound expression
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And all you get for this hard to read code is 2x speed-up. Not impressed.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;macro4b.png&#34; alt=&#34;Asm.js performance&#34; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;simd-js&#34;&gt;SIMD.js&lt;/h3&gt;
+
+&lt;p&gt;This one works only in Firefox Nightly builds and Chrome, and utilize parallelism to deliver high performance within a constrained power budget.  Through Single Instruction, Multiple Data (SIMD) instructions, processors exploit the fine-grained parallelism in applications by simultaneously processing the same operation on multiple data items, delivering major performance improvements at high power efficiency. SIMD is particularly applicable to common computations in image/audio/video processing including computer vision and perceptual computing.&lt;/p&gt;
+
+&lt;p&gt;This library promised up for 400% speedups using floating-point computing:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;simd_in_firefox-623x261.jpg&#34; alt=&#34;SIMD.js in Firefox&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The API looks much better:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;image003_0.png&#34; alt=&#34;API&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Did I mention that SIMD.js was made by &lt;a href=&#34;https://01.org/node/1495&#34;&gt;Intel&lt;/a&gt;?&lt;/p&gt;
+
+&lt;h3 id=&#34;webgl&#34;&gt;WebGL&lt;/h3&gt;
+
+&lt;p&gt;This is orthogonal to what we considered before. WebGL is an API to GPU, and native OpenGL driver. Initially it was intented to be used in 3G graphics and gaming, but no one can prevent you to utilize General Purpose GPU (GPGPU) for image processing. Unfortunately, you will have to write shaders in very limited GLSL shading language which lacks of many cool features that are present in CUDA or OpenCL. But still, it is much faster than CPU way.&lt;/p&gt;
+
+&lt;h3 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;At this moment, the only reasonable technology you may want to consider for real-time image processing is WebGL. You can think about CPU image processing only if you need to process small images or there is no neeed to fit in real-time.
+&lt;hr /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&#34;2&#34; &gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;object-recognition-using-neural-networks-via-javascript&#34;&gt;Object recognition using neural networks via JavaScript&lt;/h2&gt;
+
+&lt;p&gt;It can take years to master neural networks. Researchers spend enormous amount of time and efforts to study them and train networks to make them remember, predict and learn.
+Neural networks are good for object recognition purpose when you have a fixed set of objects you want to recognize. In this sense they are like Haar Cascades. In contrast, NN can distinguis between 1000 object categories, while Haar Cascade classifier used to detect a single kind of object that can vary (The most popular use of cascades - face detection).&lt;/p&gt;
+
+&lt;p&gt;To demonstrate you the potential of NN, here is one example from &lt;a href=&#34;http://www.image-net.org/challenges/LSVRC/2012/results.html&#34;&gt;Large Scale Visual Recognition Challenge 2012&lt;/a&gt;:
+The SuperVision team won the &lt;em&gt;first place&lt;/em&gt; using deep convolutional neural network trained on raw RGB  pixel values. The neural network, which has 60 million parameters and 650,000 neurons, consists of five convolutional layers, some of which are followed by max-pooling layers, and three globally-connected layers with a final 1000-way softmax.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;It was trained on two NVIDIA GPUs for about a week.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;This is the price NN users pay for quality. But it worth of it.&lt;/p&gt;
+
+&lt;p&gt;Recenty I came across the interesting project that offers you a read-to-use implementation of similar implementation of Krizhevsky architecture in form of SDK for iOS, Android and even JavaScript!&lt;/p&gt;
+
+&lt;p&gt;&lt;iframe src=&#34;//player.vimeo.com/video/91460768&#34; width=&#34;500&#34; height=&#34;281&#34; frameborder=&#34;0&#34; webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt; &lt;p&gt;&lt;a href=&#34;http://vimeo.com/91460768&#34;&gt;Deep Belief SDK Demo&lt;/a&gt; from &lt;a href=&#34;http://vimeo.com/petewarden&#34;&gt;Pete Warden&lt;/a&gt; on &lt;a href=&#34;https://vimeo.com&#34;&gt;Vimeo&lt;/a&gt;.&lt;/p&gt;&lt;/p&gt;
+
+&lt;p&gt;So, please welcome &lt;a href=&#34;https://www.jetpac.com/developer&#34;&gt;Deep Belief SDK&lt;/a&gt;.
+&lt;hr /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&#34;3&#34; &gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;nasa-shares-it-s-own-computer-vision-library&#34;&gt;NASA shares it&amp;rsquo;s own computer vision library&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;Cev_launch.jpg&#34; alt=&#34;NASA ASR&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The NASA Vision Workbench (VW) is a general purpose image processing and computer vision library developed by the Autonomous Systems and Robotics (ASR) Area in the Intelligent Systems Division at the NASA Ames Research Center. VW has been publicly released under the terms of the NASA Open Source Software Agreement.&lt;/p&gt;
+
+&lt;p&gt;The Vision Workbench was implemented in the C++ programming language and makes extensive use of C++ templates and generative programming techniques for conciseness of expression, efficiency of operation, and generalization of implementation.&lt;/p&gt;
+
+&lt;p&gt;I suggest for everyone who works in computer vision to look at the source code of this library. The design of this library is very unusual - you will not find a direct memory
+access there. Instead, all algorithms uses iterators, locators and templates. This produce a clean and very self-explanatory code:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;template &amp;lt;class SrcT, class DestT&amp;gt;
+void convolve_1d( SrcT const&amp;amp; src, DestT const&amp;amp; dest, std::vector&amp;lt;KernelT&amp;gt; const&amp;amp; kernel ) const {
+  typedef typename SrcT::pixel_accessor SrcAccessT;
+  typedef typename DestT::pixel_accessor DestAccessT;
+  typedef typename DestT::pixel_type DestPixelT;
+  typedef typename CompoundChannelType&amp;lt;DestPixelT&amp;gt;::type channel_type;
+
+  VW_ASSERT( src.planes() == dest.planes(), ArgumentErr() &amp;lt;&amp;lt; &amp;quot;convolve_1d: Images should have the same number of planes&amp;quot; );
+
+  SrcAccessT splane = src.origin();
+  DestAccessT dplane = dest.origin();
+  for( int32 p=0; p&amp;lt;dest.planes(); ++p ) {
+    SrcAccessT srow = splane;
+    DestAccessT drow = dplane;
+    for( int32 y=0; y&amp;lt;dest.rows(); ++y ) {
+      SrcAccessT scol = srow;
+      DestAccessT dcol = drow;
+      for( int32 x=0; x&amp;lt;dest.cols(); ++x ) {
+        *dcol = channel_cast_clamp_if_int&amp;lt;channel_type&amp;gt;( correlate_1d_at_point( scol, kernel.rbegin(), kernel.size() ) );
+        scol.next_col();
+        dcol.next_col();
+      }
+      srow.next_row();
+      drow.next_row();
+    }
+    splane.next_plane();
+    dplane.next_plane();
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I recommend to take a look in this library to improve your language skills and have look on alternative approach how computer vision library can looks like.&lt;/p&gt;
+
+&lt;p&gt;Github: &lt;a href=&#34;https://github.com/nasa/visionworkbench&#34;&gt;nasa/visionworkbench&lt;/a&gt;.
+&lt;hr /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&#34;4&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;easy-optimization-of-image-processing-pipelines-using-decoupling-algorithms&#34;&gt;Easy optimization of image processing pipelines using decoupling algorithms&lt;/h2&gt;
+
+&lt;p&gt;Take a look on picture below. Which code you find easier to percept? Both produce identical results, they have equal speed. But which one is easier to read and understand?&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;halide_vs_cpp.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Very often I find myself thinking about how bored I am with tuning function with SSE, NEON or Assembly language. Real-time image processing requires you to count every millisecond, so sometimes you have to optimize slow functions, change a pipeline to &amp;lsquo;fuse&amp;rsquo; results or modify data flow to ensure better data locality. SIMD, GPGPU are good, not doubts. But they does not provide a final solution to fundamental problem - in my opinion, imperative approach limit the way you implement particular algorithm.&lt;/p&gt;
+
+&lt;p&gt;There is a great idea - to separate Algorithm from it&amp;rsquo;s Implementation. Why this matters?
+ - Writing fast image processing pipelines is hard
+ - C-parallelism + tiling + fusion are hard to write or automate
+ - CUDA, OpenCL, shaders - data parallelism is easy, fusion is hard
+ - BLAS, IPP, OpenCV, MKL - optimized kernels compose into inefficient pipelines (no fusion)&lt;/p&gt;
+
+&lt;p&gt;Proposed solution: Decouple Algorithm from Schedule&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Algorithm&lt;/em&gt; defines &lt;em&gt;what&lt;/em&gt; is computed.
+&lt;em&gt;Schedule&lt;/em&gt; defines &lt;em&gt;where&lt;/em&gt; and &lt;em&gt;when&lt;/em&gt; it&amp;rsquo;s computed.&lt;/p&gt;
+
+&lt;p&gt;Such decoupling lets developers a to build pipelines easy by defining a pure functions that operates on data in easy and clean way. No need to worry on tiling, parallelism and fusion. From the other side it will let the compiler to generate fast code.&lt;/p&gt;
+
+&lt;p&gt;I want present you Halide - the image processing language that let&amp;rsquo;s you to write highly efficient code with less headache. Just compare two implementations of&lt;/p&gt;
+
+&lt;p&gt;Here is an example written in Halide:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;halide-blur3x3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Even without experience with Halide, it is more or less clear what this code does. The Algorithm is separated from Schedule in very elegant way. During compilation stage,
+Halide compiler will generate C++ code for particular platform.&lt;/p&gt;
+
+&lt;h3 id=&#34;presentation-slides-on-halide-language&#34;&gt;Presentation slides on Halide language:&lt;/h3&gt;
+
+&lt;script async class=&#34;speakerdeck-embed&#34; data-id=&#34;50622b92b4c3d10002018c4b&#34; data-ratio=&#34;1.77777777777778&#34; src=&#34;//speakerdeck.com/assets/embed.js&#34;&gt;&lt;/script&gt; 
+
+&lt;p&gt;Original article: &lt;a href=&#34;http://people.csail.mit.edu/jrk/halide12/&#34;&gt;Decoupling algorithms from schedules for easy optimization of image processing pipelines&lt;/a&gt;.
+&lt;hr /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&#34;5&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;opencv-apparel-store&#34;&gt;OpenCV Apparel Store&lt;/h2&gt;
+
+&lt;p&gt;This is less technical topic for the end of this digest. If you feel ok to support OpenCV open-source library - this one is for you.
+What about having a T-shirt or hoodie with OpenCV logo?&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;l26503.jpg&#34; alt=&#34;OpenCV Hoodie&#34; /&gt;
+&lt;img src=&#34;lst30665.jpg&#34; alt=&#34;OpenCV Hoodie&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;A nice way to say &amp;ldquo;thanks&amp;rdquo; to OpenCV team :)&lt;/p&gt;
+
+&lt;p&gt;Store webpage: &lt;a href=&#34;http://fhstore.com/shopping/FHShop2.aspx?PON=74808&amp;amp;CON=75944&amp;amp;SCN=19&amp;amp;CN=76&amp;amp;ASN=&amp;amp;VSN=&amp;amp;AC=&#34;&gt;OpenCV Apparel Store&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-end&#34;&gt;The End&lt;/h2&gt;
+
+&lt;p&gt;That&amp;rsquo;s all folks! I hope you enjoyed this digest. Please, leave your and feedbacks in comments. Please let me know if you interested in getting this digest on regular basis!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>On migrating from Wordpress to Wintersmith</title>
+      <link>https://example.com/2014-01-01-a-new-blog/</link>
+      <pubDate>Wed, 01 Jan 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2014-01-01-a-new-blog/</guid>
+      <description>&lt;p&gt;p
+    | I welcome you at my new blog home! After using Wordpress for three years of bloging i decided that i&amp;rsquo;m unhappy with this blog engine.
+    | Personally, i wanted something more &amp;ldquo;geeky&amp;rdquo;, if you know what i mean. Wordpress is like a &amp;ldquo;click to win&amp;rdquo; - it offers a lot, but keeps you
+    | in strict sandbox called Wordpress API. But first of all - it&amp;rsquo;s too slow as a blogging platform for one people.&lt;/p&gt;
+
+&lt;p&gt;p
+    | Computer Vision Talks is not updates daile or even weekly (I wish i could have enough time to write posts!). So for me it was very wierd to experience 2-3-5 seconds
+    | of loading a single page. Don&amp;rsquo;t get me wrong - my hosting is fine. Making a dozens of SQL requests to render a single HTML page? It&amp;rsquo;s wrong by design. So i came to a decision
+    | to use static-site generator. Geeeky enough, isn&amp;rsquo;t it? First, i&amp;rsquo;ve heard about Jekyl from a Radio-T podcast. I&amp;rsquo;m a big fan of it and there i heard about Octopress. It looked nice
+    | but outdated and has small community. After a while i found Wintersmith - amazing tool for static blogging.&lt;/p&gt;
+
+&lt;p&gt;p
+    | The new site look is still not final, so it appearance is about to change slightly from time to time. I hope you enjoy reading it.
+    | And I hope i&amp;rsquo;ll now have more time to write interesting articles!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Book review: Instant OpenCV Starter</title>
+      <link>https://example.com/2013-06-25-instant-opencv-starter/</link>
+      <pubDate>Tue, 25 Jun 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2013-06-25-instant-opencv-starter/</guid>
+      <description>&lt;p&gt;A &lt;strong&gt;&lt;a href=&#34;http://www.packtpub.com/opencv-starter/book&#34;&gt;Instant OpenCV Starter**&lt;/a&gt; is a short (56 pages) guidebook to help you to start developing apps with OpenCV library. This guide is aimed for developers who are not familiar with OpenCV or want to improve their experience. **[Instant OpenCV Starter&lt;/strong&gt;]&lt;a href=&#34;http://www.packtpub.com/opencv-starter/book&#34;&gt;1&lt;/a&gt; will teach you how to set-up developer environment and build projects that use OpenCV library for both Windows and Linux platforms.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;Starting from the basics you will learn the common types used on OpenCV, basic operations on images and video processing. In particular, this guide will cover the following topics:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;OpenCV image type&lt;/li&gt;
+&lt;li&gt;Color space conversion&lt;/li&gt;
+&lt;li&gt;Image I/O&lt;/li&gt;
+&lt;li&gt;Image manipulation&lt;/li&gt;
+&lt;li&gt;Edge detection&lt;/li&gt;
+&lt;li&gt;Video processing&lt;/li&gt;
+&lt;li&gt;Image steganography&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;OpenCV has strong and healthy community and there are many places where beginner developers can look for help. In this guide book a most popular places you should visit are listed:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Official sites&lt;/li&gt;
+&lt;li&gt;Tutorials/cheat sheets/answers&lt;/li&gt;
+&lt;li&gt;Community&lt;/li&gt;
+&lt;li&gt;Twitter&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;[Instant OpenCV Starter&lt;/strong&gt;]&lt;a href=&#34;http://www.packtpub.com/opencv-starter/book&#34;&gt;1&lt;/a&gt; can come in place for a newscomers who are studying OpenCV library for the first time. This e-book guide is available for purchase for a price of cup of coffee but you get much more for this price. This book can save your time.&lt;/p&gt;
+
+&lt;p&gt;If you&amp;rsquo;re looking for more advanced topics there is a great &lt;strong&gt;[Mastering OpenCV with Practical Computer Vision Projects&lt;/strong&gt;]&lt;a href=&#34;http://www.packtpub.com/cool-projects-with-opencv/book&#34;&gt;2&lt;/a&gt; book that contains advanced examples that solve with real-world problems with help of OpenCV.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>A bunch of news about book, research and life</title>
+      <link>https://example.com/2012-09-01-a-bunch-of-news-about-book-research-and-life/</link>
+      <pubDate>Sat, 01 Sep 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2012-09-01-a-bunch-of-news-about-book-research-and-life/</guid>
+      <description>
+
+&lt;p&gt;Hi friends! the summer has ended and schools and universities has opened their doors in front of new students. Since i graduated few years ago i still remember good old times of study. Doh. I&amp;rsquo;m to so old yet :) So, on 1st September i decided to share with you about my plans for next three months. Because i scheduled very interesting activities for this autumn.&lt;/p&gt;
+
+&lt;h1 id=&#34;opencv-hotshots&#34;&gt;OpenCV Hotshots&lt;/h1&gt;
+
+&lt;p&gt;&lt;img src=&#34;book-cover.jpg&#34; alt=&#34;&#34; /&gt;Yes it is. The first book i participated will be published this Autumn. I hope so. I did my best to finish my part right in time. There are two chapters already available from the Packt Publishing (&lt;a href=&#34;http://www.packtpub.com/opencv-2-hotshot/book&#34;&gt;http://www.packtpub.com/opencv-2-hotshot/book&lt;/a&gt;).&lt;/p&gt;
+
+&lt;h2 id=&#34;marker-based-augmented-reality-on-iphone-or-ipad&#34;&gt;Marker-based Augmented Reality on iPhone or iPad&lt;/h2&gt;
+
+&lt;p&gt;In this chapter we will create a AR application for iPhone/iPad devices. Starting from scratch wecreate an application that uses markers to draw some artificial objects on the acquired images for camera. You will learn how to setup a project in XCode IDE project, configure it to use OpenCV within your application. Also, such aspects as capturing a video from built-in camera, 3D scene rendering using OpenGL ES and building of a common AR application architecture are going to be explained.&lt;/p&gt;
+
+&lt;h2 id=&#34;marker-less-augmented-reality&#34;&gt;Marker-less Augmented Reality&lt;/h2&gt;
+
+&lt;p&gt;Readers will learn how to create a standard real-time project using OpenCV (for desktop), and how to perform a new method of marker-less augmented reality, using the actual environment as the input instead of printed square markers. This chapter will cover some theory of marker-less AR and show how to apply it in useful projects. Publisher allowed me to publish source code for both chapters on the GitHub. They are freely available:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;https://github.com/BloodAxe/OpenCV-Hotshots-Marker-Based-AR&#34;&gt;Marker-based Augmented Reality on iPhone or iPad sources&lt;/a&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;https://github.com/BloodAxe/OpenCV-Hotshots-Markless-AR&#34;&gt;Marker-less Augmented Reality sources&lt;/a&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I will try to listen and react your feedback as fast as possible. So feel free to send your suggestions and bug fixes (i hope they won&amp;rsquo;t happen). To interest you even more, i made very short video showing you augmented reality on top of the image pattern. This demonstration is done using OpenCV and Ogre3D libraries. In third chapter of &amp;ldquo;OpenCV Hotshots&amp;rdquo; i explain algorithm of pattern detection. In this video a image pattern was used a a target for animated 3D model. From chapter 3 you will learn how to make your own markerless AR application.&lt;/p&gt;
+
+&lt;h1 id=&#34;feature-descriptors-comparison-report&#34;&gt;Feature descriptors comparison report&lt;/h1&gt;
+
+&lt;p&gt;I will continue my research of comparison of different feature descriptors including but not limited to SURF, SIFT, BRIEF, ORB, BRISK and FREAK. Feature descriptors are widely used for object detection, image stitching and stabilisation, match-moving and structure from motion estimation. I do research to let you know area of appliance of each descriptors extraction algorithm. In the near future i hope to find a time to publish detailed comparison report of all OpenCV feature descriptors. Probably i will wait for OpenCV 2.5 release and then run my test benchmark and generate nice diagrams. From the other side i also curious about parameters optimisation of particular algorithm in terms of improving it&amp;rsquo;s robustness and detection ratio. It&amp;rsquo;s quite big amount of job, but i had experience in my past (LAZY descriptor has been optimized in similary way). All development will be published at &lt;a href=&#34;https://github.com/BloodAxe&#34;&gt;GitHub&lt;/a&gt; (You already following my, have you?): &lt;a href=&#34;https://github.com/BloodAxe/OpenCV-Features-Comparison&#34;&gt;https://github.com/BloodAxe/OpenCV-Features-Comparison&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h1 id=&#34;opencv-tutorial&#34;&gt;OpenCV Tutorial&lt;/h1&gt;
+
+&lt;p&gt;&lt;img src=&#34;opencv-tutorial-logo.png&#34; alt=&#34;&#34; title=&#34;OpenCV Tutorial Application Icon&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;A great way to start learning OpenCV development on iOS platform. There is a [roadmap][6] of the development. Part 7 is almost finished. I hope to publish parts 8 and 9 before winter. I want to say thanks for Anton Belodedenko and Emmanuel d&amp;rsquo;Angelo. They were first who brought new samples in the this project. I was really surprised of their help. Thanks guys!&lt;/p&gt;
+
+&lt;p&gt;In case you missed it. All sources on Github: &lt;a href=&#34;https://github.com/BloodAxe/OpenCV-Tutorial&#34;&gt;https://github.com/BloodAxe/OpenCV-Tutorial&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;step-by-step-tutorials&#34;&gt;Step-by-step tutorials&lt;/h2&gt;
+
+&lt;h3 id=&#34;part-1-introduction-7&#34;&gt;&lt;a href=&#34;http://computer-vision-talks.com/2012/06/opencv-tutorial-part-1/&#34; title=&#34;OpenCV Tutorial – Part 1&#34;&gt;Part 1 - Introduction&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;The first part of the tutorial - in this part we setup a base XCode project for our application and define a base interface of our samples.&lt;/p&gt;
+
+&lt;h3 id=&#34;part-2-writing-a-base-ui-8&#34;&gt;&lt;a href=&#34;http://computer-vision-talks.com/2012/06/opencv-tutorial-part-2/&#34; title=&#34;OpenCV Tutorial – Part 2&#34;&gt;Part 2 - Writing a base UI&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;In the second part we created a basic user interface for displaying registered samples using master-detail paradigm and created two samples: edge and contour detection.&lt;/p&gt;
+
+&lt;h3 id=&#34;part-3-video-and-image-processing-9&#34;&gt;&lt;a href=&#34;http://computer-vision-talks.com/2012/06/opencv-tutorial-part-3/&#34; title=&#34;OpenCV Tutorial – Part 3&#34;&gt;Part 3 - Video and image processing&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;In this part the video and image processing logic was written. We created necessary UI to present result of image processing.&lt;/p&gt;
+
+&lt;h3 id=&#34;part-4-correction-of-mistakes-10&#34;&gt;&lt;a href=&#34;http://computer-vision-talks.com/2012/07/opencv-tutorial-part-4/&#34; title=&#34;OpenCV Tutorial – Part 4&#34;&gt;Part 4 - Correction of mistakes&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;The four part of the tutorial was dedicated to fixing annoying bugs with video orientation and improvements of application performance. The optimized color conversion algorithm was added to increase overall frame processing speed. A new feature was added too - users now can save processed images to photo album.&lt;/p&gt;
+
+&lt;h3 id=&#34;part-5-adding-options-11&#34;&gt;&lt;a href=&#34;http://computer-vision-talks.com/2012/07/opencv-tutorial-part-5/&#34; title=&#34;OpenCV Tutorial – Part 5&#34;&gt;Part 5 - Adding options&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;Options! Options! Options! In this part i will add adjustable options to our samples and create a UI to adjust them. Options will be supported for both image and video processing. From this sample you&amp;rsquo;ll learn how to bind to C++ data types from objective C code and create specific user controls depending on type of bound variable. Also we will use popover controllers to present options on iPad devices and flip animation to show options on iPhone. In addition, a &amp;ldquo;Edge Detection&amp;rdquo; sample will now has four algorithms to find edges. You&amp;rsquo;ll be able to toggle between them using options view and see the difference.&lt;/p&gt;
+
+&lt;h3 id=&#34;part-6-social-interaction-12&#34;&gt;&lt;a href=&#34;http://computer-vision-talks.com/2012/07/opencv-tutorial-part-6/&#34; title=&#34;OpenCV Tutorial - Part 6&#34;&gt;Part 6 - Social interaction&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;In this part i going to to add twitter integration to give you an ability to post your processed images and share them using twitter. Second feature that i will add - video recording. You&amp;rsquo;ll be able to record a video from the processed frames to and share it too.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>OpenCV 2 Hotshot: RAW</title>
+      <link>https://example.com/2012-08-22-opencv-2-hotshot-raw/</link>
+      <pubDate>Wed, 22 Aug 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2012-08-22-opencv-2-hotshot-raw/</guid>
+      <description>
+
+&lt;p&gt;I&amp;rsquo;m glad to publish a official announce of the &lt;strong&gt;OpenCV Hotshot&lt;/strong&gt; book. This book is currently available as a RAW (Read As we Write) book. A RAW book is an ebook, and this one is priced at 20% of the usual eBook price. Once you purchase the RAW book, you can immediately download the content of the book so far, and when new chapters become available, you will be notified, and  can download the new version of the book. When the book is published, you will receive the full, finished eBook. If you like, you can preorder the print book at the same time as you purchase the RAW book at a significant discount. Visit the &lt;strong&gt;&lt;a href=&#34;http://www.packtpub.com/opencv-2-hotshot/book&#34;&gt;OpenCV Hotshots Book&lt;/a&gt;&lt;/strong&gt;  page on PacktPub website. &lt;strong&gt;Update from August 23rd:&lt;/strong&gt; A Packt Publishing allowed me to publish source code of the example project on the Github. Please find the most recent version of this application here: &lt;a href=&#34;https://github.com/BloodAxe/OpenCV-Hotshots-Marker-Based-AR&#34;&gt;https://github.com/BloodAxe/OpenCV-Hotshots-Marker-Based-AR&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;comments&#34;&gt;Comments&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2110&#34; title=&#34;2012-08-24 03:53:07&#34;&gt;kevin&lt;/a&gt;:&lt;/strong&gt; hi.Ievgen, where can i download the code of the fisrst chater about the skin detection?,can u tell me&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2008&#34; title=&#34;2012-08-20 04:33:45&#34;&gt;kevin&lt;/a&gt;:&lt;/strong&gt; hi ,now , i want to buy this book ,how can i get the Promo Code?&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2211&#34; title=&#34;2012-08-31 08:57:26&#34;&gt;kevin&lt;/a&gt;:&lt;/strong&gt; hi,ievgen,just as fllows than&amp;rsquo;t ok-(void)frameReady:(BGRAVideoFrame) frame { // Start upload new frame to video memory in main thread dispatch_async( dispatch_get_main_queue(), ^{ [self.visualizationController updateBackground:frame]; }); cv::Mat bgraMat(frame.height, frame.width, CV_8UC4, frame.data, frame.stride); cv::cvtColor(bgraMat, m_grayscaleImage, CV_BGRA2GRAY); // When it&amp;rsquo;s done we query rendering from main thread dispatch_async( dispatch_get_main_queue(), ^{ [self.visualizationController drawFrame]; }); } but if i delete the two : cv::Mat bgraMat(frame.height, frame.width, CV_8UC4, frame.data, frame.stride); cv::cvtColor(bgraMat, m_grayscaleImage, CV_BGRA2GRAY); it&amp;rsquo;s will be crush， ireally don&amp;rsquo;t know why&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2036&#34; title=&#34;2012-08-22 16:48:01&#34;&gt;Josh&lt;/a&gt;:&lt;/strong&gt; Thanks for your response Ievgen, Re. Projection matrix - this will affect the augmentation and orientation correct? ie if incorrect will skew the view and offset the augmentation (?) I think previously when using OpenCV for AR I ended up using a library that implemented robust planar pose (RPP by Thomas Pintaric) - but the reason was because OpenCV kept crashing when trying to calculate pose (this is also fussy but didn&amp;rsquo;t jump so dramatically). Any hints on how you are improving the robustness of the marker detection i.e. are you re-using the previous pose? Thanks again for your reply - hopefully the publisher will let you release the code (out of interest - what sort of frame rate are you getting? - assuming its not optimised for clarity). Cheers, Josh&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2035&#34; title=&#34;2012-08-22 16:29:18&#34;&gt;Ievgen Khvedchenia&lt;/a&gt;:&lt;/strong&gt; Hello Kevin. Right now, we dont&amp;rsquo; have promo codes for these book. As soon as publisher give us few coupons you&amp;rsquo;ll get yours!&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2031&#34; title=&#34;2012-08-22 15:10:37&#34;&gt;Josh&lt;/a&gt;:&lt;/strong&gt; First of, nice work - chapters are well written. If you don&amp;rsquo;t mind, I just have a couple of questions: 1. In the marker chapter you have the inverting in 2 places, once when you detect the marker and another when you are about to render it (one is assigned to the marker object and the other is a collection of Transformation objects). // Since solvePnP finds camera location, w.r.t to marker pose, to get marker pose w.r.t to the camera we invert it. m.transformation = m.transformation.getInverted(); // and again in OpenGL Matrix44 glMatrix = transformation.getInverted().getMat44(); Am I missing something? Also assume that this invert is not a Matrix invert but rather transpose of from homography to a model view matrix in openGl? &amp;hellip; the other 2 a more general question so, obviously, feel free to ignore them. 2. I&amp;rsquo;m assuming you&amp;rsquo;re using an iPad in landscape - I&amp;rsquo;m trying to do a simple thing with a circle in portrait mode, would I need to flip your projection matrix for it to work in portrait? 3. (last one) have you come across examples when pose is very unstable (and keeps rotating the pose back and forward) - do you know if this has anything to do with the lose of precision (double to float)? Thanks and keep up the great work! Josh&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2034&#34; title=&#34;2012-08-22 16:21:19&#34;&gt;Ievgen Khvedchenia&lt;/a&gt;:&lt;/strong&gt; Hello Josh, Thanks for you comments. You are probably the first who got the access to the book via RAW program. Currently i&amp;rsquo;m improving my chapters according to reviewer&amp;rsquo;s comments and also rewriting sample project. What concerns your question about transformation - it&amp;rsquo;s seems that publisher uploaded old package source code. I have more recent version in my code repository on Github. I&amp;rsquo;ll ask a publisher is it allowed to make it public. Projection matrix has no common with device orientation since it depends only on camera internal parameters (intrinsic matrix). I can admit you experience issues with AR in portrait mode. It&amp;rsquo;s also caused by old code sample. Marker detection stability. Yes, current detector implementation is very &amp;ldquo;strict&amp;rdquo;. The algorithm prefers to say there is no marker if it&amp;rsquo;s not sure for 100% about it. Currently i working on improving robustness of the marker detection. If publisher allows to open access to the repository you will get access to it as soon as possible. Thanks again for your comments and loyalty.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2210&#34; title=&#34;2012-08-31 07:05:47&#34;&gt;kevin&lt;/a&gt;:&lt;/strong&gt; hi，Ievgen，i have some question want to ask u , i am new to opengl,you give me a good guide,now ,i want to use your template for myseif,so first i want delete the makerdetecter, self.markerDetector-&amp;gt;processFrame(frame);and sth relevance with it , but run it it&amp;rsquo;s dead, i don&amp;rsquo;t know why , and the i debug ,i find the first frame is good , but the the second frame comes, but frame.data is NULL,in the updateBackground , i don&amp;rsquo;t know why ,can u help me&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>I’m a book author now :)</title>
+      <link>https://example.com/2012-06-12-im-a-book-author-now/</link>
+      <pubDate>Tue, 12 Jun 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2012-06-12-im-a-book-author-now/</guid>
+      <description>
+
+&lt;p&gt;Hello dear computer vision community! I was absent for a while. There were a lot of interesting things i did for these months. Unfortunately, i can’t tell about almost all of them due to signed NDA agreements. But there is one great thing i can share right now. Today i finished working on two chapters of  “OpenCV Hotshots” book! This book is written with couple of authors, my part was about marker-based and marker-less augmented reality. Here is a brief intro what it’s about:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Marker-based Augmented Reality on iPhone or iPad&lt;/strong&gt; Readers will learn how to create a new iPhone project, how to add the OpenCV library to it, how to efficiently access the camera with OpenCV, and how to display the processed camera image onto their iPhone or iPad. They will also learn a basic method of real time 3D augmented reality, by first detecting a known 2D marker, transforming the camera view based on the marker position &amp;amp; rotation, then displaying a 3D virtual object on top of the real marker.&lt;/p&gt;
+
+&lt;p&gt;**Marker-less Augmented Reality **Readers will learn how to create a standard real time project using OpenCV (for desktop), and how to perform a new method of marker-less augmented reality, using the actual environment as the input instead of printed square markers. This chapter will cover some theory of marker-less AR and show how to apply it in useful projects.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I never have written books before and it’s very exciting and interesting experience. Well, anyway we have to wait few months until the rest of the chapters are done and it will be published. From the other interesting things I did, there were:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Development of the Real-time shape detection algorithm for iPad game.&lt;/li&gt;
+&lt;li&gt;Development of the vehicle trajectory reconstruction algorithm using floor tracking.&lt;/li&gt;
+&lt;li&gt;Investigation of the performance of matrix multiplication using OpenCV and Eigen libraries on the iOS platform. (Spoiler: Eigen kicks OpenCV’s ass).
+Thanks for reading this! I’ll announce interesting crowdsourcing project in a few days. It’s about AR and will be interested to may developers in this area.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;comments&#34;&gt;Comments&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1098&#34; title=&#34;2012-06-19 15:16:05&#34;&gt;dofl&lt;/a&gt;:&lt;/strong&gt; Great. I&amp;rsquo;ll buy it.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1245&#34; title=&#34;2012-07-03 11:13:21&#34;&gt;Josh&lt;/a&gt;:&lt;/strong&gt; Look forward to it! Any hints who you are publishing with and when it will be available (any chance to get a rough-cuts version of it). Josh&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1246&#34; title=&#34;2012-07-03 11:26:18&#34;&gt;Csaba Bolyos&lt;/a&gt;:&lt;/strong&gt; Interesting. Your work is really useful, I&amp;rsquo;m waiting to read it.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1259&#34; title=&#34;2012-07-04 08:40:03&#34;&gt;EKhvedchenya&lt;/a&gt;:&lt;/strong&gt; The publisher is Packt Pub, approximate publish date is on October.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>On answering reader questions</title>
+      <link>https://example.com/2012-04-10-reader-questions-1/</link>
+      <pubDate>Tue, 10 Apr 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2012-04-10-reader-questions-1/</guid>
+      <description>&lt;p&gt;A question from intenet:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Dear Ievgen, I&amp;rsquo;m researching the field of computer vision and object recognition in particular. I&amp;rsquo;m working for SENSUS in Amsterdam and we focus on social computing solutions for educational and health care sector. While researching and exploring I came up with a couple of simple questions that you might be able to help me with. I&amp;rsquo;m quite new to the concept of computer vision and only had some experience with simple blob tracking in OpenCV with use of OpenFrameworks. With best regards, Ralph Das&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;From your Twitter profile it became very clear you have a lot of experience in this field. I hope that you can share some insights on the questions I have:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Where is computer vision and in particular object recognition (SURF SIFT etc.) used on a larger scale/commercial basis.
+Is this only in industrial quality check systems or are there any other examples?
+To me the technology seems only applied between the walls of research institutes/ universities.
+Is it ready for a next phase? Is this this the case and why?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The object recognition using features are widely used in marker-less augmented reality and other areas that require object identification by it’s visual description. Probably, the best example of the large scale object recognition is the Google Image Search. The idea and it’s implementation is awesome. After uploading an image, the system recognizes it. If it’s a well-known object you will get the contextual information about it; otherwise – at least similar images will be displayed. By other words, Google uses pattern recognition, OCR and image database lookup to extract as much information from your image as possible. Other good example is a particular product location among large products database by it’s photo. Just imagine – you make a picture of a product packaging by a phone, and get all information about this item. From the technical side it’s a lookup against large image database (10,000 and more). Obviously, that direct comparison of two bitmaps is useless and too expensive. Fortunately, feature descriptors like SURF or SIFT comes in help and provide good and robust pattern description. And I almost forgot about SLAM-based 3D reconstruction and structure from motion estimation. The SLAM is acronym of simultaneous localization and mapping. By tracking 2D feature points it reconstruct 3D points using triangulation algorithm and then perform optimization of camera extrinsic and a 3D cloud to minimize the reprojection error. SLAM is very sensitive to quality of the input data (tracks of 2D points). Usually the KLT tracking algorithm is used to get frame-to-frame correspondences. Limitations of KLT tracking is well known: it tracks only slight movements, the points can ‘drift’ during frames, large number of outliers (false positive tracks), cannot be used for loop-closing. Using feature descriptors for image tracking gives you not only stable tracking with small number of outliers but also you get a tracking history for each feature for last N frames. With this data you can find lost features on new frame and reconstruct scene. Almost all software for video post-processing use them to reconstruct the scene and them embed the artificial 3D object into it. Also it’s true for panorama stitching and HDR making software – they use feature matching to align the images w.r.t to each other.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;I know that some of the object recognition algorithms are patented. Does that also count for algorithms like LAZY, BRIEF, ORB etc.?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The original SIFT and SURF implementations are patented. BRIEF and ORB are not. LAZY algorithm is still in development and not published yet.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Mobile devices seem more and more capable of handling tasks like feature detection. What are the primary technical concerns constraints when using a mobile device for these tasks?
+I can imagine that the processing speed is a major factor but are there more?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The processing power of mobile CPU are getting closer and closer to the desktop one. The quad-core mobile processor is not a surprise anymore. But mobile CPU have so different architecture in comparison to desktop processors. Mobile CPU are battery friendly, so they try to put the CPU to sleep when it suitable. From the other hand, any AR application use CPU for 100%. This drains battery extremely fast. Also, mobile device can become hot, since it’s not designed for long use at 100% workload. Mobile CPU has smaller cache size. That’s why processing of the same amount of data is significantly slower in comparison to desktop analogues. Nevertheless, mobile CPU is optimized to process HD media-content like in real time. This is possible with help of special CPU-features like SIMD (Single Instruction Multiple Data). The SIMD engine allows you to perform image processing up to 8x times faster. To use processor with maximum efficiency you will have to rewrite hotspots in your code using either intrinsic functions or low-level assembly language. It’s not a trivial task, but the result is worth of it.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Systems like Google Goggles and Layers new Stiktu try to push the boundaries on the field of AR.
+Is the object/pattern matching done on the mobile itself or is it (like I expect) server based? Can you share you thoughts on the architecture of these systems?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;You are right, these apps do all calculations on the server side. The thin client app contains just a rich UI and simple business logic. Let’s examine Google Goggles. You make a photo and receive some information about it. It think the image itself is not sending over network, only list of descriptors found on query image. Also I suppose they do resizing of input image to something like 640x480, because it’s good tradeoff between image quality and calculation speed. After resizing and converting to grayscale the descriptors are extracted and sent to the server. Probably, the resized grayscale image is also sent to improve search. The server back-end perform visual object search. The path can look like this:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Compute a image hash and find hash matches among the database. This step will reduce the search area.&lt;/li&gt;
+&lt;li&gt;If GPS data is available use it to refine search area to current device position.&lt;/li&gt;
+&lt;li&gt;Compute image histogram and reject images with large histogram difference.&lt;/li&gt;
+&lt;li&gt;Perform features matching using KD-trees to get image candidates.&lt;/li&gt;
+&lt;li&gt;Perform OCR to find text on query image.&lt;/li&gt;
+&lt;li&gt;Intersect textual and image search results to get final answer.&lt;/li&gt;
+&lt;li&gt;Return response
+&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I hope Google developers won’t be laughing too loud. I almost sure their system is much more complicated and use a lot of additional metrics to describe image. An, of course, this computations are done on a cluster with lots of servers which involves huge part of all Google services. Update: Thanks to @Sansulso posted very interesting video presentation of machine learning in Google Googles: &lt;a href=&#34;http://techtalks.tv/talks/machine-learning-in-google-goggles/54457/&#34;&gt;http://techtalks.tv/talks/machine-learning-in-google-goggles/54457/&lt;/a&gt; You can always ask me about whatever any time in &lt;a href=&#34;https://twitter.com/#!/cvtalks&#34;&gt;twitter&lt;/a&gt;, &lt;a href=&#34;mailto://ekhvedchenya@gmail.com&#34;&gt;mail&lt;/a&gt; or via Skype (eugenekhvedchenya).&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>OpenCV 2.3 is available</title>
+      <link>https://example.com/2011-07-03-opencv-2-3-release-candidate-is-available/</link>
+      <pubDate>Sun, 03 Jul 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2011-07-03-opencv-2-3-release-candidate-is-available/</guid>
+      <description>
+
+&lt;p&gt;New major release of OpenCV library is coming. Release candidate is available for testing right now! &lt;strong&gt;Update: &lt;/strong&gt;&lt;strong&gt;Opencv 2.3 has been released on 5 June.&lt;/strong&gt; &lt;strong&gt;Update 2: Added precompiled binaries of iOS!&lt;/strong&gt; Download OpenCV 2.3:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Win32: &lt;a href=&#34;http://sourceforge.net/projects/opencvlibrary/files/opencv-win/2.3/&#34;&gt;http://sourceforge.net/projects/opencvlibrary/files/opencv-win/2.3/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Android: &lt;a href=&#34;http://sourceforge.net/projects/opencvlibrary/files/opencv-android/2.3/OpenCV-2.3.0alpha1-android-bin.tar.bz2/download&#34;&gt;http://sourceforge.net/projects/opencvlibrary/files/opencv-android/2.3/OpenCV-2.3.0alpha1-android-bin.tar.bz2/download&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Unix: &lt;a href=&#34;http://sourceforge.net/projects/opencvlibrary/files/opencv-unix/2.3/OpenCV-2.3.0.tar.bz2/download&#34;&gt;http://sourceforge.net/projects/opencvlibrary/files/opencv-unix/2.3/OpenCV-2.3.0.tar.bz2/download&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;iOS: [download id=&amp;ldquo;4&amp;rdquo;]&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;general-modifications-and-improvements&#34;&gt;General Modifications and Improvements&lt;/h2&gt;
+
+&lt;p&gt;Buildbot-based Continuous Integration system is now continuously testing OpenCV snapshots. The status is available at &lt;a href=&#34;http://buildbot.itseez.com/&#34;&gt;http://buildbot.itseez.com&lt;/a&gt; OpenCV switched to Google Test (&lt;a href=&#34;http://code.google.com/p/googletest/&#34;&gt;http://code.google.com/p/googletest/&lt;/a&gt;) engine for regression and correctness tests. Each module now has test subdirectory with the tests.&lt;/p&gt;
+
+&lt;h2 id=&#34;new-functionality-features&#34;&gt;New Functionality, Features&lt;/h2&gt;
+
+&lt;p&gt;Many functions and methods now take InputArray/OutputArray instead of &amp;ldquo;cv::Mat&amp;rdquo; references. It retains compatibility with the existing code and yet brings more natural support for STL vectors and potentially other &amp;ldquo;foreign&amp;rdquo; data structures to OpenCV. See &lt;a href=&#34;http://opencv.itseez.com/modules/core/doc/intro.html#inputarray-and-outputarray&#34;&gt;http://opencv.itseez.com/modules/core/doc/intro.html#inputarray-and-outputarray&lt;/a&gt; for details.&lt;/p&gt;
+
+&lt;h2 id=&#34;core&#34;&gt;Core&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;LAPACK is not used by OpenCV anymore. The change decreased the library footprint and the compile time. We now use our own implementation of Jacobi SVD. SVD performance on small matrices (2x2 to 10x10) has been greatly improved; on larger matrices it is still pretty good. SVD accuracy on poorly-conditioned matrices has also been improved.&lt;/li&gt;
+&lt;li&gt;Arithmetic operations now support mixed-type operands and arbitrary number of channels.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;features2d&#34;&gt;Features2d&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Completely new patent-free BRIEF and ORB feature descriptors have been added.&lt;/li&gt;
+&lt;li&gt;Very fast LSH matcher for BRIEF and ORB descriptors will be added in 2.3.1.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;calib3d&#34;&gt;Calib3d&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;A new calibration pattern, &amp;ldquo;circles grid&amp;rdquo;, has been added. See findCirclesGrid() function and the updated calibration.cpp sample. With the new pattern calibration accuracy is usually much higher.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;highgui&#34;&gt;Highgui&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;[Windows] videoInput is now a part of highgui. If there are any problems with compiling highgui, set &amp;ldquo;WITH_VIDEOINPUT=OFF&amp;rdquo; in CMake.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;stitching&#34;&gt;&lt;strong&gt;Stitching&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://opencv.willowgarage.com/wiki/opencv_stitching&#34;&gt;opencv_stitching&lt;/a&gt; is a beta version of new application that makes a panorama out of a set of photos which were took from the same point.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;python&#34;&gt;Python&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Now there are 2 extension modules: cv and cv2. cv2 includes wrappers for OpenCV 2.x functionality. opencv/samples/python2 contain a few samples demonstrating cv2 in use.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;contrib&#34;&gt;Contrib&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;A new experimental variational stereo correspondence algorithm StereoVar has been added.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;gpu&#34;&gt;Gpu&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;The module now requires CUDA 4.0 or later; Many improvements and bug fixes have been made.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;android-port&#34;&gt;&lt;strong&gt;Android port&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;With support from NVidia, OpenCV Android port (which is actually not a separate branch of OpenCV, it&amp;rsquo;s the same code tree with additional build scripts) has been greatly improved, a few demos developed. Camera support has been added as well. See &lt;a href=&#34;http://opencv.willowgarage.com/wiki/Android&#34;&gt;http://opencv.willowgarage.com/wiki/Android&lt;/a&gt; for details.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;documentation&#34;&gt;Documentation&lt;/h2&gt;
+
+&lt;p&gt;OpenCV documentation is now written in ReStructured Text and built using Sphinx (&lt;a href=&#34;http://sphinx.pocoo.org/&#34;&gt;http://sphinx.pocoo.org&lt;/a&gt;). It&amp;rsquo;s not a single reference manual now, it&amp;rsquo;s 4 reference manuals (OpenCV 2.x C++ API, OpenCV 2.x Python API, OpenCV 1.x C API, OpenCV 1.x Python API), the emerging user guide and a set of tutorials for beginners. Style and grammar of the main reference manual (OpenCV 2.x C++ API) have been thoroughly checked and fixed. Online up-to-date version of the manual is available at &lt;a href=&#34;http://opencv.itseez.com/&#34;&gt;http://opencv.itseez.com&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;samples&#34;&gt;Samples&lt;/h2&gt;
+
+&lt;p&gt;Several samples using the new Python bindings (cv2 module) have been added: &lt;a href=&#34;https://code.ros.org/svn/opencv/branches/2.3/opencv/samples/python2&#34;&gt;https://code.ros.org/svn/opencv/branches/2.3/opencv/samples/python2&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;optimization&#34;&gt;Optimization&lt;/h2&gt;
+
+&lt;p&gt;Several ML algorithms have been threaded using TBB.&lt;/p&gt;
+
+&lt;h2 id=&#34;bug-fixes&#34;&gt;&lt;strong&gt;Bug Fixes&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;Over 250 issues have been resolved. Most of the issues (closed and still open) are listed at &lt;a href=&#34;https://code.ros.org/trac/opencv/report/6&#34;&gt;https://code.ros.org/trac/opencv/report/6&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;known-problems-limitations&#34;&gt;&lt;strong&gt;Known Problems/Limitations&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;Documentation (especially on the new Python bindings) is still being updated. Watch opencv.itseez.com for updates. Android port does not provide Java interface for OpenCV. It is going to be added to &lt;a href=&#34;http://code.ros.org/svn/opencv/branches/2.3/opencv&#34;&gt;2.3 branch&lt;/a&gt; in a few weeks. The list of the other open bugs can be found at &lt;a href=&#34;http://code.ros.org/trac/opencv/report/1&#34;&gt;http://code.ros.org/trac/opencv/report/1&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Future of the Augmented Reality</title>
+      <link>https://example.com/2011-02-11-future-of-the-augmented-reality/</link>
+      <pubDate>Fri, 11 Feb 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2011-02-11-future-of-the-augmented-reality/</guid>
+      <description>&lt;p&gt;Augmented reality technology grows rapidly for last two years. The huge potential this technology has not fully revealed. In the near future we expect appearance of large number of companies seeking to take a a new area in the market. More and more quality and exciting applications of augmented reality will appear. Want to know why?&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;Statistics of search queries for &amp;ldquo;Augmented Reality&amp;rdquo; gives eloquent testimony about the growing interest for this technology. For two years the Augmented Reality has become profitable. A lot of AR-advertisement, navigations, entertainment applications has been developed.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;viz_thumb.png&#34; alt=&#34;viz&#34; title=&#34;viz&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;##Google search volume for “Augmented Reality”&lt;/p&gt;
+
+&lt;p&gt;Currently, most of the applications augmented reality systems uses markers. This method is simple and primitive, but it works and makes profit. However, over time,requirements for augmented reality systems will increase and marker-based AR will lose its market share.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;regions_distribution_thumb.png&#34; alt=&#34;regions_distribution&#34; title=&#34;regions_distribution&#34; /&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;##Top regions for “Augmented Reality” keyword search&lt;/p&gt;
+
+&lt;p&gt;The development of markerless AR systems hinders greater complexity of their creation. It takes time to find new algorithms, optimization of the old solutions - in fact augmented reality involves work in real time. This means the system should process huge amount of incoming information from webcams and make rendering just for 20-30 milliseconds!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;cities_distribution_thumb.png&#34; alt=&#34;cities_distribution&#34; title=&#34;cities_distribution&#34; /&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;##Top cities for “Augmented Reality” keyword search&lt;/p&gt;
+
+&lt;p&gt;Already there are applications augmented reality systems for mobile platforms. With the development of mobile processors (especially with the release of dual-core mobile processors) market share of the augmented reality systems in mobile segment will significantly increase.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;language_distribution_thumb.png&#34; alt=&#34;language_distribution&#34; title=&#34;language_distribution&#34; /&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;##Language distribution for “Augmented Reality” searches across the world&lt;/p&gt;
+
+&lt;p&gt;Scenarios for using augmented reality are truly endless. Only imagination and your knowledge in the computer vision determine how amazing applications you can create.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

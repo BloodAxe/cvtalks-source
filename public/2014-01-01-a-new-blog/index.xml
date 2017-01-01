@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2014-01-01-a-new-blog-rsses on Ghostwriter example</title>
+    <link>https://example.com/2014-01-01-a-new-blog/index.xml</link>
+    <description>Recent content in 2014-01-01-a-new-blog-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Wed, 01 Jan 2014 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2014-01-01-a-new-blog/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>On migrating from Wordpress to Wintersmith</title>
+      <link>https://example.com/2014-01-01-a-new-blog/</link>
+      <pubDate>Wed, 01 Jan 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2014-01-01-a-new-blog/</guid>
+      <description>&lt;p&gt;p
+    | I welcome you at my new blog home! After using Wordpress for three years of bloging i decided that i&amp;rsquo;m unhappy with this blog engine.
+    | Personally, i wanted something more &amp;ldquo;geeky&amp;rdquo;, if you know what i mean. Wordpress is like a &amp;ldquo;click to win&amp;rdquo; - it offers a lot, but keeps you
+    | in strict sandbox called Wordpress API. But first of all - it&amp;rsquo;s too slow as a blogging platform for one people.&lt;/p&gt;
+
+&lt;p&gt;p
+    | Computer Vision Talks is not updates daile or even weekly (I wish i could have enough time to write posts!). So for me it was very wierd to experience 2-3-5 seconds
+    | of loading a single page. Don&amp;rsquo;t get me wrong - my hosting is fine. Making a dozens of SQL requests to render a single HTML page? It&amp;rsquo;s wrong by design. So i came to a decision
+    | to use static-site generator. Geeeky enough, isn&amp;rsquo;t it? First, i&amp;rsquo;ve heard about Jekyl from a Radio-T podcast. I&amp;rsquo;m a big fan of it and there i heard about Octopress. It looked nice
+    | but outdated and has small community. After a while i found Wintersmith - amazing tool for static blogging.&lt;/p&gt;
+
+&lt;p&gt;p
+    | The new site look is still not final, so it appearance is about to change slightly from time to time. I hope you enjoy reading it.
+    | And I hope i&amp;rsquo;ll now have more time to write interesting articles!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,1123 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ghostwriter example</title>
+    <link>https://example.com/tags/cloudcv/index.xml</link>
+    <description>Recent content on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <atom:link href="https://example.com/tags/cloudcv/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Marshalling data in Nodejs C&#43;&#43; modules</title>
+      <link>https://example.com/marshalling-data-in-nodejs-c-modules/</link>
+      <pubDate>Sat, 10 Oct 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/marshalling-data-in-nodejs-c-modules/</guid>
+      <description>
+
+&lt;p&gt;One of the problems I had to solve while working on &lt;a href=&#34;cloudcv&#34;&gt;CloudCV&lt;/a&gt; is a data marshalling from V8 engine to plain C++ objects and vice versa.
+In C++ add-on for Nodejs you need to parse and convert input arguments, which can be scalar types, collections and user-defined structures.
+Proposed library solves this task with least possible amount of headache.&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&#34;example&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;example&#34;&gt;Example&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;NAN_METHOD(GetFirstNPrimes) {
+    
+    int numberOfPrimes = Nan::Marshal&amp;lt;int&amp;gt;(info[0]);
+    std::vector&amp;lt;int&amp;gt; primes = computeNPrimes(numberOfPrimes);
+    info.GetReturnValue().Set(Nan::Marshal(primes));
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Ok, enough words, gimme the code! All source code is available on GitHub: &lt;a href=&#34;nan-marshal&#34;&gt;nan-marshal&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/more&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&#34;requirements&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;requirements&#34;&gt;Requirements&lt;/h2&gt;
+
+&lt;p&gt;By tradition, native add-ons for Node are built with GYP build system. So you should install node-gyp package: &lt;code&gt;npm install -g node-gyp&lt;/code&gt;.
+This module requires [Nan][nan] package. If you are not using [Nan][nan] already for writing C++ add-ons for Nodejs I strongly advise you to start doing that. Anyway, &lt;code&gt;npm install --save nan&lt;/code&gt; is a right way to start.&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&#34;usage&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;usage&#34;&gt;Usage&lt;/h2&gt;
+
+&lt;p&gt;Simply add &lt;strong&gt;nan-marshal&lt;/strong&gt; as a dependency module to &lt;em&gt;package.json&lt;/em&gt; of your Node add-on:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ npm install --save nan-marshal
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Add include directories for &lt;strong&gt;NAN&lt;/strong&gt; and &lt;strong&gt;NAN-Marshal&lt;/strong&gt; in your &lt;em&gt;binding.gyp&lt;/em&gt; so that you can use &lt;code&gt;#include &amp;lt;nan-marshal.h&amp;gt;&lt;/code&gt; in your &lt;em&gt;.cpp&lt;/em&gt; files:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;&amp;quot;include_dirs&amp;quot; : [
+    &amp;quot;&amp;lt;!(node -e \&amp;quot;require(&#39;nan&#39;)\&amp;quot;)&amp;quot;,
+    &amp;quot;&amp;lt;!(node -e \&amp;quot;require(&#39;nan-marshal&#39;)\&amp;quot;)&amp;quot;
+]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This works like a &lt;code&gt;-I&amp;lt;path-to-nan-marshal&amp;gt;&lt;/code&gt; when compiling your add-on.&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&#34;api&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;api&#34;&gt;API&lt;/h2&gt;
+
+&lt;p&gt;There is a single all-purpose function: &lt;code&gt;Nan::Marshal&lt;/code&gt;. To convert from V8 object to C++ type, use it as follows: &lt;code&gt;Nan::Marshal&amp;lt;Dst&amp;gt;(V8 object)&lt;/code&gt;.
+To convert from C++ to V8 object: &lt;code&gt;Nan::Marshal(..)&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Nan::Marshal&lt;/code&gt; supports following types out of the box:
+- Built-in C++ types
+- std::string
+- std::vector
+- std::map
+- std::shared_ptr
+- Marshalling of used-defined types (There are intrusive and non-intrusive options available)&lt;/p&gt;
+
+&lt;p&gt;For built-in and STL types, use is straightforward:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;Local&amp;lt;Value&amp;gt; arg1 = info[0];
+// Marshal from V8 to C++ type
+std::string msg = Nan::Marshal&amp;lt;std::string&amp;gt;(arg1);
+
+// Marshal from C++ to V8
+info.GetReturnValue().Set(Nan::Marshal(msg));
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;User-defined serialization inspired by boost::serialization approach and you will find it similar and easy-to-use. Here&amp;rsquo;s quick example of non-intrusive serialization of the OpenCV data type:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;namespace Nan
+{
+    namespace marshal
+    {
+        template&amp;lt;typename T&amp;gt;
+        struct Serializer &amp;lt; cv::Rect_&amp;lt;T&amp;gt; &amp;gt;
+        {
+            template&amp;lt;typename InputArchive&amp;gt;
+            static inline void load(InputArchive&amp;amp; ar, cv::Rect_&amp;lt;T&amp;gt;&amp;amp; val)
+            {
+                ar &amp;amp; make_nvp(&amp;quot;x&amp;quot;, val.x);
+                ar &amp;amp; make_nvp(&amp;quot;y&amp;quot;, val.y);
+                ar &amp;amp; make_nvp(&amp;quot;width&amp;quot;, val.width);
+                ar &amp;amp; make_nvp(&amp;quot;height&amp;quot;, val.height);
+            }
+
+            template&amp;lt;typename OutputArchive&amp;gt;
+            static inline void save(OutputArchive&amp;amp; ar, const cv::Rect_&amp;lt;T&amp;gt;&amp;amp; val)
+            {
+                ar &amp;amp; make_nvp(&amp;quot;x&amp;quot;, val.x);
+                ar &amp;amp; make_nvp(&amp;quot;y&amp;quot;, val.y);
+                ar &amp;amp; make_nvp(&amp;quot;width&amp;quot;, val.width);
+                ar &amp;amp; make_nvp(&amp;quot;height&amp;quot;, val.height);
+            }
+        };
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Having a snippet above in your code lets you to return JavaScript object like &lt;code&gt;{ x:12, y:13, width:124, height: 144 }&lt;/code&gt; from C++ code. The same is true for V8 -&amp;gt; C++ marshalling. Nan::Marshal will convert V8 object to desired object type.&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&#34;tests&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;tests&#34;&gt;Tests&lt;/h2&gt;
+
+&lt;p&gt;To run the tests do:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;npm install
+npm run-script rebuild-tests
+npm test
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Or just:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;npm install
+npm test
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;a name=&#34;limitations&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;limitations&#34;&gt;Limitations&lt;/h2&gt;
+
+&lt;p&gt;This library does not perform strict checking of V8 types during conversion. There is &lt;a href=&#34;https://github.com/BloodAxe/nan-check&#34;&gt;nan-check&lt;/a&gt; module that serves this purpose.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Introducing CloudCV bootstrap</title>
+      <link>https://example.com/introducing-cloudcv-bootstrap/</link>
+      <pubDate>Tue, 14 Apr 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/introducing-cloudcv-bootstrap/</guid>
+      <description>
+
+&lt;p&gt;Here&amp;rsquo;s an open-source ready to use bootstrap project written in Node.js that lets
+you to quickly build a REST service to host your image processing and computer vision code
+in a cloud environment.
+Please welcome: &lt;a href=&#34;https://github.com/CloudCV/cloudcv-bootstrap&#34;&gt;cloudcv-bootstrap&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;cloudcv-bootstrap.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I made this project aside of CloudCV to keep it simple but functionaly. It is self-contained
+Node.js project that helps you to get quick results on building and deploying your first
+server-based image processing service.&lt;/p&gt;
+
+&lt;h2 id=&#34;features&#34;&gt;Features&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Ready to use. No need to download extra dependencies. Just run &lt;code&gt;npm install&lt;/code&gt; and that&amp;rsquo;s all.&lt;/li&gt;
+&lt;li&gt;Built-in REST-API support. As a bonus, a Swagger 2.0 specification file comes too. You can use it as a template to build client SDKs.&lt;/li&gt;
+&lt;li&gt;Shipped with OpenCV 3.0.0&lt;/li&gt;
+&lt;li&gt;Interopability between C++ and Node.js code&lt;/li&gt;
+&lt;li&gt;Covered with unit tests&lt;/li&gt;
+&lt;li&gt;Logging support&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;With cloudcv-bootstrap you can quickly wrap your C++ code into web-service using simple and
+clear syntax:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;app.post(&#39;/api/v1/image/analyze/dominantColors/&#39;, function (req, res) {
+    cv.analyzeImage(req.files.image.buffer, function(error, result) {
+        res.setHeader(&amp;quot;Content-Type&amp;quot;, &amp;quot;application/json&amp;quot;);
+        res.write(JSON.stringify(MapAnalyzeResult(result)));
+        res.end();
+    });
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Error handling and logging here omited for the sake of simplicity, but this is full-functional snippet.
+It accepts uploaded image using POST request and transfers image data to C++ backend.
+&lt;a href=&#34;https://github.com/CloudCV/cloudcv-bootstrap&#34;&gt;cloudcv-bootstrap&lt;/a&gt; fully follows Node.js programming paradigm and schedule C++ code on libuv thread pool and leave main thread free for requests processing.&lt;/p&gt;
+
+&lt;h2 id=&#34;quick-start&#34;&gt;Quick start&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;git clone https://github.com/CloudCV/cloudcv-bootstrap.git
+npm install
+npm start &amp;amp;
+curl localhost:3000/api/v1/image/analyze/dominantColors?image=https%3A%2F%2Fraw.githubusercontent.com%2FCloudCV%2Fcloudcv-bootstrap%2Fmaster%2Ftest%2Fdata%2Fopencv-logo.jpg
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Produces:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;{
+    &amp;quot;aspect&amp;quot;:
+    {
+        &amp;quot;width&amp;quot;:599,
+        &amp;quot;height&amp;quot;:555
+    },
+    &amp;quot;size&amp;quot;:
+    {
+        &amp;quot;width&amp;quot;:0,
+        &amp;quot;height&amp;quot;:0
+    },
+    &amp;quot;dominantColors&amp;quot;:
+    [
+        {&amp;quot;color&amp;quot;:[252,252,252],&amp;quot;totalPixels&amp;quot;:201655,&amp;quot;interclassVariance&amp;quot;:7.83907795204613e-37,&amp;quot;error&amp;quot;:0},
+        {&amp;quot;color&amp;quot;:[252,0,0],&amp;quot;totalPixels&amp;quot;:43612,&amp;quot;interclassVariance&amp;quot;:7.83907795204613e-37,&amp;quot;error&amp;quot;:0},
+        {&amp;quot;color&amp;quot;:[0,0,252],&amp;quot;totalPixels&amp;quot;:43591,&amp;quot;interclassVariance&amp;quot;:7.83907795204613e-37,&amp;quot;error&amp;quot;:0},
+        {&amp;quot;color&amp;quot;:[0,252,0],&amp;quot;totalPixels&amp;quot;:43587,&amp;quot;interclassVariance&amp;quot;:7.83907795204613e-37,&amp;quot;error&amp;quot;:0}
+    ]
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Congratulations, you&amp;rsquo;ve just computed dominant colors of the OpenCV logo image:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/CloudCV/cloudcv-bootstrap/master/test/data/opencv-logo.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;extending-with-your-code&#34;&gt;Extending with your code&lt;/h2&gt;
+
+&lt;p&gt;This module uses node-gyp build system. It produces Node C++ addon and require you to do minimal changes into this module:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Have C++ code you want to host&lt;/li&gt;
+&lt;li&gt;Write module binding&lt;/li&gt;
+&lt;li&gt;Register it&lt;/li&gt;
+&lt;li&gt;Write unit tests&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Let&amp;rsquo;s go step by step using camera calibration as example. For quick results we won&amp;rsquo;t reinvent the wheel and use code from OpenCV samples. I will just refactor it slightly. Here&amp;rsquo;s our public interface of calibration algorithm:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;enum PatternType {
+    CHESSBOARD = 0,
+    CIRCLES_GRID = 1,
+    ACIRCLES_GRID = 2
+};
+
+class CameraCalibrationAlgorithm
+{
+public:
+    typedef std::vector&amp;lt;cv::Point3f&amp;gt;               VectorOf3DPoints;
+    typedef std::vector&amp;lt;cv::Point2f&amp;gt;               VectorOf2DPoints;
+    typedef std::vector&amp;lt;std::vector&amp;lt;cv::Point3f&amp;gt; &amp;gt; VectorOfVectorOf3DPoints;
+    typedef std::vector&amp;lt;std::vector&amp;lt;cv::Point2f&amp;gt; &amp;gt; VectorOfVectorOf2DPoints;
+    typedef std::vector&amp;lt;cv::Mat&amp;gt;                   VectorOfMat;
+
+    CameraCalibrationAlgorithm(cv::Size patternSize, PatternType type);
+
+    bool detectCorners(const cv::Mat&amp;amp; frame, VectorOf2DPoints&amp;amp; corners2d) const;
+
+    bool calibrateCamera(
+        const VectorOfVectorOf2DPoints&amp;amp; gridCorners,
+        const cv::Size imageSize,
+        cv::Mat&amp;amp; cameraMatrix,
+        cv::Mat&amp;amp; distCoeffs
+    ) const;
+
+protected:
+
+    // .. plenty of helper methods
+
+private:
+    cv::Size                 m_patternSize;
+    PatternType              m_pattern;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We want to wrap it into V8 code. First, we need to register corresponding function that we will expose to JS:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;void RegisterModule(Handle&amp;lt;Object&amp;gt; target)
+{
+    // ...
+
+    NODE_SET_METHOD(target, &amp;quot;calibrationPatternDetect&amp;quot;, calibrationPatternDetect);
+    NODE_SET_METHOD(target, &amp;quot;calibrateCamera&amp;quot;,          calibrateCamera);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Implementation of &lt;code&gt;calibrationPatternDetect&lt;/code&gt; and &lt;code&gt;calibrateCamera&lt;/code&gt; needs to parse input arguments, schedule a task to thread pool and invoke a user-passed callback on completition.
+Marshalling between C++ and V8 is tricky.
+Fortunately, NaN module does a great help on data marshalling.
+To simplity developer&amp;rsquo;s life even more &lt;a href=&#34;https://github.com/CloudCV/cloudcv-bootstrap&#34;&gt;cloudcv-bootstrap&lt;/a&gt; offers complex data marshalling and argument checking:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;NAN_METHOD(calibrationPatternDetect)
+{
+    TRACE_FUNCTION;
+    NanEscapableScope();
+
+    Local&amp;lt;Object&amp;gt;   imageBuffer;
+    Local&amp;lt;Function&amp;gt; callback;
+    cv::Size        patternSize;
+    PatternType     pattern;
+    std::string     error;
+
+    if (NanCheck(args)
+        .Error(&amp;amp;error)
+        .ArgumentsCount(4)
+        .Argument(0).IsBuffer().Bind(imageBuffer)
+        .Argument(1).Bind(patternSize)
+        .Argument(2).StringEnum&amp;lt;PatternType&amp;gt;({ 
+            { &amp;quot;CHESSBOARD&amp;quot;,     PatternType::CHESSBOARD }, 
+            { &amp;quot;CIRCLES_GRID&amp;quot;,   PatternType::CIRCLES_GRID }, 
+            { &amp;quot;ACIRCLES_GRID&amp;quot;,  PatternType::ACIRCLES_GRID } }).Bind(pattern)
+        .Argument(3).IsFunction().Bind(callback))
+    {
+        LOG_TRACE_MESSAGE(&amp;quot;Parsed function arguments&amp;quot;);
+        NanCallback *nanCallback = new NanCallback(callback);
+        NanAsyncQueueWorker(new DetectPatternTask(
+            CreateImageSource(imageBuffer), 
+            patternSize, 
+            pattern, 
+            nanCallback));
+    }
+    else if (!error.empty())
+    {
+        LOG_TRACE_MESSAGE(error);
+        NanThrowTypeError(error.c_str());
+    }
+
+    NanReturnUndefined();
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You may read about NanCheck in separate post: &lt;a href=&#34;http://computer-vision-talks.com/articles/how-to-convert-args-from-js-to-cpp&#34;&gt;NanCheck&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;data-marshalling&#34;&gt;Data marshalling&lt;/h2&gt;
+
+&lt;p&gt;Natively, marshaller supports:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;C++ plain types&lt;/strong&gt;:
+ - char, unsigned char
+ - short, unsighed short
+ - int, unsigned int
+ - long, unsigned long
+ - float, double
+ - T[N]&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;STL types&lt;/strong&gt;:
+ - std::array&lt;T,N&gt;
+ - std::pair&lt;A,B&gt;
+ - std::vector&lt;T&gt;
+ - std::map&lt;K,V&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;OpenCV types&lt;/strong&gt;:
+ - cv::Point2i, cv::Point2f, cv::Point2d
+ - cv::Size&lt;em&gt;&lt;int&gt;, cv::Size&lt;/em&gt;&lt;float&gt;, cv::Size_&lt;double&gt;
+ - cv::Mat&lt;/p&gt;
+
+&lt;p&gt;Data marshalling of user-defined structures implemented in similar to boost::serialization fashion:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;struct CalibrationResult
+{
+    cv::Mat  m_distCoeffs;
+    cv::Mat  m_cameraMatrix;
+    bool     m_calibrationSuccess;
+
+    template &amp;lt;typename Archive&amp;gt;
+    void serialize(Archive&amp;amp; ar)
+    {
+        ar &amp;amp; serialization::make_nvp(&amp;quot;calibrationSuccess&amp;quot;, m_calibrationSuccess);
+
+        if (Archive::is_loading::value || m_calibrationSuccess)
+        {
+            ar &amp;amp; serialization::make_nvp(&amp;quot;cameraMatrix&amp;quot;,m_cameraMatrix);
+            ar &amp;amp; serialization::make_nvp(&amp;quot;distCoeffs&amp;quot;,  m_distCoeffs);
+        }
+    }
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;User-defined types will be marshalled to regular V8 object containing fields serialized within &lt;code&gt;serialize()&lt;/code&gt; function.&lt;/p&gt;
+
+&lt;p&gt;To marshal C++ object to V8 object:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;CalibrationResult cpp_result = ...;
+auto v8_result = marshal(cpp_result);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To marshal from V8 object to C++ object:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;v8::Local&amp;lt;v8::Value&amp;gt; v8_result = ...;
+auto cpp_result = marshal&amp;lt;CalibrationResult&amp;gt;(v8_result);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;roadmap&#34;&gt;Roadmap&lt;/h2&gt;
+
+&lt;p&gt;This is very beta version of cloudcv-bootstrap and it&amp;rsquo;s codebase about to change.
+Please keep in mind that and feel free to ask for help in &lt;a href=&#34;https://twitter.com/cvtalks&#34;&gt;twitter&lt;/a&gt; or on &lt;a href=&#34;https://github.com/CloudCV/cloudcv-bootstrap/issues&#34;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;According to plan:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Add Dockerfile to run this code in a container environment&lt;/li&gt;
+&lt;li&gt;Write more documentation on data marshalling&lt;/li&gt;
+&lt;li&gt;Implement easier REST API mapping and arguments checking&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Argument checking for native addons for Node.js. Do it right!</title>
+      <link>https://example.com/how-to-convert-args-from-js-to-cpp/</link>
+      <pubDate>Thu, 11 Sep 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/how-to-convert-args-from-js-to-cpp/</guid>
+      <description>
+
+&lt;div class=&#34;featured-image&#34;&gt;
+![NanCheck](logo.jpg)
+&lt;/div&gt;
+
+&lt;p&gt;During development of &lt;a href=&#34;https://cloudcv.io&#34;&gt;CloudCV&lt;/a&gt; I came to the problem on converting &lt;code&gt;v8::Arguments&lt;/code&gt; to
+native C++ data types in my Node.js native module. If you are new to C++ and Node.js, I suggest you to read how to write C++ modules for Node.js and connecting OpenCV and Node.js first.&lt;/p&gt;
+
+&lt;p&gt;Mapping V8 data types to native C++ equivalents is trivial, but somewhat wordy. One should take the
+argument at given index, check whether it is defined, then check it&amp;rsquo;s type and finally cast to C++ type.
+This works fine while you have function that receive two or three arguments of trivial type (That can be mapped directly to built-in C++ types). What about strings? Arrays? Complex types like objects or function callback?
+You code will grow like and became hard-to-maintain pasta-code some day.&lt;/p&gt;
+
+&lt;p&gt;In this post I present my approach on solving this problem with a laconic way on describing what do you expect as input arguments.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;
+&lt;div class=&#34;clearfix&#34;&gt;&lt;/div&gt;&lt;/p&gt;
+
+&lt;p&gt;To illustrate the difference between imperative approach I included source code for calibrationPatternDetect method that expose function to detect calibration pattern on a single image to Node.js code. As you may see below, there are a lot of &lt;em&gt;if&lt;/em&gt; conditions, magic numbers and no type checking for a half of arguments. But even without it, this function occupy 50 lines of code.
+What even worse, 90% of this code is going to be the same for other functions. The main purpose of code of any &lt;code&gt;NAN_METHOD&lt;/code&gt; implementation - to marshal data in such a way it can be used by C++ code.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;NAN_METHOD(calibrationPatternDetect)
+{
+    NanScope();
+
+    if (args.Length() != 5)
+    {
+        return NanThrowError(&amp;quot;Invalid number of arguments&amp;quot;);  
+    }
+
+    if (!args[0]-&amp;gt;IsObject())
+    {
+        return NanThrowTypeError(&amp;quot;First argument should be a Buffer&amp;quot;);      
+    }
+
+    // 0 - image
+    // 1 - width
+    // 2 - height
+    // 3 - pattern
+    // 4 - callback
+
+    int w  = args[1]-&amp;gt;Uint32Value();
+    int h  = args[2]-&amp;gt;Uint32Value();
+    int pt = args[3]-&amp;gt;Uint32Value();
+    PatternType pattern;
+
+    switch (pt)
+    {
+        case 0:
+            pattern = CHESSBOARD;
+            break;
+
+        case 1:
+            pattern = CIRCLES_GRID;
+            break;
+
+        case 2:
+            pattern = ASYMMETRIC_CIRCLES_GRID;
+            break;    
+
+        default:
+            return NanThrowError(&amp;quot;Unsupported pattern type. Only 0 (CHESSBOARD), 1 (CIRCLES_GRID) or 2 (ASYMMETRIC_CIRCLES_GRID) are supported.&amp;quot;);
+    };
+
+    if (!args[4]-&amp;gt;IsFunction())
+    {
+        return NanThrowTypeError(&amp;quot;Last argument must be a function.&amp;quot;);
+    }
+
+    // The task holds our custom status information for this asynchronous call,
+    // like the callback function we want to call when returning to the main
+    // thread and the status information.
+
+    NanCallback *callback = new NanCallback(args[4].As&amp;lt;Function&amp;gt;());
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So the goal is to add more syntax sugar for argument checking.
+Basically, it should provide a convenient way to check number and type of arguments passed.
+For &lt;a href=&#34;https://cloudcv.io&#34;&gt;CloudCV&lt;/a&gt; project I&amp;rsquo;ve ended with a declarative approach because I found it fit my needs very much
+and makes argument checking self-explanatory. Here is how new implementation of &lt;code&gt;calibrationPatternDetect&lt;/code&gt; looks like:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;NAN_METHOD(calibrationPatternDetect)
+{
+    NanScope();
+
+    Local&amp;lt;Object&amp;gt;   imageBuffer;
+    Local&amp;lt;Function&amp;gt; callback;
+    cv::Size        patternSize;
+    PatternType     pattern;
+
+    try
+    {
+        if (NanCheck(args).ArgumentsCount(5)
+            .Argument(0).IsBuffer().Bind(imageBuffer)
+            .Argument(1).Bind(patternSize.width)
+            .Argument(2).Bind(patternSize.height)
+            .Argument(3).StringEnum&amp;lt;PatternType&amp;gt;({ 
+                { &amp;quot;CHESSBOARD&amp;quot;,     PatternType::CHESSBOARD }, 
+                { &amp;quot;CIRCLES_GRID&amp;quot;,   PatternType::CIRCLES_GRID }, 
+                { &amp;quot;ACIRCLES_GRID&amp;quot;,  PatternType::ACIRCLES_GRID } }).Bind(pattern)
+            .Argument(4).IsFunction().Bind(callback))
+        {
+            NanCallback *nanCallback = new NanCallback(callback);
+            NanAsyncQueueWorker(new DetectPatternTask(imageBuffer, patternSize, pattern, nanCallback));
+            NanReturnValue(NanTrue());
+        }
+
+        NanReturnValue(NanFalse());
+    }
+    catch (ArgumentMismatchException exc)
+    {
+        return NanThrowTypeError(exc.what());
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I hope you agree that second version is much more easy to read. Fluent architecture allows to write predicates in a chain, which actually is very similar to the way we thing. All predicate has self-telling names made from verb and a noun. So let me give you a brief overview what &lt;code&gt;NanCheck&lt;/code&gt; is capable of.&lt;/p&gt;
+
+&lt;h2 id=&#34;fluent-api&#34;&gt;Fluent API&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://en.wikipedia.org/wiki/Method_chaining&#34;&gt;Method chaining&lt;/a&gt; (aka Fluent API) makes it very easy to build final predicate for argument checking via consecutive checks.
+Each next step will be made &lt;strong&gt;if and only if&lt;/strong&gt; all previous predicates were successful.
+In case of error, predicate will throw an &lt;code&gt;ArgumentMismatchException&lt;/code&gt; exception that will terminate all further checks. &lt;code&gt;NanCheck(args)&lt;/code&gt; can be evaluated to &lt;code&gt;bool&lt;/code&gt; which makes it possible to use NanCheck in a condition statement:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;if (NanCheck(args). ...) {
+    // This code will be executed if argument parsing
+    // will be successful        
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;type-checking&#34;&gt;Type checking&lt;/h2&gt;
+
+&lt;p&gt;To check particular argument at given index, &lt;code&gt;NanCheckArguments&lt;/code&gt; provide a &lt;code&gt;Argument(index)&lt;/code&gt; function. This function lets you to build a sub-predicate for given argument and bind it&amp;rsquo;s value with particular local variable:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;    if (NanCheck(args).Argument(0).IsBuffer()) {
+        // This code will be executed if argument parsing
+        // will be successful        
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Currently, &lt;code&gt;NanCheck&lt;/code&gt; support type checking of the following built-in V8 types:
+1. &lt;code&gt;v8::Function&lt;/code&gt;
+2. &lt;code&gt;v8::Object&lt;/code&gt;
+3. &lt;code&gt;v8::String&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;In addition, it offers &lt;code&gt;NotNull&lt;/code&gt; predicate to ensure argument is not null or empty.
+The list of predicates will grow for sure. New functions to check whether argument is &lt;code&gt;v8::Array&lt;/code&gt;, &lt;code&gt;v8::Number&lt;/code&gt;, &lt;code&gt;v8::Integer&lt;/code&gt;, &lt;code&gt;v8::Boolean&lt;/code&gt; will be added in a next updates.&lt;/p&gt;
+
+&lt;h2 id=&#34;binding&#34;&gt;Binding&lt;/h2&gt;
+
+&lt;p&gt;After type checking, it&amp;rsquo;s necessary to complete sub-predicate construction by &lt;em&gt;binding&lt;/em&gt; argument to a local variable. Binding is a assignment of the argument (with data marshaling, if it&amp;rsquo;s necessary) to a variable that will be used later;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;    Local&amp;lt;Object&amp;gt;   imageBuffer;
+    if (NanCheck(args).Argument(0).IsBuffer().Bind(imageBuffer)) {
+        // This code will be executed if argument parsing
+        // will be successful        
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;NanCheck support transparent binding to all v8 types (Number, String, Function, Object, Array, etc.), native C++ and OpenCV types (via &lt;a href=&#34;https://github.com/BloodAxe/CloudCVBackend/blob/master/src/framework/marshal/opencv.cpp&#34;&gt;marshaling system&lt;/a&gt;):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;    cv::Size        patternSize;
+    if (NanCheck(args).Argument(1).IsObject().Bind(patternSize)) {
+        // This code will be executed if argument parsing
+        // will be successful        
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;There is a special case of string arguments called &lt;code&gt;StringEnum&lt;/code&gt; - that is, a string argument, which can be one of a priory defined values. It introduced to support *&lt;em&gt;C++ enum&lt;/em&gt; types and pass them
+as string constants. &lt;code&gt;StringEnum&lt;/code&gt; predicate allow to parse string value and map to C++ enum type:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;    PatternType     pattern;
+    if (NanCheck(args)
+        .Argument(3).StringEnum&amp;lt;PatternType&amp;gt;({ 
+            { &amp;quot;CHESSBOARD&amp;quot;,     PatternType::CHESSBOARD }, 
+            { &amp;quot;CIRCLES_GRID&amp;quot;,   PatternType::CIRCLES_GRID }, 
+            { &amp;quot;ACIRCLES_GRID&amp;quot;,  PatternType::ACIRCLES_GRID } }).Bind(pattern)) {
+        // This code will be executed if argument parsing
+        // will be successful        
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;implementation-highlights&#34;&gt;Implementation highlights&lt;/h2&gt;
+
+&lt;p&gt;Thanks to C++11, it&amp;rsquo;s really easy to construct predicate chain using lambda functions. Basically predicate chain is nothing but a recursive anonymous function of the following form:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;    auto initFn = [innerPredicate, outerPredicate](const v8::Arguments&amp;amp; args) {
+        return innerPredicate(args) &amp;amp;&amp;amp; outerPredicate(args);
+    };
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To illustrate an idea of building predicate chain, let&amp;rsquo;s take a look on ArgumentsCount implementation:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;    NanCheckArguments&amp;amp; NanCheckArguments::ArgumentsCount(int count)
+    {
+        return AddAndClause([count](const v8::Arguments&amp;amp; args) 
+        { 
+            if (args.Length() != count)
+                throw ArgumentMismatchException(args.Length(), count); 
+
+            return true;
+        });
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Here we construct outer predicate which compare number of arguments to expected value
+and throw an exception if it does not match.&lt;/p&gt;
+
+&lt;p&gt;With a help of &lt;code&gt;std::initializer_list&lt;/code&gt; it became really simple to declare string enum with minimal syntax overhead:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;    class NanMethodArgBinding
+    {
+    public:
+    ...
+        template &amp;lt;typename T&amp;gt;
+        NanArgStringEnum&amp;lt;T&amp;gt; 
+        StringEnum(std::initializer_list&amp;lt; std::pair&amp;lt;const char*, T&amp;gt; &amp;gt; possibleValues);
+    ...
+    };
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now we&amp;rsquo;re able to call this function with arbitrary number of elements for this enum using
+&lt;code&gt;std::initializer_list&lt;/code&gt; syntax:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;    { 
+        { &amp;quot;CHESSBOARD&amp;quot;,     PatternType::CHESSBOARD }, 
+        { &amp;quot;CIRCLES_GRID&amp;quot;,   PatternType::CIRCLES_GRID }, 
+        { &amp;quot;ACIRCLES_GRID&amp;quot;,  PatternType::ACIRCLES_GRID }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/BloodAxe/CloudCVBackend/blob/master/src/framework/NanCheck.hpp&#34;&gt;&lt;strong&gt;NanCheck&lt;/strong&gt;&lt;/a&gt; helped me to reduce amount of code required to check arguments passed to &lt;a href=&#34;https://cloudcv.io&#34;&gt;CloudCV&lt;/a&gt; back-end. There are many cool ideas that I&amp;rsquo;ll probably add as soon as there will be necessity to have them in my library:
+- Strongly typed objects (Objects with required fields)
+- Optional parameters with default values
+- Automatic type inference based on &lt;code&gt;Bind&amp;lt;T&amp;gt;(...)&lt;/code&gt; type.
+- Support of multiple types per argument (Parameter can be either of type A or B)&lt;/p&gt;
+
+&lt;p&gt;Please leave your comments on this post. I&amp;rsquo;ve spent many hours on figuring out how to implement data marshaling and type checking in V8 and Node.js, so please help information to
+spread out - share and re-tweet this post. Cheers!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Using Travis-CI for continuous testing your projects</title>
+      <link>https://example.com/2014-02-23-using-travis-ci/</link>
+      <pubDate>Sun, 23 Feb 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2014-02-23-using-travis-ci/</guid>
+      <description>&lt;p&gt;img.img-thumbnail.pull-left(src=&amp;ldquo;travis-logo.png&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;p
+    | In this post i will show you how i implemented continuous integration and testing in my&lt;br /&gt;
+    a(href=&amp;ldquo;&lt;a href=&#34;http://cloudcv.io&amp;quot;&#34;&gt;http://cloudcv.io&amp;quot;&lt;/a&gt;) CloudCV
+    |  project. Healthy unit tests and easy and continuous integration workflow is a must in any project goes beyound &amp;ldquo;Hello, world&amp;rdquo; application.
+    | Today software is a mixture of technologies of all kind. Therefore it can break literally everywhere. Each integration point is a place of risk.
+    | The CloudCV has a C++ backend that is using OpenCV library, it&amp;rsquo;s front-end is written in Node.js, they both using V8 JavaScript engine and libuv
+    | library to execute jobs asynchronously. Below you&amp;rsquo;ll find a solution how i implemented CI and unit testing for this project.&lt;/p&gt;
+
+&lt;p&gt;span.more&lt;/p&gt;
+
+&lt;p&gt;p
+    a(href=&amp;ldquo;&lt;a href=&#34;https://travis-ci.org&amp;quot;&#34;&gt;https://travis-ci.org&amp;quot;&lt;/a&gt;) Travis-CI
+    |  is a continuous integration platform for almost any project. It supports C, C++, Closure, Erlang, Haskell, Scala, PHP, Ruby, Python, Java and JavaScript and many other languages.
+    | You probably saw any of these images on the landing page on some GitHub repositories:
+    img(src=&amp;ldquo;buildpassing.png&amp;rdquo;)
+    img(src=&amp;ldquo;buildfailing.png&amp;rdquo;)
+    | These are build status indicators that display the last build results of a repository.
+    | Travis-CI can run tests after each commit so you can know where exactly the problem is.&lt;/p&gt;
+
+&lt;p&gt;div.alert.alert-success
+    p And by the way - it&amp;rsquo;s free for open-source projects!&lt;/p&gt;
+
+&lt;p&gt;h2 Adding Travis-CI to your project&lt;/p&gt;
+
+&lt;p&gt;p
+    | Technically, Travis-CI runs build job in a temporary virtual instance that is created for your project and deleted after it finish CI tasks.
+    | There is no persistentcy between consecutive builds.
+    | To add Travis-CI to your project you may want to do two steps:
+    ul
+        li Add a &amp;ldquo;.travis.yml&amp;rdquo; manifest file to the root of your repository
+        li Register your repository in Travis-CI website.&lt;/p&gt;
+
+&lt;p&gt;h3 Writing your first Travis-CI manifest&lt;/p&gt;
+
+&lt;p&gt;p
+    | Travis manifest is a YAML file that define how to build the code in your repository, what is the programming language, which dependencies your project has.
+    | For example, you may want to install third-party dependencies, or create dummy database for unit tests. That all you can do with manifest file.&lt;/p&gt;
+
+&lt;p&gt;p
+    | Let&amp;rsquo;s take a look on Travis-CI manifest for CloudCVBacked. This project is written in C++, it has two library dependencies: OpenCV and Node.js.
+    | Here i will show a full listing of my manifest and explain it line by line:&lt;/p&gt;
+
+&lt;p&gt;pre.
+    language: node_js
+    before_install:
+     - sudo apt-get install build-essential
+     - curl -sL &lt;a href=&#34;https://github.com/Itseez/opencv/archive/2.4.6.1.zip&#34;&gt;https://github.com/Itseez/opencv/archive/2.4.6.1.zip&lt;/a&gt; &amp;gt; opencv.zip
+     - unzip opencv.zip
+     - rm opencv.zip
+     - mkdir opencv-build
+     - cd opencv-build/
+     - cmake -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_DOCS=OFF -DBUILD_EXAMPLES=OFF -DBUILD_opencv_java=OFF -DBUILD_JASPER=ON -DWITH_JASPER=ON -DBUILD_ZLIB=ON -DBUILD_SHARED_LIBS=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DWITH_OPENEXR=OFF -DBUILD_PNG=ON -DWITH_PNG=ON -DWITH_TIFF=ON -DBUILD_TIFF=ON -DWITH_WEBP=OFF -DWITH_JPEG=ON -DBUILD_JPEG=ON ../opencv-2.4.6.1/
+     - sudo make install
+     - cd ..&lt;/p&gt;
+
+&lt;p&gt;p
+    | The first line define the programming language we will use. It is the most important instruction since it affects the build environment.
+    | For example, &amp;ldquo;node_js&amp;rdquo; option will create a virtual machine with a pre-installed
+    | Node.js. In addition, it will tell Travis-CI to use package.json file for further build instruction.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;pre language: node_js
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;p.info
+    | You can specify a set of Node.js versions you want to test. This is called a
+    a(href=&amp;ldquo;&lt;a href=&#34;http://docs.travis-ci.com/user/build-configuration/#The-Build-Matrix&amp;quot;&#34;&gt;http://docs.travis-ci.com/user/build-configuration/#The-Build-Matrix&amp;quot;&lt;/a&gt;) Build Matrix
+    |. For example, in the example below we ask build server to build project on four versions of node:
+    pre language: node_js
+        | node_js:
+        |   - &amp;ldquo;0.11&amp;rdquo;
+        |   - &amp;ldquo;0.10&amp;rdquo;
+        |   - &amp;ldquo;0.8&amp;rdquo;
+        |   - &amp;ldquo;0.6&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;h4 Installing additional dependencies&lt;/p&gt;
+
+&lt;p&gt;p
+    | By default, build server uses &amp;ldquo;npm install&amp;rdquo; command to install node.js-based projects.
+    | The &amp;ldquo;npm install&amp;rdquo; itself read the package.json file and install every dependency from it using Node Pacakage Manager (npm) tool.
+    | To install non-node.js dependencies we can use &amp;ldquo;before_install&amp;rdquo; instruction to install additional software into build environment.
+    | Here we download and instal OpenCV 2.4.6.1:
+    ul
+        li First, we install build essential software (gcc, cmake, etc..)
+        ll Download stable opencv package from Github.
+        li Unzip it and go into build directory
+        li Configure OpenCV using cmake
+        li Build and install OpenCV
+pre.
+    before_install:
+     - sudo apt-get install build-essential
+     - curl -sL &lt;a href=&#34;https://github.com/Itseez/opencv/archive/2.4.6.1.zip&#34;&gt;https://github.com/Itseez/opencv/archive/2.4.6.1.zip&lt;/a&gt; &amp;gt; opencv.zip
+     - unzip opencv.zip
+     - rm opencv.zip
+     - mkdir opencv-build
+     - cd opencv-build/
+     - cmake -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_DOCS=OFF -DBUILD_EXAMPLES=OFF -DBUILD_opencv_java=OFF -DBUILD_JASPER=ON -DWITH_JASPER=ON -DBUILD_ZLIB=ON -DBUILD_SHARED_LIBS=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DWITH_OPENEXR=OFF -DBUILD_PNG=ON -DWITH_PNG=ON -DWITH_TIFF=ON -DBUILD_TIFF=ON -DWITH_WEBP=OFF -DWITH_JPEG=ON -DBUILD_JPEG=ON ../opencv-2.4.6.1/
+     - sudo make install
+     - cd ..&lt;/p&gt;
+
+&lt;p&gt;h3 Building Node.js C++ module with Travis-CI
+p
+    | When the build environment is ready (If before_install target succeeded), Travis-CI performs install task (by default it&amp;rsquo;s &amp;ldquo;npm install&amp;rdquo;). Now, it&amp;rsquo;s time for NPM to act.
+    | Each module in Node.js usually has &amp;ldquo;package.json&amp;rdquo; file.
+    | Usually it contains name, version of repository url of the module, it&amp;rsquo;s description, list of dependencies, pre/post install and test scripts.
+    | The pre-install target in CloudCVBacked builds the dynamically-linked C++ library that exports Node.js functions:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;pre 
+    | {
+    | &amp;quot;name&amp;quot;: &amp;quot;cloudcv&amp;quot;,        
+    | ...
+    | &amp;quot;scripts&amp;quot;: {
+    |     &amp;quot;preinstall&amp;quot;: &amp;quot;node-gyp clean rebuild&amp;quot;,
+    |     &amp;quot;test&amp;quot;: &amp;quot;expresso test/*&amp;quot;
+    | },
+    | 
+    | &amp;quot;devDependencies&amp;quot;: {
+    |     &amp;quot;expresso&amp;quot;: &amp;quot;*&amp;quot;
+    | },
+    | 
+    | ...
+    | }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;div.alert.alert-info
+    p To read more about using C++ and Node.js together please follow related posts:
+        ul
+            li&lt;br /&gt;
+                a(href=&amp;ldquo;&lt;a href=&#34;http://computer-vision-talks.com/articles/2013-08-27-connecting-opencv-and-node-js-inside-cloud9-ide/&amp;quot;):&#34;&gt;http://computer-vision-talks.com/articles/2013-08-27-connecting-opencv-and-node-js-inside-cloud9-ide/&amp;quot;):&lt;/a&gt; strong Connecting OpenCV and Node.js inside Cloud9 IDE
+            li
+                a(href=&amp;ldquo;&lt;a href=&#34;http://computer-vision-talks.com/articles/2013-08-19-cloud-image-processing-using-opencv-and-node-js/&amp;quot;):&#34;&gt;http://computer-vision-talks.com/articles/2013-08-19-cloud-image-processing-using-opencv-and-node-js/&amp;quot;):&lt;/a&gt; strong Cloud image processing using OpenCV and Node.js&lt;/p&gt;
+
+&lt;p&gt;h4 Node.js modules testing with expresso&lt;/p&gt;
+
+&lt;p&gt;p
+    | For testing of CloudCV I&amp;rsquo;m using
+    a(href=&amp;ldquo;&lt;a href=&#34;http://visionmedia.github.io/expresso/&amp;quot;&#34;&gt;http://visionmedia.github.io/expresso/&amp;quot;&lt;/a&gt;) Expresso
+    |  test framework. It fits my needs and doesn&amp;rsquo;t bother me with complex configuration. So i&amp;rsquo;m using it, but you&amp;rsquo;re free to use any other test framework.
+    | The Travis-CI runs &amp;ldquo;npm test&amp;rdquo; command, which in fact execute.
+    pre &amp;ldquo;expresso test/*&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;p
+    | Expresso runs all JavaScript tests in the specified folder and returns the status code to Travis-CI.
+    | If any test fails the Travis-CI job will be marked as failed and you will get a &amp;ldquo;Build Failing&amp;rdquo; notification.&lt;/p&gt;
+
+&lt;p&gt;h2 Enabling Travis-CI for your repository&lt;/p&gt;
+
+&lt;p&gt;p
+    | When you&amp;rsquo;ve added manifest file to your repository it&amp;rsquo;s time to register on travis-ci.org website and add your repository there.
+    | I&amp;rsquo;m not going to describe the registration process since it&amp;rsquo;s trivial.
+    | But i want to point you to manifest validatio tool that can save a lof of your time:&lt;br /&gt;
+    a(href=&amp;ldquo;&lt;a href=&#34;http://lint.travis-ci.org/&amp;quot;&#34;&gt;http://lint.travis-ci.org/&amp;quot;&lt;/a&gt;) Travis manifest validation tool
+    |. This page helps you to check whether your manifest is correct.&lt;/p&gt;
+
+&lt;p&gt;p
+    | After you&amp;rsquo;ve added your project to Travis-CI, it will do the rest.
+    | Each time you push changes to repository, Travis-CI will build your project and send you notification if the error occurs.&lt;/p&gt;
+
+&lt;p&gt;h2 Adding Build Status to the README&lt;/p&gt;
+
+&lt;p&gt;p
+    | One of the cool features of travis is that you can view the build status from your github repository.
+    | Open the README.md file and add the following lines.
+    | Replace GITHUB_USERNAME with your github username and PROJECT_NAME with the name of your github project.
+pre
+   | &lt;a href=&#34;https://travis-ci.org/[GITHUB_USERNAME]/[PROJECT_NAME]&#34;&gt;&lt;img src=&#34;https://travis-ci.org/[GITHUB_USERNAME]/[PROJECT_NAME].png&#34; alt=&#34;Build Status&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;p
+    | This will add the build status icon image to your readme page, so you will always know how healthy your project is.&lt;/p&gt;
+
+&lt;p&gt;img.image-thumbnail(src=&amp;ldquo;build-status.png&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;h2 Conclusion&lt;/p&gt;
+
+&lt;p&gt;p
+    | As a developer and computer vision consultant, I work with many heterogenous software/hardware platforms. I&amp;rsquo;ve been using TeamCity, Jenkins and Team Foundation as a CI and build servers.
+    | Although they provide much more features than Travis-CI does, no one can compete with Travis-CI if you want to have free, easy-to-use, no-headache continuous-integration service for your projects.
+    | It will fits well for both web-based (php, ruby, python) application, tools and libraries in C++, Python, Scala and Java.&lt;/p&gt;
+
+&lt;p&gt;h2 References
+p
+    ul
+        li: a(href=&amp;ldquo;&lt;a href=&#34;https://travis-ci.org&amp;quot;&#34;&gt;https://travis-ci.org&amp;quot;&lt;/a&gt;) Travis-CI
+        li: a(href=&amp;ldquo;&lt;a href=&#34;http://lint.travis-ci.org/&amp;quot;&#34;&gt;http://lint.travis-ci.org/&amp;quot;&lt;/a&gt;) Travis manifest validation tool
+        li: a(href=&amp;ldquo;&lt;a href=&#34;http://visionmedia.github.io/expresso/&amp;quot;&#34;&gt;http://visionmedia.github.io/expresso/&amp;quot;&lt;/a&gt;) Expresso TDD for JavaScript
+        li: a(href=&amp;ldquo;&lt;a href=&#34;http://computer-vision-talks.com/articles/2013-08-27-connecting-opencv-and-node-js-inside-cloud9-ide/&amp;quot;&#34;&gt;http://computer-vision-talks.com/articles/2013-08-27-connecting-opencv-and-node-js-inside-cloud9-ide/&amp;quot;&lt;/a&gt;) Connecting OpenCV and Node.js inside Cloud9 IDE
+        li: a(href=&amp;ldquo;&lt;a href=&#34;http://computer-vision-talks.com/articles/2013-08-19-cloud-image-processing-using-opencv-and-node-js/&amp;quot;&#34;&gt;http://computer-vision-talks.com/articles/2013-08-19-cloud-image-processing-using-opencv-and-node-js/&amp;quot;&lt;/a&gt;) Cloud image processing using OpenCV and Node.js
+br
+p.lead
+    | I hope you enjoyed reading this post. Please, describe your experience using Travis-CI in the comments. Thank you!.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>CloudCV - Cloud image processing platform</title>
+      <link>https://example.com/2013-09-05-cloudcv/</link>
+      <pubDate>Thu, 05 Sep 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2013-09-05-cloudcv/</guid>
+      <description>&lt;p&gt;p
+    | Hey everyone! I continue to play with clouds and today it&amp;rsquo;s time to reveal the CloudCV - a cloud-based image processing project.
+    | Based on my previous posts i host a server in the Digital Ocean&amp;rsquo;s cloud.
+    | I have to say, everything is working like a charm.
+    | The cheapest 5$/month plan gives me whatever i may need for this project.
+    | All the source-code is already sits on Github and you are more than welcome to study it.
+    | This is my goal - to share the experience. So i&amp;rsquo;m looking forward to see you in the comments!&lt;/p&gt;
+
+&lt;p&gt;img.full-width(src=&amp;ldquo;cloudcv-image-processing-platform.png&amp;rdquo;, alt=&amp;ldquo;CloudCV - Cloud image processing platform&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;p Inside of this post you&amp;rsquo;ll find the detailed instructions how to deploy the Node.js and OpenCV in your personal cloud.&lt;/p&gt;
+
+&lt;p&gt;h2 Configuring your instance&lt;/p&gt;
+
+&lt;p&gt;p First, you need to create a Droplet - instance of your virtual machine running in Digital Ocean&amp;rsquo;s cloud. You can find the big &amp;ldquo;Create Droplet&amp;rdquo; button in top right corner of your control panel. For our needs a smallest 1 core instance will be enough:&lt;/p&gt;
+
+&lt;p&gt;img.full-width(src=&amp;ldquo;Screen-Shot-2013-09-13-at-5.42.20-PM-1024x805.png&amp;rdquo;, alt=&amp;ldquo;Create droplet&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;p Next we choose the image for the new Droplet, region and SSH keys. You can pick the closest region to your location to have lower latency:&lt;/p&gt;
+
+&lt;p&gt;img.full-width(src=&amp;ldquo;Screen-Shot-2013-09-13-at-5.44.27-PM-1024x805.png&amp;rdquo;, alt=&amp;ldquo;&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;p One word about your choice for the OS for Droplets. Actually you can pick any of them. Since i more familiar with Ubuntu i&amp;rsquo;ll use it, but the following steps should be very similar to other Linux distributives (Of course, you&amp;rsquo;ll have to change &lt;em&gt;apt-get&lt;/em&gt; on Debian). And let&amp;rsquo;s pick Ubuntu 64-bit, since we&amp;rsquo;re tough guys, aren&amp;rsquo;t we?&lt;/p&gt;
+
+&lt;p&gt;img.full-width(src=&amp;ldquo;Screen-Shot-2013-09-13-at-5.44.33-PM-1024x805.png&amp;rdquo;, alt=&amp;ldquo;&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;p Don&amp;rsquo;t forget to add SSH keys to this Droplet, otherwise you&amp;rsquo;ll have to add them manually after your droplet is ready. When you&amp;rsquo;re done hit &amp;ldquo;Create Droplet&amp;rdquo; and it will be ready in a minute. It&amp;rsquo;s the fastest deployment i&amp;rsquo;ve ever seen! When it&amp;rsquo;s done you should be able to login using &lt;em&gt;ssh&lt;/em&gt; client to your virtual machine. From this moment, we will use only a console to configure our server.&lt;/p&gt;
+
+&lt;p&gt;h2 Node.js and OpenCV installation&lt;/p&gt;
+
+&lt;p&gt;p Let&amp;rsquo;s recap the plan. Our goal is to make image processing using OpenCV library possible in the cloud environment. This means your Droplet will be executing a native code, but it needs a public API to communicate with the others. Such things as REST API and JSON may come in handy here. We will be serving user requests that comes as HTTP requests. For this we need a server software to route requests to native code. Actually, i think, Apache, ngnix or any other web server can do it for us. But i&amp;rsquo;ve chosen Node.js for two reasons - first of all, i want to study JavaScript and the second one - it&amp;rsquo;s kind of a trend now :) I wrote a helper snippet that install all dependencies for Node.js and OpenCV. First of all we update the package list and install git, cmake and build essentials. As a next step this script configure an OpenCV in a proper way (disable unsued image codecs, disable tests and apps and turns on static builds). And finally this script install latest Node.js (this recipe was found somewhere in the Google).&lt;/p&gt;
+
+&lt;p&gt;h2 Source Code&lt;/p&gt;
+
+&lt;p&gt;p
+    | There are two source code repositories for this project:
+    ul
+        li
+            a(href=&amp;lsquo;&lt;a href=&#34;https://github.com/BloodAxe/CloudCV&#39;&#34;&gt;https://github.com/BloodAxe/CloudCV&#39;&lt;/a&gt;) CloudCV
+            span  - is web-application written in Node.js.
+        li
+            a(href=&amp;lsquo;&lt;a href=&#34;https://github.com/BloodAxe/CloudCVBackend&#39;&#34;&gt;https://github.com/BloodAxe/CloudCVBackend&#39;&lt;/a&gt;) CloudCVBackend
+            span  - is a C++ Module for Node.js. This module contains all image processing stuff inside of it.&lt;/p&gt;
+
+&lt;p&gt;h2 Architecture overview&lt;/p&gt;
+
+&lt;p&gt;img(src=&amp;lsquo;cloudcv_architecture-1.png&amp;rsquo;)&lt;/p&gt;
+
+&lt;p&gt;h2 Disclaimer&lt;/p&gt;
+
+&lt;p&gt;p
+    | You can support this project by following this referral link to purchase a cloud hosting.
+    | A really recommend Digital Ocean for both production and testing purposes due to their low prices,
+    | SSD disks, good support and intuitive administration console.
+    a.btn.btn-primary(href=&amp;lsquo;&lt;a href=&#34;https://www.digitalocean.com/?refcode=b93faa829f80&#39;&#34;&gt;https://www.digitalocean.com/?refcode=b93faa829f80&#39;&lt;/a&gt;) Buy Digital Ocean cloud hosting&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Connecting OpenCV and Node.js inside Cloud9 IDE</title>
+      <link>https://example.com/2013-08-27-connecting-opencv-and-node-js-inside-cloud9-ide/</link>
+      <pubDate>Tue, 27 Aug 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2013-08-27-connecting-opencv-and-node-js-inside-cloud9-ide/</guid>
+      <description>
+
+&lt;p&gt;Vacation time is over, and now i&amp;rsquo;m on my way from Tartu, Estonia where i participated in 48 km. inline speedskating marathon to Odessa. My bus have Wi-Fi onboard, so i decided to write a short success-story how i managed to build a C++ addon module for Node.js and run it on the real server inside the Cloud9 IDE.  You may also want to check the &lt;strong&gt;&lt;a href=&#34;http://computer-vision-talks.com/2013/08/cloud-image-processing-using-opencv-and-node-js/&#34;&gt;first tutorial&lt;/a&gt;&lt;/strong&gt; since this guid relies on it.  The detailed step-by-step guide will be written in the next few days, but here is a key steps:&lt;/p&gt;
+
+&lt;h2 id=&#34;prerequisites&#34;&gt;Prerequisites&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Cloud9 account&lt;/li&gt;
+&lt;li&gt;Node.js&lt;/li&gt;
+&lt;li&gt;Express framework&lt;/li&gt;
+&lt;li&gt;CMake&lt;/li&gt;
+&lt;li&gt;OpenCV&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;building-opencv&#34;&gt;Building OpenCV&lt;/h2&gt;
+
+&lt;p&gt;I built OpenCV manually. This is necessary since i had to configure OpenCV to fit the server configuration:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Used static build instead of shared one&lt;/li&gt;
+&lt;li&gt;Disable all tests, samples and apps&lt;/li&gt;
+&lt;li&gt;Disable use of precompiled headers&lt;/li&gt;
+&lt;li&gt;Disable GPU and CUDA modules&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;disk-space-limit&#34;&gt;Disk space limit&lt;/h3&gt;
+
+&lt;p&gt;You have only 1G of disk quota. When i ran OpenCV build for the first time it exit on 80% with &amp;ldquo;out of space&amp;rdquo; message. So it&amp;rsquo;s better to disable all unused modules. &lt;strong&gt;Don&amp;rsquo;t clone OpenCV repository.&lt;/strong&gt; Download opencv archive instead! This will require small experience with shell, but nothing complicated:&lt;/p&gt;
+
+&lt;h2 id=&#34;demonstration&#34;&gt;Demonstration&lt;/h2&gt;
+
+&lt;p&gt;A minimal Node.js demo that does nothing expect printing OpenCV build information can be seen here: &lt;a href=&#34;http://cloudcv.computer-vision-talks.com/&#34;&gt;OpenCV Cloud9 demo&lt;/a&gt;. It&amp;rsquo;s ok to see &amp;ldquo;No app running&amp;rdquo; message from time to time. As i understood Cloud9 shuts down the apps if they are not used for some period.  Tweet me if you have interesting suggestions for the demonstration samples.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Cloud image processing using OpenCV and Node.js</title>
+      <link>https://example.com/2013-08-19-cloud-image-processing-using-opencv-and-node-js/</link>
+      <pubDate>Mon, 19 Aug 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2013-08-19-cloud-image-processing-using-opencv-and-node-js/</guid>
+      <description>
+
+&lt;p&gt;A long time ago i was playing with cloud-based image processing. The first reason why i didn&amp;rsquo;t shared a reciple how to compile OpenCV as native app for windows azure cloud was trycky build process. It was too complicated and this tutorial will become outdated very quickly. The second one - Azure hosting wants a lot of money. So i put my research in this area on hold for better times.&lt;/p&gt;
+
+&lt;p&gt;And i think the time has come. You probably heard about Node.js - server-side asynchronous Java Script library. I have very small experience with Java-Script, but Node.js attracted me so strong i decided to study it. In this post i will describe how to connect Node.js and OpenCV together. On server-side OpenCV libary can be used for many things - generating CAPTCHA&amp;rsquo;s recognizing scans, counting people in video streams.. So i beleive my tutorial will come in handy to people who is looking how to do image processing in the cloud environment.&lt;/p&gt;
+
+&lt;p&gt;Node.js is written in Java-script, and follows asynchronous programming model, where events and callbacks plays dominant role. OpenCV is a C++ library written in good old C and C++ and it don&amp;rsquo;t bother with asynchronous and event-based programming model. Fortunately Node.js can interop with external modules written in C++. It&amp;rsquo;s made via V8 engine which is a core of Node.js.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;disclaimer&#34;&gt;Disclaimer&lt;/h2&gt;
+
+&lt;p&gt;I will be using Mac OS as host platform. Keep in mind this since some commands may differs for Ubuntu or Debian. &lt;strong&gt;Windows users&lt;/strong&gt; - you aren&amp;rsquo;t lucky ones. I had no luck to build Node and OpenCV on windows so far. Please, post your comments if you succeed to build OpenCV module for Node.&lt;/p&gt;
+
+&lt;h2 id=&#34;prerequisites&#34;&gt;Prerequisites&lt;/h2&gt;
+
+&lt;p&gt;In this tutorial we will need the following software:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&#34;https://developer.apple.com/xcode/&#34;&gt;XCode&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.cmake.org/&#34;&gt;CMake&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://nodejs.org&#34;&gt;Node.js&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://opencv.org&#34;&gt;OpenCV&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;I assume you already installed XCode and CMake. In next two sections we describe installation of Node.js and OpenCV.&lt;/p&gt;
+
+&lt;h2 id=&#34;installing-node-js&#34;&gt;Installing Node.js&lt;/h2&gt;
+
+&lt;p&gt;To install Node.js i used &lt;a href=&#34;http://www.macports.org/&#34;&gt;macports&lt;/a&gt; software package manager. It&amp;rsquo;s very similar to &lt;code&gt;apt-get&lt;/code&gt; command from Unix.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;This command will install latests stable Node.js:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo port install nodejs
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;After running this command your Node.js is ready to use. It&amp;rsquo;s not mandatory to use macports, you can install it using homebrew or build Node from the sources. It&amp;rsquo;s up to you and will not affect further steps.&lt;/p&gt;
+
+&lt;p&gt;Node.js can be extended by C++ Modules. This is a way to interop with OpenCV library. To use OpenCV from Node.js we have to write C++ Mobule that Node.js can use. To build this module a special build system is used. We install it via Node Package Manager using following command:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;This command will install a GYP build system:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo npm install -g node-gyp
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Take a note on &amp;ldquo;-g&amp;rdquo; flag which means &amp;ldquo;Install globally&amp;rdquo;. By default npm installs new package to current directory.&lt;/p&gt;
+
+&lt;p&gt;On this step we are done with setting up Node.js.&lt;/p&gt;
+
+&lt;h3 id=&#34;installing-opencv&#34;&gt;Installing OpenCV&lt;/h3&gt;
+
+&lt;p&gt;OpenCV can be build as &lt;strong&gt;static&lt;/strong&gt; or &lt;strong&gt;shared&lt;/strong&gt;. I describe my experience using both options with Node.js:&lt;/p&gt;
+
+&lt;h4 id=&#34;shared&#34;&gt;Shared&lt;/h4&gt;
+
+&lt;p&gt;By default, macports install shared libraries that are linked at run-time during application load. I was able to build a bare miminum Node.js module, but when i run it i got dyld load error. Maybe it&amp;rsquo;s necessary to tell Node somehow where to search for OpenCV libs. But i decided to put this on hold and build a static OpenCV instead.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;If you know how to fix this easily your comments and suggestions are welcome!&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&#34;static&#34;&gt;Static&lt;/h4&gt;
+
+&lt;p&gt;Building OpenCV as static libs is very trivial if you used CMake. Here is full stack of commands that clone latests OpenCV snapshot and build the final distribution package:&lt;/p&gt;
+
+&lt;p&gt;Upon completition you shoudl have a folder named &lt;code&gt;opencv-node-bin&lt;/code&gt; with following contents:&lt;/p&gt;
+
+&lt;h3 id=&#34;writing-your-first-c-module-for-node-js&#34;&gt;Writing your first C++ Module for Node.js&lt;/h3&gt;
+
+&lt;p&gt;It&amp;rsquo;s actuall a very easy to interop between JavaScript and C++, since JS uses V8 engine which is written in C++ too. I used the &lt;a href=&#34;http://nodejs.org/api/addons.html&#34;&gt;official documentation&lt;/a&gt; and &lt;a href=&#34;https://github.com/kkaefer/node-cpp-modules&#34;&gt;good examples&lt;/a&gt; by Konstantin Käfer.&lt;/p&gt;
+
+&lt;p&gt;Node.js uses it&amp;rsquo;s own build system to C++ modules - &lt;strong&gt;node-gyp&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;There is a .gyp file which contains build options of your module. A GYP file is looks like JSON-like file where you specify your build targets.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;binding.gyp&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;{
+  &amp;quot;targets&amp;quot;: [
+    {
+      &amp;quot;target_name&amp;quot;: &amp;quot;cv&amp;quot;,
+      &amp;quot;sources&amp;quot;: [ &amp;quot;main.cpp&amp;quot; ],
+      &amp;quot;include_dirs&amp;quot;: [ &amp;quot;/users/BloodAxe/Develop/opencv-node-bin/lib/inlcude/&amp;quot; ],  
+      &amp;quot;link_settings&amp;quot;: {
+                        &#39;libraries&#39;:    [&#39;-lopencv_core -lopencv_features2d -lopencv_contrib&#39;],
+                        &#39;library_dirs&#39;: [&#39;/users/BloodAxe/Develop/opencv-node-bin/lib/&#39;],
+                       },
+    }
+  ]
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let&amp;rsquo;s look at it in more details:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;We define a single target with name &lt;code&gt;cv&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;The target includes a single source file &lt;code&gt;main.cpp&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;We adjust &lt;code&gt;include_dirs&lt;/code&gt; and &lt;code&gt;link_settings&lt;/code&gt; options to point our static OpenCV build.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Second mandatory file is package.json - it contains meta-information about our module:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;package.json&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;{
+    &amp;quot;name&amp;quot;: &amp;quot;cv&amp;quot;,
+    &amp;quot;version&amp;quot;: &amp;quot;1.0.0&amp;quot;,
+    &amp;quot;main&amp;quot;: &amp;quot;./build/Release/cv&amp;quot;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Finally, a source code of our module. For sake of simplicity, let&amp;rsquo;s export a single function that prints OpenCV build information from Node.js:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;main.cpp&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;To build your module you can write the following command (assuming your current directory contains binding.gyp):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;npm build .
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If you see the following output - your Node.js module that uses OpenCV has been built!&lt;/p&gt;
+
+&lt;p&gt;Now it&amp;rsquo;s time to check how it works.&lt;/p&gt;
+
+&lt;p&gt;Here is a simple run script:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;run.js&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var cv = require(&#39;./build/Release/cv&#39;);
+
+console.warn(cv.buildInformation());
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To run it:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;node run.js
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;
+
+&lt;p&gt;I hope after reading this post you understood how to write a simple OpenCV wrapper for Node.js. In the next tutorial i will show how to perform simple image processing inside our Node module. Your comments for this post are welcome!&lt;/p&gt;
+
+&lt;p&gt;You can find an bare minimum Node.js module example here: &lt;strong&gt;&lt;a href=&#34;https://github.com/BloodAxe/CloudCV/tree/bare-minimum&#34;&gt;OpenCV module for Node.js&lt;/a&gt;&lt;/strong&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

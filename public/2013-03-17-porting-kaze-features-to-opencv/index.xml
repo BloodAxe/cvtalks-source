@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2013-03-17-porting-kaze-features-to-opencv-rsses on Ghostwriter example</title>
+    <link>https://example.com/2013-03-17-porting-kaze-features-to-opencv/index.xml</link>
+    <description>Recent content in 2013-03-17-porting-kaze-features-to-opencv-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Sun, 17 Mar 2013 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2013-03-17-porting-kaze-features-to-opencv/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Porting KAZE features to OpenCV</title>
+      <link>https://example.com/2013-03-17-porting-kaze-features-to-opencv/</link>
+      <pubDate>Sun, 17 Mar 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2013-03-17-porting-kaze-features-to-opencv/</guid>
+      <description>
+
+&lt;p&gt;Recently i came across the publications to a new features called &lt;a href=&#34;http://www.robesafe.com/personal/pablo.alcantarilla/kaze.html&#34;&gt;KAZE&lt;/a&gt; (Japanesee work meaning &amp;ldquo;Wind&amp;rdquo;). They interested me, because KAZE authors provided very promising evalutaion results and i decided to evaluate them too using my OpenCV features comparison tool. Fortunately KAZE algorithm is based on OpenCV, so it was not too hard to wrap KAZE features implementatino to cv::Feature2D API.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34; /&gt;&lt;/p&gt;
+
+&lt;div class=&#34;alert alert-danger&#34;&gt;
+    &lt;p class=&#34;lead&#34;&gt;This post is outdated.&lt;/p&gt;
+    &lt;p&gt;
+        Please, visit updated post: 
+        &lt;a href=&#34;https://example.com/articles/kaze-1.6-in-opencv/&#34;&gt;Integration of KAZE 1.6 in OpenCV&lt;/a&gt;
+    &lt;/p&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;Impatient readers:&lt;/em&gt;&lt;/strong&gt; you can grab the most recent version of KAZE port to OpenCV here: &lt;a href=&#34;https://github.com/BloodAxe/opencv/tree/kaze-features&#34;&gt;kaze-features&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Short video demonstration:&lt;/p&gt;
+
+&lt;h2 id=&#34;kaze-opencv&#34;&gt;KAZE &amp;amp; OpenCV&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;m not gonna describe the algorithm by itself or implementation details, you may wish to read the &lt;a href=&#34;http://www.robesafe.com/personal/pablo.alcantarilla/papers/Alcantarilla12eccv.pdf&#34;&gt;original paper&lt;/a&gt; or look at the &lt;a href=&#34;http://www.robesafe.com/personal/pablo.alcantarilla/code/kaze_features_1_4.tar&#34;&gt;code&lt;/a&gt; if you have enough mana.&lt;/p&gt;
+
+&lt;p&gt;If not - don&amp;rsquo;t worry, using KAZE features is easy like any other feature algorithm:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cv::Mat image = /* ... your image goes here ... */
+
+cv::KAZE kazeFeatures;
+kazeFeatures(image, keypoints, descriptors);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;KAZE algorithm is not included in the official OpenCV repository yet&lt;/em&gt;&lt;/strong&gt;. It exists only in my fork of the opencv on github. You can clone it and build OpenCV with KAZE algorithm by yourself:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;git clone https://github.com/BloodAxe/opencv kaze-features
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I&amp;rsquo;m going to cooperate with KAZE authors and help them to include KAZE algorithm to OpenCV library. So &lt;a href=&#34;https://github.com/BloodAxe/opencv/tree/kaze-features&#34;&gt;kaze-features&lt;/a&gt; branch in my opencv fork will be updated constantly with more recent versions.&lt;/p&gt;
+
+&lt;h2 id=&#34;kaze-estimation&#34;&gt;KAZE Estimation&lt;/h2&gt;
+
+&lt;p&gt;I did a comparison of KAZE features with other descriptors and here are the results that i got using my &lt;a href=&#34;https://github.com/BloodAxe/OpenCV-Features-Comparison&#34;&gt;OpenCV Comparison Tool&lt;/a&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;Rotation-Test.png&#34; alt=&#34;Rotation invariance&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;Scale-Test.png&#34; alt=&#34;Scale invariance&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;Brightness-Test.png&#34; alt=&#34;Brightness invariance&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;Blur-Test.png&#34; alt=&#34;Blur invariance&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;&lt;strike&gt;Regarding to the results of estimation the KAZE algorithm is much more robust than state of the art algorithms like SURF and FREAK or BRISK.&lt;/strike&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;It&amp;rsquo;s amazing! In all tests KAZE features shows best results !!!&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Currently KAZE features are somewhat slow. I contacted with one of it&amp;rsquo;s authors and he assured me that they are working on this problem so i beleive they will improve their performance in the near future.&lt;/p&gt;
+
+&lt;h2 id=&#34;licensing&#34;&gt;Licensing&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;ve contacted with one of authors of KAZE features and asked him about code license and usage rights. Here it is:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;Pablo Fernandez Alcantarilla&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;The code is released under BSD license. So it is completely free. That was my initial goal, I wanted to do something open source better than SIFT, SURF so people don&amp;rsquo;t need to mess up with the patents.&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

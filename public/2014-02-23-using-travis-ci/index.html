@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Using Travis-CI for continuous testing your projects &middot; My Name</title>
+        <meta name="description" content="img.img-thumbnail.pull-left(src=&ldquo;travis-logo.png&rdquo;)
+p | In this post i will show you how i implemented continuous integration and testing in my
+a(href=&ldquo;http://cloudcv.io&quot;) CloudCV | project. Healthy unit tests and easy and continuous integration workflow is a must in any project goes beyound &ldquo;Hello, world&rdquo; application. | Today software is a mixture of technologies of all kind. Therefore it can break literally everywhere. Each integration point is a place of risk. | The CloudCV has a C&#43;&#43; backend that is using OpenCV library, it&rsquo;s front-end is written in Node.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="Using Travis-CI for continuous testing your projects">
+<meta property="og:description" content="img.img-thumbnail.pull-left(src=&ldquo;travis-logo.png&rdquo;)
+p | In this post i will show you how i implemented continuous integration and testing in my
+a(href=&ldquo;http://cloudcv.io&quot;) CloudCV | project. Healthy unit tests and easy and continuous integration workflow is a must in any project goes beyound &ldquo;Hello, world&rdquo; application. | Today software is a mixture of technologies of all kind. Therefore it can break literally everywhere. Each integration point is a place of risk. | The CloudCV has a C&#43;&#43; backend that is using OpenCV library, it&rsquo;s front-end is written in Node.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/2014-02-23-using-travis-ci/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">Using Travis-CI for continuous testing your projects</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    <p>img.img-thumbnail.pull-left(src=&ldquo;travis-logo.png&rdquo;)</p>
+
+<p>p
+    | In this post i will show you how i implemented continuous integration and testing in my<br />
+    a(href=&ldquo;<a href="http://cloudcv.io&quot;">http://cloudcv.io&quot;</a>) CloudCV
+    |  project. Healthy unit tests and easy and continuous integration workflow is a must in any project goes beyound &ldquo;Hello, world&rdquo; application.
+    | Today software is a mixture of technologies of all kind. Therefore it can break literally everywhere. Each integration point is a place of risk.
+    | The CloudCV has a C++ backend that is using OpenCV library, it&rsquo;s front-end is written in Node.js, they both using V8 JavaScript engine and libuv
+    | library to execute jobs asynchronously. Below you&rsquo;ll find a solution how i implemented CI and unit testing for this project.</p>
+
+<p>span.more</p>
+
+<p>p
+    a(href=&ldquo;<a href="https://travis-ci.org&quot;">https://travis-ci.org&quot;</a>) Travis-CI
+    |  is a continuous integration platform for almost any project. It supports C, C++, Closure, Erlang, Haskell, Scala, PHP, Ruby, Python, Java and JavaScript and many other languages.
+    | You probably saw any of these images on the landing page on some GitHub repositories:
+    img(src=&ldquo;buildpassing.png&rdquo;)
+    img(src=&ldquo;buildfailing.png&rdquo;)
+    | These are build status indicators that display the last build results of a repository.
+    | Travis-CI can run tests after each commit so you can know where exactly the problem is.</p>
+
+<p>div.alert.alert-success
+    p And by the way - it&rsquo;s free for open-source projects!</p>
+
+<p>h2 Adding Travis-CI to your project</p>
+
+<p>p
+    | Technically, Travis-CI runs build job in a temporary virtual instance that is created for your project and deleted after it finish CI tasks.
+    | There is no persistentcy between consecutive builds.
+    | To add Travis-CI to your project you may want to do two steps:
+    ul
+        li Add a &ldquo;.travis.yml&rdquo; manifest file to the root of your repository
+        li Register your repository in Travis-CI website.</p>
+
+<p>h3 Writing your first Travis-CI manifest</p>
+
+<p>p
+    | Travis manifest is a YAML file that define how to build the code in your repository, what is the programming language, which dependencies your project has.
+    | For example, you may want to install third-party dependencies, or create dummy database for unit tests. That all you can do with manifest file.</p>
+
+<p>p
+    | Let&rsquo;s take a look on Travis-CI manifest for CloudCVBacked. This project is written in C++, it has two library dependencies: OpenCV and Node.js.
+    | Here i will show a full listing of my manifest and explain it line by line:</p>
+
+<p>pre.
+    language: node_js
+    before_install:
+     - sudo apt-get install build-essential
+     - curl -sL <a href="https://github.com/Itseez/opencv/archive/2.4.6.1.zip">https://github.com/Itseez/opencv/archive/2.4.6.1.zip</a> &gt; opencv.zip
+     - unzip opencv.zip
+     - rm opencv.zip
+     - mkdir opencv-build
+     - cd opencv-build/
+     - cmake -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_DOCS=OFF -DBUILD_EXAMPLES=OFF -DBUILD_opencv_java=OFF -DBUILD_JASPER=ON -DWITH_JASPER=ON -DBUILD_ZLIB=ON -DBUILD_SHARED_LIBS=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DWITH_OPENEXR=OFF -DBUILD_PNG=ON -DWITH_PNG=ON -DWITH_TIFF=ON -DBUILD_TIFF=ON -DWITH_WEBP=OFF -DWITH_JPEG=ON -DBUILD_JPEG=ON ../opencv-2.4.6.1/
+     - sudo make install
+     - cd ..</p>
+
+<p>p
+    | The first line define the programming language we will use. It is the most important instruction since it affects the build environment.
+    | For example, &ldquo;node_js&rdquo; option will create a virtual machine with a pre-installed
+    | Node.js. In addition, it will tell Travis-CI to use package.json file for further build instruction.</p>
+
+<pre><code>pre language: node_js
+</code></pre>
+
+<p>p.info
+    | You can specify a set of Node.js versions you want to test. This is called a
+    a(href=&ldquo;<a href="http://docs.travis-ci.com/user/build-configuration/#The-Build-Matrix&quot;">http://docs.travis-ci.com/user/build-configuration/#The-Build-Matrix&quot;</a>) Build Matrix
+    |. For example, in the example below we ask build server to build project on four versions of node:
+    pre language: node_js
+        | node_js:
+        |   - &ldquo;0.11&rdquo;
+        |   - &ldquo;0.10&rdquo;
+        |   - &ldquo;0.8&rdquo;
+        |   - &ldquo;0.6&rdquo;</p>
+
+<p>h4 Installing additional dependencies</p>
+
+<p>p
+    | By default, build server uses &ldquo;npm install&rdquo; command to install node.js-based projects.
+    | The &ldquo;npm install&rdquo; itself read the package.json file and install every dependency from it using Node Pacakage Manager (npm) tool.
+    | To install non-node.js dependencies we can use &ldquo;before_install&rdquo; instruction to install additional software into build environment.
+    | Here we download and instal OpenCV 2.4.6.1:
+    ul
+        li First, we install build essential software (gcc, cmake, etc..)
+        ll Download stable opencv package from Github.
+        li Unzip it and go into build directory
+        li Configure OpenCV using cmake
+        li Build and install OpenCV
+pre.
+    before_install:
+     - sudo apt-get install build-essential
+     - curl -sL <a href="https://github.com/Itseez/opencv/archive/2.4.6.1.zip">https://github.com/Itseez/opencv/archive/2.4.6.1.zip</a> &gt; opencv.zip
+     - unzip opencv.zip
+     - rm opencv.zip
+     - mkdir opencv-build
+     - cd opencv-build/
+     - cmake -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_DOCS=OFF -DBUILD_EXAMPLES=OFF -DBUILD_opencv_java=OFF -DBUILD_JASPER=ON -DWITH_JASPER=ON -DBUILD_ZLIB=ON -DBUILD_SHARED_LIBS=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DWITH_OPENEXR=OFF -DBUILD_PNG=ON -DWITH_PNG=ON -DWITH_TIFF=ON -DBUILD_TIFF=ON -DWITH_WEBP=OFF -DWITH_JPEG=ON -DBUILD_JPEG=ON ../opencv-2.4.6.1/
+     - sudo make install
+     - cd ..</p>
+
+<p>h3 Building Node.js C++ module with Travis-CI
+p
+    | When the build environment is ready (If before_install target succeeded), Travis-CI performs install task (by default it&rsquo;s &ldquo;npm install&rdquo;). Now, it&rsquo;s time for NPM to act.
+    | Each module in Node.js usually has &ldquo;package.json&rdquo; file.
+    | Usually it contains name, version of repository url of the module, it&rsquo;s description, list of dependencies, pre/post install and test scripts.
+    | The pre-install target in CloudCVBacked builds the dynamically-linked C++ library that exports Node.js functions:</p>
+
+<pre><code>pre 
+    | {
+    | &quot;name&quot;: &quot;cloudcv&quot;,        
+    | ...
+    | &quot;scripts&quot;: {
+    |     &quot;preinstall&quot;: &quot;node-gyp clean rebuild&quot;,
+    |     &quot;test&quot;: &quot;expresso test/*&quot;
+    | },
+    | 
+    | &quot;devDependencies&quot;: {
+    |     &quot;expresso&quot;: &quot;*&quot;
+    | },
+    | 
+    | ...
+    | }
+</code></pre>
+
+<p>div.alert.alert-info
+    p To read more about using C++ and Node.js together please follow related posts:
+        ul
+            li<br />
+                a(href=&ldquo;<a href="http://computer-vision-talks.com/articles/2013-08-27-connecting-opencv-and-node-js-inside-cloud9-ide/&quot;):">http://computer-vision-talks.com/articles/2013-08-27-connecting-opencv-and-node-js-inside-cloud9-ide/&quot;):</a> strong Connecting OpenCV and Node.js inside Cloud9 IDE
+            li
+                a(href=&ldquo;<a href="http://computer-vision-talks.com/articles/2013-08-19-cloud-image-processing-using-opencv-and-node-js/&quot;):">http://computer-vision-talks.com/articles/2013-08-19-cloud-image-processing-using-opencv-and-node-js/&quot;):</a> strong Cloud image processing using OpenCV and Node.js</p>
+
+<p>h4 Node.js modules testing with expresso</p>
+
+<p>p
+    | For testing of CloudCV I&rsquo;m using
+    a(href=&ldquo;<a href="http://visionmedia.github.io/expresso/&quot;">http://visionmedia.github.io/expresso/&quot;</a>) Expresso
+    |  test framework. It fits my needs and doesn&rsquo;t bother me with complex configuration. So i&rsquo;m using it, but you&rsquo;re free to use any other test framework.
+    | The Travis-CI runs &ldquo;npm test&rdquo; command, which in fact execute.
+    pre &ldquo;expresso test/*&rdquo;</p>
+
+<p>p
+    | Expresso runs all JavaScript tests in the specified folder and returns the status code to Travis-CI.
+    | If any test fails the Travis-CI job will be marked as failed and you will get a &ldquo;Build Failing&rdquo; notification.</p>
+
+<p>h2 Enabling Travis-CI for your repository</p>
+
+<p>p
+    | When you&rsquo;ve added manifest file to your repository it&rsquo;s time to register on travis-ci.org website and add your repository there.
+    | I&rsquo;m not going to describe the registration process since it&rsquo;s trivial.
+    | But i want to point you to manifest validatio tool that can save a lof of your time:<br />
+    a(href=&ldquo;<a href="http://lint.travis-ci.org/&quot;">http://lint.travis-ci.org/&quot;</a>) Travis manifest validation tool
+    |. This page helps you to check whether your manifest is correct.</p>
+
+<p>p
+    | After you&rsquo;ve added your project to Travis-CI, it will do the rest.
+    | Each time you push changes to repository, Travis-CI will build your project and send you notification if the error occurs.</p>
+
+<p>h2 Adding Build Status to the README</p>
+
+<p>p
+    | One of the cool features of travis is that you can view the build status from your github repository.
+    | Open the README.md file and add the following lines.
+    | Replace GITHUB_USERNAME with your github username and PROJECT_NAME with the name of your github project.
+pre
+   | <a href="https://travis-ci.org/[GITHUB_USERNAME]/[PROJECT_NAME]"><img src="https://travis-ci.org/[GITHUB_USERNAME]/[PROJECT_NAME].png" alt="Build Status" /></a></p>
+
+<p>p
+    | This will add the build status icon image to your readme page, so you will always know how healthy your project is.</p>
+
+<p>img.image-thumbnail(src=&ldquo;build-status.png&rdquo;)</p>
+
+<p>h2 Conclusion</p>
+
+<p>p
+    | As a developer and computer vision consultant, I work with many heterogenous software/hardware platforms. I&rsquo;ve been using TeamCity, Jenkins and Team Foundation as a CI and build servers.
+    | Although they provide much more features than Travis-CI does, no one can compete with Travis-CI if you want to have free, easy-to-use, no-headache continuous-integration service for your projects.
+    | It will fits well for both web-based (php, ruby, python) application, tools and libraries in C++, Python, Scala and Java.</p>
+
+<p>h2 References
+p
+    ul
+        li: a(href=&ldquo;<a href="https://travis-ci.org&quot;">https://travis-ci.org&quot;</a>) Travis-CI
+        li: a(href=&ldquo;<a href="http://lint.travis-ci.org/&quot;">http://lint.travis-ci.org/&quot;</a>) Travis manifest validation tool
+        li: a(href=&ldquo;<a href="http://visionmedia.github.io/expresso/&quot;">http://visionmedia.github.io/expresso/&quot;</a>) Expresso TDD for JavaScript
+        li: a(href=&ldquo;<a href="http://computer-vision-talks.com/articles/2013-08-27-connecting-opencv-and-node-js-inside-cloud9-ide/&quot;">http://computer-vision-talks.com/articles/2013-08-27-connecting-opencv-and-node-js-inside-cloud9-ide/&quot;</a>) Connecting OpenCV and Node.js inside Cloud9 IDE
+        li: a(href=&ldquo;<a href="http://computer-vision-talks.com/articles/2013-08-19-cloud-image-processing-using-opencv-and-node-js/&quot;">http://computer-vision-talks.com/articles/2013-08-19-cloud-image-processing-using-opencv-and-node-js/&quot;</a>) Cloud image processing using OpenCV and Node.js
+br
+p.lead
+    | I hope you enjoyed reading this post. Please, describe your experience using Travis-CI in the comments. Thank you!.</p>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/tutorials/">tutorials</a>
+            
+                 <a href="/tags/cloudcv/">cloudcv</a>
+            
+                 <a href="/tags/nodejs/">nodejs</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=Using%20Travis-CI%20for%20continuous%20testing%20your%20projects&url=https%3a%2f%2fexample.com%2f2014-02-23-using-travis-ci%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2f2014-02-23-using-travis-ci%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2f2014-02-23-using-travis-ci%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

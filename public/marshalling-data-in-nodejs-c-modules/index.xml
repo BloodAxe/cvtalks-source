@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Marshalling-data-in-nodejs-c-modules-rsses on Ghostwriter example</title>
+    <link>https://example.com/marshalling-data-in-nodejs-c-modules/index.xml</link>
+    <description>Recent content in Marshalling-data-in-nodejs-c-modules-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Sat, 10 Oct 2015 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/marshalling-data-in-nodejs-c-modules/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Marshalling data in Nodejs C&#43;&#43; modules</title>
+      <link>https://example.com/marshalling-data-in-nodejs-c-modules/</link>
+      <pubDate>Sat, 10 Oct 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/marshalling-data-in-nodejs-c-modules/</guid>
+      <description>
+
+&lt;p&gt;One of the problems I had to solve while working on &lt;a href=&#34;cloudcv&#34;&gt;CloudCV&lt;/a&gt; is a data marshalling from V8 engine to plain C++ objects and vice versa.
+In C++ add-on for Nodejs you need to parse and convert input arguments, which can be scalar types, collections and user-defined structures.
+Proposed library solves this task with least possible amount of headache.&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&#34;example&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;example&#34;&gt;Example&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;NAN_METHOD(GetFirstNPrimes) {
+    
+    int numberOfPrimes = Nan::Marshal&amp;lt;int&amp;gt;(info[0]);
+    std::vector&amp;lt;int&amp;gt; primes = computeNPrimes(numberOfPrimes);
+    info.GetReturnValue().Set(Nan::Marshal(primes));
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Ok, enough words, gimme the code! All source code is available on GitHub: &lt;a href=&#34;nan-marshal&#34;&gt;nan-marshal&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/more&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&#34;requirements&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;requirements&#34;&gt;Requirements&lt;/h2&gt;
+
+&lt;p&gt;By tradition, native add-ons for Node are built with GYP build system. So you should install node-gyp package: &lt;code&gt;npm install -g node-gyp&lt;/code&gt;.
+This module requires [Nan][nan] package. If you are not using [Nan][nan] already for writing C++ add-ons for Nodejs I strongly advise you to start doing that. Anyway, &lt;code&gt;npm install --save nan&lt;/code&gt; is a right way to start.&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&#34;usage&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;usage&#34;&gt;Usage&lt;/h2&gt;
+
+&lt;p&gt;Simply add &lt;strong&gt;nan-marshal&lt;/strong&gt; as a dependency module to &lt;em&gt;package.json&lt;/em&gt; of your Node add-on:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ npm install --save nan-marshal
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Add include directories for &lt;strong&gt;NAN&lt;/strong&gt; and &lt;strong&gt;NAN-Marshal&lt;/strong&gt; in your &lt;em&gt;binding.gyp&lt;/em&gt; so that you can use &lt;code&gt;#include &amp;lt;nan-marshal.h&amp;gt;&lt;/code&gt; in your &lt;em&gt;.cpp&lt;/em&gt; files:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;&amp;quot;include_dirs&amp;quot; : [
+    &amp;quot;&amp;lt;!(node -e \&amp;quot;require(&#39;nan&#39;)\&amp;quot;)&amp;quot;,
+    &amp;quot;&amp;lt;!(node -e \&amp;quot;require(&#39;nan-marshal&#39;)\&amp;quot;)&amp;quot;
+]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This works like a &lt;code&gt;-I&amp;lt;path-to-nan-marshal&amp;gt;&lt;/code&gt; when compiling your add-on.&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&#34;api&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;api&#34;&gt;API&lt;/h2&gt;
+
+&lt;p&gt;There is a single all-purpose function: &lt;code&gt;Nan::Marshal&lt;/code&gt;. To convert from V8 object to C++ type, use it as follows: &lt;code&gt;Nan::Marshal&amp;lt;Dst&amp;gt;(V8 object)&lt;/code&gt;.
+To convert from C++ to V8 object: &lt;code&gt;Nan::Marshal(..)&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Nan::Marshal&lt;/code&gt; supports following types out of the box:
+- Built-in C++ types
+- std::string
+- std::vector
+- std::map
+- std::shared_ptr
+- Marshalling of used-defined types (There are intrusive and non-intrusive options available)&lt;/p&gt;
+
+&lt;p&gt;For built-in and STL types, use is straightforward:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;Local&amp;lt;Value&amp;gt; arg1 = info[0];
+// Marshal from V8 to C++ type
+std::string msg = Nan::Marshal&amp;lt;std::string&amp;gt;(arg1);
+
+// Marshal from C++ to V8
+info.GetReturnValue().Set(Nan::Marshal(msg));
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;User-defined serialization inspired by boost::serialization approach and you will find it similar and easy-to-use. Here&amp;rsquo;s quick example of non-intrusive serialization of the OpenCV data type:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;namespace Nan
+{
+    namespace marshal
+    {
+        template&amp;lt;typename T&amp;gt;
+        struct Serializer &amp;lt; cv::Rect_&amp;lt;T&amp;gt; &amp;gt;
+        {
+            template&amp;lt;typename InputArchive&amp;gt;
+            static inline void load(InputArchive&amp;amp; ar, cv::Rect_&amp;lt;T&amp;gt;&amp;amp; val)
+            {
+                ar &amp;amp; make_nvp(&amp;quot;x&amp;quot;, val.x);
+                ar &amp;amp; make_nvp(&amp;quot;y&amp;quot;, val.y);
+                ar &amp;amp; make_nvp(&amp;quot;width&amp;quot;, val.width);
+                ar &amp;amp; make_nvp(&amp;quot;height&amp;quot;, val.height);
+            }
+
+            template&amp;lt;typename OutputArchive&amp;gt;
+            static inline void save(OutputArchive&amp;amp; ar, const cv::Rect_&amp;lt;T&amp;gt;&amp;amp; val)
+            {
+                ar &amp;amp; make_nvp(&amp;quot;x&amp;quot;, val.x);
+                ar &amp;amp; make_nvp(&amp;quot;y&amp;quot;, val.y);
+                ar &amp;amp; make_nvp(&amp;quot;width&amp;quot;, val.width);
+                ar &amp;amp; make_nvp(&amp;quot;height&amp;quot;, val.height);
+            }
+        };
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Having a snippet above in your code lets you to return JavaScript object like &lt;code&gt;{ x:12, y:13, width:124, height: 144 }&lt;/code&gt; from C++ code. The same is true for V8 -&amp;gt; C++ marshalling. Nan::Marshal will convert V8 object to desired object type.&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&#34;tests&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;tests&#34;&gt;Tests&lt;/h2&gt;
+
+&lt;p&gt;To run the tests do:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;npm install
+npm run-script rebuild-tests
+npm test
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Or just:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;npm install
+npm test
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;a name=&#34;limitations&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;limitations&#34;&gt;Limitations&lt;/h2&gt;
+
+&lt;p&gt;This library does not perform strict checking of V8 types during conversion. There is &lt;a href=&#34;https://github.com/BloodAxe/nan-check&#34;&gt;nan-check&lt;/a&gt; module that serves this purpose.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

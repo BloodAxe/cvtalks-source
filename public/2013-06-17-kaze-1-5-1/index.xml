@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2013-06-17-kaze-1-5-1-rsses on Ghostwriter example</title>
+    <link>https://example.com/2013-06-17-kaze-1-5-1/index.xml</link>
+    <description>Recent content in 2013-06-17-kaze-1-5-1-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Mon, 17 Jun 2013 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2013-06-17-kaze-1-5-1/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>KAZE 1.5.1</title>
+      <link>https://example.com/2013-06-17-kaze-1-5-1/</link>
+      <pubDate>Mon, 17 Jun 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2013-06-17-kaze-1-5-1/</guid>
+      <description>&lt;div class=&#34;alert alert-danger&#34;&gt;
+    &lt;p class=&#34;lead&#34;&gt;This post is outdated.&lt;/p&gt;
+    &lt;p&gt;
+        Please, visit updated post: 
+        &lt;a href=&#34;https://example.com/articles/kaze-1.6-in-opencv/&#34;&gt;Integration of KAZE 1.6 in OpenCV&lt;/a&gt;
+    &lt;/p&gt;
+&lt;/div&gt;
+
+&lt;p&gt;A new version of KAZE features has been integrated my private fork of OpenCV (You can find it&amp;rsquo;s here: &lt;a href=&#34;https://github.com/BloodAxe/opencv/tree/kaze-features&#34;&gt;https://github.com/BloodAxe/opencv/tree/kaze-features&lt;/a&gt;). We&amp;rsquo;re on the way to make pull-request and integrate KAZE features to official OpenCV repository.&lt;/p&gt;
+
+&lt;p&gt;There only few things are left:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Include KAZE into features2d unit tests.&lt;/li&gt;
+&lt;li&gt;Rewrite KAZE to support OpenCV threading API.&lt;/li&gt;
+&lt;li&gt;Expose adjustable parameters of KAZE algorithm.&lt;/li&gt;
+&lt;li&gt;Do code cleanup and documentation for pull request.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I think we (Pablo, KAZE author) and me complete these steps in a near future. During our hard work you can enjoy these nice charts that shows how awesome KAZE features are:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;chart_1.png&#34; alt=&#34;KAZE 1.5.1 Rotation Test&#34; /&gt; &lt;img src=&#34;chart_1-1.png&#34; alt=&#34;KAZE 1.5.1 Scale Test&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

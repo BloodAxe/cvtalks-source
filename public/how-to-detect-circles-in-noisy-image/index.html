@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>How to detect circles in noisy images &middot; My Name</title>
+        <meta name="description" content="p | This was a request from a(href=&ldquo;http://www.reddit.com/r/computervision/comments/2a1lvi/help_how_to_process_this_image_to_find_the_circles/&quot;) /r/computervision. | A reddit member was asking on how to count number of eggs on quite | noisy image like you may see below. | I&rsquo;ve decided to write a simple algorithm that does the job and explain how it works.
+div.beforeafter img(src=&quot;source.jpg&quot;,alt=&quot;before&quot;) img(src=&quot;display.jpg&quot;,alt=&quot;after&quot;)  span.more
+h2 Step 1 - Filter image
+p img(src=&ldquo;source.jpg&rdquo;,alt=&ldquo;Source image&rdquo;) | The original image has noticeable color noise and therefore it must be filtered before we pass it to further stages.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="How to detect circles in noisy images">
+<meta property="og:description" content="p | This was a request from a(href=&ldquo;http://www.reddit.com/r/computervision/comments/2a1lvi/help_how_to_process_this_image_to_find_the_circles/&quot;) /r/computervision. | A reddit member was asking on how to count number of eggs on quite | noisy image like you may see below. | I&rsquo;ve decided to write a simple algorithm that does the job and explain how it works.
+div.beforeafter img(src=&quot;source.jpg&quot;,alt=&quot;before&quot;) img(src=&quot;display.jpg&quot;,alt=&quot;after&quot;)  span.more
+h2 Step 1 - Filter image
+p img(src=&ldquo;source.jpg&rdquo;,alt=&ldquo;Source image&rdquo;) | The original image has noticeable color noise and therefore it must be filtered before we pass it to further stages.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/how-to-detect-circles-in-noisy-image/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">How to detect circles in noisy images</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    <p>p
+    | This was a request from
+    a(href=&ldquo;<a href="http://www.reddit.com/r/computervision/comments/2a1lvi/help_how_to_process_this_image_to_find_the_circles/&quot;">http://www.reddit.com/r/computervision/comments/2a1lvi/help_how_to_process_this_image_to_find_the_circles/&quot;</a>) /r/computervision.
+    | A reddit member was asking on how to count number of eggs on quite
+    | noisy image like you may see below.
+    | I&rsquo;ve decided to write a simple algorithm that does the job and explain how it works.</p>
+
+<pre><code>div.beforeafter
+    img(src=&quot;source.jpg&quot;,alt=&quot;before&quot;)
+    img(src=&quot;display.jpg&quot;,alt=&quot;after&quot;)
+</code></pre>
+
+<p>span.more</p>
+
+<p>h2 Step 1 - Filter image</p>
+
+<p>p
+    img(src=&ldquo;source.jpg&rdquo;,alt=&ldquo;Source image&rdquo;)
+    | The original image has noticeable color noise and therefore it must be filtered before we pass it to further stages.
+    | Ideally you should choose filter algorithm based on your task and noise model. For the sake of simplicity,
+    | I will not use Weiner filter or deconvolution to deal with blur and artifacts that are present on source image.</p>
+
+<p>p
+    | Instead, I will use pyramidal mean-shift filter.
+    | This algorithm works quite well on this problem and helps to get rid of artifacts.</p>
+
+<pre><code>pre.
+    cv::Mat inputRgbImage = cv::imread(&quot;input.jpg&quot;);
+    cv::Mat filtered;
+    cv::pyrMeanShiftFiltering(inputRgbImage, 
+                              filtered, 
+                              spatialWindowRadius, 
+                              colorWindowRadius, 
+                              2);
+</code></pre>
+
+<p>strong Result of filtering
+div.beforeafter.twentytwenty-container
+    img(src=&ldquo;source.jpg&rdquo;,alt=&ldquo;before&rdquo;)
+    img(src=&ldquo;filtered.jpg&rdquo;,alt=&ldquo;after&rdquo;)</p>
+
+<p>h2 Step 2 - Increase sharpness</p>
+
+<p>p
+    | As you may see - eggs edges are not too sharp. For circle detection we will use Hough transform. OpenCV&rsquo; Hough algorithm implementation use Canny edge detector to
+    | detect edges. Unfortunately it&rsquo;s not possible to pass manually computed binary image.
+    | Instead we have to pass 8-bit grayscale image for circle detection.
+    | Therefore we may want to increase their sharpness to make the image more friendly for Canny detector.</p>
+
+<p>p
+    | Sharpening can be easily done via unsharp mask.</p>
+
+<pre><code>pre.
+    // Perform in-place unsharp masking operation
+    // http://opencv-code.com/quick-tips/sharpen-image-with-unsharp-mask/
+    void unsharpMask(cv::Mat&amp; im) 
+    {
+        cv::Mat tmp;
+        cv::GaussianBlur(im, tmp, cv::Size(5,5), 5);
+        cv::addWeighted(im, 1.5, tmp, -0.5, 0, im);
+    }
+
+| However, unsharp mask can cause artifacts on edge borders which may lead to double edge.
+| I'm dealing with it by adding laplaccian component to final result:
+
+pre.
+    cv::cvtColor(filtered, grayImg, cv::COLOR_BGR2GRAY);
+    grayImg.convertTo(grayscale, CV_32F);
+
+    cv::GaussianBlur(grayscale, blurred, cv::Size(5,5), 0);
+
+    cv::Laplacian(blurred, laplaccian, CV_32F);
+
+    cv::Mat sharpened = 1.5f * grayscale
+                      - 0.5f * blurred
+                      - weight * grayscale.mul(scale * laplaccian);
+
+strong Result of sharpening
+div.beforeafter.twentytwenty-container
+    img(src=&quot;filtered.jpg&quot;,alt=&quot;before&quot;)
+    img(src=&quot;filteredGray.jpg&quot;,alt=&quot;after&quot;)
+</code></pre>
+
+<p>h3 Step 3 - Detect circles</p>
+
+<p>p
+    | After we got nicely filtered and enchanced image we can pass it to cv::HoughCircles to detect circles on the image.
+    | According to problem task, we can limit the maximum radius of circles that we are interested in (we need only small circles).
+    | In addition eggs can be close to each other, so it make sense to set minimal distance between two circles to minimal
+    | allowed diameter of the circle.</p>
+
+<pre><code>pre.
+   cv::HoughCircles(filteredGray, 
+                    circles, 
+                    cv::HOUGH_GRADIENT, 
+                    2,   // Accumulator resolution
+                    12,  // Minimum distance between the centers of the detected circles.
+                    cannyThreshold, 
+                    accumulatorThreshold, 
+                    5,   // Minimum circle radius
+                    20); // Maximum circle radius
+</code></pre>
+
+<p>h4 Step 4 - Validate eggs</p>
+
+<p>p
+    | I&rsquo;ve skipped validation step since I don&rsquo;t know what are the requirements to detected eggs.
+    | But I suppose that after detection of possible candidates using Hough the algorithm should validate each contour
+    | to verify it is exactly what we were looking for. Here are some hints what we can check:</p>
+
+<pre><code>ul
+    li Contour defects - how egg shape is close to ideal circle
+    li Contour breaks - is there any breaks in egg boundary or not
+    li Egg color - perhaps we need to count objects only of particular color
+    li Neighbours - maybe (or maybe not) we need only isolated objects.
+</code></pre>
+
+<p>h4 Step 5 - GPU Speed-up</p>
+
+<p>p
+    | The given implementation is very slow since it use CPU and doing a lot of stuff that can be efficiently computed on GPU.
+    | Fortunately, OpenCV has GPU implementations for mean-shift segmentation and hough transform and image blending.
+    | You can easily speed-up this algorithm by using cv::gpu types and functions instead.</p>
+
+<p>h4 Bonus content</p>
+
+<p>p
+    | Readed to the end of article? I&rsquo;m impressed :) Here you go, the full source code of the algorithm and small playground to
+    | tweak setting in runtime:</p>
+
+<pre><code>script(src=&quot;https://gist.github.com/BloodAxe/943fb14220021113d405.js&quot;)
+</code></pre>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/opencv/">opencv</a>
+            
+                 <a href="/tags/algorithms/">algorithms</a>
+            
+                 <a href="/tags/reddit/">reddit</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=How%20to%20detect%20circles%20in%20noisy%20images&url=https%3a%2f%2fexample.com%2fhow-to-detect-circles-in-noisy-image%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2fhow-to-detect-circles-in-noisy-image%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2fhow-to-detect-circles-in-noisy-image%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2011-03-31-image-processing-cloud-computing-rsses on Ghostwriter example</title>
+    <link>https://example.com/2011-03-31-image-processing-cloud-computing/index.xml</link>
+    <description>Recent content in 2011-03-31-image-processing-cloud-computing-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Thu, 31 Mar 2011 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2011-03-31-image-processing-cloud-computing/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Image processing &amp; cloud computing</title>
+      <link>https://example.com/2011-03-31-image-processing-cloud-computing/</link>
+      <pubDate>Thu, 31 Mar 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2011-03-31-image-processing-cloud-computing/</guid>
+      <description>
+
+&lt;p&gt;&lt;img src=&#34;opencv-azure-mix-small.png&#34; class=&#34;pull-left img-thumbnail&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s time to write something interesting. Today I will begin a series of articles on the development of a system of identification of human faces in the cloud. During development, I will describe the key points, details and aspects of running image processing algorithms in the cloud environment. During development face identification system will be created. It has no commercial purpose so don’t expect it will be robust enough :) I create it just for fun, so there are no time plans for this project. But i&amp;rsquo;ll try to create it as fast as possible.&lt;/p&gt;
+
+&lt;h5 id=&#34;key-facts&#34;&gt;Key facts&lt;/h5&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Will use Windows Azure cloud service – it supports native code exectution.&lt;/li&gt;
+&lt;li&gt;Will use Visual Studio 2010 for development.&lt;/li&gt;
+&lt;li&gt;Will use OpenCV for face identification.&lt;/li&gt;
+&lt;li&gt;Native code in C++ will be wrapped with C# library to make it accessible as webservice.&lt;/li&gt;
+&lt;li&gt;Silverlight application as front-end.&lt;/li&gt;
+&lt;li&gt;User registration and some social sharing – just for fun.&lt;/li&gt;
+&lt;li&gt;Public online demo will be published for 30 days (time of the free trial subscription in Azure).&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;So stay tuned and &lt;a href=&#34;http://twitter.com/#!/cvtalks&#34;&gt;follow me on twitter&lt;/a&gt; !&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

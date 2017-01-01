@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2012-06-23-opencv-tutorial-part-1-rsses on Ghostwriter example</title>
+    <link>https://example.com/2012-06-23-opencv-tutorial-part-1/index.xml</link>
+    <description>Recent content in 2012-06-23-opencv-tutorial-part-1-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Sat, 23 Jun 2012 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2012-06-23-opencv-tutorial-part-1/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>OpenCV Tutorial - Part 1</title>
+      <link>https://example.com/2012-06-23-opencv-tutorial-part-1/</link>
+      <pubDate>Sat, 23 Jun 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2012-06-23-opencv-tutorial-part-1/</guid>
+      <description>
+
+&lt;p&gt;As i recently mentioned, i decided to write a brand new OpenCV tutorial application for iPhone/iPad devies. This development is open-source and anyone can access it on &lt;a href=&#34;https://github.com/BloodAxe/OpenCV-Tutorial&#34;&gt;https://github.com/BloodAxe/OpenCV-Tutorial&lt;/a&gt; repository page. Your help are welcome to write a UI for this app and help writing sample demonstration cases. Feel free to clone repository and make your contribution!&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;opencv-tutorial&#34;&gt;OpenCV Tutorial&lt;/h2&gt;
+
+&lt;p&gt;The application startup screen will present master-detail view as a list of available samples. The master table view will present a list of samples available, while the detailed view - a sample description and it&amp;rsquo;s icon perhaps. For each sample a still image can be used as a input data for processing. Also, processing of a video source from device camera will be also supported. We start from creating a new XCode project as shown on next figure: &lt;img src=&#34;Screen-Shot-2012-06-23-at-2.59.18-PM.png&#34; alt=&#34;&#34; title=&#34;Master-detail XCode template project&#34; /&gt; Then we link OpenCV library with this project. Here is a brief task list: 1) Get a pre-build or build your own OpenCV static library using OpenCV build script and copy it to the same folder where XCode project is located like this: &lt;img src=&#34;Screen-Shot-2012-06-23-at-8.40.23-PM.png&#34; alt=&#34;&#34; title=&#34;Screen Shot 2012-06-23 at 8.40.23 PM&#34; /&gt; 2) Add $(SRCROOT)/opencv to header search path and $(SRCROOT)/opencv/lib/debug for library search path for debug configuration and $(SRCROOT)/opencv/lib/release for release build. 3) Add OpenCV libs to linker input by modifying &amp;ldquo;Other Linker Flags&amp;rdquo; option with &amp;ldquo;-lopencv_calib3d -lzlib -lopencv_contrib -lopencv_legacy -lopencv_features2d -lopencv_imgproc -lopencv_video -lopencv_core&amp;rdquo;. 4) Add OpenCV headers to precompiled header file like that:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;#ifdef __cplusplus
+#include &amp;lt;opencv2/opencv.hpp&amp;gt;
+#endif
+
+#ifdef __OBJC__
+  #import &amp;lt;UIKit/UIKit.h&amp;gt;
+  #import &amp;lt;Foundation/Foundation.h&amp;gt;
+#endif
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Please note that OpenCV include directive placed before import of iOS frameworks. It&amp;rsquo;s important to keep this order, otherwise you&amp;rsquo;ll get compilation errors caused by conflicts of MIN symbol.&lt;/p&gt;
+
+&lt;h2 id=&#34;sample-interface&#34;&gt;Sample interface&lt;/h2&gt;
+
+&lt;p&gt;Each demonstration of particular algorithm usually required some image as an input argument (which is obviously since we working with image processing, right?). To reflect this nature of our application and to make our application really flexible we introduce a base class for all sample scenarios. Derived classes should implement methods that provides generic information about this example and main processing routine. Here are it&amp;rsquo;s signature:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;//! Base class for all samples
+class SampleBase
+{
+public:
+  //! Gets a sample name
+  virtual std::string getName() const = 0;
+
+  //! Returns a detailed sample description
+  virtual std::string getDescription() const = 0;
+
+  //! Returns true if this sample requires setting a reference image for latter use
+  virtual bool isReferenceFrameRequired() const = 0;
+
+  //! Sets the reference frame for latter processing
+  virtual void setReferenceFrame(const cv::Mat&amp;amp; reference) = 0;
+
+  //! Processes a frame and returns output image 
+  virtual bool processFrame(const cv::Mat&amp;amp; inputFrame, cv::Mat&amp;amp; outputFrame) = 0;
+
+  const std::vector&amp;amp; getOptions();
+
+protected:
+  void registerOption(std::string name, bool  * value);
+  void registerOption(std::string name, int   *  value, int min, int max);
+  void registerOption(std::string name, float *  value, float min, float max);
+
+private:
+  std::vector m_options;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The processFrame function takes input image as first argument, performs some image processing and puts the result to the outputFrame argument. Our application can use either images taken with a camera or photo gallery or it can process frames from a camera in real-time mode.&lt;/p&gt;
+
+&lt;p&gt;Of course, almost every algorithm can have adjustable parameters that affects the processing result. To reflect this we introduce a bunch of registerOption functions that allows to expose parameters that can be modified in runtime.&lt;/p&gt;
+
+&lt;p&gt;In Part 2 we will create a Master-Detail view to present our samples on the iPad and iPhone screen and write first sample - Edge Detection Sample.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Image processing &amp; cloud computing - Architecture overview &middot; My Name</title>
+        <meta name="description" content="This post will be devoted to high level architecture overview. For newcomers - I&rsquo;m creating face recognition demo application that will work in the cloud environment and all algorithmic stuff will be written in native C&#43;&#43; code (with help of OpenCV and boost libraries). Under the hood - detailed application architecture overview and diagrams.
+**FaceRecognitionCloudApp **- is a demonstration project written in combination of C&#43;&#43; and C# languages. It has two challenging objectives:">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="Image processing &amp; cloud computing - Architecture overview">
+<meta property="og:description" content="This post will be devoted to high level architecture overview. For newcomers - I&rsquo;m creating face recognition demo application that will work in the cloud environment and all algorithmic stuff will be written in native C&#43;&#43; code (with help of OpenCV and boost libraries). Under the hood - detailed application architecture overview and diagrams.
+**FaceRecognitionCloudApp **- is a demonstration project written in combination of C&#43;&#43; and C# languages. It has two challenging objectives:">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/2011-04-13-image-processing-cloud-computing-architecture-overview/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">Image processing &amp; cloud computing - Architecture overview</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    
+
+<p><img src="opencv-azure-mix-small.png" class="pull-left img-thumbnail" /></p>
+
+<p>This post will be devoted to high level architecture overview. For newcomers - I&rsquo;m creating face recognition demo application that will work in the cloud environment and all algorithmic stuff will be written in native C++ code (with help of OpenCV and boost libraries). Under the hood - detailed application architecture overview and diagrams.</p>
+
+<p>**FaceRecognitionCloudApp **- is a demonstration project written in combination of C++ and C# languages. It has two challenging objectives:</p>
+
+<ul>
+<li>Face detection and robust person identification</li>
+<li>Demonstration of the technology of doing expensive, computer vision related calculations in the scalable server environment (cloud)</li>
+</ul>
+
+<p>Application design follows classic three-tier architecture including presentation level, business logic and data abstraction layer.</p>
+
+<p>Presentation level</p>
+
+<p>The client application is ASP.NET website used to host Silverlight application inside it. Silverlight application implements thin client which duties are: interaction with user, access to web-camera and communication with business layer through WCF RIA Services.</p>
+
+<h2 id="business-logic">Business logic</h2>
+
+<p>This layer contains necessary web-service back-end for presentation layer and face recognition module containing  C++ implementation of the face recognition algorithm.</p>
+
+<h2 id="data-abstraction-layer">Data abstraction layer</h2>
+
+<p>Provides access to database of learned faces. For storing learning data SQL Azure storage is used.</p>
+
+<p>Here is a bit of diagrams for better understanding:</p>
+
+<p><img src="FaceRecognitionApp-High-Level-Architecture_thumb.png" alt="FaceRecognitionApp High Level Architecture" title="FaceRecognitionApp High Level Architecture" /></p>
+
+<p>FaceRecognitionCloudApp will offer face-based authentication system. User will be able to register himself through web-interface and login using only web camera (without entering user name/password). Remember - this is only a demonstration of concept. Don&rsquo;t expect too much from it. You will be able to register account (working web camera required) and then you can login in the system (your face will be the credential).</p>
+
+<p><img src="FaceRecognitionCloudAppActivity_thumb.png" alt="FaceRecognitionCloudApp Activity diagram" title="FaceRecognitionCloudApp Activity diagram" /></p>
+
+<p>To be continued…</p>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/cloud-computing/">cloud-computing</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=Image%20processing%20%26%20cloud%20computing%20-%20Architecture%20overview&url=https%3a%2f%2fexample.com%2f2011-04-13-image-processing-cloud-computing-architecture-overview%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2f2011-04-13-image-processing-cloud-computing-architecture-overview%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2f2011-04-13-image-processing-cloud-computing-architecture-overview%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

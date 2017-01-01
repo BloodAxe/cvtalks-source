@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Cloud image processing using OpenCV and Node.js &middot; My Name</title>
+        <meta name="description" content="A long time ago i was playing with cloud-based image processing. The first reason why i didn&rsquo;t shared a reciple how to compile OpenCV as native app for windows azure cloud was trycky build process. It was too complicated and this tutorial will become outdated very quickly. The second one - Azure hosting wants a lot of money. So i put my research in this area on hold for better times.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="Cloud image processing using OpenCV and Node.js">
+<meta property="og:description" content="A long time ago i was playing with cloud-based image processing. The first reason why i didn&rsquo;t shared a reciple how to compile OpenCV as native app for windows azure cloud was trycky build process. It was too complicated and this tutorial will become outdated very quickly. The second one - Azure hosting wants a lot of money. So i put my research in this area on hold for better times.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/2013-08-19-cloud-image-processing-using-opencv-and-node-js/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">Cloud image processing using OpenCV and Node.js</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    
+
+<p>A long time ago i was playing with cloud-based image processing. The first reason why i didn&rsquo;t shared a reciple how to compile OpenCV as native app for windows azure cloud was trycky build process. It was too complicated and this tutorial will become outdated very quickly. The second one - Azure hosting wants a lot of money. So i put my research in this area on hold for better times.</p>
+
+<p>And i think the time has come. You probably heard about Node.js - server-side asynchronous Java Script library. I have very small experience with Java-Script, but Node.js attracted me so strong i decided to study it. In this post i will describe how to connect Node.js and OpenCV together. On server-side OpenCV libary can be used for many things - generating CAPTCHA&rsquo;s recognizing scans, counting people in video streams.. So i beleive my tutorial will come in handy to people who is looking how to do image processing in the cloud environment.</p>
+
+<p>Node.js is written in Java-script, and follows asynchronous programming model, where events and callbacks plays dominant role. OpenCV is a C++ library written in good old C and C++ and it don&rsquo;t bother with asynchronous and event-based programming model. Fortunately Node.js can interop with external modules written in C++. It&rsquo;s made via V8 engine which is a core of Node.js.</p>
+
+<p><span class="more"></span></p>
+
+<h2 id="disclaimer">Disclaimer</h2>
+
+<p>I will be using Mac OS as host platform. Keep in mind this since some commands may differs for Ubuntu or Debian. <strong>Windows users</strong> - you aren&rsquo;t lucky ones. I had no luck to build Node and OpenCV on windows so far. Please, post your comments if you succeed to build OpenCV module for Node.</p>
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<p>In this tutorial we will need the following software:</p>
+
+<ol>
+<li><a href="https://developer.apple.com/xcode/">XCode</a></li>
+<li><a href="http://www.cmake.org/">CMake</a></li>
+<li><a href="http://nodejs.org">Node.js</a></li>
+<li><a href="http://opencv.org">OpenCV</a></li>
+</ol>
+
+<p>I assume you already installed XCode and CMake. In next two sections we describe installation of Node.js and OpenCV.</p>
+
+<h2 id="installing-node-js">Installing Node.js</h2>
+
+<p>To install Node.js i used <a href="http://www.macports.org/">macports</a> software package manager. It&rsquo;s very similar to <code>apt-get</code> command from Unix.</p>
+
+<p><strong>This command will install latests stable Node.js:</strong></p>
+
+<pre><code>sudo port install nodejs
+</code></pre>
+
+<p>After running this command your Node.js is ready to use. It&rsquo;s not mandatory to use macports, you can install it using homebrew or build Node from the sources. It&rsquo;s up to you and will not affect further steps.</p>
+
+<p>Node.js can be extended by C++ Modules. This is a way to interop with OpenCV library. To use OpenCV from Node.js we have to write C++ Mobule that Node.js can use. To build this module a special build system is used. We install it via Node Package Manager using following command:</p>
+
+<p><strong>This command will install a GYP build system:</strong></p>
+
+<pre><code>sudo npm install -g node-gyp
+</code></pre>
+
+<p>Take a note on &ldquo;-g&rdquo; flag which means &ldquo;Install globally&rdquo;. By default npm installs new package to current directory.</p>
+
+<p>On this step we are done with setting up Node.js.</p>
+
+<h3 id="installing-opencv">Installing OpenCV</h3>
+
+<p>OpenCV can be build as <strong>static</strong> or <strong>shared</strong>. I describe my experience using both options with Node.js:</p>
+
+<h4 id="shared">Shared</h4>
+
+<p>By default, macports install shared libraries that are linked at run-time during application load. I was able to build a bare miminum Node.js module, but when i run it i got dyld load error. Maybe it&rsquo;s necessary to tell Node somehow where to search for OpenCV libs. But i decided to put this on hold and build a static OpenCV instead.</p>
+
+<blockquote>
+<p>If you know how to fix this easily your comments and suggestions are welcome!</p>
+</blockquote>
+
+<h4 id="static">Static</h4>
+
+<p>Building OpenCV as static libs is very trivial if you used CMake. Here is full stack of commands that clone latests OpenCV snapshot and build the final distribution package:</p>
+
+<p>Upon completition you shoudl have a folder named <code>opencv-node-bin</code> with following contents:</p>
+
+<h3 id="writing-your-first-c-module-for-node-js">Writing your first C++ Module for Node.js</h3>
+
+<p>It&rsquo;s actuall a very easy to interop between JavaScript and C++, since JS uses V8 engine which is written in C++ too. I used the <a href="http://nodejs.org/api/addons.html">official documentation</a> and <a href="https://github.com/kkaefer/node-cpp-modules">good examples</a> by Konstantin Käfer.</p>
+
+<p>Node.js uses it&rsquo;s own build system to C++ modules - <strong>node-gyp</strong>.</p>
+
+<p>There is a .gyp file which contains build options of your module. A GYP file is looks like JSON-like file where you specify your build targets.</p>
+
+<p><strong><em>binding.gyp</em></strong></p>
+
+<pre><code>{
+  &quot;targets&quot;: [
+    {
+      &quot;target_name&quot;: &quot;cv&quot;,
+      &quot;sources&quot;: [ &quot;main.cpp&quot; ],
+      &quot;include_dirs&quot;: [ &quot;/users/BloodAxe/Develop/opencv-node-bin/lib/inlcude/&quot; ],  
+      &quot;link_settings&quot;: {
+                        'libraries':    ['-lopencv_core -lopencv_features2d -lopencv_contrib'],
+                        'library_dirs': ['/users/BloodAxe/Develop/opencv-node-bin/lib/'],
+                       },
+    }
+  ]
+}
+</code></pre>
+
+<p>Let&rsquo;s look at it in more details:</p>
+
+<ul>
+<li>We define a single target with name <code>cv</code>.</li>
+<li>The target includes a single source file <code>main.cpp</code>.</li>
+<li>We adjust <code>include_dirs</code> and <code>link_settings</code> options to point our static OpenCV build.</li>
+</ul>
+
+<p>Second mandatory file is package.json - it contains meta-information about our module:</p>
+
+<p><strong>package.json</strong></p>
+
+<pre><code>{
+    &quot;name&quot;: &quot;cv&quot;,
+    &quot;version&quot;: &quot;1.0.0&quot;,
+    &quot;main&quot;: &quot;./build/Release/cv&quot;
+}
+</code></pre>
+
+<p>Finally, a source code of our module. For sake of simplicity, let&rsquo;s export a single function that prints OpenCV build information from Node.js:</p>
+
+<p><strong>main.cpp</strong></p>
+
+<p>To build your module you can write the following command (assuming your current directory contains binding.gyp):</p>
+
+<pre><code>npm build .
+</code></pre>
+
+<p>If you see the following output - your Node.js module that uses OpenCV has been built!</p>
+
+<p>Now it&rsquo;s time to check how it works.</p>
+
+<p>Here is a simple run script:</p>
+
+<p><strong><em>run.js</em></strong></p>
+
+<pre><code>var cv = require('./build/Release/cv');
+
+console.warn(cv.buildInformation());
+</code></pre>
+
+<p>To run it:</p>
+
+<pre><code>node run.js
+</code></pre>
+
+<h2 id="summary">Summary</h2>
+
+<p>I hope after reading this post you understood how to write a simple OpenCV wrapper for Node.js. In the next tutorial i will show how to perform simple image processing inside our Node module. Your comments for this post are welcome!</p>
+
+<p>You can find an bare minimum Node.js module example here: <strong><a href="https://github.com/BloodAxe/CloudCV/tree/bare-minimum">OpenCV module for Node.js</a></strong>.</p>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/opencv/">opencv</a>
+            
+                 <a href="/tags/nodejs/">nodejs</a>
+            
+                 <a href="/tags/cloudcv/">cloudcv</a>
+            
+                 <a href="/tags/cloud-computing/">cloud-computing</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=Cloud%20image%20processing%20using%20OpenCV%20and%20Node.js&url=https%3a%2f%2fexample.com%2f2013-08-19-cloud-image-processing-using-opencv-and-node-js%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2f2013-08-19-cloud-image-processing-using-opencv-and-node-js%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2f2013-08-19-cloud-image-processing-using-opencv-and-node-js%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

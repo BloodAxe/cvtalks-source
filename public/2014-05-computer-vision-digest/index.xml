@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2014-05-computer-vision-digest-rsses on Ghostwriter example</title>
+    <link>https://example.com/2014-05-computer-vision-digest/index.xml</link>
+    <description>Recent content in 2014-05-computer-vision-digest-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Fri, 30 May 2014 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2014-05-computer-vision-digest/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Computer vision Digest - May 2014</title>
+      <link>https://example.com/2014-05-computer-vision-digest/</link>
+      <pubDate>Fri, 30 May 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2014-05-computer-vision-digest/</guid>
+      <description>
+
+&lt;p&gt;This is a first issue of monthly computer vision digest - a list things that you don&amp;rsquo;t wanna miss, a list of what happened
+in computer vision in May 2014.&lt;/p&gt;
+
+&lt;p&gt;In this issue:
+ - &lt;a href=&#34;#1&#34;&gt;Browser image processing - how fast is it?&lt;/a&gt;
+ - &lt;a href=&#34;#2&#34;&gt;Object recognition using neural networks via JavaScript&lt;/a&gt;
+ - &lt;a href=&#34;#3&#34;&gt;NASA shares it&amp;rsquo;s own computer vision library&lt;/a&gt;
+ - &lt;a href=&#34;#4&#34;&gt;Easy optimization of image processing pipelines using decoupling algorithms&lt;/a&gt;
+ - &lt;a href=&#34;#5&#34;&gt;OpenCV Apparel Store&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more clearfix&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&#34;1&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;browser-image-processing-how-fast-is-it&#34;&gt;Browser image processing - how fast is it?&lt;/h2&gt;
+
+&lt;p&gt;Real-time image processing gets more and more demanded and popular since computer power grows and now it&amp;rsquo;s possible to decode video, apply additional filters in real-time to play HD video smoothly. On desktop platforms this is not a &amp;ldquo;wow&amp;rdquo; anymore. In contrast, in web we cannot brag such results. So, Russian-speaking readers can stop reading here and visit original article: &lt;a href=&#34;http://habrahabr.ru/post/221619/&#34;&gt;Оценка возможности постобработки видео в браузере&lt;/a&gt;. For others I wrote a translation of this post in a free form with my 5 cents.&lt;/p&gt;
+
+&lt;p&gt;Strictly speaking there are two options at the moment: either we use JavaScripts (pure JS, Asm.js or SIMD.js) or apply WebGL to utilize GPU.&lt;/p&gt;
+
+&lt;h3 id=&#34;javascript-way&#34;&gt;JavaScript way&lt;/h3&gt;
+
+&lt;p&gt;The image processing in JavaScript using Canvas.getImageData is slow like hell. On 1080p frames, getting frame-buffer from canvas can take up to 30ms on the desktop.
+Regardless of the JavaScript runtime performance, the limiting factor for large images is Canvas - at the moment it is not optimized for frequent read/write access.&lt;/p&gt;
+
+&lt;p&gt;This is not all bad news - JavaScript is slow regardless of Canvas. Simple 3x3 box blur needs approximately 400ms to process single image frame:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;function blur(source, width, height) {
+    function blur_core(ptr, offset, stride) {
+        return (ptr[offset - stride - 4] +
+                ptr[offset - stride] +
+                ptr[offset - stride + 4] +
+                ptr[offset - 4] +
+                ptr[offset] +
+                ptr[offset + 4] +
+                ptr[offset + stride - 4] +
+                ptr[offset + stride] +
+                ptr[offset + stride + 4]
+                ) / 9;
+    }
+
+    var stride = width * 4;
+    for (var y = 1; y &amp;lt; (height - 1); ++y) {
+        var offset = y * stride;
+        for (var x = 1; x &amp;lt; stride - 4; x += 4) {
+            source[offset] = blur_core(source, offset, stride);
+            source[offset + 1] = blur_core(source, offset + 1, stride);
+            source[offset + 2] = blur_core(source, offset + 2, stride);
+            offset += 4;
+        }
+    }
+}  
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;asm-js&#34;&gt;asm.js&lt;/h3&gt;
+
+&lt;p&gt;This JavaScript subset from Mozilla pretends to be extraordinarily optimizable code. This sub-language effectively describes a safe virtual machine for memory-unsafe languages like C or C++. A combination of static and dynamic validation allows JavaScript engines to employ an ahead-of-time (AOT) optimizing compilation strategy for valid asm.js code.&lt;/p&gt;
+
+&lt;p&gt;Well, it&amp;rsquo;s hard to say writing asm.js code is fun. Be prepared to write code like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;for (i = 1; (i | 0) &amp;lt; (ntp | 0); i = (i | 0) + 1 | 0) {
+    // tp[i] = 2 * tp[i - 1]
+    tp[(i &amp;lt;&amp;lt; 3) &amp;gt;&amp;gt; 3] = +(+2 * tp[((i - 1) &amp;lt;&amp;lt; 3) &amp;gt;&amp;gt; 3]);
+}  
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Or this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;function f(x, y) {
+    // SECTION A: parameter type declarations
+    x = x|0;      // int parameter
+    y = +y;       // double parameter
+
+    // SECTION B: function body
+    log(x|0);     // call into FFI -- must force the sign
+    log(y);       // call into FFI -- already know it&#39;s a double
+    x = (x+3)|0;  // signed addition
+
+    // SECTION C: unconditional return
+    return ((((x+1)|0)&amp;gt;&amp;gt;&amp;gt;0)/(x&amp;gt;&amp;gt;&amp;gt;0))|0; // compound expression
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And all you get for this hard to read code is 2x speed-up. Not impressed.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;macro4b.png&#34; alt=&#34;Asm.js performance&#34; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;simd-js&#34;&gt;SIMD.js&lt;/h3&gt;
+
+&lt;p&gt;This one works only in Firefox Nightly builds and Chrome, and utilize parallelism to deliver high performance within a constrained power budget.  Through Single Instruction, Multiple Data (SIMD) instructions, processors exploit the fine-grained parallelism in applications by simultaneously processing the same operation on multiple data items, delivering major performance improvements at high power efficiency. SIMD is particularly applicable to common computations in image/audio/video processing including computer vision and perceptual computing.&lt;/p&gt;
+
+&lt;p&gt;This library promised up for 400% speedups using floating-point computing:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;simd_in_firefox-623x261.jpg&#34; alt=&#34;SIMD.js in Firefox&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The API looks much better:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;image003_0.png&#34; alt=&#34;API&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Did I mention that SIMD.js was made by &lt;a href=&#34;https://01.org/node/1495&#34;&gt;Intel&lt;/a&gt;?&lt;/p&gt;
+
+&lt;h3 id=&#34;webgl&#34;&gt;WebGL&lt;/h3&gt;
+
+&lt;p&gt;This is orthogonal to what we considered before. WebGL is an API to GPU, and native OpenGL driver. Initially it was intented to be used in 3G graphics and gaming, but no one can prevent you to utilize General Purpose GPU (GPGPU) for image processing. Unfortunately, you will have to write shaders in very limited GLSL shading language which lacks of many cool features that are present in CUDA or OpenCL. But still, it is much faster than CPU way.&lt;/p&gt;
+
+&lt;h3 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;At this moment, the only reasonable technology you may want to consider for real-time image processing is WebGL. You can think about CPU image processing only if you need to process small images or there is no neeed to fit in real-time.
+&lt;hr /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&#34;2&#34; &gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;object-recognition-using-neural-networks-via-javascript&#34;&gt;Object recognition using neural networks via JavaScript&lt;/h2&gt;
+
+&lt;p&gt;It can take years to master neural networks. Researchers spend enormous amount of time and efforts to study them and train networks to make them remember, predict and learn.
+Neural networks are good for object recognition purpose when you have a fixed set of objects you want to recognize. In this sense they are like Haar Cascades. In contrast, NN can distinguis between 1000 object categories, while Haar Cascade classifier used to detect a single kind of object that can vary (The most popular use of cascades - face detection).&lt;/p&gt;
+
+&lt;p&gt;To demonstrate you the potential of NN, here is one example from &lt;a href=&#34;http://www.image-net.org/challenges/LSVRC/2012/results.html&#34;&gt;Large Scale Visual Recognition Challenge 2012&lt;/a&gt;:
+The SuperVision team won the &lt;em&gt;first place&lt;/em&gt; using deep convolutional neural network trained on raw RGB  pixel values. The neural network, which has 60 million parameters and 650,000 neurons, consists of five convolutional layers, some of which are followed by max-pooling layers, and three globally-connected layers with a final 1000-way softmax.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;It was trained on two NVIDIA GPUs for about a week.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;This is the price NN users pay for quality. But it worth of it.&lt;/p&gt;
+
+&lt;p&gt;Recenty I came across the interesting project that offers you a read-to-use implementation of similar implementation of Krizhevsky architecture in form of SDK for iOS, Android and even JavaScript!&lt;/p&gt;
+
+&lt;p&gt;&lt;iframe src=&#34;//player.vimeo.com/video/91460768&#34; width=&#34;500&#34; height=&#34;281&#34; frameborder=&#34;0&#34; webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt; &lt;p&gt;&lt;a href=&#34;http://vimeo.com/91460768&#34;&gt;Deep Belief SDK Demo&lt;/a&gt; from &lt;a href=&#34;http://vimeo.com/petewarden&#34;&gt;Pete Warden&lt;/a&gt; on &lt;a href=&#34;https://vimeo.com&#34;&gt;Vimeo&lt;/a&gt;.&lt;/p&gt;&lt;/p&gt;
+
+&lt;p&gt;So, please welcome &lt;a href=&#34;https://www.jetpac.com/developer&#34;&gt;Deep Belief SDK&lt;/a&gt;.
+&lt;hr /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&#34;3&#34; &gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;nasa-shares-it-s-own-computer-vision-library&#34;&gt;NASA shares it&amp;rsquo;s own computer vision library&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;Cev_launch.jpg&#34; alt=&#34;NASA ASR&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The NASA Vision Workbench (VW) is a general purpose image processing and computer vision library developed by the Autonomous Systems and Robotics (ASR) Area in the Intelligent Systems Division at the NASA Ames Research Center. VW has been publicly released under the terms of the NASA Open Source Software Agreement.&lt;/p&gt;
+
+&lt;p&gt;The Vision Workbench was implemented in the C++ programming language and makes extensive use of C++ templates and generative programming techniques for conciseness of expression, efficiency of operation, and generalization of implementation.&lt;/p&gt;
+
+&lt;p&gt;I suggest for everyone who works in computer vision to look at the source code of this library. The design of this library is very unusual - you will not find a direct memory
+access there. Instead, all algorithms uses iterators, locators and templates. This produce a clean and very self-explanatory code:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;template &amp;lt;class SrcT, class DestT&amp;gt;
+void convolve_1d( SrcT const&amp;amp; src, DestT const&amp;amp; dest, std::vector&amp;lt;KernelT&amp;gt; const&amp;amp; kernel ) const {
+  typedef typename SrcT::pixel_accessor SrcAccessT;
+  typedef typename DestT::pixel_accessor DestAccessT;
+  typedef typename DestT::pixel_type DestPixelT;
+  typedef typename CompoundChannelType&amp;lt;DestPixelT&amp;gt;::type channel_type;
+
+  VW_ASSERT( src.planes() == dest.planes(), ArgumentErr() &amp;lt;&amp;lt; &amp;quot;convolve_1d: Images should have the same number of planes&amp;quot; );
+
+  SrcAccessT splane = src.origin();
+  DestAccessT dplane = dest.origin();
+  for( int32 p=0; p&amp;lt;dest.planes(); ++p ) {
+    SrcAccessT srow = splane;
+    DestAccessT drow = dplane;
+    for( int32 y=0; y&amp;lt;dest.rows(); ++y ) {
+      SrcAccessT scol = srow;
+      DestAccessT dcol = drow;
+      for( int32 x=0; x&amp;lt;dest.cols(); ++x ) {
+        *dcol = channel_cast_clamp_if_int&amp;lt;channel_type&amp;gt;( correlate_1d_at_point( scol, kernel.rbegin(), kernel.size() ) );
+        scol.next_col();
+        dcol.next_col();
+      }
+      srow.next_row();
+      drow.next_row();
+    }
+    splane.next_plane();
+    dplane.next_plane();
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I recommend to take a look in this library to improve your language skills and have look on alternative approach how computer vision library can looks like.&lt;/p&gt;
+
+&lt;p&gt;Github: &lt;a href=&#34;https://github.com/nasa/visionworkbench&#34;&gt;nasa/visionworkbench&lt;/a&gt;.
+&lt;hr /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&#34;4&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;easy-optimization-of-image-processing-pipelines-using-decoupling-algorithms&#34;&gt;Easy optimization of image processing pipelines using decoupling algorithms&lt;/h2&gt;
+
+&lt;p&gt;Take a look on picture below. Which code you find easier to percept? Both produce identical results, they have equal speed. But which one is easier to read and understand?&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;halide_vs_cpp.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Very often I find myself thinking about how bored I am with tuning function with SSE, NEON or Assembly language. Real-time image processing requires you to count every millisecond, so sometimes you have to optimize slow functions, change a pipeline to &amp;lsquo;fuse&amp;rsquo; results or modify data flow to ensure better data locality. SIMD, GPGPU are good, not doubts. But they does not provide a final solution to fundamental problem - in my opinion, imperative approach limit the way you implement particular algorithm.&lt;/p&gt;
+
+&lt;p&gt;There is a great idea - to separate Algorithm from it&amp;rsquo;s Implementation. Why this matters?
+ - Writing fast image processing pipelines is hard
+ - C-parallelism + tiling + fusion are hard to write or automate
+ - CUDA, OpenCL, shaders - data parallelism is easy, fusion is hard
+ - BLAS, IPP, OpenCV, MKL - optimized kernels compose into inefficient pipelines (no fusion)&lt;/p&gt;
+
+&lt;p&gt;Proposed solution: Decouple Algorithm from Schedule&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Algorithm&lt;/em&gt; defines &lt;em&gt;what&lt;/em&gt; is computed.
+&lt;em&gt;Schedule&lt;/em&gt; defines &lt;em&gt;where&lt;/em&gt; and &lt;em&gt;when&lt;/em&gt; it&amp;rsquo;s computed.&lt;/p&gt;
+
+&lt;p&gt;Such decoupling lets developers a to build pipelines easy by defining a pure functions that operates on data in easy and clean way. No need to worry on tiling, parallelism and fusion. From the other side it will let the compiler to generate fast code.&lt;/p&gt;
+
+&lt;p&gt;I want present you Halide - the image processing language that let&amp;rsquo;s you to write highly efficient code with less headache. Just compare two implementations of&lt;/p&gt;
+
+&lt;p&gt;Here is an example written in Halide:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;halide-blur3x3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Even without experience with Halide, it is more or less clear what this code does. The Algorithm is separated from Schedule in very elegant way. During compilation stage,
+Halide compiler will generate C++ code for particular platform.&lt;/p&gt;
+
+&lt;h3 id=&#34;presentation-slides-on-halide-language&#34;&gt;Presentation slides on Halide language:&lt;/h3&gt;
+
+&lt;script async class=&#34;speakerdeck-embed&#34; data-id=&#34;50622b92b4c3d10002018c4b&#34; data-ratio=&#34;1.77777777777778&#34; src=&#34;//speakerdeck.com/assets/embed.js&#34;&gt;&lt;/script&gt; 
+
+&lt;p&gt;Original article: &lt;a href=&#34;http://people.csail.mit.edu/jrk/halide12/&#34;&gt;Decoupling algorithms from schedules for easy optimization of image processing pipelines&lt;/a&gt;.
+&lt;hr /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&#34;5&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;opencv-apparel-store&#34;&gt;OpenCV Apparel Store&lt;/h2&gt;
+
+&lt;p&gt;This is less technical topic for the end of this digest. If you feel ok to support OpenCV open-source library - this one is for you.
+What about having a T-shirt or hoodie with OpenCV logo?&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;l26503.jpg&#34; alt=&#34;OpenCV Hoodie&#34; /&gt;
+&lt;img src=&#34;lst30665.jpg&#34; alt=&#34;OpenCV Hoodie&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;A nice way to say &amp;ldquo;thanks&amp;rdquo; to OpenCV team :)&lt;/p&gt;
+
+&lt;p&gt;Store webpage: &lt;a href=&#34;http://fhstore.com/shopping/FHShop2.aspx?PON=74808&amp;amp;CON=75944&amp;amp;SCN=19&amp;amp;CN=76&amp;amp;ASN=&amp;amp;VSN=&amp;amp;AC=&#34;&gt;OpenCV Apparel Store&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-end&#34;&gt;The End&lt;/h2&gt;
+
+&lt;p&gt;That&amp;rsquo;s all folks! I hope you enjoyed this digest. Please, leave your and feedbacks in comments. Please let me know if you interested in getting this digest on regular basis!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

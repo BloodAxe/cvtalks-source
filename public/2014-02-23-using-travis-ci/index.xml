@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2014-02-23-using-travis-ci-rsses on Ghostwriter example</title>
+    <link>https://example.com/2014-02-23-using-travis-ci/index.xml</link>
+    <description>Recent content in 2014-02-23-using-travis-ci-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Sun, 23 Feb 2014 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2014-02-23-using-travis-ci/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Using Travis-CI for continuous testing your projects</title>
+      <link>https://example.com/2014-02-23-using-travis-ci/</link>
+      <pubDate>Sun, 23 Feb 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2014-02-23-using-travis-ci/</guid>
+      <description>&lt;p&gt;img.img-thumbnail.pull-left(src=&amp;ldquo;travis-logo.png&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;p
+    | In this post i will show you how i implemented continuous integration and testing in my&lt;br /&gt;
+    a(href=&amp;ldquo;&lt;a href=&#34;http://cloudcv.io&amp;quot;&#34;&gt;http://cloudcv.io&amp;quot;&lt;/a&gt;) CloudCV
+    |  project. Healthy unit tests and easy and continuous integration workflow is a must in any project goes beyound &amp;ldquo;Hello, world&amp;rdquo; application.
+    | Today software is a mixture of technologies of all kind. Therefore it can break literally everywhere. Each integration point is a place of risk.
+    | The CloudCV has a C++ backend that is using OpenCV library, it&amp;rsquo;s front-end is written in Node.js, they both using V8 JavaScript engine and libuv
+    | library to execute jobs asynchronously. Below you&amp;rsquo;ll find a solution how i implemented CI and unit testing for this project.&lt;/p&gt;
+
+&lt;p&gt;span.more&lt;/p&gt;
+
+&lt;p&gt;p
+    a(href=&amp;ldquo;&lt;a href=&#34;https://travis-ci.org&amp;quot;&#34;&gt;https://travis-ci.org&amp;quot;&lt;/a&gt;) Travis-CI
+    |  is a continuous integration platform for almost any project. It supports C, C++, Closure, Erlang, Haskell, Scala, PHP, Ruby, Python, Java and JavaScript and many other languages.
+    | You probably saw any of these images on the landing page on some GitHub repositories:
+    img(src=&amp;ldquo;buildpassing.png&amp;rdquo;)
+    img(src=&amp;ldquo;buildfailing.png&amp;rdquo;)
+    | These are build status indicators that display the last build results of a repository.
+    | Travis-CI can run tests after each commit so you can know where exactly the problem is.&lt;/p&gt;
+
+&lt;p&gt;div.alert.alert-success
+    p And by the way - it&amp;rsquo;s free for open-source projects!&lt;/p&gt;
+
+&lt;p&gt;h2 Adding Travis-CI to your project&lt;/p&gt;
+
+&lt;p&gt;p
+    | Technically, Travis-CI runs build job in a temporary virtual instance that is created for your project and deleted after it finish CI tasks.
+    | There is no persistentcy between consecutive builds.
+    | To add Travis-CI to your project you may want to do two steps:
+    ul
+        li Add a &amp;ldquo;.travis.yml&amp;rdquo; manifest file to the root of your repository
+        li Register your repository in Travis-CI website.&lt;/p&gt;
+
+&lt;p&gt;h3 Writing your first Travis-CI manifest&lt;/p&gt;
+
+&lt;p&gt;p
+    | Travis manifest is a YAML file that define how to build the code in your repository, what is the programming language, which dependencies your project has.
+    | For example, you may want to install third-party dependencies, or create dummy database for unit tests. That all you can do with manifest file.&lt;/p&gt;
+
+&lt;p&gt;p
+    | Let&amp;rsquo;s take a look on Travis-CI manifest for CloudCVBacked. This project is written in C++, it has two library dependencies: OpenCV and Node.js.
+    | Here i will show a full listing of my manifest and explain it line by line:&lt;/p&gt;
+
+&lt;p&gt;pre.
+    language: node_js
+    before_install:
+     - sudo apt-get install build-essential
+     - curl -sL &lt;a href=&#34;https://github.com/Itseez/opencv/archive/2.4.6.1.zip&#34;&gt;https://github.com/Itseez/opencv/archive/2.4.6.1.zip&lt;/a&gt; &amp;gt; opencv.zip
+     - unzip opencv.zip
+     - rm opencv.zip
+     - mkdir opencv-build
+     - cd opencv-build/
+     - cmake -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_DOCS=OFF -DBUILD_EXAMPLES=OFF -DBUILD_opencv_java=OFF -DBUILD_JASPER=ON -DWITH_JASPER=ON -DBUILD_ZLIB=ON -DBUILD_SHARED_LIBS=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DWITH_OPENEXR=OFF -DBUILD_PNG=ON -DWITH_PNG=ON -DWITH_TIFF=ON -DBUILD_TIFF=ON -DWITH_WEBP=OFF -DWITH_JPEG=ON -DBUILD_JPEG=ON ../opencv-2.4.6.1/
+     - sudo make install
+     - cd ..&lt;/p&gt;
+
+&lt;p&gt;p
+    | The first line define the programming language we will use. It is the most important instruction since it affects the build environment.
+    | For example, &amp;ldquo;node_js&amp;rdquo; option will create a virtual machine with a pre-installed
+    | Node.js. In addition, it will tell Travis-CI to use package.json file for further build instruction.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;pre language: node_js
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;p.info
+    | You can specify a set of Node.js versions you want to test. This is called a
+    a(href=&amp;ldquo;&lt;a href=&#34;http://docs.travis-ci.com/user/build-configuration/#The-Build-Matrix&amp;quot;&#34;&gt;http://docs.travis-ci.com/user/build-configuration/#The-Build-Matrix&amp;quot;&lt;/a&gt;) Build Matrix
+    |. For example, in the example below we ask build server to build project on four versions of node:
+    pre language: node_js
+        | node_js:
+        |   - &amp;ldquo;0.11&amp;rdquo;
+        |   - &amp;ldquo;0.10&amp;rdquo;
+        |   - &amp;ldquo;0.8&amp;rdquo;
+        |   - &amp;ldquo;0.6&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;h4 Installing additional dependencies&lt;/p&gt;
+
+&lt;p&gt;p
+    | By default, build server uses &amp;ldquo;npm install&amp;rdquo; command to install node.js-based projects.
+    | The &amp;ldquo;npm install&amp;rdquo; itself read the package.json file and install every dependency from it using Node Pacakage Manager (npm) tool.
+    | To install non-node.js dependencies we can use &amp;ldquo;before_install&amp;rdquo; instruction to install additional software into build environment.
+    | Here we download and instal OpenCV 2.4.6.1:
+    ul
+        li First, we install build essential software (gcc, cmake, etc..)
+        ll Download stable opencv package from Github.
+        li Unzip it and go into build directory
+        li Configure OpenCV using cmake
+        li Build and install OpenCV
+pre.
+    before_install:
+     - sudo apt-get install build-essential
+     - curl -sL &lt;a href=&#34;https://github.com/Itseez/opencv/archive/2.4.6.1.zip&#34;&gt;https://github.com/Itseez/opencv/archive/2.4.6.1.zip&lt;/a&gt; &amp;gt; opencv.zip
+     - unzip opencv.zip
+     - rm opencv.zip
+     - mkdir opencv-build
+     - cd opencv-build/
+     - cmake -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_DOCS=OFF -DBUILD_EXAMPLES=OFF -DBUILD_opencv_java=OFF -DBUILD_JASPER=ON -DWITH_JASPER=ON -DBUILD_ZLIB=ON -DBUILD_SHARED_LIBS=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DWITH_OPENEXR=OFF -DBUILD_PNG=ON -DWITH_PNG=ON -DWITH_TIFF=ON -DBUILD_TIFF=ON -DWITH_WEBP=OFF -DWITH_JPEG=ON -DBUILD_JPEG=ON ../opencv-2.4.6.1/
+     - sudo make install
+     - cd ..&lt;/p&gt;
+
+&lt;p&gt;h3 Building Node.js C++ module with Travis-CI
+p
+    | When the build environment is ready (If before_install target succeeded), Travis-CI performs install task (by default it&amp;rsquo;s &amp;ldquo;npm install&amp;rdquo;). Now, it&amp;rsquo;s time for NPM to act.
+    | Each module in Node.js usually has &amp;ldquo;package.json&amp;rdquo; file.
+    | Usually it contains name, version of repository url of the module, it&amp;rsquo;s description, list of dependencies, pre/post install and test scripts.
+    | The pre-install target in CloudCVBacked builds the dynamically-linked C++ library that exports Node.js functions:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;pre 
+    | {
+    | &amp;quot;name&amp;quot;: &amp;quot;cloudcv&amp;quot;,        
+    | ...
+    | &amp;quot;scripts&amp;quot;: {
+    |     &amp;quot;preinstall&amp;quot;: &amp;quot;node-gyp clean rebuild&amp;quot;,
+    |     &amp;quot;test&amp;quot;: &amp;quot;expresso test/*&amp;quot;
+    | },
+    | 
+    | &amp;quot;devDependencies&amp;quot;: {
+    |     &amp;quot;expresso&amp;quot;: &amp;quot;*&amp;quot;
+    | },
+    | 
+    | ...
+    | }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;div.alert.alert-info
+    p To read more about using C++ and Node.js together please follow related posts:
+        ul
+            li&lt;br /&gt;
+                a(href=&amp;ldquo;&lt;a href=&#34;http://computer-vision-talks.com/articles/2013-08-27-connecting-opencv-and-node-js-inside-cloud9-ide/&amp;quot;):&#34;&gt;http://computer-vision-talks.com/articles/2013-08-27-connecting-opencv-and-node-js-inside-cloud9-ide/&amp;quot;):&lt;/a&gt; strong Connecting OpenCV and Node.js inside Cloud9 IDE
+            li
+                a(href=&amp;ldquo;&lt;a href=&#34;http://computer-vision-talks.com/articles/2013-08-19-cloud-image-processing-using-opencv-and-node-js/&amp;quot;):&#34;&gt;http://computer-vision-talks.com/articles/2013-08-19-cloud-image-processing-using-opencv-and-node-js/&amp;quot;):&lt;/a&gt; strong Cloud image processing using OpenCV and Node.js&lt;/p&gt;
+
+&lt;p&gt;h4 Node.js modules testing with expresso&lt;/p&gt;
+
+&lt;p&gt;p
+    | For testing of CloudCV I&amp;rsquo;m using
+    a(href=&amp;ldquo;&lt;a href=&#34;http://visionmedia.github.io/expresso/&amp;quot;&#34;&gt;http://visionmedia.github.io/expresso/&amp;quot;&lt;/a&gt;) Expresso
+    |  test framework. It fits my needs and doesn&amp;rsquo;t bother me with complex configuration. So i&amp;rsquo;m using it, but you&amp;rsquo;re free to use any other test framework.
+    | The Travis-CI runs &amp;ldquo;npm test&amp;rdquo; command, which in fact execute.
+    pre &amp;ldquo;expresso test/*&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;p
+    | Expresso runs all JavaScript tests in the specified folder and returns the status code to Travis-CI.
+    | If any test fails the Travis-CI job will be marked as failed and you will get a &amp;ldquo;Build Failing&amp;rdquo; notification.&lt;/p&gt;
+
+&lt;p&gt;h2 Enabling Travis-CI for your repository&lt;/p&gt;
+
+&lt;p&gt;p
+    | When you&amp;rsquo;ve added manifest file to your repository it&amp;rsquo;s time to register on travis-ci.org website and add your repository there.
+    | I&amp;rsquo;m not going to describe the registration process since it&amp;rsquo;s trivial.
+    | But i want to point you to manifest validatio tool that can save a lof of your time:&lt;br /&gt;
+    a(href=&amp;ldquo;&lt;a href=&#34;http://lint.travis-ci.org/&amp;quot;&#34;&gt;http://lint.travis-ci.org/&amp;quot;&lt;/a&gt;) Travis manifest validation tool
+    |. This page helps you to check whether your manifest is correct.&lt;/p&gt;
+
+&lt;p&gt;p
+    | After you&amp;rsquo;ve added your project to Travis-CI, it will do the rest.
+    | Each time you push changes to repository, Travis-CI will build your project and send you notification if the error occurs.&lt;/p&gt;
+
+&lt;p&gt;h2 Adding Build Status to the README&lt;/p&gt;
+
+&lt;p&gt;p
+    | One of the cool features of travis is that you can view the build status from your github repository.
+    | Open the README.md file and add the following lines.
+    | Replace GITHUB_USERNAME with your github username and PROJECT_NAME with the name of your github project.
+pre
+   | &lt;a href=&#34;https://travis-ci.org/[GITHUB_USERNAME]/[PROJECT_NAME]&#34;&gt;&lt;img src=&#34;https://travis-ci.org/[GITHUB_USERNAME]/[PROJECT_NAME].png&#34; alt=&#34;Build Status&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;p
+    | This will add the build status icon image to your readme page, so you will always know how healthy your project is.&lt;/p&gt;
+
+&lt;p&gt;img.image-thumbnail(src=&amp;ldquo;build-status.png&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;h2 Conclusion&lt;/p&gt;
+
+&lt;p&gt;p
+    | As a developer and computer vision consultant, I work with many heterogenous software/hardware platforms. I&amp;rsquo;ve been using TeamCity, Jenkins and Team Foundation as a CI and build servers.
+    | Although they provide much more features than Travis-CI does, no one can compete with Travis-CI if you want to have free, easy-to-use, no-headache continuous-integration service for your projects.
+    | It will fits well for both web-based (php, ruby, python) application, tools and libraries in C++, Python, Scala and Java.&lt;/p&gt;
+
+&lt;p&gt;h2 References
+p
+    ul
+        li: a(href=&amp;ldquo;&lt;a href=&#34;https://travis-ci.org&amp;quot;&#34;&gt;https://travis-ci.org&amp;quot;&lt;/a&gt;) Travis-CI
+        li: a(href=&amp;ldquo;&lt;a href=&#34;http://lint.travis-ci.org/&amp;quot;&#34;&gt;http://lint.travis-ci.org/&amp;quot;&lt;/a&gt;) Travis manifest validation tool
+        li: a(href=&amp;ldquo;&lt;a href=&#34;http://visionmedia.github.io/expresso/&amp;quot;&#34;&gt;http://visionmedia.github.io/expresso/&amp;quot;&lt;/a&gt;) Expresso TDD for JavaScript
+        li: a(href=&amp;ldquo;&lt;a href=&#34;http://computer-vision-talks.com/articles/2013-08-27-connecting-opencv-and-node-js-inside-cloud9-ide/&amp;quot;&#34;&gt;http://computer-vision-talks.com/articles/2013-08-27-connecting-opencv-and-node-js-inside-cloud9-ide/&amp;quot;&lt;/a&gt;) Connecting OpenCV and Node.js inside Cloud9 IDE
+        li: a(href=&amp;ldquo;&lt;a href=&#34;http://computer-vision-talks.com/articles/2013-08-19-cloud-image-processing-using-opencv-and-node-js/&amp;quot;&#34;&gt;http://computer-vision-talks.com/articles/2013-08-19-cloud-image-processing-using-opencv-and-node-js/&amp;quot;&lt;/a&gt;) Cloud image processing using OpenCV and Node.js
+br
+p.lead
+    | I hope you enjoyed reading this post. Please, describe your experience using Travis-CI in the comments. Thank you!.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

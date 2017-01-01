@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Feature descriptor comparison report &middot; My Name</title>
+        <meta name="description" content="Sharing my research work of behavior of several types of feature descriptors. This article is an update of old &ldquo;Comparison of feature descriptors&rdquo; post. I&rsquo;ve added a brand new ORB feature descriptor to the test suite, also SIFT descriptor included as well. And a new version of LAZY descriptor present in this test too.
+
+Introduction For this test i have written special test framework, which allows me to easily add the new kind of descriptors and test cases and generate report data in CSV-like format.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="Feature descriptor comparison report">
+<meta property="og:description" content="Sharing my research work of behavior of several types of feature descriptors. This article is an update of old &ldquo;Comparison of feature descriptors&rdquo; post. I&rsquo;ve added a brand new ORB feature descriptor to the test suite, also SIFT descriptor included as well. And a new version of LAZY descriptor present in this test too.
+
+Introduction For this test i have written special test framework, which allows me to easily add the new kind of descriptors and test cases and generate report data in CSV-like format.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/2011-08-19-feature-descriptor-comparison-report/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">Feature descriptor comparison report</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    
+
+<p>Sharing my research work of behavior of several types of feature descriptors. This article is an update of old &ldquo;<a href="http://computer-vision-talks.com/2011/01/comparison-of-feature-descriptors/" title="Comparison of feature descriptors">Comparison of feature descriptors</a>&rdquo; post. I&rsquo;ve added a brand new ORB feature descriptor to the test suite, also SIFT descriptor included as well. And a new version of LAZY descriptor present in this test too.</p>
+
+<p><span class="more"></span></p>
+
+<h1 id="introduction">Introduction</h1>
+
+<p>For this test i have written special test framework, which allows me to easily add the new kind of descriptors and test cases and generate report data in CSV-like format. Than i upload it in Google docs and create this awesome charts. Five quality and one performance test was done for each kind of descriptor.</p>
+
+<h1 id="test-cases">Test cases</h1>
+
+<ul>
+<li>Rotation test -  this test shows how the feature descriptor depends on feature orientation.</li>
+<li>Scaling test -  this test shows how the feature descriptor depends on feature size.</li>
+<li>Blur test -  this test shows how the feature descriptor is robust against blur.</li>
+<li>Lighting test -  this test shows how the feature descriptor is robust against lighting.</li>
+<li>Pattern detection test - this test performs detection of planar object (image) on the real video. In contrast to the synthetic tests, this test gives a real picture of the overall stability of the particular descriptor.</li>
+<li>Performance test is a measurement of description extraction time.
+All quality tests works in similar way. Using a given source image we generate a synthetic test data: transformed images corresponding feature points. The transformation algorithm depends on the particular test. For the rotation test case, it&rsquo;s the rotation of the source image around it&rsquo;s center for 360 degrees, for scaling - it&rsquo;s resizing of image from 0.25X to 2x size of original. Blur test uses gaussian blur with several steps and the lighting test changes the overall picture brightness. The pattern detection test deserves a special attention. This test is done on very complex and noisy <a href="http://www.youtube.com/watch?v=58qTQ_R4IU8&amp;feature=player_embedded">video sequence</a>. So it&rsquo;s challenging task for any feature descriptor algorithm to demonstrate a good results in this test. The metric for all quality tests is the percent of correct matches between the source image and the transformed one. Since we use planar object, we can easily select the inliers from all matches using the homography estimation. I use OpenCV&rsquo;s function cvFindHomography for this. This metric gives very good and stable results. I do no outlier detection of matches before homography estimation because this will affect the results in unexpected way. The matching of descriptors is done via brute-force matching from the OpenCV.</li>
+</ul>
+
+<h1 id="rotation-test">Rotation test</h1>
+
+<p><img src="rotation_invariantness_thumb.png" alt="Descriptor's invariance to rotation summary report" title="Descriptor's invariance to rotation summary report" /></p>
+
+<p>In this test i obtain pretty expectable results, because all descriptors are rotation invariant expect the BRIEF. Slight changes in stability can be explained by the feature orientation calculation algorithm and descriptor nature. A detailed study of why the descriptor behaves exactly as it is, takes time and effort. It&rsquo;s a topic for another article. Maybe later on&hellip;.</p>
+
+<h1 id="scaling-test">Scaling test</h1>
+
+<p><img src="scale_invariantness_thumb.png" alt="Descriptor's invariance to scaling summary report" title="Descriptor's invariance to scaling summary report" /></p>
+
+<p>SURF and SIFT descriptors demonstrate us very good stability in this test because they do expensive keypoint size calculation. Other descriptors uses fixed-size descriptor and you can see what it leads to. Currently for LAZY descriptor i do not have separate LAZY feature detector (i use ORB detector for tests) but I&rsquo;m thinking on lightweight feature detector with feature size calculation, because it&rsquo;s a must-have feature. Actually, scale invariance is much more important rather than precise orientation calculation.</p>
+
+<h1 id="blur-test">Blur test</h1>
+
+<p><img src="blur_invariantness_thumb.png" alt="Descriptor's invariance to blur summary report" title="Descriptor's invariance to blur summary report" /></p>
+
+<p>In this test i tried to simulate the motion blur which can occurs if camera moves suddenly. All descriptors demonstrate good results in this test. By “good” I mean that the more blur size is applied the less percent of correct matches is obtained. Which is expected behavior.</p>
+
+<h1 id="lighting-test">Lighting test</h1>
+
+<p><img src="lighting_invariantness_thumb.png" alt="Descriptor's invariance to lighting summary report" title="Descriptor's invariance to lighting summary report" /></p>
+
+<p>In lighting test the transformed images differs only in overall image brightness. All kinds of descriptors works well in this case. The major reason is that all descriptors extracted normalized, e.g the norm_2 of the descriptor vector equals 1. This normalization makes descriptor invariant to brightness changes.</p>
+
+<h1 id="pattern-detection-on-real-video">Pattern detection on real video</h1>
+
+<p><img src="pattern_detection_thumb.png" alt="Pattern detection test" title="Pattern detection test" /></p>
+
+<p>Detection of the object on real video is the most complex task since ground truth contains rotation, scaling and motion blur. Also other objects are also present. And finally, it’s not HD quality. These conditions are dictated by the actual conditions of application of computer vision. As you can see on diagram, the SIFT and SURF descriptors gives the best results, nevertheless they are far away from ideal, it’s quite enough for such challenging video. Unfortunately, scale-covariant descriptors show very bad results in this test because pattern image appears in 1:1 scale only at the beginning of the video (The “spike” near frame 20). On the rest of the video sequence target object moves from the camera back and scale-covariant descriptors can’t handle this situation.</p>
+
+<h1 id="performance-summary">Performance summary</h1>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/algorithms/">algorithms</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=Feature%20descriptor%20comparison%20report&url=https%3a%2f%2fexample.com%2f2011-08-19-feature-descriptor-comparison-report%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2f2011-08-19-feature-descriptor-comparison-report%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2f2011-08-19-feature-descriptor-comparison-report%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Computer vision Digest - May 2014 &middot; My Name</title>
+        <meta name="description" content="This is a first issue of monthly computer vision digest - a list things that you don&rsquo;t wanna miss, a list of what happened in computer vision in May 2014.
+In this issue: - Browser image processing - how fast is it? - Object recognition using neural networks via JavaScript - NASA shares it&rsquo;s own computer vision library - Easy optimization of image processing pipelines using decoupling algorithms - OpenCV Apparel Store">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="Computer vision Digest - May 2014">
+<meta property="og:description" content="This is a first issue of monthly computer vision digest - a list things that you don&rsquo;t wanna miss, a list of what happened in computer vision in May 2014.
+In this issue: - Browser image processing - how fast is it? - Object recognition using neural networks via JavaScript - NASA shares it&rsquo;s own computer vision library - Easy optimization of image processing pipelines using decoupling algorithms - OpenCV Apparel Store">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/2014-05-computer-vision-digest/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">Computer vision Digest - May 2014</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    
+
+<p>This is a first issue of monthly computer vision digest - a list things that you don&rsquo;t wanna miss, a list of what happened
+in computer vision in May 2014.</p>
+
+<p>In this issue:
+ - <a href="#1">Browser image processing - how fast is it?</a>
+ - <a href="#2">Object recognition using neural networks via JavaScript</a>
+ - <a href="#3">NASA shares it&rsquo;s own computer vision library</a>
+ - <a href="#4">Easy optimization of image processing pipelines using decoupling algorithms</a>
+ - <a href="#5">OpenCV Apparel Store</a></p>
+
+<p><span class="more clearfix" /></p>
+
+<p><a name="1"></a></p>
+
+<h2 id="browser-image-processing-how-fast-is-it">Browser image processing - how fast is it?</h2>
+
+<p>Real-time image processing gets more and more demanded and popular since computer power grows and now it&rsquo;s possible to decode video, apply additional filters in real-time to play HD video smoothly. On desktop platforms this is not a &ldquo;wow&rdquo; anymore. In contrast, in web we cannot brag such results. So, Russian-speaking readers can stop reading here and visit original article: <a href="http://habrahabr.ru/post/221619/">Оценка возможности постобработки видео в браузере</a>. For others I wrote a translation of this post in a free form with my 5 cents.</p>
+
+<p>Strictly speaking there are two options at the moment: either we use JavaScripts (pure JS, Asm.js or SIMD.js) or apply WebGL to utilize GPU.</p>
+
+<h3 id="javascript-way">JavaScript way</h3>
+
+<p>The image processing in JavaScript using Canvas.getImageData is slow like hell. On 1080p frames, getting frame-buffer from canvas can take up to 30ms on the desktop.
+Regardless of the JavaScript runtime performance, the limiting factor for large images is Canvas - at the moment it is not optimized for frequent read/write access.</p>
+
+<p>This is not all bad news - JavaScript is slow regardless of Canvas. Simple 3x3 box blur needs approximately 400ms to process single image frame:</p>
+
+<pre><code>function blur(source, width, height) {
+    function blur_core(ptr, offset, stride) {
+        return (ptr[offset - stride - 4] +
+                ptr[offset - stride] +
+                ptr[offset - stride + 4] +
+                ptr[offset - 4] +
+                ptr[offset] +
+                ptr[offset + 4] +
+                ptr[offset + stride - 4] +
+                ptr[offset + stride] +
+                ptr[offset + stride + 4]
+                ) / 9;
+    }
+
+    var stride = width * 4;
+    for (var y = 1; y &lt; (height - 1); ++y) {
+        var offset = y * stride;
+        for (var x = 1; x &lt; stride - 4; x += 4) {
+            source[offset] = blur_core(source, offset, stride);
+            source[offset + 1] = blur_core(source, offset + 1, stride);
+            source[offset + 2] = blur_core(source, offset + 2, stride);
+            offset += 4;
+        }
+    }
+}  
+</code></pre>
+
+<h3 id="asm-js">asm.js</h3>
+
+<p>This JavaScript subset from Mozilla pretends to be extraordinarily optimizable code. This sub-language effectively describes a safe virtual machine for memory-unsafe languages like C or C++. A combination of static and dynamic validation allows JavaScript engines to employ an ahead-of-time (AOT) optimizing compilation strategy for valid asm.js code.</p>
+
+<p>Well, it&rsquo;s hard to say writing asm.js code is fun. Be prepared to write code like this:</p>
+
+<pre><code>for (i = 1; (i | 0) &lt; (ntp | 0); i = (i | 0) + 1 | 0) {
+    // tp[i] = 2 * tp[i - 1]
+    tp[(i &lt;&lt; 3) &gt;&gt; 3] = +(+2 * tp[((i - 1) &lt;&lt; 3) &gt;&gt; 3]);
+}  
+</code></pre>
+
+<p>Or this:</p>
+
+<pre><code>function f(x, y) {
+    // SECTION A: parameter type declarations
+    x = x|0;      // int parameter
+    y = +y;       // double parameter
+
+    // SECTION B: function body
+    log(x|0);     // call into FFI -- must force the sign
+    log(y);       // call into FFI -- already know it's a double
+    x = (x+3)|0;  // signed addition
+
+    // SECTION C: unconditional return
+    return ((((x+1)|0)&gt;&gt;&gt;0)/(x&gt;&gt;&gt;0))|0; // compound expression
+}
+</code></pre>
+
+<p>And all you get for this hard to read code is 2x speed-up. Not impressed.</p>
+
+<p><img src="macro4b.png" alt="Asm.js performance" /></p>
+
+<h3 id="simd-js">SIMD.js</h3>
+
+<p>This one works only in Firefox Nightly builds and Chrome, and utilize parallelism to deliver high performance within a constrained power budget.  Through Single Instruction, Multiple Data (SIMD) instructions, processors exploit the fine-grained parallelism in applications by simultaneously processing the same operation on multiple data items, delivering major performance improvements at high power efficiency. SIMD is particularly applicable to common computations in image/audio/video processing including computer vision and perceptual computing.</p>
+
+<p>This library promised up for 400% speedups using floating-point computing:</p>
+
+<p><img src="simd_in_firefox-623x261.jpg" alt="SIMD.js in Firefox" /></p>
+
+<p>The API looks much better:</p>
+
+<p><img src="image003_0.png" alt="API" /></p>
+
+<p>Did I mention that SIMD.js was made by <a href="https://01.org/node/1495">Intel</a>?</p>
+
+<h3 id="webgl">WebGL</h3>
+
+<p>This is orthogonal to what we considered before. WebGL is an API to GPU, and native OpenGL driver. Initially it was intented to be used in 3G graphics and gaming, but no one can prevent you to utilize General Purpose GPU (GPGPU) for image processing. Unfortunately, you will have to write shaders in very limited GLSL shading language which lacks of many cool features that are present in CUDA or OpenCL. But still, it is much faster than CPU way.</p>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>At this moment, the only reasonable technology you may want to consider for real-time image processing is WebGL. You can think about CPU image processing only if you need to process small images or there is no neeed to fit in real-time.
+<hr /></p>
+
+<p><a name="2" ></a></p>
+
+<h2 id="object-recognition-using-neural-networks-via-javascript">Object recognition using neural networks via JavaScript</h2>
+
+<p>It can take years to master neural networks. Researchers spend enormous amount of time and efforts to study them and train networks to make them remember, predict and learn.
+Neural networks are good for object recognition purpose when you have a fixed set of objects you want to recognize. In this sense they are like Haar Cascades. In contrast, NN can distinguis between 1000 object categories, while Haar Cascade classifier used to detect a single kind of object that can vary (The most popular use of cascades - face detection).</p>
+
+<p>To demonstrate you the potential of NN, here is one example from <a href="http://www.image-net.org/challenges/LSVRC/2012/results.html">Large Scale Visual Recognition Challenge 2012</a>:
+The SuperVision team won the <em>first place</em> using deep convolutional neural network trained on raw RGB  pixel values. The neural network, which has 60 million parameters and 650,000 neurons, consists of five convolutional layers, some of which are followed by max-pooling layers, and three globally-connected layers with a final 1000-way softmax.</p>
+
+<p><strong>It was trained on two NVIDIA GPUs for about a week.</strong></p>
+
+<p>This is the price NN users pay for quality. But it worth of it.</p>
+
+<p>Recenty I came across the interesting project that offers you a read-to-use implementation of similar implementation of Krizhevsky architecture in form of SDK for iOS, Android and even JavaScript!</p>
+
+<p><iframe src="//player.vimeo.com/video/91460768" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> <p><a href="http://vimeo.com/91460768">Deep Belief SDK Demo</a> from <a href="http://vimeo.com/petewarden">Pete Warden</a> on <a href="https://vimeo.com">Vimeo</a>.</p></p>
+
+<p>So, please welcome <a href="https://www.jetpac.com/developer">Deep Belief SDK</a>.
+<hr /></p>
+
+<p><a name="3" ></a></p>
+
+<h2 id="nasa-shares-it-s-own-computer-vision-library">NASA shares it&rsquo;s own computer vision library</h2>
+
+<p><img src="Cev_launch.jpg" alt="NASA ASR" /></p>
+
+<p>The NASA Vision Workbench (VW) is a general purpose image processing and computer vision library developed by the Autonomous Systems and Robotics (ASR) Area in the Intelligent Systems Division at the NASA Ames Research Center. VW has been publicly released under the terms of the NASA Open Source Software Agreement.</p>
+
+<p>The Vision Workbench was implemented in the C++ programming language and makes extensive use of C++ templates and generative programming techniques for conciseness of expression, efficiency of operation, and generalization of implementation.</p>
+
+<p>I suggest for everyone who works in computer vision to look at the source code of this library. The design of this library is very unusual - you will not find a direct memory
+access there. Instead, all algorithms uses iterators, locators and templates. This produce a clean and very self-explanatory code:</p>
+
+<pre><code>template &lt;class SrcT, class DestT&gt;
+void convolve_1d( SrcT const&amp; src, DestT const&amp; dest, std::vector&lt;KernelT&gt; const&amp; kernel ) const {
+  typedef typename SrcT::pixel_accessor SrcAccessT;
+  typedef typename DestT::pixel_accessor DestAccessT;
+  typedef typename DestT::pixel_type DestPixelT;
+  typedef typename CompoundChannelType&lt;DestPixelT&gt;::type channel_type;
+
+  VW_ASSERT( src.planes() == dest.planes(), ArgumentErr() &lt;&lt; &quot;convolve_1d: Images should have the same number of planes&quot; );
+
+  SrcAccessT splane = src.origin();
+  DestAccessT dplane = dest.origin();
+  for( int32 p=0; p&lt;dest.planes(); ++p ) {
+    SrcAccessT srow = splane;
+    DestAccessT drow = dplane;
+    for( int32 y=0; y&lt;dest.rows(); ++y ) {
+      SrcAccessT scol = srow;
+      DestAccessT dcol = drow;
+      for( int32 x=0; x&lt;dest.cols(); ++x ) {
+        *dcol = channel_cast_clamp_if_int&lt;channel_type&gt;( correlate_1d_at_point( scol, kernel.rbegin(), kernel.size() ) );
+        scol.next_col();
+        dcol.next_col();
+      }
+      srow.next_row();
+      drow.next_row();
+    }
+    splane.next_plane();
+    dplane.next_plane();
+  }
+}
+</code></pre>
+
+<p>I recommend to take a look in this library to improve your language skills and have look on alternative approach how computer vision library can looks like.</p>
+
+<p>Github: <a href="https://github.com/nasa/visionworkbench">nasa/visionworkbench</a>.
+<hr /></p>
+
+<p><a name="4"></a></p>
+
+<h2 id="easy-optimization-of-image-processing-pipelines-using-decoupling-algorithms">Easy optimization of image processing pipelines using decoupling algorithms</h2>
+
+<p>Take a look on picture below. Which code you find easier to percept? Both produce identical results, they have equal speed. But which one is easier to read and understand?</p>
+
+<p><img src="halide_vs_cpp.png" alt="" /></p>
+
+<p>Very often I find myself thinking about how bored I am with tuning function with SSE, NEON or Assembly language. Real-time image processing requires you to count every millisecond, so sometimes you have to optimize slow functions, change a pipeline to &lsquo;fuse&rsquo; results or modify data flow to ensure better data locality. SIMD, GPGPU are good, not doubts. But they does not provide a final solution to fundamental problem - in my opinion, imperative approach limit the way you implement particular algorithm.</p>
+
+<p>There is a great idea - to separate Algorithm from it&rsquo;s Implementation. Why this matters?
+ - Writing fast image processing pipelines is hard
+ - C-parallelism + tiling + fusion are hard to write or automate
+ - CUDA, OpenCL, shaders - data parallelism is easy, fusion is hard
+ - BLAS, IPP, OpenCV, MKL - optimized kernels compose into inefficient pipelines (no fusion)</p>
+
+<p>Proposed solution: Decouple Algorithm from Schedule</p>
+
+<p><em>Algorithm</em> defines <em>what</em> is computed.
+<em>Schedule</em> defines <em>where</em> and <em>when</em> it&rsquo;s computed.</p>
+
+<p>Such decoupling lets developers a to build pipelines easy by defining a pure functions that operates on data in easy and clean way. No need to worry on tiling, parallelism and fusion. From the other side it will let the compiler to generate fast code.</p>
+
+<p>I want present you Halide - the image processing language that let&rsquo;s you to write highly efficient code with less headache. Just compare two implementations of</p>
+
+<p>Here is an example written in Halide:</p>
+
+<p><img src="halide-blur3x3.png" alt="" /></p>
+
+<p>Even without experience with Halide, it is more or less clear what this code does. The Algorithm is separated from Schedule in very elegant way. During compilation stage,
+Halide compiler will generate C++ code for particular platform.</p>
+
+<h3 id="presentation-slides-on-halide-language">Presentation slides on Halide language:</h3>
+
+<script async class="speakerdeck-embed" data-id="50622b92b4c3d10002018c4b" data-ratio="1.77777777777778" src="//speakerdeck.com/assets/embed.js"></script> 
+
+<p>Original article: <a href="http://people.csail.mit.edu/jrk/halide12/">Decoupling algorithms from schedules for easy optimization of image processing pipelines</a>.
+<hr /></p>
+
+<p><a name="5"></a></p>
+
+<h2 id="opencv-apparel-store">OpenCV Apparel Store</h2>
+
+<p>This is less technical topic for the end of this digest. If you feel ok to support OpenCV open-source library - this one is for you.
+What about having a T-shirt or hoodie with OpenCV logo?</p>
+
+<p><img src="l26503.jpg" alt="OpenCV Hoodie" />
+<img src="lst30665.jpg" alt="OpenCV Hoodie" /></p>
+
+<p>A nice way to say &ldquo;thanks&rdquo; to OpenCV team :)</p>
+
+<p>Store webpage: <a href="http://fhstore.com/shopping/FHShop2.aspx?PON=74808&amp;CON=75944&amp;SCN=19&amp;CN=76&amp;ASN=&amp;VSN=&amp;AC=">OpenCV Apparel Store</a>.</p>
+
+<h2 id="the-end">The End</h2>
+
+<p>That&rsquo;s all folks! I hope you enjoyed this digest. Please, leave your and feedbacks in comments. Please let me know if you interested in getting this digest on regular basis!</p>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/news/">news</a>
+            
+                 <a href="/tags/digest/">digest</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=Computer%20vision%20Digest%20-%20May%202014&url=https%3a%2f%2fexample.com%2f2014-05-computer-vision-digest%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2f2014-05-computer-vision-digest%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2f2014-05-computer-vision-digest%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

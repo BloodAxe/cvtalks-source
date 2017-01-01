@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Marshalling data in Nodejs C&#43;&#43; modules &middot; My Name</title>
+        <meta name="description" content="One of the problems I had to solve while working on CloudCV is a data marshalling from V8 engine to plain C&#43;&#43; objects and vice versa. In C&#43;&#43; add-on for Nodejs you need to parse and convert input arguments, which can be scalar types, collections and user-defined structures. Proposed library solves this task with least possible amount of headache.
+
+Example NAN_METHOD(GetFirstNPrimes) { int numberOfPrimes = Nan::Marshal&lt;int&gt;(info[0]); std::vector&lt;int&gt; primes = computeNPrimes(numberOfPrimes); info.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="Marshalling data in Nodejs C&#43;&#43; modules">
+<meta property="og:description" content="One of the problems I had to solve while working on CloudCV is a data marshalling from V8 engine to plain C&#43;&#43; objects and vice versa. In C&#43;&#43; add-on for Nodejs you need to parse and convert input arguments, which can be scalar types, collections and user-defined structures. Proposed library solves this task with least possible amount of headache.
+
+Example NAN_METHOD(GetFirstNPrimes) { int numberOfPrimes = Nan::Marshal&lt;int&gt;(info[0]); std::vector&lt;int&gt; primes = computeNPrimes(numberOfPrimes); info.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/marshalling-data-in-nodejs-c-modules/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">Marshalling data in Nodejs C&#43;&#43; modules</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    
+
+<p>One of the problems I had to solve while working on <a href="cloudcv">CloudCV</a> is a data marshalling from V8 engine to plain C++ objects and vice versa.
+In C++ add-on for Nodejs you need to parse and convert input arguments, which can be scalar types, collections and user-defined structures.
+Proposed library solves this task with least possible amount of headache.</p>
+
+<p><a name="example"></a></p>
+
+<h2 id="example">Example</h2>
+
+<pre><code class="language-cpp">NAN_METHOD(GetFirstNPrimes) {
+    
+    int numberOfPrimes = Nan::Marshal&lt;int&gt;(info[0]);
+    std::vector&lt;int&gt; primes = computeNPrimes(numberOfPrimes);
+    info.GetReturnValue().Set(Nan::Marshal(primes));
+}
+</code></pre>
+
+<p>Ok, enough words, gimme the code! All source code is available on GitHub: <a href="nan-marshal">nan-marshal</a>.</p>
+
+<p><span class="more"></more></p>
+
+<p><a name="requirements"></a></p>
+
+<h2 id="requirements">Requirements</h2>
+
+<p>By tradition, native add-ons for Node are built with GYP build system. So you should install node-gyp package: <code>npm install -g node-gyp</code>.
+This module requires [Nan][nan] package. If you are not using [Nan][nan] already for writing C++ add-ons for Nodejs I strongly advise you to start doing that. Anyway, <code>npm install --save nan</code> is a right way to start.</p>
+
+<p><a name="usage"></a></p>
+
+<h2 id="usage">Usage</h2>
+
+<p>Simply add <strong>nan-marshal</strong> as a dependency module to <em>package.json</em> of your Node add-on:</p>
+
+<pre><code class="language-bash">$ npm install --save nan-marshal
+</code></pre>
+
+<p>Add include directories for <strong>NAN</strong> and <strong>NAN-Marshal</strong> in your <em>binding.gyp</em> so that you can use <code>#include &lt;nan-marshal.h&gt;</code> in your <em>.cpp</em> files:</p>
+
+<pre><code class="language-python">&quot;include_dirs&quot; : [
+    &quot;&lt;!(node -e \&quot;require('nan')\&quot;)&quot;,
+    &quot;&lt;!(node -e \&quot;require('nan-marshal')\&quot;)&quot;
+]
+</code></pre>
+
+<p>This works like a <code>-I&lt;path-to-nan-marshal&gt;</code> when compiling your add-on.</p>
+
+<p><a name="api"></a></p>
+
+<h2 id="api">API</h2>
+
+<p>There is a single all-purpose function: <code>Nan::Marshal</code>. To convert from V8 object to C++ type, use it as follows: <code>Nan::Marshal&lt;Dst&gt;(V8 object)</code>.
+To convert from C++ to V8 object: <code>Nan::Marshal(..)</code>.</p>
+
+<p><code>Nan::Marshal</code> supports following types out of the box:
+- Built-in C++ types
+- std::string
+- std::vector
+- std::map
+- std::shared_ptr
+- Marshalling of used-defined types (There are intrusive and non-intrusive options available)</p>
+
+<p>For built-in and STL types, use is straightforward:</p>
+
+<pre><code class="language-cpp">Local&lt;Value&gt; arg1 = info[0];
+// Marshal from V8 to C++ type
+std::string msg = Nan::Marshal&lt;std::string&gt;(arg1);
+
+// Marshal from C++ to V8
+info.GetReturnValue().Set(Nan::Marshal(msg));
+</code></pre>
+
+<p>User-defined serialization inspired by boost::serialization approach and you will find it similar and easy-to-use. Here&rsquo;s quick example of non-intrusive serialization of the OpenCV data type:</p>
+
+<pre><code class="language-cpp">namespace Nan
+{
+    namespace marshal
+    {
+        template&lt;typename T&gt;
+        struct Serializer &lt; cv::Rect_&lt;T&gt; &gt;
+        {
+            template&lt;typename InputArchive&gt;
+            static inline void load(InputArchive&amp; ar, cv::Rect_&lt;T&gt;&amp; val)
+            {
+                ar &amp; make_nvp(&quot;x&quot;, val.x);
+                ar &amp; make_nvp(&quot;y&quot;, val.y);
+                ar &amp; make_nvp(&quot;width&quot;, val.width);
+                ar &amp; make_nvp(&quot;height&quot;, val.height);
+            }
+
+            template&lt;typename OutputArchive&gt;
+            static inline void save(OutputArchive&amp; ar, const cv::Rect_&lt;T&gt;&amp; val)
+            {
+                ar &amp; make_nvp(&quot;x&quot;, val.x);
+                ar &amp; make_nvp(&quot;y&quot;, val.y);
+                ar &amp; make_nvp(&quot;width&quot;, val.width);
+                ar &amp; make_nvp(&quot;height&quot;, val.height);
+            }
+        };
+    }
+}
+</code></pre>
+
+<p>Having a snippet above in your code lets you to return JavaScript object like <code>{ x:12, y:13, width:124, height: 144 }</code> from C++ code. The same is true for V8 -&gt; C++ marshalling. Nan::Marshal will convert V8 object to desired object type.</p>
+
+<p><a name="tests"></a></p>
+
+<h2 id="tests">Tests</h2>
+
+<p>To run the tests do:</p>
+
+<pre><code class="language-sh">npm install
+npm run-script rebuild-tests
+npm test
+</code></pre>
+
+<p>Or just:</p>
+
+<pre><code class="language-sh">npm install
+npm test
+</code></pre>
+
+<p><a name="limitations"></a></p>
+
+<h2 id="limitations">Limitations</h2>
+
+<p>This library does not perform strict checking of V8 types during conversion. There is <a href="https://github.com/BloodAxe/nan-check">nan-check</a> module that serves this purpose.</p>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/nodejs/">nodejs</a>
+            
+                 <a href="/tags/cpp/">cpp</a>
+            
+                 <a href="/tags/cloudcv/">cloudcv</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=Marshalling%20data%20in%20Nodejs%20C%2b%2b%20modules&url=https%3a%2f%2fexample.com%2fmarshalling-data-in-nodejs-c-modules%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2fmarshalling-data-in-nodejs-c-modules%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2fmarshalling-data-in-nodejs-c-modules%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

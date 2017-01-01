@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ghostwriter example</title>
+    <link>https://example.com/tags/ar/index.xml</link>
+    <description>Recent content on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <atom:link href="https://example.com/tags/ar/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Future of the Augmented Reality</title>
+      <link>https://example.com/2011-02-11-future-of-the-augmented-reality/</link>
+      <pubDate>Fri, 11 Feb 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2011-02-11-future-of-the-augmented-reality/</guid>
+      <description>&lt;p&gt;Augmented reality technology grows rapidly for last two years. The huge potential this technology has not fully revealed. In the near future we expect appearance of large number of companies seeking to take a a new area in the market. More and more quality and exciting applications of augmented reality will appear. Want to know why?&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;Statistics of search queries for &amp;ldquo;Augmented Reality&amp;rdquo; gives eloquent testimony about the growing interest for this technology. For two years the Augmented Reality has become profitable. A lot of AR-advertisement, navigations, entertainment applications has been developed.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;viz_thumb.png&#34; alt=&#34;viz&#34; title=&#34;viz&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;##Google search volume for “Augmented Reality”&lt;/p&gt;
+
+&lt;p&gt;Currently, most of the applications augmented reality systems uses markers. This method is simple and primitive, but it works and makes profit. However, over time,requirements for augmented reality systems will increase and marker-based AR will lose its market share.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;regions_distribution_thumb.png&#34; alt=&#34;regions_distribution&#34; title=&#34;regions_distribution&#34; /&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;##Top regions for “Augmented Reality” keyword search&lt;/p&gt;
+
+&lt;p&gt;The development of markerless AR systems hinders greater complexity of their creation. It takes time to find new algorithms, optimization of the old solutions - in fact augmented reality involves work in real time. This means the system should process huge amount of incoming information from webcams and make rendering just for 20-30 milliseconds!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;cities_distribution_thumb.png&#34; alt=&#34;cities_distribution&#34; title=&#34;cities_distribution&#34; /&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;##Top cities for “Augmented Reality” keyword search&lt;/p&gt;
+
+&lt;p&gt;Already there are applications augmented reality systems for mobile platforms. With the development of mobile processors (especially with the release of dual-core mobile processors) market share of the augmented reality systems in mobile segment will significantly increase.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;language_distribution_thumb.png&#34; alt=&#34;language_distribution&#34; title=&#34;language_distribution&#34; /&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;##Language distribution for “Augmented Reality” searches across the world&lt;/p&gt;
+
+&lt;p&gt;Scenarios for using augmented reality are truly endless. Only imagination and your knowledge in the computer vision determine how amazing applications you can create.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Markerless Augmented Reality on iPhone</title>
+      <link>https://example.com/2011-02-04-markerless-augmented-reality-on-iphone/</link>
+      <pubDate>Fri, 04 Feb 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2011-02-04-markerless-augmented-reality-on-iphone/</guid>
+      <description>
+
+&lt;p&gt;Hello everyone! Today i want to share my results in research of markerless augmented reality. The  main idea - do fast and quality AR without those damn markers and give the ability to use real object as a target.  Markerless augmented reality is very similar to marker-based systems like ARToolkit with one major difference - such technology use real object as a target for augmentation. It can be almost any kind of objects - photos, logos, beer bottle or Cola can.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;The common pipeline is very trivial:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Estimate transformation between real-world target and virtual camera.&lt;/li&gt;
+&lt;li&gt;Render virtual objects using estimated transformation.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;The most complex part - is to find a target on video frame. Actually, algorithm you will use depends on the kind of a target. In my today&amp;rsquo;s showcase i use printed image of the graffity pattern. And i will draw the 3d model on the top of this image.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;graffiti-300x240.png&#34; alt=&#34;&#34; title=&#34;graffiti&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;For target detection i use feature descriptors. At each frame, algorithm detects keypoints (using FAST feature detector), extracts descriptors (using LAZY descriptor) and match them with reference descriptor set (from the image above). Those matches gives us all necessary information to estimate transformation between camera and target. All necessary functions exists in OpenCV. Here is screenshot from working sample running on the iPhone 3Gs:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;Screenshot-2011.02.04-10.22.36.png&#34; alt=&#34;Markerless augmented reality&#34; title=&#34;Markerless augmented reality&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;facts&#34;&gt;Facts:&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Runs at ~10 fps on iPhone 3Gs.&lt;/li&gt;
+&lt;li&gt;3rd party libs used: OpenCV, OGRE, Boost.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;further-work&#34;&gt;Further work:&lt;/h2&gt;
+
+&lt;p&gt;There are a lot of things i wish to do:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Achieve real-time (25+fps) on iPhone&lt;/li&gt;
+&lt;li&gt;Introduce two-stage algorithm (expensive initialization &amp;lt;-&amp;gt; lightweight tracking) to get significant performance boost.&lt;/li&gt;
+&lt;li&gt;Public demo in AppStore :)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;instead-of-conclusion&#34;&gt;Instead of conclusion&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;m sure that the markerless AR has a great future. With this technology we can create impressive presentations and games with seamless fusion of the real and augmented worlds. You will no more require to print some kind of markers. Just imagine - any kind of object can be a door to world of the augmented reality!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

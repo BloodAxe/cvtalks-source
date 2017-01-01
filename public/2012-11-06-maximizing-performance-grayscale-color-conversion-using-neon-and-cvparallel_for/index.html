@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Maximizing performance of CV_BGRA2GRAY conversion using NEON and cv::parallel_for &middot; My Name</title>
+        <meta name="description" content="I continue playing with powerful NEON engine in iPhone and iPad devices. Recently i bought iPhone 4S that replaced my HTC Mozart and i decided to check how to speed up BGRA to GRAY color conversion procedure using multithreading. 
+Recently Itseez announced a minor release of OpenCV 2.4.3 with a lot of new major features:
+ Added universal parallel_for implementation using various backends: TBB, OpenMP, GCD, Concurrency Improved OpenCV Manager, new Java samples framework, better camera support on Android, opencv2.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="Maximizing performance of CV_BGRA2GRAY conversion using NEON and cv::parallel_for">
+<meta property="og:description" content="I continue playing with powerful NEON engine in iPhone and iPad devices. Recently i bought iPhone 4S that replaced my HTC Mozart and i decided to check how to speed up BGRA to GRAY color conversion procedure using multithreading. 
+Recently Itseez announced a minor release of OpenCV 2.4.3 with a lot of new major features:
+ Added universal parallel_for implementation using various backends: TBB, OpenMP, GCD, Concurrency Improved OpenCV Manager, new Java samples framework, better camera support on Android, opencv2.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/2012-11-06-maximizing-performance-grayscale-color-conversion-using-neon-and-cvparallel_for/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">Maximizing performance of CV_BGRA2GRAY conversion using NEON and cv::parallel_for</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    
+
+<p>I continue playing with powerful NEON engine in iPhone and iPad devices. Recently i bought iPhone 4S that replaced my HTC Mozart and i decided to check how to speed up BGRA to GRAY color conversion procedure using multithreading.
+<span class="more"></span></p>
+
+<p>Recently Itseez announced a minor release of OpenCV 2.4.3 with a lot of new major features:</p>
+
+<ul>
+<li>Added universal parallel_for implementation using various backends: TBB, OpenMP, GCD, Concurrency</li>
+<li>Improved OpenCV Manager, new Java samples framework, better camera support on Android,</li>
+<li>opencv2.framework is now iOS6- and iPhone5- (armv7s) compatible.</li>
+</ul>
+
+<p>The rest of changes can be seen here: <a href="http://code.opencv.org/projects/opencv/wiki/ChangeLog">http://code.opencv.org/projects/opencv/wiki/ChangeLog</a>. In the past i wrote a NEON-optimized grayscale conversion algorithm (<a href="http://computer-vision-talks.com/2011/02/a-very-fast-bgra-to-grayscale-conversion-on-iphone/">http://computer-vision-talks.com/2011/02/a-very-fast-bgra-to-grayscale-conversion-on-iphone/</a>) which showed a pretty nice speed-up (About 2x times faster than cv::cvtColor(input, output, CV_BGRA2GRAY)). In this post we will use these results as a baseline and try to write something faster. To be fair we start from defining a set of rules for all implementations:</p>
+
+<ul>
+<li>We will process square images of size (8, 10, 12, 14, 16, 18, &hellip;., 1596, 1598, 1600) pixels. Processing small and big images will reveal hidden bottlenecks of each implementation.</li>
+<li>Each image will be processed 1000 to avoid measurement fluctuations.</li>
+<li>The destination image will be preallocated prior the test to exclude memory allocations influence.</li>
+<li>We use mach_absolute_time() to measure processing time. As far as i know it&rsquo;s the most precise measuring method.</li>
+</ul>
+
+<p>Our main test method looks like this:</p>
+
+<pre><code class="language-cpp">typedef void ConversionFunctionPrototype(const cv::Mat&amp; input, cv::Mat&amp; output);
+
+void testConversion(const cv::Mat&amp; input, int numRuns, int&amp; avgTimeInMicroseconds, ConversionFunctionPrototype conversionFn)
+{
+    assert(input.type() == CV_8UC4);
+    assert(input.empty() == false);
+
+    cv::Mat output(input.size(), CV_8UC1);
+
+    uint64_t conversionStart, conversionFinish;
+    uint64_t totalTime = 0;
+
+    for (int i = 0; i &lt; numRuns ; i++)
+    {
+        conversionStart = mach_absolute_time();
+        conversionFn(input, output);
+        conversionFinish = mach_absolute_time();
+
+        totalTime += (conversionFinish - conversionStart);
+    }
+
+    mach_timebase_info_data_t timebase;
+    mach_timebase_info(&amp;timebase);
+
+    avgTimeInMicroseconds = (int) ((double)totalTime * (double)timebase.numer / ((double)timebase.denom * (double)numRuns));
+}
+</code></pre>
+
+<p>The testConversion function computes the average BGRA2GRAY conversion time of the input image by doing color conversion N times (specified by numRuns argument).</p>
+
+<h2 id="opencv-implementation">OpenCV implementation</h2>
+
+<p>The reference color conversion function from OpenCV:</p>
+
+<pre><code class="language-cpp">static void convert_opencv(const cv::Mat&amp; input, cv::Mat&amp; output)
+{
+    cv::cvtColor(input, output, CV_BGRA2GRAY);
+}
+</code></pre>
+
+<h2 id="arm-neon-using-assembler">ARM NEON using assembler</h2>
+
+<p>The old assembler version of NEON-accelerated color conversion from my old post:</p>
+
+<pre><code class="language-cpp">static void convert_neon_asm_8px(const cv::Mat&amp; input, cv::Mat&amp; output)
+{
+    uint8_t __restrict * dest = output.data;
+    uint8_t __restrict * src  = input.data;
+    int numPixels             = input.total();
+
+    __asm__ volatile(&quot;lsr          %2, %2, #3      \n&quot;
+                     &quot;# build the three constants: \n&quot;
+                     &quot;mov         r4, #28          \n&quot; // Blue channel multiplier
+                     &quot;mov         r5, #151         \n&quot; // Green channel multiplier
+                     &quot;mov         r6, #77          \n&quot; // Red channel multiplier
+                     &quot;vdup.8      d4, r4           \n&quot;
+                     &quot;vdup.8      d5, r5           \n&quot;
+                     &quot;vdup.8      d6, r6           \n&quot;
+                     &quot;0:                           \n&quot;
+                     &quot;# load 8 pixels:             \n&quot;
+                     &quot;vld4.8      {d0-d3}, [%1]!   \n&quot;
+                     &quot;# do the weight average:     \n&quot;
+                     &quot;vmull.u8    q7, d0, d4       \n&quot;
+                     &quot;vmlal.u8    q7, d1, d5       \n&quot;
+                     &quot;vmlal.u8    q7, d2, d6       \n&quot;
+                     &quot;# shift and store:           \n&quot;
+                     &quot;vshrn.u16   d7, q7, #8       \n&quot; // Divide q3 by 256 and store in the d7
+                     &quot;vst1.8      {d7}, [%0]!      \n&quot;
+                     &quot;subs        %2, %2, #1       \n&quot; // Decrement iteration count
+                     &quot;bne         0b            \n&quot; // Repeat until iteration count is not zero
+                     :
+                     : &quot;r&quot;(dest), &quot;r&quot;(src), &quot;r&quot;(numPixels)
+                     : &quot;r4&quot;, &quot;r5&quot;, &quot;r6&quot;
+                     );
+}
+</code></pre>
+
+<h2 id="arm-neon-using-intrinsics">ARM NEON using intrinsics</h2>
+
+<p>You know you can write the same code using arm intrinsics? Here it is:</p>
+
+<pre><code class="language-cpp">static void convert_neon8px_int(const cv::Mat&amp; input, cv::Mat&amp; output)
+{
+    uint8_t __restrict * dest = output.data;
+    uint8_t __restrict * src  = input.data;
+    int numPixels             = input.total();
+
+    uint8x8_t rfac = vdup_n_u8 (77);
+    uint8x8_t gfac = vdup_n_u8 (151);
+    uint8x8_t bfac = vdup_n_u8 (28);
+
+    register int n = numPixels / 8;
+    uint16x8_t  temp;
+    uint8x8_t result;
+    uint8x8x4_t rgb;
+
+    for (register int i = 0; i &lt; n; i++, src += 8*4, dest += 8)
+    {
+        rgb  = vld4_u8 (src);
+
+        temp = vmull_u8 (rgb.val[0],      rfac);
+        temp = vmlal_u8 (temp,rgb.val[1], gfac);
+        temp = vmlal_u8 (temp,rgb.val[2], bfac);
+
+        result = vshrn_n_u16 (temp, 8);
+        vst1_u8 (dest, result);
+    }
+}
+</code></pre>
+
+<h2 id="parallel-neon-version">Parallel NEON version</h2>
+
+<p>Both <strong>convert_neon_asm_8px</strong> and <strong>convert_neon8px_int</strong> functions process 8 pixels at once. This color conversion function is a great candidate for multithreading optimization. Since iPhone 4S and iPad 2 have two Cortex A8 CPU we can run our color conversion in two threads. For this purpose we want to use Grand Central Dispatch mechanism from iOS. It provides easy mechanism to execute tasks in multithreaded environment. OpenCV developers offers new nice feature to perform parallel calculation - <strong>cv::parallel_for</strong>. This function provides abstraction layer between multithreading backend and user code. To use <strong>cv::parallel_for</strong> you have to implement a cv::ParallelLoopBody functor:</p>
+
+<pre><code class="language-cpp">// a base body class
+class CV_EXPORTS ParallelLoopBody
+{
+public:
+    virtual ~ParallelLoopBody();
+    virtual void operator() (const Range&amp; range) const = 0;
+};
+
+CV_EXPORTS void parallel_for_(const Range&amp; range, const ParallelLoopBody&amp; body, double nstripes=-1.);
+</code></pre>
+
+<p>Our color conversion function simply wraps the code from the ARM NEON version with slight modifications. When counting the number of pixels to process we take into account the range argument passed to the function body.</p>
+
+<pre><code>struct convert_ParallelLoopBody : public cv::ParallelLoopBody
+{
+    convert_ParallelLoopBody(const cv::Mat&amp; input, cv::Mat&amp; output)
+    : _in(input)
+    , _out(output)
+    {
+    }
+
+    void operator() (const cv::Range&amp; range) const
+    {
+        uint8_t __restrict * dest = _out.data + range.start;
+        uint8_t __restrict * src  = _in.data  + range.start * 4;
+
+        int numPixels             = range.size();
+
+        uint8x8_t rfac = vdup_n_u8 (77);
+        uint8x8_t gfac = vdup_n_u8 (151);
+        uint8x8_t bfac = vdup_n_u8 (28);
+
+        register int n = numPixels / 8;
+        uint16x8_t  temp;
+        uint8x8_t result;
+        uint8x8x4_t rgb;
+
+        for (register int i = 0; i &lt; n; i++, src += 8*4, dest += 8)
+        {
+            rgb  = vld4_u8 (src);
+
+            temp = vmull_u8 (rgb.val[0],      rfac);
+            temp = vmlal_u8 (temp,rgb.val[1
+        }
+    }
+}
+</code></pre>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/opencv/">opencv</a>
+            
+                 <a href="/tags/xcode/">xcode</a>
+            
+                 <a href="/tags/neon/">neon</a>
+            
+                 <a href="/tags/iphone/">iphone</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=Maximizing%20performance%20of%20CV_BGRA2GRAY%20conversion%20using%20NEON%20and%20cv%3a%3aparallel_for&url=https%3a%2f%2fexample.com%2f2012-11-06-maximizing-performance-grayscale-color-conversion-using-neon-and-cvparallel_for%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2f2012-11-06-maximizing-performance-grayscale-color-conversion-using-neon-and-cvparallel_for%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2f2012-11-06-maximizing-performance-grayscale-color-conversion-using-neon-and-cvparallel_for%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

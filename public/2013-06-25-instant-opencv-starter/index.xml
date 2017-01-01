@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2013-06-25-instant-opencv-starter-rsses on Ghostwriter example</title>
+    <link>https://example.com/2013-06-25-instant-opencv-starter/index.xml</link>
+    <description>Recent content in 2013-06-25-instant-opencv-starter-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Tue, 25 Jun 2013 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2013-06-25-instant-opencv-starter/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Book review: Instant OpenCV Starter</title>
+      <link>https://example.com/2013-06-25-instant-opencv-starter/</link>
+      <pubDate>Tue, 25 Jun 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2013-06-25-instant-opencv-starter/</guid>
+      <description>&lt;p&gt;A &lt;strong&gt;&lt;a href=&#34;http://www.packtpub.com/opencv-starter/book&#34;&gt;Instant OpenCV Starter**&lt;/a&gt; is a short (56 pages) guidebook to help you to start developing apps with OpenCV library. This guide is aimed for developers who are not familiar with OpenCV or want to improve their experience. **[Instant OpenCV Starter&lt;/strong&gt;]&lt;a href=&#34;http://www.packtpub.com/opencv-starter/book&#34;&gt;1&lt;/a&gt; will teach you how to set-up developer environment and build projects that use OpenCV library for both Windows and Linux platforms.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;Starting from the basics you will learn the common types used on OpenCV, basic operations on images and video processing. In particular, this guide will cover the following topics:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;OpenCV image type&lt;/li&gt;
+&lt;li&gt;Color space conversion&lt;/li&gt;
+&lt;li&gt;Image I/O&lt;/li&gt;
+&lt;li&gt;Image manipulation&lt;/li&gt;
+&lt;li&gt;Edge detection&lt;/li&gt;
+&lt;li&gt;Video processing&lt;/li&gt;
+&lt;li&gt;Image steganography&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;OpenCV has strong and healthy community and there are many places where beginner developers can look for help. In this guide book a most popular places you should visit are listed:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Official sites&lt;/li&gt;
+&lt;li&gt;Tutorials/cheat sheets/answers&lt;/li&gt;
+&lt;li&gt;Community&lt;/li&gt;
+&lt;li&gt;Twitter&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;[Instant OpenCV Starter&lt;/strong&gt;]&lt;a href=&#34;http://www.packtpub.com/opencv-starter/book&#34;&gt;1&lt;/a&gt; can come in place for a newscomers who are studying OpenCV library for the first time. This e-book guide is available for purchase for a price of cup of coffee but you get much more for this price. This book can save your time.&lt;/p&gt;
+
+&lt;p&gt;If you&amp;rsquo;re looking for more advanced topics there is a great &lt;strong&gt;[Mastering OpenCV with Practical Computer Vision Projects&lt;/strong&gt;]&lt;a href=&#34;http://www.packtpub.com/cool-projects-with-opencv/book&#34;&gt;2&lt;/a&gt; book that contains advanced examples that solve with real-world problems with help of OpenCV.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

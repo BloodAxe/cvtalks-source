@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Undocumented OpenCV &middot; My Name</title>
+        <meta name="description" content="OpenCV library is widely used by computer vision engineers across the world. It contains almost all algorithms you may want for R&amp;D or product development. It has production-ready build farm with tests and strong community that give nice feedbacks and discover errors. But nevertheless OpenCV has some strange issues and undocummented behaviour that can surprise you as minimum and crash your app as maximum.
+
+How to get diagonal matrix in OpenCV A typical parameter update computation in non-linear optimization using Levenber-Marquardt algorithm looks like this:">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="Undocumented OpenCV">
+<meta property="og:description" content="OpenCV library is widely used by computer vision engineers across the world. It contains almost all algorithms you may want for R&amp;D or product development. It has production-ready build farm with tests and strong community that give nice feedbacks and discover errors. But nevertheless OpenCV has some strange issues and undocummented behaviour that can surprise you as minimum and crash your app as maximum.
+
+How to get diagonal matrix in OpenCV A typical parameter update computation in non-linear optimization using Levenber-Marquardt algorithm looks like this:">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/2013-06-07-undocumented-opencv/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">Undocumented OpenCV</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    
+
+<p>OpenCV library is widely used by computer vision engineers across the world. It contains almost all algorithms you may want for R&amp;D or product development. It has production-ready build farm with tests and strong community that give nice feedbacks and discover errors. But nevertheless OpenCV has some strange issues and undocummented behaviour that can surprise you as minimum and crash your app as maximum.</p>
+
+<p><span class="more"></span></p>
+
+<h2 id="how-to-get-diagonal-matrix-in-opencv">How to get diagonal matrix in OpenCV</h2>
+
+<p>A typical parameter update computation in non-linear optimization using Levenber-Marquardt algorithm looks like this:</p>
+
+<pre><code class="language-cpp">cv::Mat JtJ = J.t() * J;
+x = (JtJ + lambda * JtJ.diag() ).inv(cv::DECOMP_SVD) * (J.t() * I);
+</code></pre>
+
+<p>So &lsquo;JtJ&rsquo; is a square matrix and i want to get the diagonal matrix from it. Seems correct. But hey, <strong>the member-function diag() does not return diagonal matrix</strong>! It returns a vector of diagonal elements. Really? Fine. There is a static member-function diag(), maybe it can help?</p>
+
+<pre><code class="language-cpp">x = (JtJ + lambda * cv::Mat::diag(JtJ)).inv(cv::DECOMP_SVD) * (J.t() * I);
+</code></pre>
+
+<p>Unfortunately, this is also wrong because this <strong>diag()</strong> constructs a diagonal matrix from a vector! So the correct solution to create a diagonal matrix in OpenCV is to use both diag&rsquo;s:</p>
+
+<pre><code class="language-cpp">cv::Mat d = cv::Mat::diag( m.diag() );
+</code></pre>
+
+<p>And the correct Lev-Mar update will have the following look:</p>
+
+<pre><code class="language-cpp">x = (JtJ + lambda * cv::Mat::diag(JtJ.diag())).inv(cv::DECOMP_SVD) * (J.t() * I);
+</code></pre>
+
+<h2 id="how-to-increase-speed-of-optical-flow-klt-in-opencv">How to increase speed of optical flow (KLT) in OpenCV</h2>
+
+<p>If you were using OpenCV version 1.x you should remeber there was a cvCalcOpticalFlowPyrLK function that allowed to pass image pyramids. The motivation to use precomputed image pyramids is performance gain. When you continuously tracking video frames you can save time by storing built pyramid from current frame.</p>
+
+<p>The C++ API provide the following function prototype for this:</p>
+
+<pre><code class="language-cpp">//! computes sparse optical flow using multi-scale Lucas-Kanade algorithm
+CV_EXPORTS_W void calcOpticalFlowPyrLK( InputArray prevImg, InputArray nextImg,
+                                        InputArray prevPts, InputOutputArray nextPts,
+                                        OutputArray status, OutputArray err,
+                                        Size winSize = Size(21,21), int maxLevel = 3,
+                                        TermCriteria criteria,
+                                        int flags, double minEigThreshold);
+</code></pre>
+
+<p>From the function declaration and <a href="http://docs.opencv.org/modules/video/doc/motion_analysis_and_object_tracking.html&amp;usg=AFQjCNGCeanEXmqKq5DU7dpbp1m2xo0lPA">documentation</a> it&rsquo;s visible that <em>prevImg</em> and <em>nextImg</em> are arguments for previous and next image buffers. Does it mean that you can&rsquo;t use prebuilt pyramids? No! This is not documented, but you can precompute image pyramid using <strong>cv::buildOpticalFlowPyramid</strong> like this:</p>
+
+<pre><code class="language-cpp">std::vector&lt;cv::mat&gt; prevPyr, nextPyr;
+
+// prevPyr assumed to be already initialized 
+cv::buildOpticalFlowPyramid(nextFrame, nextPyr, winSize, maxLevel, true);
+cv::calcOpticalFlowPyrLK(prevPyr, nextPyr, prevPts, nextPts, status, err, winSize, maxLevel);
+prevPyr.swap(nextPyr);
+</code></pre>
+
+<p>On my PC this trick increased performance of KLT almost twice!</p>
+
+<h2 id="cv-findhomography-can-return-empty-result">cv::findHomography can return empty result</h2>
+
+<p>The documentation of cv::findHomography does not state it, but return value of cv::findHomography was always 3x3 matrix of CV_64FC1 type. Starting from approximately 2.4.5 release <strong>cv::findHomography can return empty matrix in some cases</strong>. This seems happen only when cv::RANSAC flag is passed. This <a href="http://code.opencv.org/issues/3057">issue</a> has been reported but i suggest to check the computed homography before using it anywhere:</p>
+
+<pre><code class="language-cpp">cv::Mat h = cv::findHomography(....)
+if (!h.empty())
+{
+    // Use it
+}
+</code></pre>
+
+<h2 id="summary">Summary</h2>
+
+<p>That&rsquo;s all for now. I hope you enjoy working with OpenCV like i do. This post will be updated with new &ldquo;easter-eggs&rdquo;. Feel free to share you own discoveries.</p>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/opencv/">opencv</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=Undocumented%20OpenCV&url=https%3a%2f%2fexample.com%2f2013-06-07-undocumented-opencv%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2f2013-06-07-undocumented-opencv%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2f2013-06-07-undocumented-opencv%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

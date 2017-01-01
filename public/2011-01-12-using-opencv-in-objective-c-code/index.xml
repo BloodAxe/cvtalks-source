@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2011-01-12-using-opencv-in-objective-c-code-rsses on Ghostwriter example</title>
+    <link>https://example.com/2011-01-12-using-opencv-in-objective-c-code/index.xml</link>
+    <description>Recent content in 2011-01-12-using-opencv-in-objective-c-code-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Wed, 12 Jan 2011 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2011-01-12-using-opencv-in-objective-c-code/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Using OpenCV in Objective-C code</title>
+      <link>https://example.com/2011-01-12-using-opencv-in-objective-c-code/</link>
+      <pubDate>Wed, 12 Jan 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2011-01-12-using-opencv-in-objective-c-code/</guid>
+      <description>&lt;p&gt;After publishing &lt;a href=&#34;http://computer-vision-talks.com/2010/12/building-opencv-for-ios/&#34;&gt;Building OpenCV for iOS&lt;/a&gt; article many of readers asked me how to use OpenCV within ObjectiveC code, because they encountered compilation errors. In this post I&amp;rsquo;ll show you how to use OpenCV and ObjectiveC to make some image processing.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;div class=&#34;alert alert-danger&#34;&gt;
+    &lt;p class=&#34;lead&#34;&gt;This post is outdated&lt;/p&gt;
+    &lt;p&gt;
+    Current version of OpenCV supports iOS toolchain and can be build in much easier way. You are welcome to read this post for educational purposes. It&#39;s 99.9% chance that you will not be able to use OpenCV as described here. Please use my &lt;a href=&#34;https://github.com/BloodAxe/OpenCV-Tutorial&#34;&gt;&lt;strong&gt;OpenCV Tutorial project&lt;/strong&gt;&lt;/a&gt; if you want to learn how to use OpenCV on iOS platform.
+    &lt;/p&gt;
+&lt;/div&gt;
+
+&lt;div class=&#34;alert alert-info&#34;&gt;
+    &lt;p class=&#34;lead&#34;&gt;
+    Please use my &lt;a href=&#34;https://github.com/BloodAxe/OpenCV-Tutorial&#34;&gt;&lt;strong&gt;OpenCV Tutorial project&lt;/strong&gt;&lt;/a&gt; if you want to learn how to use OpenCV on iOS platform.
+    &lt;/p&gt;
+&lt;/div&gt;
+
+&lt;p&gt;In this post I&amp;rsquo;ll use &lt;a href=&#34;https://developer.apple.com/library/ios/#samplecode/GLImageProcessing/Introduction/Intro.html&#34;&gt;GLImageProcessing&lt;/a&gt; sample demo from Apple. Also you will need precompiled OpenCV for iPhone. How to make it read &lt;a href=&#34;http://computer-vision-talks.com/2010/12/building-opencv-for-ios/&#34;&gt;here&lt;/a&gt;. I&amp;rsquo;ve copied all OpenCV stuff to &amp;ldquo;opencv&amp;rdquo; folder into the GLImageProcessing. Here is project directory structure:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;example-directory-structure_thumb.jpg&#34; alt=&#34;example-directory-structure&#34; title=&#34;example-directory-structure&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now, let&amp;rsquo;s add OpenCV to our project. **First step - **specify the place, where the OpenCV headers are located. Add the path to OpenCV headers to the “Header Search Paths” property:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;opencv-include-headers_thumb.jpg&#34; alt=&#34;opencv-include-headers&#34; title=&#34;opencv-include-headers&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Second step&lt;/strong&gt; - set up path where the OpenCV libraries are. Please note: you will need to repeat this step for each configuration (debug/release, device/simulator) because of directory structure of the OpenCV libs. Add path of the OpenCV libraries to the “Library Search Paths” property (for release device this will be “opencv/lib/iphoneos/Release” if you follow directory structure listed above). &lt;strong&gt;Third step&lt;/strong&gt;: Tell linker to include OpenCV to the output executable:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;opencv-link-libraries_thumb.jpg&#34; alt=&#34;opencv-link-libraries&#34; title=&#34;opencv-link-libraries&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As you can see i prefer use linker flags instead using XCode UI (Targets -&amp;gt; GLImageProcessing -&amp;gt; Link Binary With Libraries -&amp;gt; Add -&amp;gt; Existing Files&amp;hellip;). There are several reasons: i prefer this way because i don&amp;rsquo;t trust XCode :) (Actually because for all my projects i use cross-platform build system which allows to do such things much easies, but this is a topic for another article). Now, add #include &lt;opencv2/opencv.hpp&gt; to header files . I’ve added this include to Imaging.h header right after #include &lt;OpenGLES/ES1/glext.h&gt;. Crossing fingers and hitting &amp;ldquo;Build and Run&amp;rdquo;&amp;hellip;..Oooops, compilation errors. Let&amp;rsquo;s see, what we can do with all those errors. First of all - &lt;strong&gt;change extensions of all .m files which include OpenCV headers to .mm&lt;/strong&gt;. This tells compiler that such file contains mixed ObjectiveC and C++ code. Also change extensions of all .c files to .cpp, because OpenCV uses STL, which is absent for pure C and thus you&amp;rsquo;ll get compilation errors. Now, only one compilation error left:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;    opencv/include/opencv2/core/core.hpp:432: error: statement-expressions are allowed only inside functions
+    opencv/include/opencv2/core/core.hpp:432: confused by earlier errors, bailing out
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;These errors are caused by MIN symbol, which is a macro in OpenCV and a function, defined somewhere in UIKit or other frameworks..Simple solution - &lt;strong&gt;include OpenCV before iOS frameworks&lt;/strong&gt;. So&amp;hellip;with all these fixes all builds fine. Now it&amp;rsquo;s time to add some OpenCV code.. Let&amp;rsquo;s change the matrix multiplication code! File Imaging.cpp&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;    // Matrix Utilities for Hue rotation
+    static void matrixmult(float a[4][4], float b[4][4], float c[4][4])
+    {
+    int x, y;
+    float temp[4][4];
+    for(y=0; y&amp;lt;4; y++)
+        for(x=0; x&amp;lt;4; x++)
+            temp[y][x] = b[y][0] * a[0][x] +
+                     b[y][1] * a[1][x] +
+                                 b[y][2] * a[2][x] +
+                                 b[y][3] * a[3][x];
+    for(y=0; y&amp;lt;4; y++)
+        for(x=0; x&amp;lt;4; x++)
+            c[y][x] = temp[y][x];
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;A little crappy code, isn&amp;rsquo;t it? Let&amp;rsquo;s rewrite it!&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;    // Matrix Utilities for Hue rotation
+    static void matrixmult(float a[4][4], float b[4][4], float c[4][4])
+    {
+        cv::Mat(4,4,CV_32FC1, c) = cv::Mat(4,4,CV_32FC1, a) * cv::Mat(4,4,CV_32FC1,b);
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;A bit of comments. cv::Mat is a type of OpenCV matrix. We initialize a matrix view, which takes data from the float&lt;a href=&#34;opencv-include-headers_thumb.jpg&#34; title=&#34;opencv-include-headers&#34;&gt;4&lt;/a&gt; array, but not copy it. Result of multiplication of two views (a and b) assigned to view c which is a result. Hit &amp;ldquo;Build and Run&amp;rdquo;, and here we go:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;Screenshot-2011.01.12-11.11.45_thumb.png&#34; alt=&#34;Screenshot 2011.01.12 11.11.45&#34; title=&#34;Screenshot 2011.01.12 11.11.45&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This is a very simple example which demonstrates that you can use OpenCV even with ObjectiveC without any problems. Good luck in your projects!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

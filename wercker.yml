@@ -2,9 +2,9 @@ box: debian
 build:
   steps:
     - arjen/hugo-build:
-        version: "0.14"
+        version: "0.18"
         theme: mainroad
-        flags: --buildDrafts=true
+        flags: --buildDrafts=true  -v --verboseLog
 deploy:
   steps:
     - install-packages:

@@ -1,0 +1,37 @@
++++
+title = "Building inplace activation-batchnorm module for Windows"
+date = "2018-06-29"
+tags =  ["pytorch", "abn", "deep_learning"]
++++
+
+InplaceABN is a new and memory-efficient implementation of Activation + BatchNormatlization step that operates inplace and 
+can save your GPU memory for bigger number of batches! On UNet architecture it reduce memory footprint by a 30%!
+
+<span class="more" />
+
+# What is InplaceABN
+
+# Why is InplaceABN
+
+# How to build InplaceABN in Linux
+
+# How to build InplaceABN in Windows
+
+1. Install Visual Studio 2017
+1. Install CUDA 9.2
+1. Patch host_config.h
+1. Build extension
+1. Modify PATH
+
+
+<div class="alert alert-info" role="alert">
+  If the algorithm needs to preserve state between calls - use class; otherwise - use function.
+</div>
+
+```
+```
+
+# References
+
+1. https://github.com/mapillary/inplace_abn
+

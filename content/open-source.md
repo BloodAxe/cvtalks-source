@@ -3,9 +3,13 @@ title = "Open-Source"
 date = "2014-04-09"
 +++
 
-You can find full list of my open-source projects under my GitHub account: https://github.com/BloodAxe
+![Github Activity](/images/github_activity_2020.png)
 
-But there are some highlights that are worth to mention here:
+You can find full list of my open-source projects under my GitHub account: https://github.com/BloodAxe. 
+However, there are some projects I worked on that are worth mentioning here:
+<br>
+<br>
+
 
 ## [PyTorch-Toolbelt](https://github.com/BloodAxe/pytorch-toolbelt)
 
@@ -27,6 +31,7 @@ Why
 Honest answer is "I needed a convenient way to re-use code for my Kaggle career". During 2018 I achieved a Kaggle Master badge and this been a long path. Very often I found myself re-using most of the old pipelines over and over again. At some point it crystallized into this repository.
 
 This lib is not meant to replace catalyst / ignite / fast.ai high-level frameworks. Instead it's designed to complement them.
+<hr>
 
 ## [Albumentations](https://github.com/BloodAxe/albumentations)
 
@@ -40,6 +45,8 @@ This fork contains few improvements/additions that I feel are necessary to have.
 Since this private fork is mainly meant for personal use I feel less obliged to keep backward compatibility with the original project.
 
 At some point it will become deprecated and transform into something new & shiny.
+
+<hr>
 
 ## [Catalyst](https://github.com/bloodAxe/catalyst)
 

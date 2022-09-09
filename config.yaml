@@ -14,19 +14,25 @@ disqusShortname: "cvtalks"
 #      URL: "https://www.linkedin.com/in/username/"
 
 enableInlineShortcodes: true
-enableRobotsTXT: true
 buildDrafts: false
 buildFuture: false
 buildExpired: false
-enableEmoji: true
 pygmentsUseClasses: true
 googleAnalytics: UA-10687369-5
+
+enableEmoji: true
+enableRobotsTXT: true
+languageCode: en
+# relativeURLs: true
 
 minify:
     disableXML: true
     # minifyOutput: true
 
-
+markup:
+    goldmark:
+        renderer:
+          unsafe: true
 
 
 
@@ -47,12 +53,12 @@ menus:
       identifier: "open-source"
       url: "/open-source"
 
-    - name: "Wins"
+    - name: "Competitions"
       weight: 250
-      identifier: "wins"
-      url: "/challenges"
+      identifier: "competitions"
+      url: "/competitions"
 
-    - name: "Publications"
+    - name: "Research"
       weight: 300
       identifier: "publications"
       url: "/publications"
@@ -61,8 +67,13 @@ menus:
 params:
     author: Eugene Khvedchenya
     title: Computer Vision Talks
-    description: A personal blog about Computer Vision, AI, Kaggle, Open-Source and research. You will never read this in books.
+    description: A personal blog about Computer Vision, AI,<br /> Kaggle, Open-Source and research. <br />You will never read this in books.
     profilePicture: images/4ECfkGJr_400x400.jpg
+    relatedPosts: true
+    numberOfRelatedPosts: 10
+    toc: true
+    # tags: true
+    doNotLoadAnimations: true
 
     # defaultTheme: light
     # defaultTheme: dark

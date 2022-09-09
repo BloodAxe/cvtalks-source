@@ -63,6 +63,11 @@ menus:
       identifier: "publications"
       url: "/publications"
 
+    - name: "About Me"
+      weight: 350
+      identifier: "about"
+      url: "/about"
+
 
 params:
     author: Eugene Khvedchenya

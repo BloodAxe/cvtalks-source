@@ -433,8 +433,11 @@ void AKAZEFeatures::Compute_Multiscale_Derivatives(void) {
 # KAZE performance
 
 
-After integration I ran KAZE and AKAZE using [feature descriptor estimation framework][features_evaluator] to see how they perform. I was really impressed about matching precision on rotation and scaling tests. Look at these self-explaining charts where **AKAZE beats all other features**! 
+After integration, I ran KAZE and AKAZE using [feature descriptor estimation framework][features_evaluator] to see how they perform. I was really impressed about matching precision on rotation and scaling tests. Look at these self-explaining charts where **AKAZE beats all other features**! 
 
+
+```html
+# TODO: Replace embeddings with static images
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/static/modules/gviz/1.0/chart.js">
 {"dataSourceUrl":"//docs.google.com/spreadsheet/tq?key=0AuBBvmQlA4pfdGhzcWVFUWhqZkdzb01HTnIwQllIQlE&transpose=0&headers=1&range=A41%3AG78&gid=0&pub=1","options":{"titleTextStyle":{"bold":true,"color":"#000","fontSize":16},"curveType":"","animation":{"duration":0},"width":900,"lineWidth":2,"hAxis":{"useFormatFromData":true,"title":"Rotation degree","minValue":null,"viewWindow":{"max":null,"min":null},"maxValue":null},"vAxes":[{"useFormatFromData":true,"title":"Percent of correct matches","minValue":null,"logScale":false,"viewWindow":{"max":null,"min":null},"maxValue":null},{"useFormatFromData":true,"minValue":null,"logScale":false,"viewWindow":{"max":null,"min":null},"maxValue":null}],"booleanRole":"certainty","title":"Rotation test","height":600,"interpolateNulls":false,"domainAxis":{"direction":1},"legend":"right","focusTarget":"series","annotations":{"domain":{}},"useFirstColumnAsDomain":true,"tooltip":{"trigger":"none"}},"state":{},"view":{},"isDefaultVisualization":false,"chartType":"LineChart","chartName":"Chart 1"}
 </script>
@@ -450,7 +453,7 @@ After integration I ran KAZE and AKAZE using [feature descriptor estimation fram
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/static/modules/gviz/1.0/chart.js">
 {"dataSourceUrl":"//docs.google.com/spreadsheet/tq?key=0AuBBvmQlA4pfdGhzcWVFUWhqZkdzb01HTnIwQllIQlE&transpose=0&headers=1&range=A2%3AG28&gid=0&pub=1","options":{"titleTextStyle":{"bold":true,"color":"#000","fontSize":16},"curveType":"","animation":{"duration":0},"width":900,"lineWidth":2,"hAxis":{"title":"Change of brightness","useFormatFromData":true,"minValue":null,"viewWindow":{"max":null,"min":null},"maxValue":null},"vAxes":[{"title":"Percent of correct matches","useFormatFromData":false,"formatOptions":{"source":"inline"},"minValue":null,"format":"0.##","logScale":false,"viewWindow":{"max":null,"min":null},"maxValue":null},{"useFormatFromData":true,"minValue":null,"viewWindow":{"max":null,"min":null},"maxValue":null}],"title":"Brightness invariance","booleanRole":"certainty","height":600,"legend":"right","focusTarget":"series","useFirstColumnAsDomain":true,"tooltip":{"trigger":"none"}},"state":{},"view":{},"isDefaultVisualization":true,"chartType":"LineChart","chartName":"Chart 4"}
 </script>
-
+```
 
 
 

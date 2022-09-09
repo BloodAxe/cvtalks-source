@@ -6,7 +6,7 @@ tags =  ["opencv", "xcode"]
 
 After publishing [Building OpenCV for iOS][1] article many of readers asked me how to use OpenCV within ObjectiveC code, because they encountered compilation errors. In this post I'll show you how to use OpenCV and ObjectiveC to make some image processing. 
 
-<span class="more"></span>
+<!--more-->
 
 <div class="alert alert-danger">
     <p class="lead">This post is outdated</p>

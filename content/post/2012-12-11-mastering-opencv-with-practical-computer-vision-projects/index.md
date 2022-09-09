@@ -8,7 +8,7 @@ I feel excited writing this post. The **"Mastering OpenCV with Practical Compute
 
 ![Mastering OpenCV with Practical Computer Vision Projects][6]
 
-<span class="more" />
+<!--more-->
 
 ## Useful links
 

@@ -14,7 +14,7 @@ In this tutorial I'm going to reveal best practices on debugging C++ Addons for 
 
 Continue reading if you want to read in details why this works.
 
-<span class="more" />
+<!--more-->
 
 This article is valid for Node.js version 0.12. It should also works fine for further releases, however few things may change. I will try to keep this post up to date. Please, feel free to drop a comment for this article or write me on [@cvtalks][twitter] if you have troubles following this tutorial.
 

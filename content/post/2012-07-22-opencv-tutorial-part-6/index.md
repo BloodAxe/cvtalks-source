@@ -6,7 +6,7 @@ tags =  ["opencv", "xcode", "tutorials"]
 
 [toc] Hi folks! I’m glad to publish a sixth part of the OpenCV Tutorial cycle. In this post I will describe how to implement interesting non-photorealistic effect that makes image looks like a cartoon. It has numerous names: cartoon filter or simply “toon” also it known as rotoscoping. In addition we will refactor application interface and add tweeting feature to share your results across the web. According to the roadmap I promised to put the video recording module too, but due to lack of free time I decided to put it on hold for now. To compensate this in this part I will demonstrate how to get Sepia effect using simple matrix multiplication. Don’t afraid, video recording will be added, but later. I think after part 9, when most of the samples will be optimized using ARM NEON I will add this feature. 
 
-<span class="more"></span>
+<!--more-->
 
 ## Interface improvements
 

@@ -8,7 +8,7 @@ tags =  ["xcode", "neon"]
 
 Almost all image processing algorithms uses gray scale images as input source. But almost all hardware video sources provide frames in RGB/BGR(A) formats. So gray scale conversion is very popular operation. Although it's expensive enough to cause CPU-bound bottlenecks while running on mobile processors. In this post i will show you how to use ARM NEON intrinsic to get significant performance boost of BGRA to GRAY conversion. 
 
-<span class="more"></span>
+<!--more-->
 
 ## Color representation
 

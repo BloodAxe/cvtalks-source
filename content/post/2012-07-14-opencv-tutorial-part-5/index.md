@@ -12,7 +12,7 @@ tags =  ["opencv", "xcode", "tutorials"]
   * [Part 4 - Correction of mistakes][5]
 Also, there is great [OpenCV Tutorial roadmap][6]. I'm trying to follow it. As usually, all source code can be found on a GitHub: [OpenCV Tutorial][7]. 
 
-<span class="more"></span>
+<!--more-->
 
 ## Sample options
 

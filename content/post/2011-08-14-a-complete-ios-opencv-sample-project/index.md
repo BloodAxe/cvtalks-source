@@ -6,7 +6,7 @@ tags =  ["opencv", "xcode"]
 
 ![OpenCV iOS Sample Project][1]Hello everyone! Today i want to introduce the all new tutorial project of using OpenCV in your iOS projects. In this post i'll show you the right and correct way of interoperation between native OpenCV C/C++ API and Objective-C. I know many of you asked me how to solve this nasty "statement-expressions are allowed only inside functions" error. Here is a solution.
 
-<span class="more"></span>
+<!--more-->
 
 The conflict occurs because both UIKit.h and opencv_core.h define the same MIN symbol. But in UIKit it’s a function, and a macro in OpenCV. If you include bot iOS framework and core.h header file from OpenCV they will conflict with MIN symbol because iOS define MIN function, but the OpenCV has the MAX macros. The simple way would be to ask OpenCV maintainers to give other name to MIN macros. But it's too easy and i do not believe it's right solution.
 

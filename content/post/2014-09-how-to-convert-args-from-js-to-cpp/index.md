@@ -2,24 +2,21 @@
 title =  "Argument checking for native addons for Node.js. Do it right!"
 date = "2014-09-11"
 tags =  ["cloudcv", "nodejs", "tutorials"]
+thumbnail = "post/2014-09-how-to-convert-args-from-js-to-cpp/logo.jpg"
 +++
 
-<div class="featured-image">
-![NanCheck](logo.jpg)
-</div>
 
 During development of [CloudCV][cloudcv] I came to the problem on converting `v8::Arguments` to 
 native C++ data types in my Node.js native module. If you are new to C++ and Node.js, I suggest you to read how to write C++ modules for Node.js and connecting OpenCV and Node.js first.
 
 Mapping V8 data types to native C++ equivalents is trivial, but somewhat wordy. One should take the 
-argument at given index, check whether it is defined, then check it's type and finally cast to C++ type. 
+argument at given index, check whether it is defined, then check the argument type and finally cast to C++ type. 
 This works fine while you have function that receive two or three arguments of trivial type (That can be mapped directly to built-in C++ types). What about strings? Arrays? Complex types like objects or function callback? 
-You code will grow like and became hard-to-maintain pasta-code some day. 
+Your code will grow like and became hard-to-maintain pasta-code some day. 
 
 In this post I present my approach on solving this problem with a laconic way on describing what do you expect as input arguments.
 
-<span class="more"></span> 
-<div class="clearfix"></div>
+<!--more--> 
 
 To illustrate the difference between imperative approach I included source code for calibrationPatternDetect method that expose function to detect calibration pattern on a single image to Node.js code. As you may see below, there are a lot of *if* conditions, magic numbers and no type checking for a half of arguments. But even without it, this function occupy 50 lines of code. 
 What even worse, 90% of this code is going to be the same for other functions. The main purpose of code of any `NAN_METHOD` implementation - to marshal data in such a way it can be used by C++ code.

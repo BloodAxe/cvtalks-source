@@ -7,7 +7,7 @@ tags =  ["tutorials", "opencv", "xcode"]
 ![build-opencv-script][1]   
 My first post in this blog was about building OpenCV for iOS devices (iPhone, iPad, iPod and so on). But the build process that i used is not trivial at all. I received a lot of feedbacks and questions about building OpenCV, setting up XCode build environment. Today i made your life much easier. I have a gift - a build script, which will **build OpenCV **library for your iPhone, iPad, iPod or any other iOS based Apple device right **in one click**!  **Update =  Now build script supports XCode 4 and iOS 4.3 SDK** Sounds cool, yeah? Well, It's all true. Actually, my script does exactly the same things as i mentioned in original article. But without user interaction. 
 
-<span class="more"></span>
+<!--more-->
 <div class="alert alert-danger">
     <p class="lead">This post is outdated.</p>
     <p>

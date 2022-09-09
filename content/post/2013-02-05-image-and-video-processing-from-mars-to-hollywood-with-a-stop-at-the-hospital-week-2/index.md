@@ -7,7 +7,7 @@ tags =  ["coursera"]
 This is a second part of ["Image and video processing: From Mars to Hollywood with a stop at the hospital"][1] class.
 
 In optional taks for Week 2 we were asked to test various predictors for JPEG-LS compression algorithm. In this post i want to share my results and discuss how we can achieve better prediction rate.
-<span class="more"></span>
+<!--more-->
 
 # Compare prediction algorithms for loseless image compression
 

@@ -20,7 +20,7 @@ algorithms. **It's like OpenCV for web-browser**.
 
 The [source code][example] for this tutorial is available on my Github page: https://github.com/BloodAxe/jsfeat.
 
-<span class="more"></span>
+<!--more-->
 
 Typically, when we test C++ software, we end up with test framework of your
 choise and test runner. It can be continuous integration server like Jenkins 

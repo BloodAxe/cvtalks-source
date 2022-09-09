@@ -6,7 +6,7 @@ tags =  ["opencv"]
 
 OpenCV library is widely used by computer vision engineers across the world. It contains almost all algorithms you may want for R&D or product development. It has production-ready build farm with tests and strong community that give nice feedbacks and discover errors. But nevertheless OpenCV has some strange issues and undocummented behaviour that can surprise you as minimum and crash your app as maximum.
 
-<span class="more"></span>
+<!--more-->
 
 ## How to get diagonal matrix in OpenCV
 

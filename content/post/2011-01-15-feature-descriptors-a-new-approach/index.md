@@ -5,7 +5,7 @@ tags =  ["opencv"]
 +++
 
 Last year I was tightly connected with image processing and feature tracking/matching. For my needs I’ve used SURF and later RIFF descriptors. Both of them have strong advantages and but… SURF descriptor robustness are compensated by it’s computational cost. RIFF descriptor extracts much faster but not robust enough for my needs. My needs are very simple – doing markerless AR on mobile phone.
-<span class="more"></span>
+<!--more-->
 
 So, we (me and two other co-authors) decided to develop our own descriptor. And we succeeded! Our descriptor (We called it LAZY) meets following requirements:
 

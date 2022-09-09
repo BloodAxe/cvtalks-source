@@ -11,7 +11,7 @@ tags =  ["opencv"]
 
 Wikipedia 
 
-<span class="more"></span>
+<!--more-->
 
 
 **Update**: Here is [Updated Post][2] with added new detectors (ORB and SIFT).    

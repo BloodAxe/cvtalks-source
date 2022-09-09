@@ -7,7 +7,7 @@ description = "First attempts on trying to implement state of the art Augmented 
 
 Hello everyone! Today i want to share my results in research of markerless augmented reality. The  main idea - do fast and quality AR without those damn markers and give the ability to use real object as a target.  Markerless augmented reality is very similar to marker-based systems like ARToolkit with one major difference - such technology use real object as a target for augmentation. It can be almost any kind of objects - photos, logos, beer bottle or Cola can. 
 
-<span class="more"></span>
+<!--more-->
 
 The common pipeline is very trivial: 
 

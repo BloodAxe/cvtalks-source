@@ -11,7 +11,7 @@ Please welcome: [cloudcv-bootstrap][cloudcv-bootstrap].
 
 ![](cloudcv-bootstrap.jpg)
 
-<span class="more" />
+<!--more-->
 
 I made this project aside of CloudCV to keep it simple but functionaly. It is self-contained
 Node.js project that helps you to get quick results on building and deploying your first 

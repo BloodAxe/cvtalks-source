@@ -6,7 +6,7 @@ tags =  ["news", "ar"]
 
 Augmented reality technology grows rapidly for last two years. The huge potential this technology has not fully revealed. In the near future we expect appearance of large number of companies seeking to take a a new area in the market. More and more quality and exciting applications of augmented reality will appear. Want to know why? 
 
-<span class="more"></span>
+<!--more-->
 
 Statistics of search queries for "Augmented Reality" gives eloquent testimony about the growing interest for this technology. For two years the Augmented Reality has become profitable. A lot of AR-advertisement, navigations, entertainment applications has been developed. 
 

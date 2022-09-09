@@ -18,7 +18,7 @@ uses more memory than allowed your app can get killed by the system. Embedded ha
 used in IoT, Raspberri Pi and others also have very limited amount of RAM. So you should be very
 careful when porting code from desktop with gigabytes of memory to mobile platform.
 
-<span class="more"></span>
+<!--more-->
 
 ## Why memory matters
 

@@ -5,7 +5,7 @@ tags =  ["opencv"]
 +++
 
 During writing commercial iPhone app for one of my customers i noticed really strange slowdown in Surf descriptors. Cutting a long story shorter - while matching two frames usign SURF algorithm more than half of overall time (4, FOUR seconds!) was spent in cvRound function! Read more to know what it was and how did i fixed it.  I noticed that matching takes a while and decided to dug into profiler. When i saw the results i was a bit surprised.
-<span class="more"></span> 
+<!--more--> 
 
 ![OpenCV Surf descriptor extraction on iPhone][1] 
 

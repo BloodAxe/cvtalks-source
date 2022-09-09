@@ -6,7 +6,7 @@ tags =  ["opencv", "xcode"]
 
 It’s christmas time and i finally managed to deal with all my affairs before holidays. It’s probably the last post in the 2011 year. And i have a little present for you guys – it’s latest **build of OpenCV library** for the iOS platform, an **updated build scipt** and updated **OpenCV in iPhone sample project** with iOS 5 SDK support! 
 
-<span class="more"></span>
+<!--more-->
 
 #### OpenCV build script for iOS SDK
 

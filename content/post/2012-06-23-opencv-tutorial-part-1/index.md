@@ -7,7 +7,7 @@ tags =  ["opencv","xcode", "tutorials"]
 
 As i recently mentioned, i decided to write a brand new OpenCV tutorial application for iPhone/iPad devies. This development is open-source and anyone can access it on <https://github.com/BloodAxe/OpenCV-Tutorial> repository page. Your help are welcome to write a UI for this app and help writing sample demonstration cases. Feel free to clone repository and make your contribution! 
 
-<span class="more"></span>
+<!--more-->
 
 ## OpenCV Tutorial
 

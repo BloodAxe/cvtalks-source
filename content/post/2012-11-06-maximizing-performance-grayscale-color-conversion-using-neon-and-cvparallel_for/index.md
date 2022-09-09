@@ -5,7 +5,7 @@ tags =  ["opencv", "xcode", "neon", "iphone"]
 +++
 
 I continue playing with powerful NEON engine in iPhone and iPad devices. Recently i bought iPhone 4S that replaced my HTC Mozart and i decided to check how to speed up BGRA to GRAY color conversion procedure using multithreading. 
-<span class="more"></span>
+<!--more-->
 
 Recently Itseez announced a minor release of OpenCV 2.4.3 with a lot of new major features: 
 

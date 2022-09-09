@@ -6,7 +6,7 @@ tags =  ["opencv", "cloud-computing", "tutorials"]
 
 In this post I'll show you how you can train cascade classifier with OpenCV very quickly even if you have low-end hardware using virtual machine in the cloud.
 
-<span class="more" />
+<!--more-->
 
 ## Why Clouds?
 

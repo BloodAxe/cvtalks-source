@@ -6,7 +6,7 @@ tags =  ["opencv", "algorithms"]
 
 Here is an update of half year-old post about differences between existing feature detection algorithms. Original article can be found here: [Comparison of the OpenCV's feature detection algorithms – I][1]. I decided to update this comparison report since many things happened: OpenCV 2.3.1 has been released and the new type of feature detector (ORB feature detector) has been introduced. ORB is an acronym of Oriented-BRIEF and uses modified to compute orientation FAST detector for detection stage and BRIEF for descriptor extraction. In this article I will test newcomer on the same test cases (the same hardware and input images) using the latest OpenCV build (2.3.1, revision №6016).
 
-<span class="more"></span>
+<!--more-->
 
 #### Test images
 

@@ -6,7 +6,7 @@ tags =  ["tutorials", "algorithms"]
 
 A brief tutorial/intro to the mathematical morphology in image processing. 
 
-<span class="more"></span>
+<!--more-->
 
 ## Basic Definitions
 

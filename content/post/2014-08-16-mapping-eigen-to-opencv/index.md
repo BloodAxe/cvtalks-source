@@ -40,7 +40,7 @@ cv::GaussianBlur(eigen2cv(img), eigen2cv(blur));
 cv::imshow("sharpened", eigen2cv(1.5 * img - 0.5 * blur));
 ```
 
-<span class="more" />
+<!--more-->
 
 ## Idea
 

@@ -6,7 +6,7 @@ tags =  ["opencv", "xcode", "tutorials"]
 
 This is the fourth part of the OpenCV Tutorial. In this part the solution of the annoying iOS video capture orientation bug will be described. Of course that's not all. There are some new features - we will add processing of saved photos from your photo album. Also to introduce minor interface improvements and I'll show you how to disable unsupported API like video capture in your app and run in on iOS Simulator.
 
-<span class="more"></span>
+<!--more-->
 
 ## Startup images
 

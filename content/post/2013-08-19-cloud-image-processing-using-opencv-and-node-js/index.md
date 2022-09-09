@@ -11,7 +11,7 @@ And i think the time has come. You probably heard about Node.js - server-side as
 
 Node.js is written in Java-script, and follows asynchronous programming model, where events and callbacks plays dominant role. OpenCV is a C++ library written in good old C and C++ and it don't bother with asynchronous and event-based programming model. Fortunately Node.js can interop with external modules written in C++. It's made via V8 engine which is a core of Node.js.
 
-<span class="more"></span>
+<!--more-->
 
 ## Disclaimer
 

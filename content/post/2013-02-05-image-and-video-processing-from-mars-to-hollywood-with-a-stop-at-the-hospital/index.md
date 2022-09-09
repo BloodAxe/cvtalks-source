@@ -6,7 +6,7 @@ tags =  ["coursera"]
 
 With this post i start describing my experience with a ["Image and video processing: From Mars to Hollywood with a stop at the hospital"][1] class. I will write a series of 9 posts each week i complete and highlight interesting tasks and solution to optional programming quizzes in OpenCV. 
 
-<span class="more"></span>
+<!--more-->
 # Week 1
 
 The first week was very easy, just an introduction to image processing with explanation of basics and fundamental things. Took a day to see all video lectures and answer questions.

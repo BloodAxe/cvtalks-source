@@ -2,18 +2,15 @@
 title = "How to write a good code"
 date = "2015-09-09"
 tags =  ["news", "digest", "cpp"]
+thumbnail = "post/2015-09-how-to-write-good-code/featured-image.jpg"
 +++
 
-<div class="featured-image">
-![](featured-image.jpg)
-</div>
-
 This article is a quintessence of my all experience 
-I've got for last years working as a computer vision consultant. 
+I've got for years working as a computer vision consultant. 
 I hope you will find this interesting and useful. 
 My goal was to create set of rules I follow personally on daily basis. 
 
-<span class="more" />
+<!--more-->
 
 # 1. Prefer functional approach
 

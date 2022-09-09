@@ -8,7 +8,7 @@ A question from intenet:
 
 > Dear Ievgen, I'm researching the field of computer vision and object recognition in particular. I'm working for SENSUS in Amsterdam and we focus on social computing solutions for educational and health care sector. While researching and exploring I came up with a couple of simple questions that you might be able to help me with. I'm quite new to the concept of computer vision and only had some experience with simple blob tracking in OpenCV with use of OpenFrameworks. With best regards, Ralph Das
 
-<span class="more"></span>
+<!--more-->
 
 From your Twitter profile it became very clear you have a lot of experience in this field. I hope that you can share some insights on the questions I have: 
 

@@ -6,7 +6,7 @@ tags = ["books", "news"]
 
 A [**Instant OpenCV Starter**][1] is a short (56 pages) guidebook to help you to start developing apps with OpenCV library. This guide is aimed for developers who are not familiar with OpenCV or want to improve their experience. [**Instant OpenCV Starter**][1] will teach you how to set-up developer environment and build projects that use OpenCV library for both Windows and Linux platforms.
 
-<span class="more"></span>
+<!--more-->
 
 Starting from the basics you will learn the common types used on OpenCV, basic operations on images and video processing. In particular, this guide will cover the following topics:
 

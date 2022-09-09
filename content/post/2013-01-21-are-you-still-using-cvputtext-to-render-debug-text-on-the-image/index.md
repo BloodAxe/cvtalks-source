@@ -6,7 +6,7 @@ tags =  ["opencv"]
 
 During my research and development work i often have to display a lot of text infromation on top of the OpenCV images. You know what i mean. Suppose you're writing video stabilization algorithm. On each frame you want to display number of features visible on current frame, number of features matched with previois frame, camera motion parameters, recent twitters, name of your pet, etc.. In the OpenCV you can use **cv::putText** function to print formatted std::string at the desired position on the image. It's easy when you have a fixed string that won't change. But what should you do if you need to dynamically construct this string depending on the processing results? 
 
-<span class="more"></span>
+<!--more-->
 
 **For unpatinet**: Here is a pull request: <https://github.com/Itseez/opencv/pull/313> for this feature. In this case you have to write next: 
     

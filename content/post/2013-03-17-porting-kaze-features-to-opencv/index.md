@@ -6,7 +6,7 @@ tags =  ["opencv", "algorithms"]
 
 Recently i came across the publications to a new features called [KAZE][1] (Japanesee work meaning "Wind"). They interested me, because KAZE authors provided very promising evalutaion results and i decided to evaluate them too using my OpenCV features comparison tool. Fortunately KAZE algorithm is based on OpenCV, so it was not too hard to wrap KAZE features implementatino to cv::Feature2D API.
 
-<span class="more" />
+<!--more-->
 
 <div class="alert alert-danger">
     <p class="lead">This post is outdated.</p>

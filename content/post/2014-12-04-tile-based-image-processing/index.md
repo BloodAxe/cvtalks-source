@@ -8,7 +8,7 @@ How would you design an algorithm to process 40Mpx image? 100Mpx? What about gig
 
 ![Tile based image processing](tiles.png)
 
-<span class="more" />
+<!--more-->
 
 First, let's define a few restrictions in order to simplify our implementation. In this tutorial I will consider a 'pass-through' pipeline - when we apply some function to input image and give an output image of the same size as an output. 
 

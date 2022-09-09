@@ -1,10 +1,9 @@
 +++
 title = "About Me"
 date = "2014-04-09"
-menu = "main"
 +++
 
-Hi, an welcome to Computer Vision Talks blog!
+Hi, and welcome to Computer Vision Talks blog!
 
 Years ago, in 2010 I've started writing about computer vision. 
 

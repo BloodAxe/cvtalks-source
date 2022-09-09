@@ -1,231 +1,68 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Ghostwriter example</title>
-    <link>https://example.com/tags/books/index.xml</link>
-    <description>Recent content on Ghostwriter example</description>
+    <title>books on Computer Vision Talks</title>
+    <link>/tags/books/</link>
+    <description>Recent content in books on Computer Vision Talks</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <copyright>My Name</copyright>
-    <atom:link href="https://example.com/tags/books/index.xml" rel="self" type="application/rss+xml" />
-    
+    <lastBuildDate>Thu, 07 Aug 2014 00:00:00 +0000</lastBuildDate><atom:link href="/tags/books/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>A good resource on image processing using Python</title>
-      <link>https://example.com/pyimagesearch.com/</link>
+      <link>/post/pyimagesearch.com/</link>
       <pubDate>Thu, 07 Aug 2014 00:00:00 +0000</pubDate>
       
-      <guid>https://example.com/pyimagesearch.com/</guid>
-      <description>&lt;p&gt;&lt;a href=&#34;http://www.pyimagesearch.com/&#34;&gt;&lt;img src=&#34;logo.png&#34; alt=&#34;www.pyimagesearch.com&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Let me introduce you &lt;a href=&#34;http://www.pyimagesearch.com/about/&#34;&gt;Adrian Rosebrock&lt;/a&gt; and his &lt;a href=&#34;http://www.pyimagesearch.com/&#34;&gt;http://www.pyimagesearch.com/&lt;/a&gt; website.
-It&amp;rsquo;s about computer vision and image processing using Python and OpenCV.
-Looks like there are more than one person that like to share programming experience via blogging :)&lt;/p&gt;
-
-&lt;p&gt;Here&amp;rsquo;s how &lt;a href=&#34;http://www.pyimagesearch.com/&#34;&gt;Adrian&lt;/a&gt; position himself:&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;This blog is dedicated to helping other programmers understand how image search engines work.
-While a lot of computer vision concepts are theoretical in nature,
-I’m a big fan of “learning by example”. My goal is to distill my life experiences in building image search engines into concise, easy to understand examples.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;I hope you will enjoy reading Adrian&amp;rsquo;s posts on &lt;a href=&#34;http://www.pyimagesearch.com/2014/07/28/a-slic-superpixel-tutorial-using-python/&#34;&gt;superpixels&lt;/a&gt;, &lt;a href=&#34;http://www.pyimagesearch.com/2014/07/14/3-ways-compare-histograms-using-opencv-python/&#34;&gt;histogram matching&lt;/a&gt; and &lt;a href=&#34;http://www.pyimagesearch.com/2014/05/26/opencv-python-k-means-color-clustering/&#34;&gt;color clustering&lt;/a&gt;.
-In addition, he wrote a book on using OpenCV in Python.&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://www.pyimagesearch.com/practical-python-opencv/&#34;&gt;&lt;img src=&#34;practical_python_and_opencv_cover_green.png&#34; alt=&#34;Practical Python and OpenCV eBook&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Happy reading!&lt;/p&gt;
-</description>
+      <guid>/post/pyimagesearch.com/</guid>
+      <description>Let me introduce you Adrian Rosebrock and his http://www.pyimagesearch.com/ website. It&amp;rsquo;s about computer vision and image processing using Python and OpenCV. Looks like there are more than one person that like to share programming experience via blogging :)
+Here&amp;rsquo;s how Adrian position himself:
+ This blog is dedicated to helping other programmers understand how image search engines work. While a lot of computer vision concepts are theoretical in nature, I’m a big fan of “learning by example”.</description>
     </item>
     
     <item>
       <title>Instant OpenCV for iOS</title>
-      <link>https://example.com/2013-10-17-instant-opencv-for-ios/</link>
+      <link>/post/2013-10-17-instant-opencv-for-ios/</link>
       <pubDate>Thu, 17 Oct 2013 00:00:00 +0000</pubDate>
       
-      <guid>https://example.com/2013-10-17-instant-opencv-for-ios/</guid>
-      <description>&lt;p&gt;img.pull-left.img-thumbnail(src=&amp;ldquo;instant-opencv-cover.jpg&amp;rdquo;,alt=&amp;ldquo;Instant OpenCV for iOS&amp;rdquo;)&lt;/p&gt;
-
-&lt;p&gt;p
-    | A new book from authors of OpenCV targeted on iOS development using OpenCV.
-    ul
-        li Learn something new instantly. A short, fast, focused guide delivering immediate results
-        li Build and run your OpenCV code on iOS
-        li Become familiar with iOS fundamentals and make your application interact with the GUI, camera, and gallery
-        li Build your library of computer vision effects, including photo and video filters&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;| You can buy 
-a(href=&amp;quot;http://www.packtpub.com/to-build-real-time%20computer%20vision%20applications%20for-ios-using-opencv/book&amp;quot;) [Instant OpenCV for iOS]
-| from Packtpub.
-&lt;/code&gt;&lt;/pre&gt;
-</description>
+      <guid>/post/2013-10-17-instant-opencv-for-ios/</guid>
+      <description>img.pull-left.img-thumbnail(src=&amp;ldquo;instant-opencv-cover.jpg&amp;rdquo;,alt=&amp;ldquo;Instant OpenCV for iOS&amp;rdquo;)
+p | A new book from authors of OpenCV targeted on iOS development using OpenCV. ul li Learn something new instantly. A short, fast, focused guide delivering immediate results li Build and run your OpenCV code on iOS li Become familiar with iOS fundamentals and make your application interact with the GUI, camera, and gallery li Build your library of computer vision effects, including photo and video filters</description>
     </item>
     
     <item>
       <title>Book review: Instant OpenCV Starter</title>
-      <link>https://example.com/2013-06-25-instant-opencv-starter/</link>
+      <link>/post/2013-06-25-instant-opencv-starter/</link>
       <pubDate>Tue, 25 Jun 2013 00:00:00 +0000</pubDate>
       
-      <guid>https://example.com/2013-06-25-instant-opencv-starter/</guid>
-      <description>&lt;p&gt;A &lt;strong&gt;&lt;a href=&#34;http://www.packtpub.com/opencv-starter/book&#34;&gt;Instant OpenCV Starter**&lt;/a&gt; is a short (56 pages) guidebook to help you to start developing apps with OpenCV library. This guide is aimed for developers who are not familiar with OpenCV or want to improve their experience. **[Instant OpenCV Starter&lt;/strong&gt;]&lt;a href=&#34;http://www.packtpub.com/opencv-starter/book&#34;&gt;1&lt;/a&gt; will teach you how to set-up developer environment and build projects that use OpenCV library for both Windows and Linux platforms.&lt;/p&gt;
-
-&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
-
-&lt;p&gt;Starting from the basics you will learn the common types used on OpenCV, basic operations on images and video processing. In particular, this guide will cover the following topics:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;OpenCV image type&lt;/li&gt;
-&lt;li&gt;Color space conversion&lt;/li&gt;
-&lt;li&gt;Image I/O&lt;/li&gt;
-&lt;li&gt;Image manipulation&lt;/li&gt;
-&lt;li&gt;Edge detection&lt;/li&gt;
-&lt;li&gt;Video processing&lt;/li&gt;
-&lt;li&gt;Image steganography&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;OpenCV has strong and healthy community and there are many places where beginner developers can look for help. In this guide book a most popular places you should visit are listed:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Official sites&lt;/li&gt;
-&lt;li&gt;Tutorials/cheat sheets/answers&lt;/li&gt;
-&lt;li&gt;Community&lt;/li&gt;
-&lt;li&gt;Twitter&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;[Instant OpenCV Starter&lt;/strong&gt;]&lt;a href=&#34;http://www.packtpub.com/opencv-starter/book&#34;&gt;1&lt;/a&gt; can come in place for a newscomers who are studying OpenCV library for the first time. This e-book guide is available for purchase for a price of cup of coffee but you get much more for this price. This book can save your time.&lt;/p&gt;
-
-&lt;p&gt;If you&amp;rsquo;re looking for more advanced topics there is a great &lt;strong&gt;[Mastering OpenCV with Practical Computer Vision Projects&lt;/strong&gt;]&lt;a href=&#34;http://www.packtpub.com/cool-projects-with-opencv/book&#34;&gt;2&lt;/a&gt; book that contains advanced examples that solve with real-world problems with help of OpenCV.&lt;/p&gt;
-</description>
+      <guid>/post/2013-06-25-instant-opencv-starter/</guid>
+      <description>A Instant OpenCV Starter is a short (56 pages) guidebook to help you to start developing apps with OpenCV library. This guide is aimed for developers who are not familiar with OpenCV or want to improve their experience. Instant OpenCV Starter will teach you how to set-up developer environment and build projects that use OpenCV library for both Windows and Linux platforms.
+Starting from the basics you will learn the common types used on OpenCV, basic operations on images and video processing.</description>
     </item>
     
     <item>
       <title>Mastering OpenCV with Practical Computer Vision Projects</title>
-      <link>https://example.com/2012-12-11-mastering-opencv-with-practical-computer-vision-projects/</link>
+      <link>/post/2012-12-11-mastering-opencv-with-practical-computer-vision-projects/</link>
       <pubDate>Tue, 11 Dec 2012 00:00:00 +0000</pubDate>
       
-      <guid>https://example.com/2012-12-11-mastering-opencv-with-practical-computer-vision-projects/</guid>
-      <description>
-
-&lt;p&gt;I feel excited writing this post. The &lt;strong&gt;&amp;ldquo;Mastering OpenCV with Practical Computer Vision Projects&amp;rdquo;&lt;/strong&gt; books is done and published! This is my first experience as a book author and i hope you will like it. This book has been written by several authors, and covers many topics that has real appliance in computer vision area: augmented reality, face recognition and head pose estimation, structure from motion estimation and cartoon image processing. We as authors made our best to bring the most popular and demanded topics to you.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;cover.jpg&#34; alt=&#34;Mastering OpenCV with Practical Computer Vision Projects&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;span class=&#34;more&#34; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&#34;useful-links&#34;&gt;Useful links&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;http://www.packtpub.com/cool-projects-with-opencv/book#overview&#34; title=&#34;Buy Mastering OpenCV with Practical Computer Vision Projects&#34;&gt;Buy Mastering OpenCV with Practical Computer Vision Projects&lt;/a&gt;&lt;/strong&gt; on Packt Publishing&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;http://www.amazon.com/dp/1849517827&#34;&gt;Buy &amp;rdquo;Mastering OpenCV with Practical Computer Vision Projects&amp;rdquo;&lt;/a&gt;&lt;/strong&gt; from Amazon&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;http://www.amazon.com/Mastering-Practical-Computer-Projects-ebook/dp/B00AHCJNDG/ref=sr_1_1_title_1_kin?s=books&amp;amp;ie=UTF8&amp;amp;qid=1355218825&amp;amp;sr=1-1&amp;amp;keywords=Mastering+OpenCV+with+Practical+Computer+Vision+Projects&#34;&gt;Buy &amp;rdquo;Mastering OpenCV with Practical Computer Vision Projects&amp;rdquo; (for Kindle)&lt;/a&gt;&lt;/strong&gt; from Amazon&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;https://github.com/MasteringOpenCV/code&#34; title=&#34;Mastering OpenCV with Practical Computer Vision Projects&#34;&gt;Official code repository on GitHub&lt;/a&gt;&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;table-of-contents&#34;&gt;Table of contents&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Cartoonifier and Skin Changer for Android&lt;/li&gt;
-&lt;li&gt;Marker-based Augmented Reality on iPhone or iPad&lt;/li&gt;
-&lt;li&gt;Marker-less Augmented Reality&lt;/li&gt;
-&lt;li&gt;Exploring Structure from Motion Using OpenCV&lt;/li&gt;
-&lt;li&gt;Number Plate Recognition Using SVM and Neural Networks&lt;/li&gt;
-&lt;li&gt;Non-rigid Face Tracking&lt;/li&gt;
-&lt;li&gt;3D Head Pose Estimation Using AAM and POSIT&lt;/li&gt;
-&lt;li&gt;Face Recognition using Eigenfaces or Fisherfaces&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;read-before-you-buy-it&#34;&gt;Read before you buy it&lt;/h2&gt;
-
-&lt;p&gt;You can read the entire chapter before buying the whole book! The &lt;strong&gt;&amp;ldquo;Exploring Structure from Motion Using OpenCV&lt;/strong&gt;&amp;rdquo; chapter is available freely on Packt website: Read&lt;strong&gt; &lt;a href=&#34;http://www.packtpub.com/sites/default/files/9781849517829_Chapter_04.pdf?utm_source=packtpub&amp;amp;utm_medium=free&amp;amp;utm_campaign=pdf&#34; title=&#34;Exploring Structure from Motion Using OpenCV&#34;&gt;Exploring Structure from Motion Using OpenCV&lt;/a&gt;&lt;/strong&gt; [PDF] chapter for free &lt;strong&gt;.&lt;/strong&gt;  &lt;/p&gt;
-
-&lt;h2 id=&#34;what-you-will-learn-from-this-book&#34;&gt;What you will learn from this book&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Perform Face Analysis including simple Face &amp;amp; Eye &amp;amp; Skin Detection, Fisherfaces Face Recognition, 3D Head Orientation, complex Facial Feature Tracking.&lt;/li&gt;
-&lt;li&gt;Do Number Plate Detection and Optical Character Recognition (OCR) using Artificial Intelligence (AI) methods including SVMs and Neural Networks&lt;/li&gt;
-&lt;li&gt;Learn Augmented Reality for desktop and iPhone or iPad using simple artificial markers or complex markerless natural images&lt;/li&gt;
-&lt;li&gt;Generate a 3D object model by moving a plain 2D camera, using 3D Structure from Motion (SfM) camera reprojection methods&lt;/li&gt;
-&lt;li&gt;Redesign desktop real-time computer vision applications to more suitable Android &amp;amp; iOS mobile apps&lt;/li&gt;
-&lt;li&gt;Use simple image filter effects including cartoon, sketch, paint, and alien effects&lt;/li&gt;
-&lt;li&gt;Execute Human-Computer Interaction with an XBox Kinect sensor using the whole body as a dynamic input&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;useful-links-1&#34;&gt;Useful links&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;http://www.packtpub.com/cool-projects-with-opencv/book#overview&#34; title=&#34;Buy Mastering OpenCV with Practical Computer Vision Projects&#34;&gt;Buy Mastering OpenCV with Practical Computer Vision Projects&lt;/a&gt;&lt;/strong&gt; on Packt Publishing&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;http://www.amazon.com/dp/1849517827&#34;&gt;Buy &amp;rdquo;Mastering OpenCV with Practical Computer Vision Projects&amp;rdquo;&lt;/a&gt;&lt;/strong&gt; from Amazon&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;http://www.amazon.com/Mastering-Practical-Computer-Projects-ebook/dp/B00AHCJNDG/ref=sr_1_1_title_1_kin?s=books&amp;amp;ie=UTF8&amp;amp;qid=1355218825&amp;amp;sr=1-1&amp;amp;keywords=Mastering+OpenCV+with+Practical+Computer+Vision+Projects&#34;&gt;Buy &amp;rdquo;Mastering OpenCV with Practical Computer Vision Projects&amp;rdquo; (for Kindle)&lt;/a&gt;&lt;/strong&gt; from Amazon&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;https://github.com/MasteringOpenCV/code&#34; title=&#34;Mastering OpenCV with Practical Computer Vision Projects&#34;&gt;Official code repository on GitHub&lt;/a&gt;&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;
-</description>
+      <guid>/post/2012-12-11-mastering-opencv-with-practical-computer-vision-projects/</guid>
+      <description>I feel excited writing this post. The &amp;ldquo;Mastering OpenCV with Practical Computer Vision Projects&amp;rdquo; books is done and published! This is my first experience as a book author and i hope you will like it. This book has been written by several authors, and covers many topics that has real appliance in computer vision area: augmented reality, face recognition and head pose estimation, structure from motion estimation and cartoon image processing.</description>
     </item>
     
     <item>
       <title>OpenCV 2 Hotshot: RAW</title>
-      <link>https://example.com/2012-08-22-opencv-2-hotshot-raw/</link>
+      <link>/post/2012-08-22-opencv-2-hotshot-raw/</link>
       <pubDate>Wed, 22 Aug 2012 00:00:00 +0000</pubDate>
       
-      <guid>https://example.com/2012-08-22-opencv-2-hotshot-raw/</guid>
-      <description>
-
-&lt;p&gt;I&amp;rsquo;m glad to publish a official announce of the &lt;strong&gt;OpenCV Hotshot&lt;/strong&gt; book. This book is currently available as a RAW (Read As we Write) book. A RAW book is an ebook, and this one is priced at 20% of the usual eBook price. Once you purchase the RAW book, you can immediately download the content of the book so far, and when new chapters become available, you will be notified, and  can download the new version of the book. When the book is published, you will receive the full, finished eBook. If you like, you can preorder the print book at the same time as you purchase the RAW book at a significant discount. Visit the &lt;strong&gt;&lt;a href=&#34;http://www.packtpub.com/opencv-2-hotshot/book&#34;&gt;OpenCV Hotshots Book&lt;/a&gt;&lt;/strong&gt;  page on PacktPub website. &lt;strong&gt;Update from August 23rd:&lt;/strong&gt; A Packt Publishing allowed me to publish source code of the example project on the Github. Please find the most recent version of this application here: &lt;a href=&#34;https://github.com/BloodAxe/OpenCV-Hotshots-Marker-Based-AR&#34;&gt;https://github.com/BloodAxe/OpenCV-Hotshots-Marker-Based-AR&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 id=&#34;comments&#34;&gt;Comments&lt;/h2&gt;
-
-&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2110&#34; title=&#34;2012-08-24 03:53:07&#34;&gt;kevin&lt;/a&gt;:&lt;/strong&gt; hi.Ievgen, where can i download the code of the fisrst chater about the skin detection?,can u tell me&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2008&#34; title=&#34;2012-08-20 04:33:45&#34;&gt;kevin&lt;/a&gt;:&lt;/strong&gt; hi ,now , i want to buy this book ,how can i get the Promo Code?&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2211&#34; title=&#34;2012-08-31 08:57:26&#34;&gt;kevin&lt;/a&gt;:&lt;/strong&gt; hi,ievgen,just as fllows than&amp;rsquo;t ok-(void)frameReady:(BGRAVideoFrame) frame { // Start upload new frame to video memory in main thread dispatch_async( dispatch_get_main_queue(), ^{ [self.visualizationController updateBackground:frame]; }); cv::Mat bgraMat(frame.height, frame.width, CV_8UC4, frame.data, frame.stride); cv::cvtColor(bgraMat, m_grayscaleImage, CV_BGRA2GRAY); // When it&amp;rsquo;s done we query rendering from main thread dispatch_async( dispatch_get_main_queue(), ^{ [self.visualizationController drawFrame]; }); } but if i delete the two : cv::Mat bgraMat(frame.height, frame.width, CV_8UC4, frame.data, frame.stride); cv::cvtColor(bgraMat, m_grayscaleImage, CV_BGRA2GRAY); it&amp;rsquo;s will be crush， ireally don&amp;rsquo;t know why&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2036&#34; title=&#34;2012-08-22 16:48:01&#34;&gt;Josh&lt;/a&gt;:&lt;/strong&gt; Thanks for your response Ievgen, Re. Projection matrix - this will affect the augmentation and orientation correct? ie if incorrect will skew the view and offset the augmentation (?) I think previously when using OpenCV for AR I ended up using a library that implemented robust planar pose (RPP by Thomas Pintaric) - but the reason was because OpenCV kept crashing when trying to calculate pose (this is also fussy but didn&amp;rsquo;t jump so dramatically). Any hints on how you are improving the robustness of the marker detection i.e. are you re-using the previous pose? Thanks again for your reply - hopefully the publisher will let you release the code (out of interest - what sort of frame rate are you getting? - assuming its not optimised for clarity). Cheers, Josh&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2035&#34; title=&#34;2012-08-22 16:29:18&#34;&gt;Ievgen Khvedchenia&lt;/a&gt;:&lt;/strong&gt; Hello Kevin. Right now, we dont&amp;rsquo; have promo codes for these book. As soon as publisher give us few coupons you&amp;rsquo;ll get yours!&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2031&#34; title=&#34;2012-08-22 15:10:37&#34;&gt;Josh&lt;/a&gt;:&lt;/strong&gt; First of, nice work - chapters are well written. If you don&amp;rsquo;t mind, I just have a couple of questions: 1. In the marker chapter you have the inverting in 2 places, once when you detect the marker and another when you are about to render it (one is assigned to the marker object and the other is a collection of Transformation objects). // Since solvePnP finds camera location, w.r.t to marker pose, to get marker pose w.r.t to the camera we invert it. m.transformation = m.transformation.getInverted(); // and again in OpenGL Matrix44 glMatrix = transformation.getInverted().getMat44(); Am I missing something? Also assume that this invert is not a Matrix invert but rather transpose of from homography to a model view matrix in openGl? &amp;hellip; the other 2 a more general question so, obviously, feel free to ignore them. 2. I&amp;rsquo;m assuming you&amp;rsquo;re using an iPad in landscape - I&amp;rsquo;m trying to do a simple thing with a circle in portrait mode, would I need to flip your projection matrix for it to work in portrait? 3. (last one) have you come across examples when pose is very unstable (and keeps rotating the pose back and forward) - do you know if this has anything to do with the lose of precision (double to float)? Thanks and keep up the great work! Josh&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2034&#34; title=&#34;2012-08-22 16:21:19&#34;&gt;Ievgen Khvedchenia&lt;/a&gt;:&lt;/strong&gt; Hello Josh, Thanks for you comments. You are probably the first who got the access to the book via RAW program. Currently i&amp;rsquo;m improving my chapters according to reviewer&amp;rsquo;s comments and also rewriting sample project. What concerns your question about transformation - it&amp;rsquo;s seems that publisher uploaded old package source code. I have more recent version in my code repository on Github. I&amp;rsquo;ll ask a publisher is it allowed to make it public. Projection matrix has no common with device orientation since it depends only on camera internal parameters (intrinsic matrix). I can admit you experience issues with AR in portrait mode. It&amp;rsquo;s also caused by old code sample. Marker detection stability. Yes, current detector implementation is very &amp;ldquo;strict&amp;rdquo;. The algorithm prefers to say there is no marker if it&amp;rsquo;s not sure for 100% about it. Currently i working on improving robustness of the marker detection. If publisher allows to open access to the repository you will get access to it as soon as possible. Thanks again for your comments and loyalty.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2210&#34; title=&#34;2012-08-31 07:05:47&#34;&gt;kevin&lt;/a&gt;:&lt;/strong&gt; hi，Ievgen，i have some question want to ask u , i am new to opengl,you give me a good guide,now ,i want to use your template for myseif,so first i want delete the makerdetecter, self.markerDetector-&amp;gt;processFrame(frame);and sth relevance with it , but run it it&amp;rsquo;s dead, i don&amp;rsquo;t know why , and the i debug ,i find the first frame is good , but the the second frame comes, but frame.data is NULL,in the updateBackground , i don&amp;rsquo;t know why ,can u help me&lt;/p&gt;
-</description>
+      <guid>/post/2012-08-22-opencv-2-hotshot-raw/</guid>
+      <description>I&amp;rsquo;m glad to publish a official announce of the OpenCV Hotshot book. This book is currently available as a RAW (Read As we Write) book. A RAW book is an ebook, and this one is priced at 20% of the usual eBook price. Once you purchase the RAW book, you can immediately download the content of the book so far, and when new chapters become available, you will be notified, and can download the new version of the book.</description>
     </item>
     
     <item>
       <title>I’m a book author now :)</title>
-      <link>https://example.com/2012-06-12-im-a-book-author-now/</link>
+      <link>/post/2012-06-12-im-a-book-author-now/</link>
       <pubDate>Tue, 12 Jun 2012 00:00:00 +0000</pubDate>
       
-      <guid>https://example.com/2012-06-12-im-a-book-author-now/</guid>
-      <description>
-
-&lt;p&gt;Hello dear computer vision community! I was absent for a while. There were a lot of interesting things i did for these months. Unfortunately, i can’t tell about almost all of them due to signed NDA agreements. But there is one great thing i can share right now. Today i finished working on two chapters of  “OpenCV Hotshots” book! This book is written with couple of authors, my part was about marker-based and marker-less augmented reality. Here is a brief intro what it’s about:&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;Marker-based Augmented Reality on iPhone or iPad&lt;/strong&gt; Readers will learn how to create a new iPhone project, how to add the OpenCV library to it, how to efficiently access the camera with OpenCV, and how to display the processed camera image onto their iPhone or iPad. They will also learn a basic method of real time 3D augmented reality, by first detecting a known 2D marker, transforming the camera view based on the marker position &amp;amp; rotation, then displaying a 3D virtual object on top of the real marker.&lt;/p&gt;
-
-&lt;p&gt;**Marker-less Augmented Reality **Readers will learn how to create a standard real time project using OpenCV (for desktop), and how to perform a new method of marker-less augmented reality, using the actual environment as the input instead of printed square markers. This chapter will cover some theory of marker-less AR and show how to apply it in useful projects.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;I never have written books before and it’s very exciting and interesting experience. Well, anyway we have to wait few months until the rest of the chapters are done and it will be published. From the other interesting things I did, there were:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Development of the Real-time shape detection algorithm for iPad game.&lt;/li&gt;
-&lt;li&gt;Development of the vehicle trajectory reconstruction algorithm using floor tracking.&lt;/li&gt;
-&lt;li&gt;Investigation of the performance of matrix multiplication using OpenCV and Eigen libraries on the iOS platform. (Spoiler: Eigen kicks OpenCV’s ass).
-Thanks for reading this! I’ll announce interesting crowdsourcing project in a few days. It’s about AR and will be interested to may developers in this area.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;comments&#34;&gt;Comments&lt;/h2&gt;
-
-&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1098&#34; title=&#34;2012-06-19 15:16:05&#34;&gt;dofl&lt;/a&gt;:&lt;/strong&gt; Great. I&amp;rsquo;ll buy it.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1245&#34; title=&#34;2012-07-03 11:13:21&#34;&gt;Josh&lt;/a&gt;:&lt;/strong&gt; Look forward to it! Any hints who you are publishing with and when it will be available (any chance to get a rough-cuts version of it). Josh&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1246&#34; title=&#34;2012-07-03 11:26:18&#34;&gt;Csaba Bolyos&lt;/a&gt;:&lt;/strong&gt; Interesting. Your work is really useful, I&amp;rsquo;m waiting to read it.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1259&#34; title=&#34;2012-07-04 08:40:03&#34;&gt;EKhvedchenya&lt;/a&gt;:&lt;/strong&gt; The publisher is Packt Pub, approximate publish date is on October.&lt;/p&gt;
-</description>
+      <guid>/post/2012-06-12-im-a-book-author-now/</guid>
+      <description>Hello dear computer vision community! I was absent for a while. There were a lot of interesting things i did for these months. Unfortunately, i can’t tell about almost all of them due to signed NDA agreements. But there is one great thing i can share right now. Today i finished working on two chapters of “OpenCV Hotshots” book! This book is written with couple of authors, my part was about marker-based and marker-less augmented reality.</description>
     </item>
     
   </channel>

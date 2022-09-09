@@ -1,0 +1,91 @@
+baseURL: "https://computer-vision-talks.com/" # if your site is in 'https', then make sure your base url isn't written using 'http' otherwise your sitemap would contain http (as opposeed to https) URLs. This would affect Google indexing of your URLs.
+title: "Computer Vision Talks"
+paginate: 10
+theme: anatole
+
+# Enable comments by entering your Disqus shortname
+disqusShortname: "cvtalks"
+
+#Menus:
+#  main:
+#    - Name: "Github"
+#      URL: "https://github.com/username/"
+#    - Name: "LinkedIn"
+#      URL: "https://www.linkedin.com/in/username/"
+
+enableInlineShortcodes: true
+enableRobotsTXT: true
+buildDrafts: false
+buildFuture: false
+buildExpired: false
+enableEmoji: true
+pygmentsUseClasses: true
+googleAnalytics: UA-10687369-5
+
+minify:
+    disableXML: true
+    # minifyOutput: true
+
+
+
+
+
+menus:
+  main:
+    - name: "Home"
+      identifier: "home"
+      weight: 100
+      url: "/"
+
+    - name: "Posts"
+      weight: 150
+      identifier: "posts"
+      url: "/post/"
+
+    - name: "Open-Source"
+      weight: 200
+      identifier: "open-source"
+      url: "/open-source"
+
+    - name: "Wins"
+      weight: 250
+      identifier: "wins"
+      url: "/challenges"
+
+    - name: "Publications"
+      weight: 300
+      identifier: "publications"
+      url: "/publications"
+
+
+params:
+    author: Eugene Khvedchenya
+    title: Computer Vision Talks
+    description: A personal blog about Computer Vision, AI, Kaggle, Open-Source and research. You will never read this in books.
+    profilePicture: images/4ECfkGJr_400x400.jpg
+
+    # defaultTheme: light
+    # defaultTheme: dark
+    defaultTheme: auto # to switch between dark or light according to browser theme
+
+    # header social icons
+    twitter: cvtalks     # twitter.com/YOUR_TWITTER_ID
+    github: BloodAxe       # github.com/YOUR_GITHUB_ID
+    rss: true                      # show rss icon with link
+
+    socialIcons:
+      - icon: fab fa-linkedin
+        title: Linkedin
+        url: "https://www.linkedin.com/in/cvtalks/"
+
+      - icon: fab fa-twitter
+        title: Twitter
+        url: "https://twitter.com/cvtalks"
+
+      - icon: fab fa-github
+        title: GitHub
+        url: "https://github.com/BloodAxe"
+
+      - icon: fas fa-envelope
+        title: E-Mail
+        url: mailto:ekhvedchenya@computer-vision-talks.com

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Rewriting OpenCV sample project for iOS &middot; My Name</title>
+        <meta name="description" content="A lot of changes been made since I posted a tutorial of using OpenCV library on iPhone/iPad devices. It was the time of iOS 4.x and OpenCV 2.1. The time to rewrite the whole sample project has come. With this post I announce that I going to update my sample project and I ask for your help. My idea is to write a project which will demonstrate use of several common computer vision algorithms.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="Rewriting OpenCV sample project for iOS">
+<meta property="og:description" content="A lot of changes been made since I posted a tutorial of using OpenCV library on iPhone/iPad devices. It was the time of iOS 4.x and OpenCV 2.1. The time to rewrite the whole sample project has come. With this post I announce that I going to update my sample project and I ask for your help. My idea is to write a project which will demonstrate use of several common computer vision algorithms.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/2012-06-19-rewriting-opencv-sample-project-for-ios/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">Rewriting OpenCV sample project for iOS</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    
+
+<p>A lot of changes been made since I posted a tutorial of using OpenCV library on iPhone/iPad devices. It was the time of iOS 4.x and OpenCV 2.1. The time to rewrite the whole sample project has come. With this post I announce that I going to update my sample project and I ask for your help. My idea is to write a project which will demonstrate use of several common computer vision algorithms. So the question is - which samples should I include? Now I can suggest following demo scenarios:</p>
+
+<ul>
+<li>Keypoint matching</li>
+<li>Feature tracking</li>
+<li>Corner detection</li>
+<li>Color operations
+Thanks in advance for your comments!</li>
+</ul>
+
+<h2 id="comments">Comments</h2>
+
+<p><strong><a href="#1127" title="2012-06-23 13:26:58">Nicholas</a>:</strong> Hi, I only ask that you provide step by step instructions to get opencv on the machine and into any new project assuming no technical knowledge. I enthusiastically await the release of your up to date tutorial!</p>
+
+<p><strong><a href="#1122" title="2012-06-22 13:38:36">EKhvedchenya</a>:</strong> I wish to refactor this application a bit, so each demo case will be represented with a class derived from some abstract class SampleBase. something like that: class SampleBase { bool run(&hellip;); SampleInformation getInfo(); std::map &gt;getOptions(); }; Each sample provide meta-infromation (name and its description) and exposes set of options that can be adjusted in run-time to see how they affect the sample routine. The main function run will run the sample either using video or still pictures and show the result to user returning processed image. The main benefit of this approach that we can add new samples easily into existing architecture really easy and fast.</p>
+
+<p><strong><a href="#1146" title="2012-06-25 12:40:11">Nicholas</a>:</strong> Thankyou so much that is a Godsend. I see you have put something up already and I am going to have a look at it now.</p>
+
+<p><strong><a href="#1147" title="2012-06-25 13:41:49">Sansuiso</a>:</strong> Thanks ! I cloned the new project today :-)</p>
+
+<p><strong><a href="#1102" title="2012-06-19 21:23:19">bittnt</a>:</strong> Do you mind if you could provide feature tracking? I am also trying to work on feature tracking stuff. :) I got some initial results.</p>
+
+<p><strong><a href="#1111" title="2012-06-21 09:31:50">EKhvedchenya</a>:</strong> I think, for this demonstration the simple KLT optical flow tracking will be used. It&rsquo;s reasonably fast. The second option - a tracking using template matching but i&rsquo;m afraid, cv::templateMatch is too slow for iPad processor.</p>
+
+<p><strong><a href="#1112" title="2012-06-21 09:46:47">Sansuiso</a>:</strong> Hello, KLT is fine, but may I suggest something around FAST+BRIEF maybe as an alternative ? The code is also usable from opencv straight from the box, and I feel like many people are using this combo now. Thanks again for the work!</p>
+
+<p><strong><a href="#1113" title="2012-06-21 10:11:59">EKhvedchenya</a>:</strong> I appreciate any help for you! The design of this sample project will support easy add of new types of computer vision algorithm demonstations. The main screen of the application will show you the list of available samples. I&rsquo;ll post this design on next week so anyone can make a contribution to it.</p>
+
+<p><strong><a href="#1117" title="2012-06-21 16:49:49">bittnt</a>:</strong> Yes. I tried the Optical flow from OpenCV to track hand with MyAVIController Example Code. It works quite well, most of time, it could reach above 15 frames per second.</p>
+
+<p><strong><a href="#1121" title="2012-06-22 09:36:05">Sansuiso</a>:</strong> I cloned your github iOS sample project, so that I can add another feature tracking module to the demo app. That way you can add the KLT, and I can add FAST later. Is it ok that way ?</p>
+
+<p><strong><a href="#1355" title="2012-07-08 21:09:16">Josh</a>:</strong> &hellip; since you asked - maybe a tutorial on using KLT as an alternative to PTAM, the idea is to use this with the gyroscope to provide smooth tracking of &lsquo;dropped&rsquo; virtual items. As far as I can see OpenCV gives you displacement on x and y (panning) but nothing for z. Cheers and thanks for the great blog - keep up the good work, Josh</p>
+
+<p><strong><a href="#1361" title="2012-07-09 10:00:44">Ievgen Khvedchenia</a>:</strong> iPTAM would be definitely interesting sample! Thanks for this idea! Also i was thinking about video stabilization sample (OpenCV has such module) in connect with iDevices accelerometer.</p>
+
+<p><strong><a href="#1126" title="2012-06-23 11:57:53">EKhvedchenya</a>:</strong> Hi, i&rsquo;ve created a new repository here <a href="https://github.com/BloodAxe/OpenCV-Tutorial">https://github.com/BloodAxe/OpenCV-Tutorial</a> to write tutorial app from scratch. Feel free to add new samples dericed from SampleBase class. I continue writing application UI to get visualization as fast as possible.</p>
+
+<p><strong><a href="#1135" title="2012-06-24 07:52:41">EKhvedchenya</a>:</strong> Nicholas, i&rsquo;m going to write a series of tutorias with detailed explanation of every step i make during writing this application. Hope you find it useful.</p>
+
+<p><strong><a href="#1453" title="2012-07-13 23:08:45">Josh</a>:</strong> &hellip; a couple more requests; AR shadowing and tweaking luminosity to fit virtual object into the scene&hellip; I&rsquo;m tackling this problem now - to keep things simple, for shadowing I&rsquo;m thinking of using the detected foreground for depth or change in plane and adjusting the shadow. For lighting - thinking of getting the HSV range and adjusting the ambient light based on this. Both interesting problems that require tricks to work in the real world.</p>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/opencv/">opencv</a>
+            
+                 <a href="/tags/tutorials/">tutorials</a>
+            
+                 <a href="/tags/xcode/">xcode</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=Rewriting%20OpenCV%20sample%20project%20for%20iOS&url=https%3a%2f%2fexample.com%2f2012-06-19-rewriting-opencv-sample-project-for-ios%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2f2012-06-19-rewriting-opencv-sample-project-for-ios%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2f2012-06-19-rewriting-opencv-sample-project-for-ios%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

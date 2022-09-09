@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>xcode on Computer Vision Talks</title>
+    <link>https://computer-vision-talks.com/tags/xcode/</link>
+    <description>Recent content in xcode on Computer Vision Talks</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 30 Jun 2013 00:00:00 +0000</lastBuildDate><atom:link href="https://computer-vision-talks.com/tags/xcode/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Success-story: Fueling ARBasketball up with NEON</title>
+      <link>https://computer-vision-talks.com/post/2013-06-30-success-story-fueling-arbasketball-up-with-neon/</link>
+      <pubDate>Sun, 30 Jun 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2013-06-30-success-story-fueling-arbasketball-up-with-neon/</guid>
+      
+        <description>img.pull-left.img-thumbnail(src=&amp;ldquo;arbasketball-logo.jpg&amp;rdquo;,alt=&amp;ldquo;ARBasketball&amp;rdquo;)
+p ARBasketball was one of the first augmented reality-based games in App Store. It has been published in 2010. In these days not many people have even heard about AR. I mean it wasn&amp;rsquo;t so popular as it became now. But there were people who saw the great potential in this growing market. One of them was Konstantin Tarovik, the author of ARBasketball. I must confess - I saw this application before, but had no idea it&amp;rsquo;s author lives in Ukraine, and in the same city as I am!</description>
+      
+    </item>
+    
+    <item>
+      <title>Maximizing performance of CV_BGRA2GRAY conversion using NEON and cv::parallel_for</title>
+      <link>https://computer-vision-talks.com/post/2012-11-06-maximizing-performance-grayscale-color-conversion-using-neon-and-cvparallel_for/</link>
+      <pubDate>Tue, 06 Nov 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-11-06-maximizing-performance-grayscale-color-conversion-using-neon-and-cvparallel_for/</guid>
+      
+        <description>I continue playing with powerful NEON engine in iPhone and iPad devices. Recently i bought iPhone 4S that replaced my HTC Mozart and i decided to check how to speed up BGRA to GRAY color conversion procedure using multithreading. Recently Itseez announced a minor release of OpenCV 2.4.3 with a lot of new major features:
+ Added universal parallel_for implementation using various backends: TBB, OpenMP, GCD, Concurrency Improved OpenCV Manager, new Java samples framework, better camera support on Android, opencv2.</description>
+      
+    </item>
+    
+    <item>
+      <title>OpenCV Tutorial Part 7</title>
+      <link>https://computer-vision-talks.com/post/2012-10-22-opencv-tutorial-part-7/</link>
+      <pubDate>Mon, 22 Oct 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-10-22-opencv-tutorial-part-7/</guid>
+      
+        <description>After a long delay i&amp;rsquo;m happy to resume posting OpenCV tutorials in my blog. In Part 7 i will present you a new way of generation of icons for samples. Also i&amp;rsquo;ll show how to use NEON and assembly language to speed-up cv::transform function twice! Also there are three new samples i have to say few words about each.
+Interface improvements Default sample icons I think each sample has to have it&amp;rsquo;s own unique icon image.</description>
+      
+    </item>
+    
+    <item>
+      <title>A battle of three descriptors: SURF, FREAK and BRISK</title>
+      <link>https://computer-vision-talks.com/post/2012-08-18-a-battle-of-three-descriptors-surf-freak-and-brisk/</link>
+      <pubDate>Sat, 18 Aug 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-08-18-a-battle-of-three-descriptors-surf-freak-and-brisk/</guid>
+      
+        <description>I think developers and research guys who works with object recognition, image registration and other areas that uses keypoint extraction can find this post useful. Recently (from 2.4.2) a new feature descriptor algorithm was added to OpenCV library. FREAK descriptor is claimed to be superior to ORB and SURF descriptors, yet it&amp;rsquo;s very fast (comparable to ORB). Also people in comments on my blog mentioned BRISK descriptor which is also new and more efficient than SURF.</description>
+      
+    </item>
+    
+    <item>
+      <title>OpenCV Tutorial - Part 6</title>
+      <link>https://computer-vision-talks.com/post/2012-07-22-opencv-tutorial-part-6/</link>
+      <pubDate>Sun, 22 Jul 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-07-22-opencv-tutorial-part-6/</guid>
+      
+        <description>[toc] Hi folks! I’m glad to publish a sixth part of the OpenCV Tutorial cycle. In this post I will describe how to implement interesting non-photorealistic effect that makes image looks like a cartoon. It has numerous names: cartoon filter or simply “toon” also it known as rotoscoping. In addition we will refactor application interface and add tweeting feature to share your results across the web. According to the roadmap I promised to put the video recording module too, but due to lack of free time I decided to put it on hold for now.</description>
+      
+    </item>
+    
+    <item>
+      <title>OpenCV Tutorial - Part 5</title>
+      <link>https://computer-vision-talks.com/post/2012-07-14-opencv-tutorial-part-5/</link>
+      <pubDate>Sat, 14 Jul 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-07-14-opencv-tutorial-part-5/</guid>
+      
+        <description>Hello readers! The fifth part of the OpenCV Tutorial is here! In this post we will add options pane for our samples. In the end of this chapter our application will receive options interface as shown on screenshot. But first, let me remind you (if you came here for the first time) what is happening here. The &amp;ldquo;OpenCV Tutorial&amp;rdquo; is a open-source project maintained by me (Eugene Khvedchenya). My goal - create a iPhone/iPad application to demonstrate various image processing algorithms of OpenCV library and how to use them in iOS applications.</description>
+      
+    </item>
+    
+    <item>
+      <title>OpenCV Tutorial - Part 4</title>
+      <link>https://computer-vision-talks.com/post/2012-07-07-opencv-tutorial-part-4/</link>
+      <pubDate>Sat, 07 Jul 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-07-07-opencv-tutorial-part-4/</guid>
+      
+        <description>This is the fourth part of the OpenCV Tutorial. In this part the solution of the annoying iOS video capture orientation bug will be described. Of course that&amp;rsquo;s not all. There are some new features - we will add processing of saved photos from your photo album. Also to introduce minor interface improvements and I&amp;rsquo;ll show you how to disable unsupported API like video capture in your app and run in on iOS Simulator.</description>
+      
+    </item>
+    
+    <item>
+      <title>OpenCV Tutorial - Part 3</title>
+      <link>https://computer-vision-talks.com/post/2012-06-27-opencv-tutorial-part-3/</link>
+      <pubDate>Wed, 27 Jun 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-06-27-opencv-tutorial-part-3/</guid>
+      
+        <description>In Part 1 and Part 2 we created base application for our &amp;ldquo;OpenCV Tutorial&amp;rdquo; application. In this part we add video source to process frames using our samples and present the result to user. As usual, you can find source code for this application at github.
+Video capture in iOS At this moment (as far as i know) there OpenCV&amp;rsquo;s cv::VideoCapture does not support iOS platform. Therefore we have to use iOS AVFoundation API to setup video capture.</description>
+      
+    </item>
+    
+    <item>
+      <title>OpenCV Tutorial - Part 2</title>
+      <link>https://computer-vision-talks.com/post/2012-06-24-opencv-tutorial-part-2/</link>
+      <pubDate>Sun, 24 Jun 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-06-24-opencv-tutorial-part-2/</guid>
+      
+        <description>In the previous step we created Master-Detail XCode project and linked OpenCV library to it. Also we defined a base interface for all samples. Today we&amp;rsquo;ll write some UI logic to integrate our samples into the application. One ring to rule them all Since we are going to store a lot of samples (i hope so), we have to store them somewhere. I think for our application the ideal place to save them is our application delegate class.</description>
+      
+    </item>
+    
+    <item>
+      <title>OpenCV Tutorial - Part 1</title>
+      <link>https://computer-vision-talks.com/post/2012-06-23-opencv-tutorial-part-1/</link>
+      <pubDate>Sat, 23 Jun 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-06-23-opencv-tutorial-part-1/</guid>
+      
+        <description>As i recently mentioned, i decided to write a brand new OpenCV tutorial application for iPhone/iPad devies. This development is open-source and anyone can access it on https://github.com/BloodAxe/OpenCV-Tutorial repository page. Your help are welcome to write a UI for this app and help writing sample demonstration cases. Feel free to clone repository and make your contribution!
+OpenCV Tutorial The application startup screen will present master-detail view as a list of available samples.</description>
+      
+    </item>
+    
+    <item>
+      <title>Rewriting OpenCV sample project for iOS</title>
+      <link>https://computer-vision-talks.com/post/2012-06-19-rewriting-opencv-sample-project-for-ios/</link>
+      <pubDate>Tue, 19 Jun 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-06-19-rewriting-opencv-sample-project-for-ios/</guid>
+      
+        <description>A lot of changes been made since I posted a tutorial of using OpenCV library on iPhone/iPad devices. It was the time of iOS 4.x and OpenCV 2.1. The time to rewrite the whole sample project has come. With this post I announce that I going to update my sample project and I ask for your help. My idea is to write a project which will demonstrate use of several common computer vision algorithms.</description>
+      
+    </item>
+    
+    <item>
+      <title>OpenCV &#43; iOS = Success</title>
+      <link>https://computer-vision-talks.com/post/2011-12-23-opencv-ios-success/</link>
+      <pubDate>Fri, 23 Dec 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2011-12-23-opencv-ios-success/</guid>
+      
+        <description>It’s christmas time and i finally managed to deal with all my affairs before holidays. It’s probably the last post in the 2011 year. And i have a little present for you guys – it’s latest build of OpenCV library for the iOS platform, an updated build scipt and updated OpenCV in iPhone sample project with iOS 5 SDK support!
+OpenCV build script for iOS SDK Fortunately, OpenCV team has introduced toolchains for device and simulator builds.</description>
+      
+    </item>
+    
+    <item>
+      <title>A complete iOS &#43; OpenCV sample project</title>
+      <link>https://computer-vision-talks.com/post/2011-08-14-a-complete-ios-opencv-sample-project/</link>
+      <pubDate>Sun, 14 Aug 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2011-08-14-a-complete-ios-opencv-sample-project/</guid>
+      
+        <description>Hello everyone! Today i want to introduce the all new tutorial project of using OpenCV in your iOS projects. In this post i&amp;rsquo;ll show you the right and correct way of interoperation between native OpenCV C/C++ API and Objective-C. I know many of you asked me how to solve this nasty &amp;ldquo;statement-expressions are allowed only inside functions&amp;rdquo; error. Here is a solution.
+The conflict occurs because both UIKit.h and opencv_core.h define the same MIN symbol.</description>
+      
+    </item>
+    
+    <item>
+      <title>OpenCV iOS FAQ</title>
+      <link>https://computer-vision-talks.com/post/2011-04-27-opencv-ios-faq/</link>
+      <pubDate>Wed, 27 Apr 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2011-04-27-opencv-ios-faq/</guid>
+      
+        <description>OpenCV iOS FAQ This FAQ contains answers to numerous similar questions I was asked after my posts about using OpenCV with iOS SDK.
+Step by step OpenCV Tutorial OpenCV Tutorial is a sample demonstration project for iOS devices that main goal is to show how to use OpenCV library in XCOde projects to write image processing code for iPhone and iPad devices. There are several step-by-step guides where i describe in details all development process.</description>
+      
+    </item>
+    
+    <item>
+      <title>Building OpenCV for iPhone in one click</title>
+      <link>https://computer-vision-talks.com/post/2011-02-25-building-opencv-for-iphone-in-one-click/</link>
+      <pubDate>Fri, 25 Feb 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2011-02-25-building-opencv-for-iphone-in-one-click/</guid>
+      
+        <description>My first post in this blog was about building OpenCV for iOS devices (iPhone, iPad, iPod and so on). But the build process that i used is not trivial at all. I received a lot of feedbacks and questions about building OpenCV, setting up XCode build environment. Today i made your life much easier. I have a gift - a build script, which will **build OpenCV **library for your iPhone, iPad, iPod or any other iOS based Apple device right in one click!</description>
+      
+    </item>
+    
+    <item>
+      <title>A very fast BGRA to Grayscale conversion on Iphone</title>
+      <link>https://computer-vision-talks.com/post/2011-02-08-a-very-fast-bgra-to-grayscale-conversion-on-iphone/</link>
+      <pubDate>Tue, 08 Feb 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2011-02-08-a-very-fast-bgra-to-grayscale-conversion-on-iphone/</guid>
+      
+        <description>Almost all image processing algorithms uses gray scale images as input source. But almost all hardware video sources provide frames in RGB/BGR(A) formats. So gray scale conversion is very popular operation. Although it&amp;rsquo;s expensive enough to cause CPU-bound bottlenecks while running on mobile processors. In this post i will show you how to use ARM NEON intrinsic to get significant performance boost of BGRA to GRAY conversion.
+Color representation Pixel color can be presented in different ways.</description>
+      
+    </item>
+    
+    <item>
+      <title>Using OpenCV in Objective-C code</title>
+      <link>https://computer-vision-talks.com/post/2011-01-12-using-opencv-in-objective-c-code/</link>
+      <pubDate>Wed, 12 Jan 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2011-01-12-using-opencv-in-objective-c-code/</guid>
+      
+        <description>After publishing Building OpenCV for iOS article many of readers asked me how to use OpenCV within ObjectiveC code, because they encountered compilation errors. In this post I&amp;rsquo;ll show you how to use OpenCV and ObjectiveC to make some image processing.
+In this post I&amp;rsquo;ll use GLImageProcessing sample demo from Apple. Also you will need precompiled OpenCV for iPhone. How to make it read here. I&amp;rsquo;ve copied all OpenCV stuff to &amp;ldquo;opencv&amp;rdquo; folder into the GLImageProcessing.</description>
+      
+    </item>
+    
+    <item>
+      <title>Building OpenCV for iOS</title>
+      <link>https://computer-vision-talks.com/post/2010-12-30-building-opencv-for-ios/</link>
+      <pubDate>Fri, 17 Dec 2010 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2010-12-30-building-opencv-for-ios/</guid>
+      
+        <description>OpenCV (Open Source Computer Vision) is a library of programming functions for real time computer vision. This library has a huge number of algorithms.OpenCV supports Windows and Linux platforms (and Android starting from 2.2 version). But, unfortunately, there is no official iOS platform support for this moment. In this post i will show you that can build OpenCV for this platform and run it on your iPhone or iPad.
+Software you&amp;rsquo;ll need  XCode (Developer profile to be able debug on device) CMake Fresh OpenCV SVN command line tool or any GUI SVN client  Getting the new version of OpenCV is pretty easy - just check out them from public svn repository:</description>
+      
+    </item>
+    
+  </channel>
+</rss>

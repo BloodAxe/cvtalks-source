@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>How-to-write-good-code-rsses on Ghostwriter example</title>
+    <link>https://example.com/how-to-write-good-code/index.xml</link>
+    <description>Recent content in How-to-write-good-code-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Wed, 09 Sep 2015 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/how-to-write-good-code/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>How to write a good code</title>
+      <link>https://example.com/how-to-write-good-code/</link>
+      <pubDate>Wed, 09 Sep 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/how-to-write-good-code/</guid>
+      <description>
+
+&lt;div class=&#34;featured-image&#34;&gt;
+![](featured-image.jpg)
+&lt;/div&gt;
+
+&lt;p&gt;This article is a quintessence of my all experience
+I&amp;rsquo;ve got for last years working as a computer vision consultant.
+I hope you will find this interesting and useful.
+My goal was to create set of rules I follow personally on daily basis.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34; /&gt;&lt;/p&gt;
+
+&lt;h1 id=&#34;1-prefer-functional-approach&#34;&gt;1. Prefer functional approach&lt;/h1&gt;
+
+&lt;p&gt;&lt;img src=&#34;fp.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Image processing is a place where functional paradigm shows it&amp;rsquo;s bests.
+In most cases, image processing algorithm depends only on input image and has no side effects.
+This fits perfectly to a &amp;lsquo;pure function&amp;rsquo; term. When possible try to follow this checklist when you define a function in your code:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Mark all input data with &lt;code&gt;const&lt;/code&gt; modifier to specify immutable arguments.&lt;/li&gt;
+&lt;li&gt;Prefer return by reference for large objects (especially for images) instead returning by value.&lt;/li&gt;
+&lt;li&gt;In case of class methods, mark methods that does not change class internal state with  &lt;code&gt;const&lt;/code&gt; modifier.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;These simple advice helps to understand what and when can you function change. You may remember tricky details of your code today, but who guarantees you&amp;rsquo;ll easily remember that in a month?&lt;/p&gt;
+
+&lt;p&gt;For instance, I want to write implementation of template matching. One may write it as follows:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;class TemplateMatchingAlgorithm
+{
+public:
+  TemplateMatchingAlgorithm(cv::Mat templateImage, int method);
+
+  cv::Point matchTemplate(cv::Mat queryImage) const;
+
+private:
+  cv::Mat _templateImage;
+  int   _method;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Compare it with function declaration that does the same job, but looks much cleaner:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;void MatchTemplate(cv::Mat templateImage, cv::Mat queryImage, cv::Point&amp;amp; minPoint, int method);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So you may ask, should I create class with const method or declare an ordinary function instead?
+The short answer - functions are better. I personally use simple decision algorithm:&lt;/p&gt;
+
+&lt;div class=&#34;alert alert-info&#34; role=&#34;alert&#34;&gt;
+  If the algorithm needs to preserve state between calls - use class; otherwise - use function.
+&lt;/div&gt;
+
+&lt;h2 id=&#34;2-don-t-use-virtual-methods&#34;&gt;2. Don&amp;rsquo;t use virtual methods&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;virtualmethods.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You may argue - with classes we can define various implementations for &lt;code&gt;TemplateMatching&lt;/code&gt; using SIDM, CUDA or use template matching in Fourier domain.
+Yes, we can. But the price we pay for each call of virtual method is too big for such small routine as template matching.
+Usually we use TemplateMatching on small patches like 11x11 pixels to track translation between two frames of video. Hence to achieve robust tracking, number of patches can be quite high - 500 and even 1000 per one frame. Further, coarse-to-fine matching and sub-pixel optimization can lead to ten or more calls for the same feature. In this case, virtual call is a big no-no that will kill your application&amp;rsquo;s performance.&lt;/p&gt;
+
+&lt;div class=&#34;alert alert-info&#34; role=&#34;alert&#34;&gt;
+As a rule of thumb: you *may* use virtual methods to execute big amount of work. Let&#39;s say one virtual call per frame looks totally fine. A thousand calls per frame is obviously a bad, bad idea.
+&lt;/div&gt;
+
+&lt;h2 id=&#34;3-write-regression-tests&#34;&gt;3. Write regression tests&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;regression.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Regression testing is a great tool to track all changes in your algorithm and measure it&amp;rsquo;s
+precision and performance. Here&amp;rsquo;s an idea:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Create a ground-truth input dataset&lt;/li&gt;
+&lt;li&gt;Process it with your algorithm.&lt;/li&gt;
+&lt;li&gt;Save output data and track it in your version control system.&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;Each time you make changes in implementation - run regression on same input data and compare results.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Regression testing can easily spot numeric stability problems on different compilers / platforms, introduced bugs, platform-dependent optimizations. It&amp;rsquo;s a good idea to include it as a part of regular unit testing:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;/*
+BOOST_AUTO_TEST_CASE(MyAlgorithm, createRegressionDatabaset)
+{
+    ...
+}
+/**/
+
+BOOST_AUTO_TEST_CASE(MyAlgorithm, checkRegression)
+{
+    ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I intentionally commented out first test case - in ideal world it should be executed only once.
+But sometimes it&amp;rsquo;s necessary to update ground-truth (you fixed a bug in original implementation).
+So you uncomment it, run tests, comment it back and check-in new ground-truth.&lt;/p&gt;
+
+&lt;p&gt;You may use any format you like for dumping ground truth data (usually it&amp;rsquo;s some matrices, vectors or images).
+Personally, I prefer YAML and JSON.
+Just ensure when dumping floating-point numbers to specify maximum output precision.
+Otherwise you will have funny weekend debugging absolutely correct algorithm with failing assertion check &lt;code&gt;
+0.1543642342365 != 0.154364&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div class=&#34;alert alert-info&#34; role=&#34;alert&#34;&gt;
+Once written, regression tests should be run on regular basis either manually or using automated CI system of your choice. 
+&lt;/div&gt;
+
+&lt;h2 id=&#34;4-add-logging-to-your-code&#34;&gt;4. Add logging to your code&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;logging.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In the simplest case, it could be trivial console logging.
+In debug mode you will have all messages in stdout, but in release it will be totally excluded from compilation step.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;#if _DEBUG
+#define LOG_MESSAGE(x) std::cout &amp;lt;&amp;lt; __FILE__ &amp;lt;&amp;lt; &amp;quot; (&amp;quot; &amp;lt;&amp;lt; __LINE__ &amp;lt;&amp;lt; &amp;quot;): &amp;quot; &amp;lt;&amp;lt; x &amp;lt;&amp;lt; std::endl;
+#else
+#define LOG_MESSAGE(x)
+#endif
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;For complex systems I suggest to use mature logging frameworks like Boost::Log or similar.
+They has separation of logging streams (info, trace, warning, errors) and deal with multi-threaded logging.
+Logging to file is also useful feature when you want to store program output for further analysis.&lt;/p&gt;
+
+&lt;p&gt;In one of my previous projects, there was a standalone program for logs analysis and data visualization. We logged
+all - matrices, vectors regular messages with timestamps. After program finishes we were able to trace program flow
+frame by frame and analyze how our algorithms behaved. I cannot count how much hours this tool saved to us on data analysis.&lt;/p&gt;
+
+&lt;p&gt;Logging also helps to spot nasty bugs when you have inconsistent behavior on different platforms. For instance, not so recently I faced a problem when optical flow tracker gave different results on iOS and OSX platforms. After logging all input/output and intermediate data including vectors, matrices I found the root of the evil. It was &lt;code&gt;std::log&lt;/code&gt; function.&lt;/p&gt;
+
+&lt;div class=&#34;alert alert-warning&#34; role=&#34;alert&#34;&gt;
+On OSX ``std::log(float)`` implicitly computes logarithm with double precision and returns truncated result (float). On iOS it computes logarithm using single precision leading to small difference in result. Like a butterfly effect, it affects all other parts of the algorithm. 
+&lt;br&gt;
+**Without logging it would be practically impossible to spot bug like this**.
+&lt;/div&gt;
+
+&lt;h2 id=&#34;5-profile-your-code&#34;&gt;5. Profile your code&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;profilerdump.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Algorithm performance usually a top-level priority since this kind of applications deal with real-time video processing and processing of huge amount of data.
+Therefore it&amp;rsquo;s crucial to know how fast your algorithms runs or do they become slower or faster with refactoring you perform.
+There are plenty of ways to collect this data.&lt;/p&gt;
+
+&lt;h3 id=&#34;xcode-instruments&#34;&gt;XCode Instruments&lt;/h3&gt;
+
+&lt;p&gt;If you&amp;rsquo;re targeting on OSX and iOS platform, Apple Xcode and Instruments can be your first choice due to natural integration of profiling tools to IDE.
+Instruments can be handy to spot problematic places in your code. But Instruments uses sampling technique, which is not precise.&lt;/p&gt;
+
+&lt;h3 id=&#34;vtune-visualstudio&#34;&gt;VTune/VisualStudio&lt;/h3&gt;
+
+&lt;p&gt;For Windows users Visual Studio offers integrated profiler as well.
+Unlike Instruments, it can do instrumentation of your binary.
+It means each function in your program modified with special prolog and epilog code that measure execution time of all your program.
+Instrumenting provides you a lot of information per each routine: calls count, execution time, inclusive / exclusive CPU time, call tread and CPU cores load.
+This is much more you have with Apple Instruments.&lt;/p&gt;
+
+&lt;h3 id=&#34;cv-gettickcount&#34;&gt;cv::getTickCount&lt;/h3&gt;
+
+&lt;p&gt;Sometimes you don&amp;rsquo;t want to profile entire application. Instead you want to &amp;lsquo;cherry-pick&amp;rsquo; only a single function and profile it. For this purpose you can use monotonic clock and measure execution time:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;#define MEASURE_TIME(x)                        \
+        { auto startTime = cv::getTickCount(); \ 
+          x;                                   \
+          auto endTime = cv::getTickCount();   \
+          std::cout &amp;lt;&amp;lt; #x &amp;lt;&amp;lt; &amp;quot; &amp;quot; &amp;lt;&amp;lt; (endTime - startTime) * cv::getTickFrequency() &amp;lt;&amp;lt; std::endl; }
+
+// Measure MatchTemplate
+MEASURE_TIME(MatchTemplate(a,b,result));
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;div class=&#34;alert alert-info&#34; role=&#34;alert&#34;&gt;
+  Profile your code. Always.
+&lt;/div&gt;
+
+&lt;h2 id=&#34;6-optimize-code&#34;&gt;6. Optimize code&lt;/h2&gt;
+
+&lt;h3 id=&#34;6-1-loop-vectorization&#34;&gt;6.1 Loop vectorization&lt;/h3&gt;
+
+&lt;p&gt;Compilers can do loops vectorization when data flow and iterations count are clear enough.
+This heuristic analysis depends on implementation, so CLang has different vectorization analysis engine than MSVC. But you can give your compiler a hint:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;void SSD(cv::Mat i1, cv::Mat i2)
+{
+  int i = 0;
+  const uint8_t * a = templateImage.data;
+  const uint8_t * b = templateImage.data;
+  
+  int ssd = 0;
+
+  for (; i &amp;lt; (length/4)*4; i+=4)
+  {
+    ssd += SQR(a[i+0] - b[i+0]);
+    ssd += SQR(a[i+1] - b[i+1]);
+    ssd += SQR(a[i+2] - b[i+2]);
+    ssd += SQR(a[i+3] - b[i+3]);
+  }
+
+  for (; i &amp;lt; length; i++, a++, b++)
+  {
+    ssd += SQR(a[i] - b[i]);
+  }
+
+  return ssd;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This partial loop unrolling gives enough information to compiler.
+As a result it can replace partially unrolled summation with SIMD instruction.&lt;/p&gt;
+
+&lt;h3 id=&#34;6-2-bring-constants-at-compile-time&#34;&gt;6.2 Bring constants at compile time&lt;/h3&gt;
+
+&lt;p&gt;If you have a priory knowledge on size of data you pass to particular function, it may make sense to write function that
+employs this information:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;template &amp;lt;typename TOut, typename TIn, int RowsAtCompileTime, int ColsAtCompileTime&amp;gt;
+inline TOut SSD(const cv::Matx_&amp;lt;TIn, RowsAtCompileTime, ColsAtCompileTime&amp;gt;&amp;amp; a, 
+                const cv::Matx_&amp;lt;TIn, RowsAtCompileTime, ColsAtCompileTime&amp;gt;&amp;amp; b) nothrow
+{
+  int i = 0;
+  const TIn * a = templateImage.data;
+  const TIn * b = templateImage.data;
+  
+  TOut ssd = 0;
+
+  for (int i = 0; i &amp;lt; RowsAtCompileTime * ColsAtCompileTime; i++, a++, b++)
+  {
+    ssd += (TOut)SQR(a[i] - b[i]);
+  }
+
+  return ssd;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Since compiler knows size of the array to process, it can easily generate vectorized code for this routine.
+The drawback of this approach is slightly increased code size if you instantiate this template function with many sizes.
+But you get better performance which usually worth it.&lt;/p&gt;
+
+&lt;h3 id=&#34;6-3-architecture-dependent-implementations&#34;&gt;6.3 Architecture-dependent implementations&lt;/h3&gt;
+
+&lt;p&gt;Architecture-specific features like SIMD instructions can make your code runs much, much faster than generic C++
+implementation.
+It is a must-have feature on mobile platforms since it makes your code faster and at the same time it
+conservate battery power of host device.
+There are more and more devices with CUDA and OpenCL support.
+And the question is - how do I manage all those possible architecture / platforms combinations of optimized functions in my code?&lt;/p&gt;
+
+&lt;p&gt;Here it&amp;rsquo;s how I solved this task for myself:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;namespace mypublicnamespace
+{
+    void MatchTemplate(cv::Mat templateImage, cv::Mat queryImage, cv::Point&amp;amp; minPoint, int method)
+    {
+#if TARGET_PLATFORM_HAS_NEON_SIMD
+        details::neon::MatchTemplate(templateImage, queryImage, minPoint, method);
+#elif TARGET_PLATFORM_HAS_SSE_SIMD
+        details::sse::MatchTemplate(templateImage, queryImage, minPoint, method);
+#elif TARGET_PLATFORM_HAS_OPENCL
+        details::opencl::MatchTemplate(templateImage, queryImage, minPoint, method);
+#else        
+        details::generic::MatchTemplate(templateImage, queryImage, minPoint, method);
+#endif    
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This code snippet demonstrate compile-time dispatching for particular implementation of a function declared in &lt;code&gt;mypublicnamespace&lt;/code&gt;. Of course, you should take care of preprocessor defines that declare platform / architecture capabilities. I&lt;/p&gt;
+
+&lt;h3 id=&#34;6-4-branch-prediction&#34;&gt;6.4 Branch prediction&lt;/h3&gt;
+
+&lt;p&gt;Suppose you have a-priory knowledge that condition expression will be almost always true.
+Why don&amp;rsquo;t give this intrinsic knowledge to compiler? By supplying &lt;em&gt;expected&lt;/em&gt; condition result compiler can
+generate more efficient code. As a result, CPU will start decoding instructions earlier.&lt;/p&gt;
+
+&lt;p&gt;Unfortunately, this feature supported only on GCC and CLANG.
+But according to measurements, it can provide significant speed-up up to ~15%. You can find more information here: &lt;a href=&#34;http://blog.man7.org/2012/10/how-much-do-builtinexpect-likely-and.html&#34;&gt;How much do __builtin_expect(), likely(), and unlikely() improve performance?&lt;/a&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;#define LIKELY(x)      __builtin_expect(!!(x), 1)
+#define UNLIKELY(x)    __builtin_expect(!!(x), 0)
+
+if (LIKELY(x &amp;gt;= 0 &amp;amp;&amp;amp; x &amp;lt;= image_width))
+{
+  // Compute something
+}
+
+if (UNLIKELY(std::fabs(value) &amp;lt;= std::numeric_limits&amp;lt;float&amp;gt;::epsilon()))
+{
+  throw std::runtime_error(&amp;quot;Value is zero&amp;quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;6-5-openmp&#34;&gt;6.5 OpenMP&lt;/h3&gt;
+
+&lt;p&gt;Starting from OpenMP 4.0, you can instruct compiler to generate vectorized code by adding new pragma instructions to your loops:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;void MatchTemplate(cv::Mat templateImage, cv::Mat queryImage, cv::Point&amp;amp; minPoint, int method)
+{
+  uint8_t * a = templateImage.data;
+  uint8_t * b = templateImage.data;
+  
+  int ssd = 0;
+
+#pragma omp simd reduction(+:x)
+  for (int i = 0; i &amp;lt; length; i++)
+  {
+    ssd += SQR(a[0] - b[0]);
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;With only single &lt;code&gt;#pragma&lt;/code&gt; instruction you made your code runs faster.
+I encourage you to visit &lt;a href=&#34;https://software.intel.com/en-us/articles/enabling-simd-in-program-using-openmp40&#34;&gt;Enabling SIMD in program using OpenMP4.0&lt;/a&gt; webpage for more information of supported OpenMP SIMD instructions.&lt;/p&gt;
+
+&lt;h3 id=&#34;7-use-imageview&#34;&gt;7. Use ImageView&lt;/h3&gt;
+
+&lt;p&gt;For Windows users there is a great Visual Studio plugin called &lt;a href=&#34;https://visualstudiogallery.msdn.microsoft.com/e682d542-7ef3-402c-b857-bbfba714f78d&#34;&gt;ImageWatch&lt;/a&gt; that makes our life so simple.
+This plugin can visualize OpenCV matrices right in IDE.
+It is hard to overestimate the usefulness of this plugin.
+You can see how images are changing while debugging.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;image_watch.png&#34; alt=&#34;Image watch&#34; /&gt;&lt;/p&gt;
+
+&lt;h1 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h1&gt;
+
+&lt;p&gt;Next time when you start development of new algorithm, keep in mind these simple steps.
+They will help you create fast, maintainable and clear code. Here they are:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Prefer functional approach&lt;/li&gt;
+&lt;li&gt;Try avoid virtual calls&lt;/li&gt;
+&lt;li&gt;Write vectorization-friendly code&lt;/li&gt;
+&lt;li&gt;Use all available debugging / profiling tools&lt;/li&gt;
+&lt;li&gt;Measure your code performance&lt;/li&gt;
+&lt;li&gt;Write tests and check regression&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Hope you found this post useful. Discussion is more than welcome. Please share your thoughts in comments.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

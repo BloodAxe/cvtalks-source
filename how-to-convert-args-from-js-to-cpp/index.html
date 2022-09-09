@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Argument checking for native addons for Node.js. Do it right! &middot; My Name</title>
+        <meta name="description" content="![NanCheck](logo.jpg)  During development of CloudCV I came to the problem on converting v8::Arguments to native C&#43;&#43; data types in my Node.js native module. If you are new to C&#43;&#43; and Node.js, I suggest you to read how to write C&#43;&#43; modules for Node.js and connecting OpenCV and Node.js first.
+Mapping V8 data types to native C&#43;&#43; equivalents is trivial, but somewhat wordy. One should take the argument at given index, check whether it is defined, then check it&rsquo;s type and finally cast to C&#43;&#43; type.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="Argument checking for native addons for Node.js. Do it right!">
+<meta property="og:description" content="![NanCheck](logo.jpg)  During development of CloudCV I came to the problem on converting v8::Arguments to native C&#43;&#43; data types in my Node.js native module. If you are new to C&#43;&#43; and Node.js, I suggest you to read how to write C&#43;&#43; modules for Node.js and connecting OpenCV and Node.js first.
+Mapping V8 data types to native C&#43;&#43; equivalents is trivial, but somewhat wordy. One should take the argument at given index, check whether it is defined, then check it&rsquo;s type and finally cast to C&#43;&#43; type.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/how-to-convert-args-from-js-to-cpp/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">Argument checking for native addons for Node.js. Do it right!</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    
+
+<div class="featured-image">
+![NanCheck](logo.jpg)
+</div>
+
+<p>During development of <a href="https://cloudcv.io">CloudCV</a> I came to the problem on converting <code>v8::Arguments</code> to
+native C++ data types in my Node.js native module. If you are new to C++ and Node.js, I suggest you to read how to write C++ modules for Node.js and connecting OpenCV and Node.js first.</p>
+
+<p>Mapping V8 data types to native C++ equivalents is trivial, but somewhat wordy. One should take the
+argument at given index, check whether it is defined, then check it&rsquo;s type and finally cast to C++ type.
+This works fine while you have function that receive two or three arguments of trivial type (That can be mapped directly to built-in C++ types). What about strings? Arrays? Complex types like objects or function callback?
+You code will grow like and became hard-to-maintain pasta-code some day.</p>
+
+<p>In this post I present my approach on solving this problem with a laconic way on describing what do you expect as input arguments.</p>
+
+<p><span class="more"></span>
+<div class="clearfix"></div></p>
+
+<p>To illustrate the difference between imperative approach I included source code for calibrationPatternDetect method that expose function to detect calibration pattern on a single image to Node.js code. As you may see below, there are a lot of <em>if</em> conditions, magic numbers and no type checking for a half of arguments. But even without it, this function occupy 50 lines of code.
+What even worse, 90% of this code is going to be the same for other functions. The main purpose of code of any <code>NAN_METHOD</code> implementation - to marshal data in such a way it can be used by C++ code.</p>
+
+<pre><code class="language-cpp">NAN_METHOD(calibrationPatternDetect)
+{
+    NanScope();
+
+    if (args.Length() != 5)
+    {
+        return NanThrowError(&quot;Invalid number of arguments&quot;);  
+    }
+
+    if (!args[0]-&gt;IsObject())
+    {
+        return NanThrowTypeError(&quot;First argument should be a Buffer&quot;);      
+    }
+
+    // 0 - image
+    // 1 - width
+    // 2 - height
+    // 3 - pattern
+    // 4 - callback
+
+    int w  = args[1]-&gt;Uint32Value();
+    int h  = args[2]-&gt;Uint32Value();
+    int pt = args[3]-&gt;Uint32Value();
+    PatternType pattern;
+
+    switch (pt)
+    {
+        case 0:
+            pattern = CHESSBOARD;
+            break;
+
+        case 1:
+            pattern = CIRCLES_GRID;
+            break;
+
+        case 2:
+            pattern = ASYMMETRIC_CIRCLES_GRID;
+            break;    
+
+        default:
+            return NanThrowError(&quot;Unsupported pattern type. Only 0 (CHESSBOARD), 1 (CIRCLES_GRID) or 2 (ASYMMETRIC_CIRCLES_GRID) are supported.&quot;);
+    };
+
+    if (!args[4]-&gt;IsFunction())
+    {
+        return NanThrowTypeError(&quot;Last argument must be a function.&quot;);
+    }
+
+    // The task holds our custom status information for this asynchronous call,
+    // like the callback function we want to call when returning to the main
+    // thread and the status information.
+
+    NanCallback *callback = new NanCallback(args[4].As&lt;Function&gt;());
+}
+</code></pre>
+
+<p>So the goal is to add more syntax sugar for argument checking.
+Basically, it should provide a convenient way to check number and type of arguments passed.
+For <a href="https://cloudcv.io">CloudCV</a> project I&rsquo;ve ended with a declarative approach because I found it fit my needs very much
+and makes argument checking self-explanatory. Here is how new implementation of <code>calibrationPatternDetect</code> looks like:</p>
+
+<pre><code class="language-cpp">NAN_METHOD(calibrationPatternDetect)
+{
+    NanScope();
+
+    Local&lt;Object&gt;   imageBuffer;
+    Local&lt;Function&gt; callback;
+    cv::Size        patternSize;
+    PatternType     pattern;
+
+    try
+    {
+        if (NanCheck(args).ArgumentsCount(5)
+            .Argument(0).IsBuffer().Bind(imageBuffer)
+            .Argument(1).Bind(patternSize.width)
+            .Argument(2).Bind(patternSize.height)
+            .Argument(3).StringEnum&lt;PatternType&gt;({ 
+                { &quot;CHESSBOARD&quot;,     PatternType::CHESSBOARD }, 
+                { &quot;CIRCLES_GRID&quot;,   PatternType::CIRCLES_GRID }, 
+                { &quot;ACIRCLES_GRID&quot;,  PatternType::ACIRCLES_GRID } }).Bind(pattern)
+            .Argument(4).IsFunction().Bind(callback))
+        {
+            NanCallback *nanCallback = new NanCallback(callback);
+            NanAsyncQueueWorker(new DetectPatternTask(imageBuffer, patternSize, pattern, nanCallback));
+            NanReturnValue(NanTrue());
+        }
+
+        NanReturnValue(NanFalse());
+    }
+    catch (ArgumentMismatchException exc)
+    {
+        return NanThrowTypeError(exc.what());
+    }
+}
+</code></pre>
+
+<p>I hope you agree that second version is much more easy to read. Fluent architecture allows to write predicates in a chain, which actually is very similar to the way we thing. All predicate has self-telling names made from verb and a noun. So let me give you a brief overview what <code>NanCheck</code> is capable of.</p>
+
+<h2 id="fluent-api">Fluent API</h2>
+
+<p><a href="http://en.wikipedia.org/wiki/Method_chaining">Method chaining</a> (aka Fluent API) makes it very easy to build final predicate for argument checking via consecutive checks.
+Each next step will be made <strong>if and only if</strong> all previous predicates were successful.
+In case of error, predicate will throw an <code>ArgumentMismatchException</code> exception that will terminate all further checks. <code>NanCheck(args)</code> can be evaluated to <code>bool</code> which makes it possible to use NanCheck in a condition statement:</p>
+
+<pre><code class="language-cpp">if (NanCheck(args). ...) {
+    // This code will be executed if argument parsing
+    // will be successful        
+}
+</code></pre>
+
+<h2 id="type-checking">Type checking</h2>
+
+<p>To check particular argument at given index, <code>NanCheckArguments</code> provide a <code>Argument(index)</code> function. This function lets you to build a sub-predicate for given argument and bind it&rsquo;s value with particular local variable:</p>
+
+<pre><code class="language-cpp">    if (NanCheck(args).Argument(0).IsBuffer()) {
+        // This code will be executed if argument parsing
+        // will be successful        
+    }
+</code></pre>
+
+<p>Currently, <code>NanCheck</code> support type checking of the following built-in V8 types:
+1. <code>v8::Function</code>
+2. <code>v8::Object</code>
+3. <code>v8::String</code></p>
+
+<p>In addition, it offers <code>NotNull</code> predicate to ensure argument is not null or empty.
+The list of predicates will grow for sure. New functions to check whether argument is <code>v8::Array</code>, <code>v8::Number</code>, <code>v8::Integer</code>, <code>v8::Boolean</code> will be added in a next updates.</p>
+
+<h2 id="binding">Binding</h2>
+
+<p>After type checking, it&rsquo;s necessary to complete sub-predicate construction by <em>binding</em> argument to a local variable. Binding is a assignment of the argument (with data marshaling, if it&rsquo;s necessary) to a variable that will be used later;</p>
+
+<pre><code class="language-cpp">    Local&lt;Object&gt;   imageBuffer;
+    if (NanCheck(args).Argument(0).IsBuffer().Bind(imageBuffer)) {
+        // This code will be executed if argument parsing
+        // will be successful        
+    }
+</code></pre>
+
+<p>NanCheck support transparent binding to all v8 types (Number, String, Function, Object, Array, etc.), native C++ and OpenCV types (via <a href="https://github.com/BloodAxe/CloudCVBackend/blob/master/src/framework/marshal/opencv.cpp">marshaling system</a>):</p>
+
+<pre><code class="language-cpp">    cv::Size        patternSize;
+    if (NanCheck(args).Argument(1).IsObject().Bind(patternSize)) {
+        // This code will be executed if argument parsing
+        // will be successful        
+    }
+</code></pre>
+
+<p>There is a special case of string arguments called <code>StringEnum</code> - that is, a string argument, which can be one of a priory defined values. It introduced to support *<em>C++ enum</em> types and pass them
+as string constants. <code>StringEnum</code> predicate allow to parse string value and map to C++ enum type:</p>
+
+<pre><code class="language-cpp">    PatternType     pattern;
+    if (NanCheck(args)
+        .Argument(3).StringEnum&lt;PatternType&gt;({ 
+            { &quot;CHESSBOARD&quot;,     PatternType::CHESSBOARD }, 
+            { &quot;CIRCLES_GRID&quot;,   PatternType::CIRCLES_GRID }, 
+            { &quot;ACIRCLES_GRID&quot;,  PatternType::ACIRCLES_GRID } }).Bind(pattern)) {
+        // This code will be executed if argument parsing
+        // will be successful        
+    }
+</code></pre>
+
+<h2 id="implementation-highlights">Implementation highlights</h2>
+
+<p>Thanks to C++11, it&rsquo;s really easy to construct predicate chain using lambda functions. Basically predicate chain is nothing but a recursive anonymous function of the following form:</p>
+
+<pre><code class="language-cpp">    auto initFn = [innerPredicate, outerPredicate](const v8::Arguments&amp; args) {
+        return innerPredicate(args) &amp;&amp; outerPredicate(args);
+    };
+</code></pre>
+
+<p>To illustrate an idea of building predicate chain, let&rsquo;s take a look on ArgumentsCount implementation:</p>
+
+<pre><code class="language-cpp">    NanCheckArguments&amp; NanCheckArguments::ArgumentsCount(int count)
+    {
+        return AddAndClause([count](const v8::Arguments&amp; args) 
+        { 
+            if (args.Length() != count)
+                throw ArgumentMismatchException(args.Length(), count); 
+
+            return true;
+        });
+    }
+</code></pre>
+
+<p>Here we construct outer predicate which compare number of arguments to expected value
+and throw an exception if it does not match.</p>
+
+<p>With a help of <code>std::initializer_list</code> it became really simple to declare string enum with minimal syntax overhead:</p>
+
+<pre><code class="language-cpp">    class NanMethodArgBinding
+    {
+    public:
+    ...
+        template &lt;typename T&gt;
+        NanArgStringEnum&lt;T&gt; 
+        StringEnum(std::initializer_list&lt; std::pair&lt;const char*, T&gt; &gt; possibleValues);
+    ...
+    };
+</code></pre>
+
+<p>Now we&rsquo;re able to call this function with arbitrary number of elements for this enum using
+<code>std::initializer_list</code> syntax:</p>
+
+<pre><code class="language-cpp">    { 
+        { &quot;CHESSBOARD&quot;,     PatternType::CHESSBOARD }, 
+        { &quot;CIRCLES_GRID&quot;,   PatternType::CIRCLES_GRID }, 
+        { &quot;ACIRCLES_GRID&quot;,  PatternType::ACIRCLES_GRID }
+    }
+</code></pre>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p><a href="https://github.com/BloodAxe/CloudCVBackend/blob/master/src/framework/NanCheck.hpp"><strong>NanCheck</strong></a> helped me to reduce amount of code required to check arguments passed to <a href="https://cloudcv.io">CloudCV</a> back-end. There are many cool ideas that I&rsquo;ll probably add as soon as there will be necessity to have them in my library:
+- Strongly typed objects (Objects with required fields)
+- Optional parameters with default values
+- Automatic type inference based on <code>Bind&lt;T&gt;(...)</code> type.
+- Support of multiple types per argument (Parameter can be either of type A or B)</p>
+
+<p>Please leave your comments on this post. I&rsquo;ve spent many hours on figuring out how to implement data marshaling and type checking in V8 and Node.js, so please help information to
+spread out - share and re-tweet this post. Cheers!</p>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/cloudcv/">cloudcv</a>
+            
+                 <a href="/tags/nodejs/">nodejs</a>
+            
+                 <a href="/tags/tutorials/">tutorials</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=Argument%20checking%20for%20native%20addons%20for%20Node.js.%20Do%20it%20right%21&url=https%3a%2f%2fexample.com%2fhow-to-convert-args-from-js-to-cpp%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2fhow-to-convert-args-from-js-to-cpp%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2fhow-to-convert-args-from-js-to-cpp%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

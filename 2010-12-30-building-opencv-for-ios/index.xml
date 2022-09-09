@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2010-12-30-building-opencv-for-ios-rsses on Ghostwriter example</title>
+    <link>https://example.com/2010-12-30-building-opencv-for-ios/index.xml</link>
+    <description>Recent content in 2010-12-30-building-opencv-for-ios-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Fri, 17 Dec 2010 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2010-12-30-building-opencv-for-ios/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Building OpenCV for iOS</title>
+      <link>https://example.com/2010-12-30-building-opencv-for-ios/</link>
+      <pubDate>Fri, 17 Dec 2010 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2010-12-30-building-opencv-for-ios/</guid>
+      <description>
+
+&lt;div class=&#34;alert alert-danger&#34;&gt;
+    &lt;p class=&#34;lead&#34;&gt;This post is outdated.&lt;/p&gt;
+    &lt;p&gt;
+    Current version of OpenCV supports iOS toolchain and can be build in much easier way. You are welcome to read this post for educational purposes. It&#39;s 99.9% chance that &lt;strong&gt;you will not be able to build OpenCV&lt;/strong&gt; using instructions decribed here.
+    &lt;/p&gt;
+&lt;/div&gt;
+
+&lt;p&gt;OpenCV (Open Source Computer Vision) is a library of programming functions for real time computer vision. This library has a huge number of algorithms.OpenCV supports Windows and Linux platforms (and Android starting from 2.2 version). But, unfortunately, there is no official iOS platform support for this moment. In this post i will show you that can build OpenCV for this platform and run it on your  iPhone or iPad.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/more&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;software-you-ll-need&#34;&gt;Software you&amp;rsquo;ll need&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://developer.apple.com/technologies/tools/xcode.html&#34;&gt;XCode&lt;/a&gt; (Developer profile to be able debug on device)&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.cmake.org/&#34;&gt;CMake&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Fresh OpenCV&lt;/li&gt;
+&lt;li&gt;SVN command line tool or any GUI SVN client
+&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Getting the new version of OpenCV is pretty easy - just check out them from public svn repository:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;mkdir opencv-library
+cd opencv
+svn co https://code.ros.org/svn/opencv/trunk/opencv
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I suggest to use the most actual version instead official releases because, usually guys from WillowGarage commit several bug fixes per week.&lt;/p&gt;
+
+&lt;h3 id=&#34;building&#34;&gt;Building&lt;/h3&gt;
+
+&lt;p&gt;Now, when we have copy of OpenCV source code we need to generate XCode workspace to build it. Run CMake (I prefer to use CMake GUI, but use of command  line tool is also possible). Select correct source code directory and specify folder where generated workspace should be placed and hit &amp;ldquo;Generate&amp;rdquo; button. Choose XCode workspace in dialog window. Now your CMake window should looks like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;cmake-opencv2.jpg&#34; alt=&#34;Configuring OpenCV via CMake&#34; title=&#34;Configuring OpenCV via CMake&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Here we should change few flags:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;BUILD_SHARED_LIBS = NO&lt;/li&gt;
+&lt;li&gt;BUILD_NEW_PYTHON_SUPPORT = NO&lt;/li&gt;
+&lt;li&gt;BUILD_EXAMPLES = NO&lt;/li&gt;
+&lt;li&gt;ENABLE_SSE.. = NO (All of them)&lt;/li&gt;
+&lt;li&gt;WITH_EIGEN2 = NO&lt;/li&gt;
+&lt;li&gt;WITH_PVAPI = NO&lt;/li&gt;
+&lt;li&gt;WITH_OPENEXR = NO&lt;/li&gt;
+&lt;li&gt;WITH_QT = NO&lt;/li&gt;
+&lt;li&gt;WITH_QUICKTIME = NO&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;And one more important option which define folder where libraries headers will be placed:
+  * CMAKE_INSTALL_PREFIX = &lt;code&gt;&amp;lt;Your path here&amp;gt;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;In this article I use following directory structure:
+  * opencv-library/opencv – Sources from SVN repository
+  * opencv-library/build – Build directory
+  * opencv-library/install-dir – Install directory&lt;/p&gt;
+
+&lt;p&gt;Hit &amp;ldquo;Configure&amp;rdquo; and then &amp;ldquo;Generate&amp;rdquo;. We a ready to build OpenCV. Locate and load OpenCV.xcodeproj in your build directory to XCode.
+Here we also should do some tricks.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;opencv-xcode-project1.jpg&#34; alt=&#34;OpenCV XСode project&#34; title=&#34;OpenCV XСode project&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;1) Change SDK from MacOS SDK to iOS SDK. It&amp;rsquo;s important, because with this option we tell XCode correct architecture (armv6/armv7).&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;base-sdk1.jpg&#34; alt=&#34;Changing base SDK&#34; title=&#34;Changing base SDK&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;2) Disable Compile for Thumb for all projects. Disabling thumbs will increase speed of floating point operations twice &lt;a href=&#34;http://developer.apple.com/technologies/tools/xcode.html&#34;&gt;1&lt;/a&gt;!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;opencv-disable-compile-for-thumb1.jpg&#34; alt=&#34;Disabling compile for thumbs&#34; title=&#34;Disabling compile for thumbs&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Notice&lt;/strong&gt;: Disabling &amp;ldquo;Compile for thumbs&amp;rdquo; option is actual only for iPhone 3G and older models. If you are targeting to the iPhone 3GS and never models with modern CPU (armv7 architecture) you don&amp;rsquo;t need to disable &amp;ldquo;Compile for Thumbs&amp;rdquo;. Thanks to the &lt;strong&gt;Shervin Emami&lt;/strong&gt;, who pointed me to this nuance.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;projects-delete_thumb.jpg&#34; alt=&#34;Removing unnecessary projects&#34; title=&#34;Removing unnecessary projects&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Finally we are ready to build something! We have to build both debug and release configurations for both device and simulator platform. But when we start building library, we will got a lot of compilation errors in highgui project. This happening because OpenCV uses QTKit for camera capturing. Unfortunately, this framework is missing in iOS. There are two ways - remove problem files from project (This requires some knowledge of CMake syntax) or simply not use highgui in your project. For you it means you won&amp;rsquo;t be able to use very useful functions: cvLoadImage, cvShowImage, cvCreateCaptureFromCam, cvCreateCaptureFromFile etc&amp;hellip; But, actually it&amp;rsquo;s not a big problem - iOS API provide all methods you may want to do such things. There are not elegant, but working solution – simply remove all projects, that uses highgui library from workspace (and highgui itselft). After this manipulations all projects should compile without problems.&lt;/p&gt;
+
+&lt;h3 id=&#34;bringing-all-together&#34;&gt;Bringing all together&lt;/h3&gt;
+
+&lt;p&gt;Okay, now we have four versions of staticaly linked libraries. And I suggest to use lipo tool to create fat-binaries for OpenCV libraries. It&amp;rsquo;s very useful to have one lib file for both Simulator (i386 architecture) and Device (armv6/armv7). Here is bash script that will merge them together:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;# Create armv7 + i386 OpenCV library
+
+mkdir -p build/lib/universal
+
+lipo -create build/lib/Release-iphoneos/libopencv_calib3d.a    build/lib/Release-iphonesimulator/libopencv_calib3d.a    -output build/lib/universal/libopencv_calib3d.a
+lipo -create build/lib/Release-iphoneos/libopencv_contrib.a    build/lib/Release-iphonesimulator/libopencv_contrib.a    -output build/lib/universal/libopencv_contrib.a
+lipo -create build/lib/Release-iphoneos/libopencv_core.a       build/lib/Release-iphonesimulator/libopencv_core.a       -output build/lib/universal/libopencv_core.a
+lipo -create build/lib/Release-iphoneos/libopencv_features2d.a build/lib/Release-iphonesimulator/libopencv_features2d.a -output build/lib/universal/libopencv_features2d.a
+lipo -create build/lib/Release-iphoneos/libopencv_gpu.a        build/lib/Release-iphonesimulator/libopencv_gpu.a        -output build/lib/universal/libopencv_gpu.a
+lipo -create build/lib/Release-iphoneos/libopencv_imgproc.a    build/lib/Release-iphonesimulator/libopencv_imgproc.a    -output build/lib/universal/libopencv_imgproc.a
+lipo -create build/lib/Release-iphoneos/libopencv_legacy.a     build/lib/Release-iphonesimulator/libopencv_legacy.a     -output build/lib/universal/libopencv_legacy.a
+lipo -create build/lib/Release-iphoneos/libopencv_ml.a         build/lib/Release-iphonesimulator/libopencv_ml.a         -output build/lib/universal/libopencv_ml.a
+lipo -create build/lib/Release-iphoneos/libopencv_objdetect.a  build/lib/Release-iphonesimulator/libopencv_objdetect.a  -output build/lib/universal/libopencv_objdetect.a
+lipo -create build/lib/Release-iphoneos/libopencv_video.a      build/lib/Release-iphonesimulator/libopencv_video.a      -output build/lib/universal/libopencv_video.a
+lipo -create build/lib/Release-iphoneos/libopencv_flann.a      build/lib/Release-iphonesimulator/libopencv_flann.a      -output build/lib/universal/libopencv_flann.a
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

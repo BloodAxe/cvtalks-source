@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>iphone on Computer Vision Talks</title>
+    <link>https://computer-vision-talks.com/tags/iphone/</link>
+    <description>Recent content in iphone on Computer Vision Talks</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 06 Nov 2012 00:00:00 +0000</lastBuildDate><atom:link href="https://computer-vision-talks.com/tags/iphone/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Maximizing performance of CV_BGRA2GRAY conversion using NEON and cv::parallel_for</title>
+      <link>https://computer-vision-talks.com/post/2012-11-06-maximizing-performance-grayscale-color-conversion-using-neon-and-cvparallel_for/</link>
+      <pubDate>Tue, 06 Nov 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-11-06-maximizing-performance-grayscale-color-conversion-using-neon-and-cvparallel_for/</guid>
+      
+        <description>I continue playing with powerful NEON engine in iPhone and iPad devices. Recently i bought iPhone 4S that replaced my HTC Mozart and i decided to check how to speed up BGRA to GRAY color conversion procedure using multithreading. Recently Itseez announced a minor release of OpenCV 2.4.3 with a lot of new major features:
+ Added universal parallel_for implementation using various backends: TBB, OpenMP, GCD, Concurrency Improved OpenCV Manager, new Java samples framework, better camera support on Android, opencv2.</description>
+      
+    </item>
+    
+    <item>
+      <title>Markerless Augmented Reality on iPhone</title>
+      <link>https://computer-vision-talks.com/post/2011-02-04-markerless-augmented-reality-on-iphone/</link>
+      <pubDate>Fri, 04 Feb 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2011-02-04-markerless-augmented-reality-on-iphone/</guid>
+      
+        <description>First attempts on trying to implement state of the art Augmented Reality using mobile phone and OpenCV</description>
+      
+    </item>
+    
+  </channel>
+</rss>

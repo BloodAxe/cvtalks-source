@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2011-01-15-feature-descriptors-a-new-approach-rsses on Ghostwriter example</title>
+    <link>https://example.com/2011-01-15-feature-descriptors-a-new-approach/index.xml</link>
+    <description>Recent content in 2011-01-15-feature-descriptors-a-new-approach-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Sat, 15 Jan 2011 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2011-01-15-feature-descriptors-a-new-approach/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Feature descriptors: A new approach</title>
+      <link>https://example.com/2011-01-15-feature-descriptors-a-new-approach/</link>
+      <pubDate>Sat, 15 Jan 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2011-01-15-feature-descriptors-a-new-approach/</guid>
+      <description>
+
+&lt;p&gt;Last year I was tightly connected with image processing and feature tracking/matching. For my needs I’ve used SURF and later RIFF descriptors. Both of them have strong advantages and but… SURF descriptor robustness are compensated by it’s computational cost. RIFF descriptor extracts much faster but not robust enough for my needs. My needs are very simple – doing markerless AR on mobile phone.
+&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;So, we (me and two other co-authors) decided to develop our own descriptor. And we succeeded! Our descriptor (We called it LAZY) meets following requirements:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Scale invariant&lt;/li&gt;
+&lt;li&gt;Rotation invariant&lt;/li&gt;
+&lt;li&gt;Lighting invariant&lt;/li&gt;
+&lt;li&gt;Invariant to slight affine transformations&lt;/li&gt;
+&lt;li&gt;Works a lot faster than SURF (At least 2-3 times in comparison with OpenCV’s SURF implementation)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Here is video demonstration of how our descriptor works on the real video:&lt;/p&gt;
+
+&lt;p&gt;On the next week (Approximately in Wednesday, 26th January) in I’ll publish additional charts with detailed information about speed, robustness and comparison to SURF.&lt;/p&gt;
+
+&lt;h2 id=&#34;comments&#34;&gt;Comments&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#36&#34; title=&#34;2011-01-17 16:06:06&#34;&gt;EKhvedchenya&lt;/a&gt;:&lt;/strong&gt; For sure! However, it&amp;rsquo;s not 100% production ready, and we will improve/change algorithm. So i will publish several posts, describing different parts of the algorithm. And then - write an article. (Maybe, i&amp;rsquo;ll send it to the ICCV).&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#35&#34; title=&#34;2011-01-17 15:58:39&#34;&gt;Stéphane Péchard&lt;/a&gt;:&lt;/strong&gt; Any plans on letting us know how it works?&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#46&#34; title=&#34;2011-01-22 17:23:14&#34;&gt;Dewald&lt;/a&gt;:&lt;/strong&gt; Very nice. Looking forward to hearing more about LAZY. Nice name btw.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#101&#34; title=&#34;2011-02-26 11:04:35&#34;&gt;Shervin Emami&lt;/a&gt;:&lt;/strong&gt; Looks impressive! If you do post it online for free, then thanks! I can&amp;rsquo;t wait to try it out :-)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#104&#34; title=&#34;2011-02-28 14:50:22&#34;&gt;Tony Marrero&lt;/a&gt;:&lt;/strong&gt; Great work guys ;) , will be looking forward to more of your posts.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#279&#34; title=&#34;2011-04-21 06:29:25&#34;&gt;yoshiboarder&lt;/a&gt;:&lt;/strong&gt; Wow! Very nice i wan&amp;rsquo;t execute lazy algorithms. can you send me lazy demo source code?&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#280&#34; title=&#34;2011-04-21 09:55:41&#34;&gt;EKhvedchenya&lt;/a&gt;:&lt;/strong&gt; No it&amp;rsquo;s closed source yet. if one day it become open-source i&amp;rsquo;ll let you know.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#305&#34; title=&#34;2011-04-27 13:03:43&#34;&gt;JaeSik&lt;/a&gt;:&lt;/strong&gt; It looks very impressive! Is this the result of LAZY on Iphone?&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#306&#34; title=&#34;2011-04-27 15:10:09&#34;&gt;EKhvedchenya&lt;/a&gt;:&lt;/strong&gt; Descriptor extraction takes 2ms per frame (~100 keypoints on frame) on iPhone 3gs. However keypoint extraction takes a lot (0.5 seconds, now using SURF feature detector from OpenCV). So now i&amp;rsquo;m working on lightweight and fast enough feature detector especially for LAZY descriptor.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#745&#34; title=&#34;2011-11-28 23:04:03&#34;&gt;Brett&lt;/a&gt;:&lt;/strong&gt; What&amp;rsquo;s the status of this? Looks like the last post was a while ago. Is the algorithm published anywhere? Is there any way for other developers to try this out?&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#746&#34; title=&#34;2011-11-28 23:23:44&#34;&gt;EKhvedchenya&lt;/a&gt;:&lt;/strong&gt; Hi Brett! The status is &amp;ldquo;not enough time&amp;rdquo;. To be honest i also want to finish the research of this descriptors, but my current work schedule consumes all my time and energy. It&amp;rsquo;s challenging, interesting and i enjoy it. But from the other side i have no physical possibility to work on my own researches simultaneously. That&amp;rsquo;s why development of LAZY descriptors is suspended for now. Thanks for the interest to it. I promised to myself to finish their research and publish an article about it at least.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#793&#34; title=&#34;2011-12-29 09:17:17&#34;&gt;Rehan&lt;/a&gt;:&lt;/strong&gt; Impressive, Can I get the code for research purpose? Thanks. Dr. Rehan&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#794&#34; title=&#34;2011-12-29 09:17:49&#34;&gt;Rehan&lt;/a&gt;:&lt;/strong&gt; Impressive, Can I get the code for research purpose? Thanks. Dr. Rehan&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

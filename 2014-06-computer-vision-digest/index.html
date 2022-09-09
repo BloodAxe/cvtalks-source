@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Computer vision Digest - June 2014 &middot; My Name</title>
+        <meta name="description" content="This is a second issue of monthly computer vision digest - a list things that you don&rsquo;t wanna miss, a list of what happened in computer vision in June 2014.
+Previous issues: - Computer Vision Digest (May 2014)
+In this issue: - Signed Distance Field - converting raster masks to vector form - QVision: Computer Vision Library for Qt - Closer look on licence plate recognition - OpenCV 3.0">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="Computer vision Digest - June 2014">
+<meta property="og:description" content="This is a second issue of monthly computer vision digest - a list things that you don&rsquo;t wanna miss, a list of what happened in computer vision in June 2014.
+Previous issues: - Computer Vision Digest (May 2014)
+In this issue: - Signed Distance Field - converting raster masks to vector form - QVision: Computer Vision Library for Qt - Closer look on licence plate recognition - OpenCV 3.0">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/2014-06-computer-vision-digest/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">Computer vision Digest - June 2014</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    
+
+<p>This is a second issue of monthly computer vision digest - a list things that
+you don&rsquo;t wanna miss, a list of what happened in computer vision in June 2014.</p>
+
+<p>Previous issues:
+ - <a href="/articles/2014-05-computer-vision-digest/">Computer Vision Digest (May 2014)</a></p>
+
+<p>In this issue:
+ - <a href="#1">Signed Distance Field - converting raster masks to vector form</a>
+ - <a href="#2">QVision: Computer Vision Library for Qt</a>
+ - <a href="#3">Closer look on licence plate recognition</a>
+ - <a href="#4">OpenCV 3.0</a></p>
+
+<div class="alert alert-info" role="alert">
+Feel free to leave your suggestions on interesting materials in post comments 
+or via Twitter by mentioning [@cvtalks](https://twitter.com/cvtalks). 
+Best links will be included into next digest!
+</div>
+
+<p><span class="more clearfix" /></p>
+
+<hr />
+
+<p><a name="1"></a></p>
+
+<h1 id="signed-distance-field-converting-raster-masks-to-vector-form">Signed Distance Field - converting raster masks to vector form</h1>
+
+<p>The original paper written in Russian, but the topic is rather interesting.
+It describe how to render high-resolution &ldquo;vector&rdquo; graphics from small raster images.
+That&rsquo;s why I decided to include this into digest.</p>
+
+<p>The key algorithm that allows to convert raster mask to vector repesentation
+form is <a href="http://docs.opencv.org/modules/imgproc/doc/miscellaneous_transformations.html#distancetransform">distance transform</a> - algorithm, which calculates
+distance from every binary image pixel to the nearest zero pixel.</p>
+
+<p>Consider following example:
+<img src="41bad64c88d9a859d2ba0eb3b7b437bf.png" alt="" /></p>
+
+<p>The SDF image we compute from original image can be significatly scaled down to, but it still can be used to render
+image with large zoom without aliasing artifacts that typical for raster rendering.</p>
+
+<p><img src="56cc184627964797b10b34687180a24b.gif" alt="" /></p>
+
+<p>Paper in russian: <a href="http://habrahabr.ru/post/215905/">Signed Distance Field или как сделать из растра вектор</a>.</p>
+
+<p>This algorithm was developed by Valve and presented at SIGGRAPH 2007. You can read original paper:
+<a href="http://www.valvesoftware.com/publications/2007/SIGGRAPH2007_AlphaTestedMagnification.pdf">Improved Alpha-Tested Magniﬁcation for Vector Textures and Special Effects</a>. Special thanks to @jin for the link.</p>
+
+<hr />
+
+<p><a name="2"></a></p>
+
+<h1 id="qvision-computer-vision-library-for-qt">QVision: Computer Vision Library for Qt</h1>
+
+<p><img src="qvisionpenguin.png" alt="" /></p>
+
+<p>The <a href="http://qvision.sourceforge.net/index.html">QVision</a> is a free and open source library oriented to the development of computer vision, image/video processing, and scientific computing applications. It is based on the Qt application framework, so it is an object-oriented and cross-platform library for C++.</p>
+
+<p>The library is mainly intended for educational and research purposes, usability and performance. It has a clean and well documented, Qt-style, object oriented API, which provides functionality for:</p>
+
+<ul>
+<li>Video and image input/output.</li>
+<li>Image processing.</li>
+<li>Graphical interface programming.</li>
+<li>Augmented reality visualization.</li>
+<li>Performance evaluation.</li>
+<li>Scientific computing (matrix, vector, quaternions, function optimization, etc..).</li>
+<li>Visual data-path editor tool for rapid application development (RAD).</li>
+<li>&hellip; and so on.</li>
+</ul>
+
+<p>I liked this library because it allows to desing algorithm using graph concept:
+<img src="cannyBlockExample.png" alt="" /></p>
+
+<p>Visual designer allows you to connect data sources with image filters that transform one source
+to another and connect filters in a chain to build a computer vision pipeline without wiring
+any single line of code.</p>
+
+<p><img src="qvdesignergui.png" alt="" /></p>
+
+<p>I beleive this kind of playground can be very useful for fast prototyping and learning basics
+of computer vision. The visual designer does not require any knowledge of any computer vision
+library (like OpenCV or Halcon).</p>
+
+<p><img src="hartley-combined-edge-movement-detector.png" alt="" /></p>
+
+<p>Project homepage: <a href="http://qvision.sourceforge.net/index.html">QVision</a>.</p>
+
+<hr />
+
+<p><a name="3"></a></p>
+
+<h1 id="closer-look-on-licence-plate-recognition">Closer look on licence plate recognition</h1>
+
+<p><img src="d29e20441d4ab164a5fe13f881b684ce.jpg" alt="" /></p>
+
+<p>Again, another publication in Russian, but hey, it&rsquo;s still worth reading it, even via Google Translate.
+License plate recognition is very demanded topic and there are many systems for that. But what about
+knowledge sharing? Guys from Recognitor share their experience with recognizing plate numbers in very,
+very unfriendly conditions - dirty numbers, dark and blurred.</p>
+
+<p><img src="0d94a205fe806c8d57660ba35188df27.png" alt="" /></p>
+
+<p>Here are key features of their implementation:</p>
+
+<ul>
+<li>Small rotation invariance to plate rotation (± 10 degree)</li>
+<li>Perspective scale invariance (20%)</li>
+<li>Robustness to partial occlusion of the license plate</li>
+</ul>
+
+<p>Usually, the first step in system like that is image binarisation. This works fine when we have a clean number and
+friendly lighting conditions. In other cases this method does not help at all. A better approach is to find top and
+bottom lines of the plate using brightness histogram.</p>
+
+<ol>
+<li>Detect bottom border</li>
+<li>Detect top border</li>
+<li>Detect left and right borders</li>
+<li>Increase contrast in ROI</li>
+<li>Split symbols</li>
+<li>Symbol matching</li>
+</ol>
+
+<p>To attract your attention - here is an example of what their algorihtm is capable to recognize:
+<img src="74314a4e67ab06faac8f1f5706433e33.png" alt="" /></p>
+
+<p>Impressed? So am I was. Original post: <a href="http://habrahabr.ru/company/recognitor/blog/225913/">Распознавание автомобильных номеров в деталях</a>.</p>
+
+<hr />
+
+<p><a name="4"></a></p>
+
+<h1 id="opencv-3-0">OpenCV 3.0</h1>
+
+<p>No, it has not yet released. But if you build latest revision of master branch, CMake will happily report:</p>
+
+<pre><code>OpenCV ARCH: x86
+OpenCV RUNTIME: vc12
+OpenCV STATIC: ON
+Found OpenCV 3.0.0 
+</code></pre>
+
+<p>As you may read in my blog I <a href="/articles/kaze-1.6-in-opencv/">ported</a> of KAZE features to OpenCV. And I proud that
+my contribution will be a part of next OpenCV release.</p>
+
+<p>OpenCV team has not made any announcement about 3.0 release date. Personally I&rsquo;d expect it
+to happed at the end of GSoC. So let&rsquo;s keep fingers crossed.</p>
+
+<p>Meanwhile, here is a presentation that can reveal some details of what you can expect from OpenCV 3.0:</p>
+
+<iframe src="//www.slideshare.net/slideshow/embed_code/36806594" width="800" height="600" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/news/">news</a>
+            
+                 <a href="/tags/digest/">digest</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=Computer%20vision%20Digest%20-%20June%202014&url=https%3a%2f%2fexample.com%2f2014-06-computer-vision-digest%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2f2014-06-computer-vision-digest%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2f2014-06-computer-vision-digest%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

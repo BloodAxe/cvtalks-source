@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>neon on Computer Vision Talks</title>
+    <link>https://computer-vision-talks.com/tags/neon/</link>
+    <description>Recent content in neon on Computer Vision Talks</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 30 Jun 2013 00:00:00 +0000</lastBuildDate><atom:link href="https://computer-vision-talks.com/tags/neon/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Success-story: Fueling ARBasketball up with NEON</title>
+      <link>https://computer-vision-talks.com/post/2013-06-30-success-story-fueling-arbasketball-up-with-neon/</link>
+      <pubDate>Sun, 30 Jun 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2013-06-30-success-story-fueling-arbasketball-up-with-neon/</guid>
+      
+        <description>img.pull-left.img-thumbnail(src=&amp;ldquo;arbasketball-logo.jpg&amp;rdquo;,alt=&amp;ldquo;ARBasketball&amp;rdquo;)
+p ARBasketball was one of the first augmented reality-based games in App Store. It has been published in 2010. In these days not many people have even heard about AR. I mean it wasn&amp;rsquo;t so popular as it became now. But there were people who saw the great potential in this growing market. One of them was Konstantin Tarovik, the author of ARBasketball. I must confess - I saw this application before, but had no idea it&amp;rsquo;s author lives in Ukraine, and in the same city as I am!</description>
+      
+    </item>
+    
+    <item>
+      <title>Maximizing performance of CV_BGRA2GRAY conversion using NEON and cv::parallel_for</title>
+      <link>https://computer-vision-talks.com/post/2012-11-06-maximizing-performance-grayscale-color-conversion-using-neon-and-cvparallel_for/</link>
+      <pubDate>Tue, 06 Nov 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-11-06-maximizing-performance-grayscale-color-conversion-using-neon-and-cvparallel_for/</guid>
+      
+        <description>I continue playing with powerful NEON engine in iPhone and iPad devices. Recently i bought iPhone 4S that replaced my HTC Mozart and i decided to check how to speed up BGRA to GRAY color conversion procedure using multithreading. Recently Itseez announced a minor release of OpenCV 2.4.3 with a lot of new major features:
+ Added universal parallel_for implementation using various backends: TBB, OpenMP, GCD, Concurrency Improved OpenCV Manager, new Java samples framework, better camera support on Android, opencv2.</description>
+      
+    </item>
+    
+    <item>
+      <title>A very fast BGRA to Grayscale conversion on Iphone</title>
+      <link>https://computer-vision-talks.com/post/2011-02-08-a-very-fast-bgra-to-grayscale-conversion-on-iphone/</link>
+      <pubDate>Tue, 08 Feb 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2011-02-08-a-very-fast-bgra-to-grayscale-conversion-on-iphone/</guid>
+      
+        <description>Almost all image processing algorithms uses gray scale images as input source. But almost all hardware video sources provide frames in RGB/BGR(A) formats. So gray scale conversion is very popular operation. Although it&amp;rsquo;s expensive enough to cause CPU-bound bottlenecks while running on mobile processors. In this post i will show you how to use ARM NEON intrinsic to get significant performance boost of BGRA to GRAY conversion.
+Color representation Pixel color can be presented in different ways.</description>
+      
+    </item>
+    
+  </channel>
+</rss>

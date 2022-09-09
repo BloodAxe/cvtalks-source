@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2011-07-03-opencv-2-3-release-candidate-is-available-rsses on Ghostwriter example</title>
+    <link>https://example.com/2011-07-03-opencv-2-3-release-candidate-is-available/index.xml</link>
+    <description>Recent content in 2011-07-03-opencv-2-3-release-candidate-is-available-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Sun, 03 Jul 2011 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2011-07-03-opencv-2-3-release-candidate-is-available/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>OpenCV 2.3 is available</title>
+      <link>https://example.com/2011-07-03-opencv-2-3-release-candidate-is-available/</link>
+      <pubDate>Sun, 03 Jul 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2011-07-03-opencv-2-3-release-candidate-is-available/</guid>
+      <description>
+
+&lt;p&gt;New major release of OpenCV library is coming. Release candidate is available for testing right now! &lt;strong&gt;Update: &lt;/strong&gt;&lt;strong&gt;Opencv 2.3 has been released on 5 June.&lt;/strong&gt; &lt;strong&gt;Update 2: Added precompiled binaries of iOS!&lt;/strong&gt; Download OpenCV 2.3:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Win32: &lt;a href=&#34;http://sourceforge.net/projects/opencvlibrary/files/opencv-win/2.3/&#34;&gt;http://sourceforge.net/projects/opencvlibrary/files/opencv-win/2.3/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Android: &lt;a href=&#34;http://sourceforge.net/projects/opencvlibrary/files/opencv-android/2.3/OpenCV-2.3.0alpha1-android-bin.tar.bz2/download&#34;&gt;http://sourceforge.net/projects/opencvlibrary/files/opencv-android/2.3/OpenCV-2.3.0alpha1-android-bin.tar.bz2/download&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Unix: &lt;a href=&#34;http://sourceforge.net/projects/opencvlibrary/files/opencv-unix/2.3/OpenCV-2.3.0.tar.bz2/download&#34;&gt;http://sourceforge.net/projects/opencvlibrary/files/opencv-unix/2.3/OpenCV-2.3.0.tar.bz2/download&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;iOS: [download id=&amp;ldquo;4&amp;rdquo;]&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;general-modifications-and-improvements&#34;&gt;General Modifications and Improvements&lt;/h2&gt;
+
+&lt;p&gt;Buildbot-based Continuous Integration system is now continuously testing OpenCV snapshots. The status is available at &lt;a href=&#34;http://buildbot.itseez.com/&#34;&gt;http://buildbot.itseez.com&lt;/a&gt; OpenCV switched to Google Test (&lt;a href=&#34;http://code.google.com/p/googletest/&#34;&gt;http://code.google.com/p/googletest/&lt;/a&gt;) engine for regression and correctness tests. Each module now has test subdirectory with the tests.&lt;/p&gt;
+
+&lt;h2 id=&#34;new-functionality-features&#34;&gt;New Functionality, Features&lt;/h2&gt;
+
+&lt;p&gt;Many functions and methods now take InputArray/OutputArray instead of &amp;ldquo;cv::Mat&amp;rdquo; references. It retains compatibility with the existing code and yet brings more natural support for STL vectors and potentially other &amp;ldquo;foreign&amp;rdquo; data structures to OpenCV. See &lt;a href=&#34;http://opencv.itseez.com/modules/core/doc/intro.html#inputarray-and-outputarray&#34;&gt;http://opencv.itseez.com/modules/core/doc/intro.html#inputarray-and-outputarray&lt;/a&gt; for details.&lt;/p&gt;
+
+&lt;h2 id=&#34;core&#34;&gt;Core&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;LAPACK is not used by OpenCV anymore. The change decreased the library footprint and the compile time. We now use our own implementation of Jacobi SVD. SVD performance on small matrices (2x2 to 10x10) has been greatly improved; on larger matrices it is still pretty good. SVD accuracy on poorly-conditioned matrices has also been improved.&lt;/li&gt;
+&lt;li&gt;Arithmetic operations now support mixed-type operands and arbitrary number of channels.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;features2d&#34;&gt;Features2d&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Completely new patent-free BRIEF and ORB feature descriptors have been added.&lt;/li&gt;
+&lt;li&gt;Very fast LSH matcher for BRIEF and ORB descriptors will be added in 2.3.1.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;calib3d&#34;&gt;Calib3d&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;A new calibration pattern, &amp;ldquo;circles grid&amp;rdquo;, has been added. See findCirclesGrid() function and the updated calibration.cpp sample. With the new pattern calibration accuracy is usually much higher.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;highgui&#34;&gt;Highgui&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;[Windows] videoInput is now a part of highgui. If there are any problems with compiling highgui, set &amp;ldquo;WITH_VIDEOINPUT=OFF&amp;rdquo; in CMake.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;stitching&#34;&gt;&lt;strong&gt;Stitching&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://opencv.willowgarage.com/wiki/opencv_stitching&#34;&gt;opencv_stitching&lt;/a&gt; is a beta version of new application that makes a panorama out of a set of photos which were took from the same point.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;python&#34;&gt;Python&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Now there are 2 extension modules: cv and cv2. cv2 includes wrappers for OpenCV 2.x functionality. opencv/samples/python2 contain a few samples demonstrating cv2 in use.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;contrib&#34;&gt;Contrib&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;A new experimental variational stereo correspondence algorithm StereoVar has been added.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;gpu&#34;&gt;Gpu&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;The module now requires CUDA 4.0 or later; Many improvements and bug fixes have been made.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;android-port&#34;&gt;&lt;strong&gt;Android port&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;With support from NVidia, OpenCV Android port (which is actually not a separate branch of OpenCV, it&amp;rsquo;s the same code tree with additional build scripts) has been greatly improved, a few demos developed. Camera support has been added as well. See &lt;a href=&#34;http://opencv.willowgarage.com/wiki/Android&#34;&gt;http://opencv.willowgarage.com/wiki/Android&lt;/a&gt; for details.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;documentation&#34;&gt;Documentation&lt;/h2&gt;
+
+&lt;p&gt;OpenCV documentation is now written in ReStructured Text and built using Sphinx (&lt;a href=&#34;http://sphinx.pocoo.org/&#34;&gt;http://sphinx.pocoo.org&lt;/a&gt;). It&amp;rsquo;s not a single reference manual now, it&amp;rsquo;s 4 reference manuals (OpenCV 2.x C++ API, OpenCV 2.x Python API, OpenCV 1.x C API, OpenCV 1.x Python API), the emerging user guide and a set of tutorials for beginners. Style and grammar of the main reference manual (OpenCV 2.x C++ API) have been thoroughly checked and fixed. Online up-to-date version of the manual is available at &lt;a href=&#34;http://opencv.itseez.com/&#34;&gt;http://opencv.itseez.com&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;samples&#34;&gt;Samples&lt;/h2&gt;
+
+&lt;p&gt;Several samples using the new Python bindings (cv2 module) have been added: &lt;a href=&#34;https://code.ros.org/svn/opencv/branches/2.3/opencv/samples/python2&#34;&gt;https://code.ros.org/svn/opencv/branches/2.3/opencv/samples/python2&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;optimization&#34;&gt;Optimization&lt;/h2&gt;
+
+&lt;p&gt;Several ML algorithms have been threaded using TBB.&lt;/p&gt;
+
+&lt;h2 id=&#34;bug-fixes&#34;&gt;&lt;strong&gt;Bug Fixes&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;Over 250 issues have been resolved. Most of the issues (closed and still open) are listed at &lt;a href=&#34;https://code.ros.org/trac/opencv/report/6&#34;&gt;https://code.ros.org/trac/opencv/report/6&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;known-problems-limitations&#34;&gt;&lt;strong&gt;Known Problems/Limitations&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;Documentation (especially on the new Python bindings) is still being updated. Watch opencv.itseez.com for updates. Android port does not provide Java interface for OpenCV. It is going to be added to &lt;a href=&#34;http://code.ros.org/svn/opencv/branches/2.3/opencv&#34;&gt;2.3 branch&lt;/a&gt; in a few weeks. The list of the other open bugs can be found at &lt;a href=&#34;http://code.ros.org/trac/opencv/report/1&#34;&gt;http://code.ros.org/trac/opencv/report/1&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Image-processing-in-your-browser-unit-test-automation-rsses on Ghostwriter example</title>
+    <link>https://example.com/image-processing-in-your-browser-unit-test-automation/index.xml</link>
+    <description>Recent content in Image-processing-in-your-browser-unit-test-automation-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Fri, 31 Oct 2014 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/image-processing-in-your-browser-unit-test-automation/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Image processing in your browser - Unit Test automation</title>
+      <link>https://example.com/image-processing-in-your-browser-unit-test-automation/</link>
+      <pubDate>Fri, 31 Oct 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/image-processing-in-your-browser-unit-test-automation/</guid>
+      <description>&lt;p&gt;JavaScript. Do you like debug JavaScript code? I hate it. Literally.
+What what if you have to? In this post I&amp;rsquo;m going to show you how to
+simplify your life by automating unit testing of the JavaScript code
+for the browser.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;monkeys.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;To get things more interesting - let&amp;rsquo;s automate unit-testing of the
+image processing library called &lt;a href=&#34;http://inspirit.github.io/jsfeat/&#34;&gt;JSFeat&lt;/a&gt;. JSFeat provides a
+JavaScript implementation of the basic image processing operations
+that let you to process images in your browser and build sophisticated
+algorithms. &lt;strong&gt;It&amp;rsquo;s like OpenCV for web-browser&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href=&#34;https://github.com/BloodAxe/jsfeat&#34;&gt;source code&lt;/a&gt; for this tutorial is available on my Github page: &lt;a href=&#34;https://github.com/BloodAxe/jsfeat&#34;&gt;https://github.com/BloodAxe/jsfeat&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;Typically, when we test C++ software, we end up with test framework of your
+choise and test runner. It can be continuous integration server like Jenkins
+in your company or public Travic-CI service for open-source project.&lt;/p&gt;
+
+&lt;p&gt;With browser JavaScript things gets more complicated. I&amp;rsquo;m not talking about
+JS unit-test frameworks - &lt;a href=&#34;https://github.com/mochajs/mocha&#34;&gt;mocha&lt;/a&gt; is more than enough. I&amp;rsquo;m talking about
+browser testing itself. Basically you have to open a webpage in your browser to
+invoke a test cases. Manually. Ew!&lt;/p&gt;
+
+&lt;p&gt;Moreover, due to browser sandbox, you are not allowed to access canvas data for
+local files. In practice it means that code like showed below &lt;strong&gt;won&amp;rsquo;t work if you
+open a HTML page as a local file&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;var img = new Image();
+img.src = &#39;dummy.jpg&#39;;
+img.onload = function() {
+    // This will never happen
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You will have to setup a local HTTP server to serve these tests pages to get this
+works. One simple way to do it by using python: &lt;code&gt;python -m SimpleHTTPServer 8000&lt;/code&gt; will
+do the job. However it&amp;rsquo;s only a partial solution.&lt;/p&gt;
+
+&lt;p&gt;Now let&amp;rsquo;s imagine that you have a lot of these tests. Would you open each page
+individually, watch how they run and wait to analyze their results? No doubts,
+you can do it, but this is not automated testing in any way.&lt;/p&gt;
+
+&lt;p&gt;To recap, here are a list of problems that exists in browser JS testing:
+ - A test framework
+ - Have to open test pages in a browser
+ - Hard to automate and collect results
+ - Need local webserver&lt;/p&gt;
+
+&lt;p&gt;Since I&amp;rsquo;m used to Mocha, i will use it. However it&amp;rsquo;s not obligatory and you can chose any other test framework you like. But as you will see later, with Mocha it&amp;rsquo;s really simple. ith mocha you can write your scripts like showed below. This is a real test I wrote as an example for JSFeat:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;// Source test/test_grayscale.js
+&#39;use strict&#39;;
+
+describe(&#39;jsfeat&#39;, function(){
+
+  describe(&#39;imgproc&#39;, function(){
+
+    it(&#39;grayscale&#39;, function(done) {
+
+      var img = new Image();
+      img.src = &#39;lena.png&#39;;
+      img.onload = function() {
+
+        var width = img.width;
+        var height = img.height;
+
+        var canvas = document.createElement(&#39;canvas&#39;);
+        var context2d = canvas.getContext(&#39;2d&#39;);
+
+        context2d.drawImage(img, 0, 0, width, height);
+        var image_data = context2d.getImageData(0, 0, width, height);
+ 
+        var gray_img = new jsfeat.matrix_t(width, height, jsfeat.U8_t | jsfeat.C1_t);
+        var code = jsfeat.COLOR_RGBA2GRAY;
+
+        jsfeat.imgproc.grayscale(image_data.data, width, height, gray_img, code);
+        done();
+      };
+
+    });
+
+  });
+   
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;There is a really powerful tool in Nodejs world called [Grunt][grunt] that we will use
+to automate tasks like JavaScript static code checking, minification and testing.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;npm install -g grunt-cli
+npm install grunt --save-dev
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;A headless browser is a full-featured browser engine without graphical interface. It was designed to simulate a real browser including DOM and JavaScript. The most important headless browser is &lt;a href=&#34;http://phantomjs.org/&#34;&gt;PhantomJS&lt;/a&gt;. I found that it works like a charm for this task. With phantomjs we can run arbitrary HTML page inside and execute JavaScript code. This tool let&amp;rsquo;s us to get rid of the manual tabs openning.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;// script.js:
+// Simple Javascript example
+
+console.log(&#39;Loading a web page&#39;);
+var page = require(&#39;webpage&#39;).create();
+var url = &#39;http://www.phantomjs.org/&#39;;
+page.open(url, function (status) {
+  //Page is loaded!
+  phantom.exit();
+});
+
+phantomjs script.js
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;PhantomJS and Mocha are already connected together in a single grunt task called &lt;a href=&#34;https://github.com/jdcataldo/grunt-mocha-phantomjs&#34;&gt;grunt-mocha-phantomjs&lt;/a&gt;. And we use &lt;a href=&#34;https://github.com/gruntjs/grunt-contrib-connect&#34;&gt;grunt-contrib-connect&lt;/a&gt; to host a local webserver.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;npm install grunt-mocha-phantomjs --save-dev
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This extension does exactly what we need: it starts a local webserver, open page in phantomjs and run JS test cases.
+With help of it, we are able to run all our tests using simple command:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;grunt test
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Here&amp;rsquo;s an example output:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;Running &amp;quot;concat:jsfeat&amp;quot; (concat) task
+File build/jsfeat.js created.
+
+Running &amp;quot;uglify:build&amp;quot; (uglify) task
+&amp;gt;&amp;gt; 1 file created.
+
+Running &amp;quot;connect:server&amp;quot; (connect) task
+Started connect web server on http://0.0.0.0:8000
+
+Running &amp;quot;mocha_phantomjs:all&amp;quot; (mocha_phantomjs) task
+
+
+  jsfeat
+    imgproc
+      ✓ grayscale 
+
+
+  1 passing (41ms)
+
+
+Done, without errors.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Within this setup you are now able to automate testing of JavaScript code that require interaction with HTML5 Canvas features. This way I test the code that I write for browser image processing. I hope you enjoyed this post and I&amp;rsquo;m looking forward to see your questions and mentions in a comments!&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href=&#34;https://github.com/BloodAxe/jsfeat&#34;&gt;source code&lt;/a&gt; for this tutorial is available on my Github page: &lt;a href=&#34;https://github.com/BloodAxe/jsfeat&#34;&gt;https://github.com/BloodAxe/jsfeat&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

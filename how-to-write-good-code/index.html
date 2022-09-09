@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>How to write a good code &middot; My Name</title>
+        <meta name="description" content="![](featured-image.jpg)  This article is a quintessence of my all experience I&rsquo;ve got for last years working as a computer vision consultant. I hope you will find this interesting and useful. My goal was to create set of rules I follow personally on daily basis.
+1. Prefer functional approach Image processing is a place where functional paradigm shows it&rsquo;s bests. In most cases, image processing algorithm depends only on input image and has no side effects.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="How to write a good code">
+<meta property="og:description" content="![](featured-image.jpg)  This article is a quintessence of my all experience I&rsquo;ve got for last years working as a computer vision consultant. I hope you will find this interesting and useful. My goal was to create set of rules I follow personally on daily basis.
+1. Prefer functional approach Image processing is a place where functional paradigm shows it&rsquo;s bests. In most cases, image processing algorithm depends only on input image and has no side effects.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/how-to-write-good-code/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">How to write a good code</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    
+
+<div class="featured-image">
+![](featured-image.jpg)
+</div>
+
+<p>This article is a quintessence of my all experience
+I&rsquo;ve got for last years working as a computer vision consultant.
+I hope you will find this interesting and useful.
+My goal was to create set of rules I follow personally on daily basis.</p>
+
+<p><span class="more" /></p>
+
+<h1 id="1-prefer-functional-approach">1. Prefer functional approach</h1>
+
+<p><img src="fp.png" alt="" /></p>
+
+<p>Image processing is a place where functional paradigm shows it&rsquo;s bests.
+In most cases, image processing algorithm depends only on input image and has no side effects.
+This fits perfectly to a &lsquo;pure function&rsquo; term. When possible try to follow this checklist when you define a function in your code:</p>
+
+<ul>
+<li>Mark all input data with <code>const</code> modifier to specify immutable arguments.</li>
+<li>Prefer return by reference for large objects (especially for images) instead returning by value.</li>
+<li>In case of class methods, mark methods that does not change class internal state with  <code>const</code> modifier.</li>
+</ul>
+
+<p>These simple advice helps to understand what and when can you function change. You may remember tricky details of your code today, but who guarantees you&rsquo;ll easily remember that in a month?</p>
+
+<p>For instance, I want to write implementation of template matching. One may write it as follows:</p>
+
+<pre><code class="language-cpp">class TemplateMatchingAlgorithm
+{
+public:
+  TemplateMatchingAlgorithm(cv::Mat templateImage, int method);
+
+  cv::Point matchTemplate(cv::Mat queryImage) const;
+
+private:
+  cv::Mat _templateImage;
+  int   _method;
+};
+</code></pre>
+
+<p>Compare it with function declaration that does the same job, but looks much cleaner:</p>
+
+<pre><code class="language-cpp">void MatchTemplate(cv::Mat templateImage, cv::Mat queryImage, cv::Point&amp; minPoint, int method);
+</code></pre>
+
+<p>So you may ask, should I create class with const method or declare an ordinary function instead?
+The short answer - functions are better. I personally use simple decision algorithm:</p>
+
+<div class="alert alert-info" role="alert">
+  If the algorithm needs to preserve state between calls - use class; otherwise - use function.
+</div>
+
+<h2 id="2-don-t-use-virtual-methods">2. Don&rsquo;t use virtual methods</h2>
+
+<p><img src="virtualmethods.png" alt="" /></p>
+
+<p>You may argue - with classes we can define various implementations for <code>TemplateMatching</code> using SIDM, CUDA or use template matching in Fourier domain.
+Yes, we can. But the price we pay for each call of virtual method is too big for such small routine as template matching.
+Usually we use TemplateMatching on small patches like 11x11 pixels to track translation between two frames of video. Hence to achieve robust tracking, number of patches can be quite high - 500 and even 1000 per one frame. Further, coarse-to-fine matching and sub-pixel optimization can lead to ten or more calls for the same feature. In this case, virtual call is a big no-no that will kill your application&rsquo;s performance.</p>
+
+<div class="alert alert-info" role="alert">
+As a rule of thumb: you *may* use virtual methods to execute big amount of work. Let's say one virtual call per frame looks totally fine. A thousand calls per frame is obviously a bad, bad idea.
+</div>
+
+<h2 id="3-write-regression-tests">3. Write regression tests</h2>
+
+<p><img src="regression.jpg" alt="" /></p>
+
+<p>Regression testing is a great tool to track all changes in your algorithm and measure it&rsquo;s
+precision and performance. Here&rsquo;s an idea:</p>
+
+<ul>
+<li>Create a ground-truth input dataset</li>
+<li>Process it with your algorithm.</li>
+<li>Save output data and track it in your version control system.<br /></li>
+<li>Each time you make changes in implementation - run regression on same input data and compare results.</li>
+</ul>
+
+<p>Regression testing can easily spot numeric stability problems on different compilers / platforms, introduced bugs, platform-dependent optimizations. It&rsquo;s a good idea to include it as a part of regular unit testing:</p>
+
+<pre><code class="language-cpp">/*
+BOOST_AUTO_TEST_CASE(MyAlgorithm, createRegressionDatabaset)
+{
+    ...
+}
+/**/
+
+BOOST_AUTO_TEST_CASE(MyAlgorithm, checkRegression)
+{
+    ...
+}
+</code></pre>
+
+<p>I intentionally commented out first test case - in ideal world it should be executed only once.
+But sometimes it&rsquo;s necessary to update ground-truth (you fixed a bug in original implementation).
+So you uncomment it, run tests, comment it back and check-in new ground-truth.</p>
+
+<p>You may use any format you like for dumping ground truth data (usually it&rsquo;s some matrices, vectors or images).
+Personally, I prefer YAML and JSON.
+Just ensure when dumping floating-point numbers to specify maximum output precision.
+Otherwise you will have funny weekend debugging absolutely correct algorithm with failing assertion check <code>
+0.1543642342365 != 0.154364</code>.</p>
+
+<div class="alert alert-info" role="alert">
+Once written, regression tests should be run on regular basis either manually or using automated CI system of your choice. 
+</div>
+
+<h2 id="4-add-logging-to-your-code">4. Add logging to your code</h2>
+
+<p><img src="logging.jpg" alt="" /></p>
+
+<p>In the simplest case, it could be trivial console logging.
+In debug mode you will have all messages in stdout, but in release it will be totally excluded from compilation step.</p>
+
+<pre><code class="language-cpp">#if _DEBUG
+#define LOG_MESSAGE(x) std::cout &lt;&lt; __FILE__ &lt;&lt; &quot; (&quot; &lt;&lt; __LINE__ &lt;&lt; &quot;): &quot; &lt;&lt; x &lt;&lt; std::endl;
+#else
+#define LOG_MESSAGE(x)
+#endif
+</code></pre>
+
+<p>For complex systems I suggest to use mature logging frameworks like Boost::Log or similar.
+They has separation of logging streams (info, trace, warning, errors) and deal with multi-threaded logging.
+Logging to file is also useful feature when you want to store program output for further analysis.</p>
+
+<p>In one of my previous projects, there was a standalone program for logs analysis and data visualization. We logged
+all - matrices, vectors regular messages with timestamps. After program finishes we were able to trace program flow
+frame by frame and analyze how our algorithms behaved. I cannot count how much hours this tool saved to us on data analysis.</p>
+
+<p>Logging also helps to spot nasty bugs when you have inconsistent behavior on different platforms. For instance, not so recently I faced a problem when optical flow tracker gave different results on iOS and OSX platforms. After logging all input/output and intermediate data including vectors, matrices I found the root of the evil. It was <code>std::log</code> function.</p>
+
+<div class="alert alert-warning" role="alert">
+On OSX ``std::log(float)`` implicitly computes logarithm with double precision and returns truncated result (float). On iOS it computes logarithm using single precision leading to small difference in result. Like a butterfly effect, it affects all other parts of the algorithm. 
+<br>
+**Without logging it would be practically impossible to spot bug like this**.
+</div>
+
+<h2 id="5-profile-your-code">5. Profile your code</h2>
+
+<p><img src="profilerdump.png" alt="" /></p>
+
+<p>Algorithm performance usually a top-level priority since this kind of applications deal with real-time video processing and processing of huge amount of data.
+Therefore it&rsquo;s crucial to know how fast your algorithms runs or do they become slower or faster with refactoring you perform.
+There are plenty of ways to collect this data.</p>
+
+<h3 id="xcode-instruments">XCode Instruments</h3>
+
+<p>If you&rsquo;re targeting on OSX and iOS platform, Apple Xcode and Instruments can be your first choice due to natural integration of profiling tools to IDE.
+Instruments can be handy to spot problematic places in your code. But Instruments uses sampling technique, which is not precise.</p>
+
+<h3 id="vtune-visualstudio">VTune/VisualStudio</h3>
+
+<p>For Windows users Visual Studio offers integrated profiler as well.
+Unlike Instruments, it can do instrumentation of your binary.
+It means each function in your program modified with special prolog and epilog code that measure execution time of all your program.
+Instrumenting provides you a lot of information per each routine: calls count, execution time, inclusive / exclusive CPU time, call tread and CPU cores load.
+This is much more you have with Apple Instruments.</p>
+
+<h3 id="cv-gettickcount">cv::getTickCount</h3>
+
+<p>Sometimes you don&rsquo;t want to profile entire application. Instead you want to &lsquo;cherry-pick&rsquo; only a single function and profile it. For this purpose you can use monotonic clock and measure execution time:</p>
+
+<pre><code class="language-cpp">#define MEASURE_TIME(x)                        \
+        { auto startTime = cv::getTickCount(); \ 
+          x;                                   \
+          auto endTime = cv::getTickCount();   \
+          std::cout &lt;&lt; #x &lt;&lt; &quot; &quot; &lt;&lt; (endTime - startTime) * cv::getTickFrequency() &lt;&lt; std::endl; }
+
+// Measure MatchTemplate
+MEASURE_TIME(MatchTemplate(a,b,result));
+</code></pre>
+
+<div class="alert alert-info" role="alert">
+  Profile your code. Always.
+</div>
+
+<h2 id="6-optimize-code">6. Optimize code</h2>
+
+<h3 id="6-1-loop-vectorization">6.1 Loop vectorization</h3>
+
+<p>Compilers can do loops vectorization when data flow and iterations count are clear enough.
+This heuristic analysis depends on implementation, so CLang has different vectorization analysis engine than MSVC. But you can give your compiler a hint:</p>
+
+<pre><code class="language-cpp">void SSD(cv::Mat i1, cv::Mat i2)
+{
+  int i = 0;
+  const uint8_t * a = templateImage.data;
+  const uint8_t * b = templateImage.data;
+  
+  int ssd = 0;
+
+  for (; i &lt; (length/4)*4; i+=4)
+  {
+    ssd += SQR(a[i+0] - b[i+0]);
+    ssd += SQR(a[i+1] - b[i+1]);
+    ssd += SQR(a[i+2] - b[i+2]);
+    ssd += SQR(a[i+3] - b[i+3]);
+  }
+
+  for (; i &lt; length; i++, a++, b++)
+  {
+    ssd += SQR(a[i] - b[i]);
+  }
+
+  return ssd;
+}
+</code></pre>
+
+<p>This partial loop unrolling gives enough information to compiler.
+As a result it can replace partially unrolled summation with SIMD instruction.</p>
+
+<h3 id="6-2-bring-constants-at-compile-time">6.2 Bring constants at compile time</h3>
+
+<p>If you have a priory knowledge on size of data you pass to particular function, it may make sense to write function that
+employs this information:</p>
+
+<pre><code class="language-cpp">template &lt;typename TOut, typename TIn, int RowsAtCompileTime, int ColsAtCompileTime&gt;
+inline TOut SSD(const cv::Matx_&lt;TIn, RowsAtCompileTime, ColsAtCompileTime&gt;&amp; a, 
+                const cv::Matx_&lt;TIn, RowsAtCompileTime, ColsAtCompileTime&gt;&amp; b) nothrow
+{
+  int i = 0;
+  const TIn * a = templateImage.data;
+  const TIn * b = templateImage.data;
+  
+  TOut ssd = 0;
+
+  for (int i = 0; i &lt; RowsAtCompileTime * ColsAtCompileTime; i++, a++, b++)
+  {
+    ssd += (TOut)SQR(a[i] - b[i]);
+  }
+
+  return ssd;
+}
+</code></pre>
+
+<p>Since compiler knows size of the array to process, it can easily generate vectorized code for this routine.
+The drawback of this approach is slightly increased code size if you instantiate this template function with many sizes.
+But you get better performance which usually worth it.</p>
+
+<h3 id="6-3-architecture-dependent-implementations">6.3 Architecture-dependent implementations</h3>
+
+<p>Architecture-specific features like SIMD instructions can make your code runs much, much faster than generic C++
+implementation.
+It is a must-have feature on mobile platforms since it makes your code faster and at the same time it
+conservate battery power of host device.
+There are more and more devices with CUDA and OpenCL support.
+And the question is - how do I manage all those possible architecture / platforms combinations of optimized functions in my code?</p>
+
+<p>Here it&rsquo;s how I solved this task for myself:</p>
+
+<pre><code class="language-cpp">namespace mypublicnamespace
+{
+    void MatchTemplate(cv::Mat templateImage, cv::Mat queryImage, cv::Point&amp; minPoint, int method)
+    {
+#if TARGET_PLATFORM_HAS_NEON_SIMD
+        details::neon::MatchTemplate(templateImage, queryImage, minPoint, method);
+#elif TARGET_PLATFORM_HAS_SSE_SIMD
+        details::sse::MatchTemplate(templateImage, queryImage, minPoint, method);
+#elif TARGET_PLATFORM_HAS_OPENCL
+        details::opencl::MatchTemplate(templateImage, queryImage, minPoint, method);
+#else        
+        details::generic::MatchTemplate(templateImage, queryImage, minPoint, method);
+#endif    
+    }
+}
+</code></pre>
+
+<p>This code snippet demonstrate compile-time dispatching for particular implementation of a function declared in <code>mypublicnamespace</code>. Of course, you should take care of preprocessor defines that declare platform / architecture capabilities. I</p>
+
+<h3 id="6-4-branch-prediction">6.4 Branch prediction</h3>
+
+<p>Suppose you have a-priory knowledge that condition expression will be almost always true.
+Why don&rsquo;t give this intrinsic knowledge to compiler? By supplying <em>expected</em> condition result compiler can
+generate more efficient code. As a result, CPU will start decoding instructions earlier.</p>
+
+<p>Unfortunately, this feature supported only on GCC and CLANG.
+But according to measurements, it can provide significant speed-up up to ~15%. You can find more information here: <a href="http://blog.man7.org/2012/10/how-much-do-builtinexpect-likely-and.html">How much do __builtin_expect(), likely(), and unlikely() improve performance?</a>.</p>
+
+<pre><code class="language-cpp">#define LIKELY(x)      __builtin_expect(!!(x), 1)
+#define UNLIKELY(x)    __builtin_expect(!!(x), 0)
+
+if (LIKELY(x &gt;= 0 &amp;&amp; x &lt;= image_width))
+{
+  // Compute something
+}
+
+if (UNLIKELY(std::fabs(value) &lt;= std::numeric_limits&lt;float&gt;::epsilon()))
+{
+  throw std::runtime_error(&quot;Value is zero&quot;);
+}
+</code></pre>
+
+<h3 id="6-5-openmp">6.5 OpenMP</h3>
+
+<p>Starting from OpenMP 4.0, you can instruct compiler to generate vectorized code by adding new pragma instructions to your loops:</p>
+
+<pre><code class="language-cpp">void MatchTemplate(cv::Mat templateImage, cv::Mat queryImage, cv::Point&amp; minPoint, int method)
+{
+  uint8_t * a = templateImage.data;
+  uint8_t * b = templateImage.data;
+  
+  int ssd = 0;
+
+#pragma omp simd reduction(+:x)
+  for (int i = 0; i &lt; length; i++)
+  {
+    ssd += SQR(a[0] - b[0]);
+  }
+}
+</code></pre>
+
+<p>With only single <code>#pragma</code> instruction you made your code runs faster.
+I encourage you to visit <a href="https://software.intel.com/en-us/articles/enabling-simd-in-program-using-openmp40">Enabling SIMD in program using OpenMP4.0</a> webpage for more information of supported OpenMP SIMD instructions.</p>
+
+<h3 id="7-use-imageview">7. Use ImageView</h3>
+
+<p>For Windows users there is a great Visual Studio plugin called <a href="https://visualstudiogallery.msdn.microsoft.com/e682d542-7ef3-402c-b857-bbfba714f78d">ImageWatch</a> that makes our life so simple.
+This plugin can visualize OpenCV matrices right in IDE.
+It is hard to overestimate the usefulness of this plugin.
+You can see how images are changing while debugging.</p>
+
+<p><img src="image_watch.png" alt="Image watch" /></p>
+
+<h1 id="conclusion">Conclusion</h1>
+
+<p>Next time when you start development of new algorithm, keep in mind these simple steps.
+They will help you create fast, maintainable and clear code. Here they are:</p>
+
+<ol>
+<li>Prefer functional approach</li>
+<li>Try avoid virtual calls</li>
+<li>Write vectorization-friendly code</li>
+<li>Use all available debugging / profiling tools</li>
+<li>Measure your code performance</li>
+<li>Write tests and check regression</li>
+</ol>
+
+<p>Hope you found this post useful. Discussion is more than welcome. Please share your thoughts in comments.</p>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/news/">news</a>
+            
+                 <a href="/tags/digest/">digest</a>
+            
+                 <a href="/tags/cpp/">cpp</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=How%20to%20write%20a%20good%20code&url=https%3a%2f%2fexample.com%2fhow-to-write-good-code%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2fhow-to-write-good-code%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2fhow-to-write-good-code%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

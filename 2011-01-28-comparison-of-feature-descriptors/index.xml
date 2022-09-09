@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2011-01-28-comparison-of-feature-descriptors-rsses on Ghostwriter example</title>
+    <link>https://example.com/2011-01-28-comparison-of-feature-descriptors/index.xml</link>
+    <description>Recent content in 2011-01-28-comparison-of-feature-descriptors-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Fri, 28 Jan 2011 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2011-01-28-comparison-of-feature-descriptors/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Comparison of feature descriptors</title>
+      <link>https://example.com/2011-01-28-comparison-of-feature-descriptors/</link>
+      <pubDate>Fri, 28 Jan 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2011-01-28-comparison-of-feature-descriptors/</guid>
+      <description>
+
+&lt;p&gt;&lt;img src=&#34;sid-150x150.jpg&#34; alt=&#34;Image for attraction of your attention &#34; title=&#34;Image for attraction of your attention&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Hello everyone! Today, we have very interesting topic! We will inspect different feature descriptor extractors. From this post you will know how robust is SURF, which disadvantages has BRIEF descriptor and how many times LAZY descriptor is faster than SURF. PS: I will be really appreciate if you point me to good implementations (C/C++) of RIFF, PCA SIFT, GLOH, LESH descriptors. I will include them in test suite.  So, today our guinea pigs are:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;SURF (OpenCV implementation)&lt;/li&gt;
+&lt;li&gt;BRIEF (OpenCV implementation)&lt;/li&gt;
+&lt;li&gt;SIFT (OpenCV implementation) Excluded from test – extremely slow&lt;/li&gt;
+&lt;li&gt;LAZY (Own implementation)
+&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Five test: rotation, scaling, brightness change, blur and performance benchmark. Those tests should give us information about rotation, scaling and lighting invariant of feature descriptor and also describe total descriptor robustness. Performance benchmark will show how much expensive descriptor extraction is.&lt;/p&gt;
+
+&lt;h2 id=&#34;tests-description&#34;&gt;Tests description&lt;/h2&gt;
+
+&lt;p&gt;In all tests I use single reference image:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;graffiti_thumb.png&#34; alt=&#34;graffiti&#34; title=&#34;graffiti&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I love this image very much. It has a large number of similar areas, reflections on a car and it’s just nice :). For feature detection I will use SurfFeatureDetector from OpenCV with default settings. In all tests I use very similar routine:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Generate set of transformed images&lt;/li&gt;
+&lt;li&gt;Detect features on each image and extract descriptors&lt;/li&gt;
+&lt;li&gt;Match descriptors with descriptors from the reference frame. For matching I use flann matcher from OpenCV in both directions (Match reference descriptors with transformed and vice versa and return their intersection as a result)&lt;/li&gt;
+&lt;li&gt;Use RANSAC (cv::FindFundamentalMat) to filter false positive matches.&lt;/li&gt;
+&lt;li&gt;As a result I return (number of inliers) / (total matches) in percent&amp;rsquo;s.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;Rotation test&lt;/strong&gt; will apply affine rotation for this image around it’s center for 360 degrees with 1 degree step. &lt;strong&gt;Scaling test&lt;/strong&gt; will resize image using scale factor in range [0.25..2.25]. &lt;strong&gt;Lighting test&lt;/strong&gt; will change image brightness of each pixel of image in range [-100..100]. &lt;strong&gt;Blur test&lt;/strong&gt; will smooth image using Gaussian blur with different kernel size [1..21]. **Performance test **will measure descriptor extraction time for [1..N] descriptors from the reference image.&lt;/p&gt;
+
+&lt;h2 id=&#34;results&#34;&gt;Results&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;rotation_invariantness_thumb.png&#34; alt=&#34;rotation_invariantness&#34; title=&#34;rotation_invariantness&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As expected, SURF and LAZY demonstrate good rotation invariant behavior. BRIEF is a not rotation invariant descriptor since it just a image patch.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;scale_invariantness_thumb.png&#34; alt=&#34;scale_invariantness&#34; title=&#34;scale_invariantness&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In scaling test SURF and LAZY demonstrates very similar results – and yes, BRIEF is not scale invariant. Local extremum regions can be explained as side effect of resizing.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;lighting_invariantness_thumb.png&#34; alt=&#34;lighting_invariantness&#34; title=&#34;lighting_invariantness&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In lighting test all descriptors showed good results. Probably because all descriptors are normalized.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;blur_invariantness_thumb.png&#34; alt=&#34;blur_invariantness&#34; title=&#34;blur_invariantness&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;BRIEF very sensitive to blurred image (remember – it’s just a patch). LAZY and SURF demonstrate almost identical results.&lt;/p&gt;
+
+&lt;h2 id=&#34;performance&#34;&gt;Performance&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;performance_thumb.png&#34; alt=&#34;performance&#34; title=&#34;performance&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Due to the very trivial nature of the BRIEF descriptor it demonstrates the best performance. Extraction of LAZY descriptor is also very fast because of it doesn’t use heavy calculations as SURF does. I can not explain the quadratic grow of the extraction time for SURF descriptor. Probably it can be caused by non-optimal implementation in OpenCV.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Our research, LAZY descriptor provides almost identical to SURF quality but works at least 2 times faster. But it’s research is not finished, so I expect 10-30% performance speedup and slight quality improvement (maybe it will beat SURF sometime).&lt;/p&gt;
+
+&lt;h2 id=&#34;further-work&#34;&gt;Further work&lt;/h2&gt;
+
+&lt;p&gt;In a near future I will add PCA SIFT and RIFF descriptor implementation to all tests and do them on other test images.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

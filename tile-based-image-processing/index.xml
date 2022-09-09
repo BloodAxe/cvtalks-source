@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tile-based-image-processing-rsses on Ghostwriter example</title>
+    <link>https://example.com/tile-based-image-processing/index.xml</link>
+    <description>Recent content in Tile-based-image-processing-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Thu, 04 Dec 2014 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/tile-based-image-processing/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Tile-based image processing</title>
+      <link>https://example.com/tile-based-image-processing/</link>
+      <pubDate>Thu, 04 Dec 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/tile-based-image-processing/</guid>
+      <description>
+
+&lt;p&gt;How would you design an algorithm to process 40Mpx image? 100Mpx? What about gigapixel-sized panorams? Obviously, it should differs from those that are intended for 640x480 images. Here I want to present you implementation of the very simple but powerful approach called &amp;ldquo;Tile-based image processing&amp;rdquo;. I will show you how to make this using OpenCV.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;tiles.png&#34; alt=&#34;Tile based image processing&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;First, let&amp;rsquo;s define a few restrictions in order to simplify our implementation. In this tutorial I will consider a &amp;lsquo;pass-through&amp;rsquo; pipeline - when we apply some function to input image and give an output image of the same size as an output.&lt;/p&gt;
+
+&lt;p&gt;It is possible to extend this approach to work with many input images, but for the sake of simplicity I&amp;rsquo;ll omit this for now.&lt;/p&gt;
+
+&lt;p&gt;Consider a following algorithm:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Take a source image for RGB color space.&lt;/li&gt;
+&lt;li&gt;Convert in to grayscale color space (unsigned byte).&lt;/li&gt;
+&lt;li&gt;Compute Sobel derivatives (signed short).&lt;/li&gt;
+&lt;li&gt;Take a Dx, Dy for each pixel and compute it&amp;rsquo;s magnitude and orientation.&lt;/li&gt;
+&lt;li&gt;Leave only those, which magnitude is larger than threshold.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Using OpenCV it could look like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;cv::Mat source = cv::imread(&amp;quot;input.jpg&amp;quot;);
+cv::Mat grayscale, dx, dy;
+cv::cvtColor(source, grayscale);
+cv::Sobel(grayscale, dx, 1, 0);
+cv::Sobel(grayscale, dy, 0, 1);
+...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;problems-with-straighforward-implementation&#34;&gt;Problems with straighforward implementation&lt;/h2&gt;
+
+&lt;p&gt;This routine require &lt;code&gt;N + 2 * N * sizeof(signed short)&lt;/code&gt; bytes of additional memory for straightforward implementation, where N is number of pixels in source image. Large number of intermediate buffers can cause memory issues for memory restricted devices (mobile phones, embedded systems).&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;On iOS, in particular, your app might get terminated by iOS watchdog for high peak RAM usage, despite the fact you use this memory only for a temp buffers.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Second issue with large amount of buffers is cache-misses. Large buffers are likely to sit near each other, therefore cache performance will be low and algorithm performance will suffer.&lt;/p&gt;
+
+&lt;p&gt;To adress those two issues, I suggest to divide input image into &amp;ldquo;Tiles&amp;rdquo; - regions of the original image of equal size, let&amp;rsquo;s say 64x64. The processing function remains the same, but we reuse all temporary buffers and process only 64x64 pixels at one time.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;algorithm.png&#34; alt=&#34;Tile based image processing&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s say we&amp;rsquo;re processing &lt;code&gt;1280x720&lt;/code&gt; frame, using regular approach, the total amount of
+additional memory is &lt;strong&gt;4.6 megabytes&lt;/strong&gt; (&lt;code&gt;4608000&lt;/code&gt; bytes). With tile-based approach, we need only &lt;strong&gt;20 kilobytes&lt;/strong&gt; (&lt;code&gt;20480&lt;/code&gt; bytes). 20K are likely to fit entirely in L2 cache and therefore give a significant performance boost.&lt;/p&gt;
+
+&lt;h2 id=&#34;tile-based-implementation&#34;&gt;Tile-based implementation&lt;/h2&gt;
+
+&lt;p&gt;To implement tile-based implementation, we iterate over the image, copy tiles from source image to our local source tile, process it and write to corresponding area in the
+destination image.&lt;/p&gt;
+
+&lt;p&gt;A pseudo-code for this routine is follows:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;template&amp;lt;int TileSize, typename Algorithm&amp;gt;
+void process(const cv::Mat&amp;amp; sourceImage, cv::Mat&amp;amp; resultImage, Algorithm algorithm) const
+{
+    assert(!resultImage.empty());
+    assert(sourceImage.rows == resultImage.rows);
+    assert(sourceImage.cols == resultImage.cols);
+
+    const int rows = (sourceImage.rows / TileSize) + (sourceImage.rows % TileSize ? 1 : 0);
+    const int cols = (sourceImage.cols / TileSize) + (sourceImage.cols % TileSize ? 1 : 0);
+
+    cv::Mat tileInput, tileOutput;
+
+    for (int rowTile = 0; rowTile &amp;lt; rows; rowTile++)
+    {
+        for (int colTile = 0; colTile &amp;lt; cols; colTile++)
+        {
+            copyTileFromSource(sourceImage, tileInput, rowTile, colTile);
+            algorithm(tileInput, tileOutput);
+            copyTileToResultImage(tileOutput, resultImage, rowTile, colTile);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I hope it&amp;rsquo;s clear to understand what is happening in code above. The &lt;code&gt;Algorithm&lt;/code&gt; here represents some algorithm that we want to run on our tiles. There are two functions &lt;code&gt;copyTileFromSource&lt;/code&gt; and &lt;code&gt;copyTileToResultImage&lt;/code&gt; that will be covered a bit later.&lt;/p&gt;
+
+&lt;h2 id=&#34;dealing-with-out-of-tile-reads&#34;&gt;Dealing with out-of-tile reads&lt;/h2&gt;
+
+&lt;p&gt;You may ask yourself - what should we do with border pixels? Sobel operator use neighbor pixels around each pixel. When we construct a tile shouldn&amp;rsquo;t we take this into account? Sure we are. So that&amp;rsquo;s why there is a padding parameter that controls amount of additional pixels that are added to top, left, bottom and right of the tile in order to make functions that require additional pixels work correct.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;tile_with_paddings.png&#34; alt=&#34;Tile with paddings&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Padding makes tile overlap each other, but we pay this price for good cache locality.&lt;/p&gt;
+
+&lt;p&gt;I will use a slightly modified version of code from above:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;struct TiledAlgorithm
+{
+    TiledAlgorithm(int tileSize, int padding, int borderType)
+        : mTileSize(tileSize)
+        , mPadding(padding)
+        , mBorderType(borderType)
+    {
+    }
+
+    void process(const cv::Mat&amp;amp; sourceImage, cv::Mat&amp;amp; resultImage) const
+    {
+        assert(!resultImage.empty());
+        assert(sourceImage.rows == resultImage.rows);
+        assert(sourceImage.cols == resultImage.cols);
+
+        int rows = (sourceImage.rows / mTileSize) + (sourceImage.rows % mTileSize ? 1 : 0);
+        int cols = (sourceImage.cols / mTileSize) + (sourceImage.cols % mTileSize ? 1 : 0);
+
+        cv::Mat tileInput, tileOutput;
+
+        for (int rowTile = 0; rowTile &amp;lt; rows; rowTile++)
+        {
+            for (int colTile = 0; colTile &amp;lt; cols; colTile++)
+            {
+                cv::Rect srcTile(colTile * mTileSize - mPadding, 
+                                 rowTile * mTileSize - mPadding, 
+                                 mTileSize + 2 * mPadding, 
+                                 mTileSize + 2 * mPadding);
+
+                cv::Rect dstTile(colTile * mTileSize,            
+                                 rowTile * mTileSize, 
+                                 mTileSize, 
+                                 mTileSize);
+
+                copySourceTile(sourceImage, tileInput, srcTile);
+                processTileImpl(tileInput, tileOutput);
+                copyTileToResultImage(tileOutput, resultImage, dstTile);
+            }
+        }
+    }
+
+protected:
+    virtual void processTileImpl(const cv::Mat&amp;amp; srcTile, cv::Mat&amp;amp; dstTile) const = 0;
+    
+    void copySourceTile(const cv::Mat&amp;amp; src, cv::Mat&amp;amp; srcTile, cv::Rect &amp;amp;tile) const;
+    void copyTileToResultImage(const cv::Mat&amp;amp; tileImage, cv::Mat&amp;amp; resultImage, cv::Rect resultRoi);
+
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;processing_with_paddings.png&#34; alt=&#34;Processing with paddings&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;To fill a tile with source image we should check whether tile is close to image border. In this case OpenCV will come to help with cv::copyMakeBorder function that helps us to fill the missing pixels with given border fill method. If tile including paddings are entirely in the image boundary, it&amp;rsquo;s enough to just copy image region to a tile:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;void copySourceTile(const cv::Mat&amp;amp; src, cv::Mat&amp;amp; srcTile, cv::Rect &amp;amp;tile)
+{
+    auto tl = tile.tl();
+    auto br = tile.br();
+
+    cv::Point tloffset, broffset;
+
+    //Take care of border cases
+    if (tile.x &amp;lt; 0)
+    {
+        tloffset.x = -tile.x;
+        tile.x = 0;
+    }
+
+    if (tile.y &amp;lt; 0)
+    {
+        tloffset.y = -tile.y;
+        tile.y = 0;
+    }
+
+    if (br.x &amp;gt;= src.cols)
+    {
+        broffset.x = br.x - src.cols + 1;
+        tile.width -= broffset.x;
+    }
+
+    if (br.y &amp;gt;= src.rows)
+    {
+        broffset.y = br.y - src.rows + 1;
+        tile.height -= broffset.y;
+    }
+
+    // If any of the tile sides exceed source image boundary we must use copyMakeBorder to make proper paddings for this side
+    if (tloffset.x &amp;gt; 0 || tloffset.y &amp;gt; 0 || broffset.x &amp;gt; 0 || broffset.y &amp;gt; 0)
+    {
+        cv::Rect paddedTile(tile.tl(), tile.br());
+        assert(paddedTile.x &amp;gt;= 0);
+        assert(paddedTile.y &amp;gt;= 0);
+        assert(paddedTile.br().x &amp;lt; src.cols);
+        assert(paddedTile.br().y &amp;lt; src.rows);
+
+        cv::copyMakeBorder(src(paddedTile), srcTile, tloffset.y, broffset.y, tloffset.x, broffset.x, mBorderType);
+    }
+    else
+    {
+        // Entire tile (with paddings lies inside image and it&#39;s safe to just take a region:
+        src(tile).copyTo(srcTile);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;For non-zero padding case we add additional pixels to source tile, therefore it has effective width and height of &lt;code&gt;TileSize + Padding + Padding&lt;/code&gt;, but after processing we write only central segment of the tile of size &lt;code&gt;TileSize x TileSize&lt;/code&gt; to destination image. In case of Sobel, we need a padding of &lt;code&gt;1&lt;/code&gt;, because Sobel uses 3x3 kernel by default.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;void copyTileToResultImage(const cv::Mat&amp;amp; tileImage, cv::Mat&amp;amp; resultImage, cv::Rect resultRoi)
+{
+    cv::Rect srcTile(mPadding, mPadding, mTileSize, mTileSize);
+
+    auto br = resultRoi.br();
+
+    if (br.x &amp;gt;= resultImage.cols)
+    {
+        resultRoi.width -= br.x - resultImage.cols;
+        srcTile.width -= br.x - resultImage.cols;
+    }
+
+    if (br.y &amp;gt;= resultImage.rows)
+    {
+        resultRoi.height -= br.y - resultImage.rows;
+        srcTile.height -= br.y - resultImage.rows;
+    }
+
+    cv::Mat tileView = tileImage(srcTile);
+    cv::Mat dstView = resultImage(resultRoi);
+
+    assert(tileView.rows == dstView.rows);
+    assert(tileView.cols == dstView.cols);
+
+    tileView.copyTo(dstView);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;application&#34;&gt;Application&lt;/h2&gt;
+
+&lt;p&gt;This approach can be used when you need to guarantee low-memory footprint of your algorithm or you want to use data locality without changing a lot in your code. In this
+case I suggest to pre-allocate data buffers as a continuous block of memory:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;// Our algorithm need three intermediate buffers: a,b,c that
+// we want to store close to each other
+class MyAlgorithm : public TiledAlgorithm
+{
+public:
+    MyAlgorithm(int tileSize, int padding)
+    {
+        int size = tileSize + padding * 2;
+
+        // Allocate all buffer as continuous array
+        mBuffer.create(size * 3, size, CV_8UC1);
+            
+        // Create views to sub-regions of mBuffer
+        a = mBuffer.rowRange(0,      size);
+        b = mBuffer.rowRange(size,   2*size);
+        c = mBuffer.rowRange(2*size, 3*size);
+    }
+
+private:
+    cv::Mat mBuffer;
+
+    cv::Mat a, b c;
+}
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Did you know, that JPEG-2000 coded use tile-based encoding and it allows this codec to retrieve (decode) an arbitrary region of the image? Also, tiles are widely used in aerial photography to stich images.&lt;/p&gt;
+
+&lt;p&gt;I hope you find this post interesting. Pleas let me know on which topics you would like to see in my blog. Feel free to drop a ping on &lt;a href=&#34;https://twitter.com/cvtalks&#34;&gt;@cvtalks&lt;/a&gt; or leave a comment. Thanks!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

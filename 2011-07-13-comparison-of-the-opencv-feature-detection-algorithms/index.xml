@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2011-07-13-comparison-of-the-opencv-feature-detection-algorithms-rsses on Ghostwriter example</title>
+    <link>https://example.com/2011-07-13-comparison-of-the-opencv-feature-detection-algorithms/index.xml</link>
+    <description>Recent content in 2011-07-13-comparison-of-the-opencv-feature-detection-algorithms-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Wed, 13 Jul 2011 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2011-07-13-comparison-of-the-opencv-feature-detection-algorithms/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Comparison of the OpenCV’s feature detection algorithms – II</title>
+      <link>https://example.com/2011-07-13-comparison-of-the-opencv-feature-detection-algorithms/</link>
+      <pubDate>Wed, 13 Jul 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2011-07-13-comparison-of-the-opencv-feature-detection-algorithms/</guid>
+      <description>
+
+&lt;p&gt;Here is an update of half year-old post about differences between existing feature detection algorithms. Original article can be found here: &lt;a href=&#34;http://computer-vision-talks.com/2011/01/comparison-of-the-opencvs-feature-detection-algorithms-2/&#34;&gt;Comparison of the OpenCV&amp;rsquo;s feature detection algorithms – I&lt;/a&gt;. I decided to update this comparison report since many things happened: OpenCV 2.3.1 has been released and the new type of feature detector (ORB feature detector) has been introduced. ORB is an acronym of Oriented-BRIEF and uses modified to compute orientation FAST detector for detection stage and BRIEF for descriptor extraction. In this article I will test newcomer on the same test cases (the same hardware and input images) using the latest OpenCV build (2.3.1, revision №6016).&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;test-images&#34;&gt;Test images&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&#34;mandril_thumb.jpg&#34; alt=&#34;mandril&#34; title=&#34;mandril&#34; /&gt; &lt;img src=&#34;barbara_thumb.jpg&#34; alt=&#34;barbara&#34; title=&#34;barbara&#34; /&gt; &lt;img src=&#34;lena_thumb.jpg&#34; alt=&#34;lena&#34; title=&#34;lena&#34; /&gt; &lt;img src=&#34;peppers_thumb.jpg&#34; alt=&#34;peppers&#34; title=&#34;peppers&#34; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;estimation-criteria&#34;&gt;Estimation criteria&lt;/h4&gt;
+
+&lt;p&gt;&lt;strong&gt;Speed per frame&lt;/strong&gt; – absolute total time in milliseconds spent to the feature detection of the single frame.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Speed per keypoint&lt;/strong&gt; – detection time for single keypoint. Evaluated as total time divided to number of detected keypoints. Helps us to estimate how cheap the detection actually is.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Percent of tracked features&lt;/strong&gt; – percent of successfully tracked features from original to transformed image. In ideal situation, value of this mark should be near 100%.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Average tracking error&lt;/strong&gt; – this is the average distance between position of tracked feature and their calculated position on transformed frame. This mark indicates accuracy of the feature detection. Large values indicates large number of false positive tracking or “drift” of feature point among frames.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Features count deviation&lt;/strong&gt; – difference between number of keypoints on reference frame and number of detected keypoints on transformed frame divided by number of keypoints on reference frame. Helps estimate how slight exposure changes affects feature detection.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Average detection error&lt;/strong&gt; – average distance between nearest keypoints on original and transformed frame.&lt;/p&gt;
+
+&lt;h4 id=&#34;results&#34;&gt;Results&lt;/h4&gt;
+
+&lt;p&gt;For each image I obtain a five measurements per each detection algorithm. Then I calculate average for each kind of measurement and here are the results: &lt;img src=&#34;average-number-of-detected-keypoints_thumb.png&#34; alt=&#34;average-number-of-detected-keypoints&#34; title=&#34;average-number-of-detected-keypoints&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Figure 1 – Average number of detected keypoints&lt;/p&gt;
+
+&lt;p&gt;As you can see from Figure 1 FAST detector finds a lot of feature points as usual. You can manipulate the numbers of detected points by adjusting detection threshold. Other detectors detects much less feature points but their quality is significantly better. And ORB detector seems to have the fixed maximum number of features detected because if found exactly 702 features on each image.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;percent-of-tracked-features_thumb.png&#34; alt=&#34;percent-of-tracked-features&#34; title=&#34;percent-of-tracked-features&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Figure 2 – Percent of tracked features&lt;/p&gt;
+
+&lt;p&gt;Tracking test looks very very strange – the works result show MSER detector which is expectable, since it returns centers of stable extremum regions. But the GoodFeaturesToTrack detector also shows very bad results in comparison with other types of detectors. It’s annoying because I expected this detector to be the best since it’s name is “Good Features To Track”. But here is the facts – the best result of tracking you can achieve with SURF, STAR and new ORB feature detector.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;average-detection-time_thumb.png&#34; alt=&#34;average-detection-time&#34; title=&#34;average-detection-time&#34; /&gt;Figure 3 – Average detection time&lt;/p&gt;
+
+&lt;p&gt;As usual – SIFT and SURF very slow. Other detectors are relatively fast. Feature detection with ORB detector takes ~25 ms for 512x512 image which is good because it calculates feature orientation.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;average-feature-point-drift_thumb.png&#34; alt=&#34;average-feature-point-drift&#34; title=&#34;average-feature-point-drift&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Figure 4 – Average feature point drift&lt;/p&gt;
+
+&lt;p&gt;At final we estimate a quality of tracking by measuring distance between actual position of tracked points and expected position that was pre-calculated early. I’m very surprised of results showed by ORB detector – it shows the smallest drift! This will decrease systematic error while tracking a long image sequence. Very nice!&lt;/p&gt;
+
+&lt;h4 id=&#34;comparison-to-previous-results&#34;&gt;Comparison to previous results&lt;/h4&gt;
+
+&lt;p&gt;When I got the new results I decided to compare them with previous test results just in case. I knew that guys from Willow garage did some changes in the features2d module. And I was curious what actually they did. &lt;/p&gt;
+
+&lt;p&gt;Most of all, I was curious about the performance. As you can see from Figure 5 – there are really some changes happened. SURF detector becomes significantly slower in comparison to 2.2 version, but the GoodFeaturesToTrack becomes work faster.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;performance-difference-between-2_2-and-2_3_1_thumb.png&#34; alt=&#34;performance-difference-between-2_2-and-2_3_1&#34; title=&#34;performance-difference-between-2_2-and-2_3_1&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Figure 5  - Change of detection time&lt;/p&gt;
+
+&lt;p&gt;On the Figure 6 you can see the same performance difference test for one feature point. This shows how expensive detection in terms of one feature.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;performance_improvements_from_2_2_to_2_3_1_thumb.png&#34; alt=&#34;performance_improvements_from_2_2_to_2_3_1&#34; title=&#34;performance_improvements_from_2_2_to_2_3_1&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Figure 6 - Change of detection time per one feature point&lt;/p&gt;
+
+&lt;p&gt;Sad but true – SURF detector in OpenCV 2.3.1 became even more slower than in 2.2! I can’t figure out what the reason of such performance degradation, because I used the same compiler settings as I used for 2.2 tests. Anyway, the are also a good news – GoodFeaturesToTrack  detector becomes a bit faster.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;changes-in-tracking-robustness__thumb.png&#34; alt=&#34;changes-in-tracking-robustness_&#34; title=&#34;changes-in-tracking-robustness_&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Figure 6 – Feature point drift changes&lt;/p&gt;
+
+&lt;p&gt;It seems that something were changed in the detection routines because average pixel drift differs for every type of detector. Can’t figure out what the reason of such results.&lt;/p&gt;
+
+&lt;h4 id=&#34;instead-of-conclusion&#34;&gt;Instead of conclusion&lt;/h4&gt;
+
+&lt;p&gt;I really want to see the automated regression tests for every new OpenCV release done by automated build system. This will provide a great help to developers because they can track how the algorithm change their behavior and why.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

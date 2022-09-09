@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Introduction to morphology operations on images &middot; My Name</title>
+        <meta name="description" content="A brief tutorial/intro to the mathematical morphology in image processing.
+
+Basic Definitions The term morphology refers to the description of the properties of shape and structure of any objects. In the context of computer vision, this term refers to the description of the properties of shapes of areas on the image. Operations of mathematical morphology were originally defined as operations on sets, but it soon became clear that they are also useful in the processing tasks of the set of points in the two-dimensional space.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="Introduction to morphology operations on images">
+<meta property="og:description" content="A brief tutorial/intro to the mathematical morphology in image processing.
+
+Basic Definitions The term morphology refers to the description of the properties of shape and structure of any objects. In the context of computer vision, this term refers to the description of the properties of shapes of areas on the image. Operations of mathematical morphology were originally defined as operations on sets, but it soon became clear that they are also useful in the processing tasks of the set of points in the two-dimensional space.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/2011-02-16-introduction-to-morphology-operations-on-images/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">Introduction to morphology operations on images</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    
+
+<p>A brief tutorial/intro to the mathematical morphology in image processing.</p>
+
+<p><span class="more"></span></p>
+
+<h2 id="basic-definitions">Basic Definitions</h2>
+
+<p>The term morphology refers to the description of the properties of shape and structure of any objects. In the context of computer vision, this term refers to the description of the properties of shapes of areas on the image. Operations of mathematical morphology were originally defined as operations on sets, but it soon became clear that they are also useful in the processing tasks of the set of points in the two-dimensional space. Sets in mathematical morphology represent objects in the image. It is easy to see that the set of all background pixels of binary image is one of the options for a full description. In the first place mathematical morphology is used to extract some properties of the image, useful for its presentation and descriptions. For example, contours, skeletons and convex hulls. Also morphological methods are used in the preliminary and final image processing. For example, morphological filtering, thickening or thinning. The input data for the mathematical morphology are the two images: processed and special, depending on the type of operations and solve problems. Such a special image called primitive or structural element. Typically, a structural element is much smaller than the processed image. Structural element can be regarded as a description of the area with some form. It is clear that the shape can be arbitrary, as long as it can be represented as a binary image of a given size. In many image processing packages the most common structural elements have a special name: BOX [H, W]-rectangle of given size, DISK [R] - drive a given size, RING [R] - the ring of a given size. <img src="CommonElements_thumb.jpg" alt="CommonElements" title="CommonElements" />Typical form of structure elements The result of morphological operation depends on the size and configuration of the original image and the structural entity. The size of the structural element is usually equal to 3 * 3, 4 * 4 or 5 * 5 pixels. This is due to the main idea of the morphological processing, which are search of the specific image detail. The desired item is described by a primitive, resulting in morphological processing, you can highlight or remove such items on the whole image. One major advantage of the morphological process is its simplicity: both the input and output processing procedure, we obtain the binarized image. Other techniques, usually from the original image first get a grayscale image, which is then reduced to binary using a threshold function.</p>
+
+<h2 id="basic-operations">Basic operations</h2>
+
+<p>The basic operations of mathematical morphology are the dilation, erosion, closure and disconnection. In these names capture the essence of operations: dilation increases the image, and erosion makes it less, closure operation allows you to close the inner hole region and eliminate the bays along the border area, the operation of disconnection helps get rid of small fragments, protruding regions near its borders. Next will be presented a mathematical definition of morphological operations.</p>
+
+<h4 id="the-union-intersection-complement-difference">The union, intersection, complement, difference</h4>
+
+<p>Before proceeding to the operations of morphology, it makes sense to consider the set-theoretic operations underlying mathematical morphology. The union of two sets A and B, which is denoted C = A ∪ B, is by definition the set of all elements belonging to either the set A, or set B, or both sets simultaneously. Similarly, the intersection of two sets A and B, denoted C = A ∩ B, is by definition the set of all elements that belong simultaneously to both sets A and B. Complement of A is a set of elements not contained in A: Ac = {w | w ∉ A}. The difference of two sets A and B is denoted A \ B and is defined as follows: A \ B = {w │ w ∈ A, w ∉ B} = A ∩ Bc. This set consists of elements A, are not included in set B. Consider all the above operations on a specific example. <img src="BasicOperationsSourceImages_thumb.png" alt="BasicOperationsSourceImages" title="BasicOperationsSourceImages" /></p>
+
+<p><img src="BasicOperationsUnion_thumb.png" alt="BasicOperationsUnion" title="BasicOperationsUnion" /> C = A ∪ B Union
+<img src="BasicOperationsIntersection_thumb.png" alt="BasicOperationsIntersection" title="BasicOperationsIntersection" /> C = A ∩ B Intersection</p>
+
+<p><img src="BasicOperationsComplement_thumb.png" alt="BasicOperationsComplement" title="BasicOperationsComplement" /> C = Ac Complement
+<img src="BasicOperationsSubstraction_thumb.png" alt="BasicOperationsSubstraction" title="BasicOperationsSubstraction" /> C = A \ B Difference</p>
+
+<h4 id="translation">Translation</h4>
+
+<p>Translation operation of Xt set of pixels X and the vector t is given in the form Xt = {x + t | x ∈ X}. Consequently, the transfer of many individual pixels on the binary image shifts all the pixels are set at a specified distance. Translation vector t can be specified as an ordered pair (Δr, Δc), where Δr - a component of the transfer vector in the direction of rows, and Δc - a component of the transfer vector in the direction of the image columns. <img src="TranslationExample_thumb.jpg" alt="TranslationExample" title="TranslationExample" /> Translation example</p>
+
+<h4 id="dilation-erosion-contour-closure-opening">Dilation, erosion, contour closure, opening</h4>
+
+<p>For the next operations we consider a specific example. Suppose we have the following binary image and a structural element:</p>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/tutorials/">tutorials</a>
+            
+                 <a href="/tags/algorithms/">algorithms</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=Introduction%20to%20morphology%20operations%20on%20images&url=https%3a%2f%2fexample.com%2f2011-02-16-introduction-to-morphology-operations-on-images%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2f2011-02-16-introduction-to-morphology-operations-on-images%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2f2011-02-16-introduction-to-morphology-operations-on-images%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

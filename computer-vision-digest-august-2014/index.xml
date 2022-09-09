@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Computer-vision-digest-august-2014-rsses on Ghostwriter example</title>
+    <link>https://example.com/computer-vision-digest-august-2014/index.xml</link>
+    <description>Recent content in Computer-vision-digest-august-2014-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Sat, 30 Aug 2014 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/computer-vision-digest-august-2014/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Computer Vision Digest - August 2014</title>
+      <link>https://example.com/computer-vision-digest-august-2014/</link>
+      <pubDate>Sat, 30 Aug 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/computer-vision-digest-august-2014/</guid>
+      <description>
+
+&lt;p&gt;Third &lt;a href=&#34;https://example.com/tags/digest.html&#34;&gt;computer vision digest&lt;/a&gt;. Your monthly portion of news in computer vision for August 2014.&lt;/p&gt;
+
+&lt;p&gt;In this issue:
+ - &lt;a href=&#34;#1&#34;&gt;Free Photo Editing Software Lets You Manipulate Objects in 3D&lt;/a&gt;
+ - &lt;a href=&#34;#2&#34;&gt;Real-Time Digital Makeup with Projection Mapping&lt;/a&gt;
+ - &lt;a href=&#34;#3&#34;&gt;Video stabilization through 3D scene recovery&lt;/a&gt;
+ - &lt;a href=&#34;#4&#34;&gt;Using OpenCV, Python and Template Matching to play “Where’s Waldo?”&lt;/a&gt;
+ - &lt;a href=&#34;#5&#34;&gt;OpenCV 3.0 alpha is out&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Previous issues:
+ - &lt;a href=&#34;https://example.com/articles/2014-05-computer-vision-digest/&#34;&gt;Computer Vision Digest (May 2014)&lt;/a&gt;
+ - &lt;a href=&#34;https://example.com/articles/2014-06-computer-vision-digest/&#34;&gt;Computer Vision Digest (June 2014)&lt;/a&gt;&lt;/p&gt;
+
+&lt;div class=&#34;alert alert-info&#34; role=&#34;alert&#34;&gt;
+Feel free to leave your suggestions on interesting materials in post comments 
+or via Twitter by mentioning [@cvtalks](https://twitter.com/cvtalks). 
+Best links will be included into next digest!
+&lt;/div&gt;
+
+&lt;p&gt;&lt;span class=&#34;more clearfix&#34; /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a name=&#34;1&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;free-photo-editing-software-lets-you-manipulate-objects-in-3d&#34;&gt;Free Photo Editing Software Lets You Manipulate Objects in 3D&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://i.kinja-img.com/gawker-media/image/upload/s--CtQ_vCt9--/c_fit,fl_progressive,q_80,w_636/sbuewdyltzbjdmfjvgof.gif&#34; alt=&#34;Free Photo Editing Software Lets You Manipulate Objects in 3D&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;How much Photoshop magic can you make with 2D photo? This software can do more! SIGGRAPH 2014 showed us a method that enables users to perform the full range of 3D manipulations, including scaling, rotation, translation, and nonrigid deformations, to an object in a photograph. Despite the fact it has limitations to use of stock 3D models set that are available for manipulation, it is great demonstration on how 2D and 3D can be combined together to bring image manipulation for the next level. I think Adobe is already buying these guys (and one girl).&lt;/p&gt;
+
+&lt;p&gt;The cool news, there are free demo, source code and publication paper that you can read:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.cs.cmu.edu/~om3d/sourcecodeversions.html&#34;&gt;Source code&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.cs.cmu.edu/~om3d/agreement.html&#34;&gt;OS X (Mavericks) Executable Code and Examples&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.cs.cmu.edu/~om3d/papers/SIGGRAPH2014.pdf&#34;&gt;Publication paper&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a name=&#34;2&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;real-time-digital-makeup-with-projection-mapping&#34;&gt;Real-Time Digital Makeup with Projection Mapping&lt;/h2&gt;
+
+&lt;p&gt;This is how state of the art technologies comes to real life. Well studied algorithms and a bit of tech = amazing results. Projection mapping in conjunction with real-time face tracking made possible a virtual make-up! No more words. Watch this:&lt;/p&gt;
+
+&lt;iframe src=&#34;//player.vimeo.com/video/103425574?byline=0&amp;amp;portrait=0&amp;amp;badge=0&amp;amp;color=cfcaca&#34; width=&#34;853&#34; height=&#34;480&#34; frameborder=&#34;0&#34; webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt; 
+
+&lt;p&gt;A true beauty of augmented reality. Girls, you don&amp;rsquo;t need to do a make-up for virtual date anymore :)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;So how did they made it?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;I assume this involves real-time frame tracker that outputs a face 3D model which is 99% tuned for particular person via offline training (Google: Active appearance model).
+Have you noticed white dots on her face? These are special markers that are used to &amp;ldquo;wire&amp;rdquo; face 3D model to real one.&lt;/p&gt;
+
+&lt;p&gt;And then they take virtual makeup (A texture that mapped onto 3D face model) and deform it to match tracked model. A projector then maps virtual makeup onto actor.&lt;/p&gt;
+
+&lt;p&gt;Well done, OMOTE. This was great demonstration!&lt;/p&gt;
+
+&lt;p&gt;Source: &lt;a href=&#34;http://www.augmentedrealitytrends.com/augmented-reality/projection-mapping.html&#34;&gt;Real-Time Digital Makeup with Projection Mapping&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a name=&#34;3&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;hyperlapse-video-stabilization-through-3d-scene-recovery&#34;&gt;Hyperlapse video stabilization through 3D scene recovery&lt;/h2&gt;
+
+&lt;p&gt;This is not about Instagram :)&lt;/p&gt;
+
+&lt;p&gt;Microsoft Research showed more sophisticated video stabilization algorithms for making Hyperlapse video from the raw footage made with ordinary handheld camera.&lt;/p&gt;
+
+&lt;iframe width=&#34;853&#34; height=&#34;480&#34; src=&#34;//www.youtube.com/embed/SOpwHaQnRSY?rel=0&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;
+
+&lt;p&gt;Developers claim that their result impossible to achieve using alternative ways of stabilization. The method is based on the reconstruction of the 3D-scene, and then algorithm optimize &amp;ldquo;movement&amp;rdquo; of the camera along the route in order to avoid vibration, and combines the images pixel by pixel to smooth video sequence.&lt;/p&gt;
+
+&lt;p&gt;For example, the figure below shows this route (in black) and an optimized route, which is generated by the application to render the video (red).&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;microsoft-hyperlapse-path-planning.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The result is a so-called hyperlapse-video (named by analogy with the time-lapse, slow-motion filming).&lt;/p&gt;
+
+&lt;iframe width=&#34;853&#34; height=&#34;480&#34; src=&#34;//www.youtube.com/embed/sA4Za3Hv6ng?rel=0&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;
+
+&lt;p&gt;Technicaly, the algorithm builds Hyperlapse video in three steps:
+ 1. &lt;strong&gt;Recover 3D scene&lt;/strong&gt; from the camera motion. This is well-known task called &amp;ldquo;Structure from Motion&amp;rdquo; and one camera is enough to recover 3D environment (Google: Monocular SLAM).
+ 2. &lt;strong&gt;Optimize route&lt;/strong&gt; (or Path Planning) - on previous step algorithm recover camera route that include shakes, vibration and occasion motions that should be exludede from result Hyperlapse. The goal of this step is to make smooth and stable transition from frame to frame by optimizing route.
+ 3. ** Render Hyperlapse**. This step doing reverse things - it sample pixel values from all visible frames that were used to reconstruct given pose and pick best ones that produce really nice stiched image. Having 3D environment has a great advantage when algorithm has to &amp;ldquo;inpaint&amp;rdquo; missing reginos - it can sample pixels from the other frames because system reallly knows what is the 3D structure around.&lt;/p&gt;
+
+&lt;p&gt;You can read publication of this approach from the Microsoft Research: &lt;a href=&#34;http://research.microsoft.com/en-us/um/redmond/projects/hyperlapse/paper/hyperlapse.pdf&#34;&gt;First-person Hyper-lapse Videos&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a name=&#34;4&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;using-opencv-python-and-template-matching-to-play-where-s-waldo&#34;&gt;Using OpenCV, Python and Template Matching to play “Where’s Waldo?”&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;puzzle_small.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This &lt;a href=&#34;http://machinelearningmastery.com/using-opencv-python-and-template-matching-to-play-wheres-waldo/&#34;&gt;article&lt;/a&gt; is for beginners who start learning computer vision. This tutorial describe very basic, but still powerful technique called template matching for object detection. “Where’s Waldo?” probably the best candidate for template matching demonstration - the task is very clear and this article contain step by step solution on detecting Waldo using computer vision.&lt;/p&gt;
+
+&lt;p&gt;Using Python it&amp;rsquo;s really simple to write your first algorithm:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;puzzle = cv2.imread(args[&amp;quot;puzzle&amp;quot;])
+waldo = cv2.imread(args[&amp;quot;waldo&amp;quot;])
+result = cv2.matchTemplate(puzzle, waldo, cv2.TM_CCOEFF)
+(_, _, minLoc, maxLoc) = cv2.minMaxLoc(result)
+# the puzzle image
+topLeft = maxLoc
+botRight = (topLeft[0] + waldoWidth, topLeft[1] + waldoHeight)
+roi = puzzle[topLeft[1]:botRight[1], topLeft[0]:botRight[0]]
+
+# construct a darkened transparent &#39;layer&#39; to darken everything
+# in the puzzle except for waldo
+mask = np.zeros(puzzle.shape, dtype = &amp;quot;uint8&amp;quot;)
+puzzle = cv2.addWeighted(puzzle, 0.25, mask, 0.75, 0)
+
+# put the original waldo back in the image so that he is
+# &#39;brighter&#39; than the rest of the image
+puzzle[topLeft[1]:botRight[1], topLeft[0]:botRight[0]] = roi
+
+# display the images
+cv2.imshow(&amp;quot;Puzzle&amp;quot;, imutils.resize(puzzle, height = 650))
+cv2.imshow(&amp;quot;Waldo&amp;quot;, waldo)
+cv2.waitKey(0)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;puzzle_found_waldo1.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Original article can be found here: &lt;a href=&#34;http://machinelearningmastery.com/using-opencv-python-and-template-matching-to-play-wheres-waldo/&#34;&gt;Using OpenCV, Python and Template Matching to play “Where’s Waldo?”&lt;/a&gt;.
+&lt;hr /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&#34;5&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;opencv-3-0-alpha-is-out&#34;&gt;OpenCV 3.0 alpha is out&lt;/h2&gt;
+
+&lt;p&gt;That&amp;rsquo;s it. OpenCV grows and going to college. 5 years has passed since OpenCV 2.0, which brought us a new C++ API, GPU-accelerated algorithms, iOS and Android platforms support, CUDA and OpenCL, Python and Java bindings.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Modular project architecture&lt;/strong&gt;. Since very beginning OpenCV was one solid project, built and shipped as a whole, and that was good strategy for many years. However, with constantly growing functionality, including bleeding-edge algorithms published a few minutes before a pull request has been submitted to our repository, and increasing number of contributors (thank you all very much, guys!) we came to the same conclusion and decision as many other big project – the solid model does not work anymore.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;T-API&lt;/strong&gt;. GPU acceleration made really easy with brand new T-API (“transparent API”) made in cooperation with Intel and AMD. &lt;a href=&#34;https://github.com/Itseez/opencv/tree/master/samples/tapi&#34;&gt;T-API Samples&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;OpenCV now linked with IPP by default&lt;/strong&gt;. Intel corporation gave OpenCV another exciting present. A subset of Intel Integrated Performance Primitives (IPP) is linked by default into OpenCV and is available at &lt;strong&gt;no charge for all our users&lt;/strong&gt;. And that includes the license to redistribute applications that use IPP-accelerated OpenCV. As you may see, for quite a few image processing functions we achieved very noticeable speedup with IPP (where IPP is compared with OpenCV built with all possible optimizations turned on):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;ocv3_ipp_speedup.jpg&#34; alt=&#34;IPP in OpenCV 3.0&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Last but not least, OpenCV 3.0 brings a lot of &lt;strong&gt;new functionality&lt;/strong&gt;, such as:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Text detection and recognition by Lluis Gomez and Stefano Fabri&lt;/li&gt;
+&lt;li&gt;HDR by Fedor Morozov and Alexander Shishkov&lt;/li&gt;
+&lt;li&gt;KAZE/A-KAZE by Eugene Khvedchenya, the algorithm author Pablo Alcantarilla and some improvements by F. Morozov.&lt;/li&gt;
+&lt;li&gt;Smart segmentation and edge-aware filters by Vitaly Lyudvichenko, Yuri Gitman, Alexander Shishkov and Alexander Mordvintsev&lt;/li&gt;
+&lt;li&gt;Car detection using Waldboost, ACF by Vlad Shakhuro and Nikita Manovich&lt;/li&gt;
+&lt;li&gt;TLD tracker and several common-use optimization algorithms by Alex Leontiev&lt;/li&gt;
+&lt;li&gt;Matlab bindings by Hilton Bristow, with support from Mathworks.&lt;/li&gt;
+&lt;li&gt;Greatly extended Python bindings, including Python 3 support, and several OpenCV+Python tutorials by Alexander Mordvintsev, Abid Rahman and others.&lt;/li&gt;
+&lt;li&gt;3D Visualization using VTK by Ozan Tonkal and Anatoly Baksheev.&lt;/li&gt;
+&lt;li&gt;RGBD module by Vincent Rabaud&lt;/li&gt;
+&lt;li&gt;Line Segment Detector by Daniel Angelov&lt;/li&gt;
+&lt;li&gt;Many useful Computational Photography algorithms by Siddharth Kherada&lt;/li&gt;
+&lt;li&gt;Shape descriptors, matching and morphing shapes (shape module) by Juan Manuel Perez Rua and Ilya Lysenkov&lt;/li&gt;
+&lt;li&gt;Long-term tracking + saliency-based improvements (tracking module) by Antonella Cascitelli and Francesco Puja&lt;/li&gt;
+&lt;li&gt;Another good pose estimation algorithm and the tutorial on pose estimation by Edgar Riba and Alexander Shishkov&lt;/li&gt;
+&lt;li&gt;Line descriptors and matchers by Biagio Montesano and Manuele Tamburanno&lt;/li&gt;
+&lt;li&gt;Myriads of improvements in various parts of the library by Steven Puttemans; thank you a lot, Steven!&lt;/li&gt;
+&lt;li&gt;Several NEON optimizations by Adrian Stratulat, Cody Rigney, Alexander Petrikov, Yury Gorbachev and others.&lt;/li&gt;
+&lt;li&gt;Fast foreach loop over cv::Mat by Kazuki Matsuda&lt;/li&gt;
+&lt;li&gt;Image alignment (ECC algorithm) by Georgios Evangelidis&lt;/li&gt;
+&lt;li&gt;GDAL image support by Marvin Smith&lt;/li&gt;
+&lt;li&gt;RGBD module by Vincent Rabaud&lt;/li&gt;
+&lt;li&gt;Fisheye camera model by Ilya Krylov&lt;/li&gt;
+&lt;li&gt;OSX framework build script by Eugene Khvedchenya&lt;/li&gt;
+&lt;li&gt;Multiple FLANN improvements by Pierre-Emmanuel Viel&lt;/li&gt;
+&lt;li&gt;Improved WinRT support by Gregory Morse&lt;/li&gt;
+&lt;li&gt;Latent SVM Cascade by Evgeniy Kozhinov and NNSU team (awaiting integration)&lt;/li&gt;
+&lt;li&gt;Logistic regression by Rahul Kavi&lt;/li&gt;
+&lt;li&gt;Five-point pose estimation algorithm by Bo Li&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The 3.0-alpha package can be downloaded:
+ - &lt;a href=&#34;https://github.com/Itseez/opencv/tree/3.0.0-alpha&#34;&gt;Source code as .zip package directly from github&lt;/a&gt;
+ - &lt;a href=&#34;https://sourceforge.net/projects/opencvlibrary/files/opencv-win/3.0.0-alpha/&#34;&gt;Precompiled, Windows&lt;/a&gt;
+ - &lt;a href=&#34;https://sourceforge.net/projects/opencvlibrary/files/opencv-ios/3.0.0-alpha/&#34;&gt;Precompiled, iOS&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

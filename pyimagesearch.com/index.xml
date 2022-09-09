@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Pyimagesearch.com-rsses on Ghostwriter example</title>
+    <link>https://example.com/pyimagesearch.com/index.xml</link>
+    <description>Recent content in Pyimagesearch.com-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Thu, 07 Aug 2014 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/pyimagesearch.com/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>A good resource on image processing using Python</title>
+      <link>https://example.com/pyimagesearch.com/</link>
+      <pubDate>Thu, 07 Aug 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/pyimagesearch.com/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;http://www.pyimagesearch.com/&#34;&gt;&lt;img src=&#34;logo.png&#34; alt=&#34;www.pyimagesearch.com&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Let me introduce you &lt;a href=&#34;http://www.pyimagesearch.com/about/&#34;&gt;Adrian Rosebrock&lt;/a&gt; and his &lt;a href=&#34;http://www.pyimagesearch.com/&#34;&gt;http://www.pyimagesearch.com/&lt;/a&gt; website.
+It&amp;rsquo;s about computer vision and image processing using Python and OpenCV.
+Looks like there are more than one person that like to share programming experience via blogging :)&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s how &lt;a href=&#34;http://www.pyimagesearch.com/&#34;&gt;Adrian&lt;/a&gt; position himself:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;This blog is dedicated to helping other programmers understand how image search engines work.
+While a lot of computer vision concepts are theoretical in nature,
+I’m a big fan of “learning by example”. My goal is to distill my life experiences in building image search engines into concise, easy to understand examples.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I hope you will enjoy reading Adrian&amp;rsquo;s posts on &lt;a href=&#34;http://www.pyimagesearch.com/2014/07/28/a-slic-superpixel-tutorial-using-python/&#34;&gt;superpixels&lt;/a&gt;, &lt;a href=&#34;http://www.pyimagesearch.com/2014/07/14/3-ways-compare-histograms-using-opencv-python/&#34;&gt;histogram matching&lt;/a&gt; and &lt;a href=&#34;http://www.pyimagesearch.com/2014/05/26/opencv-python-k-means-color-clustering/&#34;&gt;color clustering&lt;/a&gt;.
+In addition, he wrote a book on using OpenCV in Python.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://www.pyimagesearch.com/practical-python-opencv/&#34;&gt;&lt;img src=&#34;practical_python_and_opencv_cover_green.png&#34; alt=&#34;Practical Python and OpenCV eBook&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Happy reading!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

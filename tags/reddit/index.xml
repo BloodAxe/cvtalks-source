@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>reddit on Computer Vision Talks</title>
+    <link>https://computer-vision-talks.com/tags/reddit/</link>
+    <description>Recent content in reddit on Computer Vision Talks</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 14 Jul 2014 00:00:00 +0000</lastBuildDate><atom:link href="https://computer-vision-talks.com/tags/reddit/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to detect circles in noisy images</title>
+      <link>https://computer-vision-talks.com/post/how-to-detect-circles-in-noisy-image/</link>
+      <pubDate>Mon, 14 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/how-to-detect-circles-in-noisy-image/</guid>
+      
+        <description>p | This was a request from a(href=&amp;ldquo;http://www.reddit.com/r/computervision/comments/2a1lvi/help_how_to_process_this_image_to_find_the_circles/&amp;quot;) /r/computervision. | A reddit member was asking on how to count number of eggs on quite | noisy image like you may see below. | I&amp;rsquo;ve decided to write a simple algorithm that does the job and explain how it works.
+div.beforeafter img(src=&amp;quot;source.jpg&amp;quot;,alt=&amp;quot;before&amp;quot;) img(src=&amp;quot;display.jpg&amp;quot;,alt=&amp;quot;after&amp;quot;)  span.more
+h2 Step 1 - Filter image
+p img(src=&amp;ldquo;source.jpg&amp;rdquo;,alt=&amp;ldquo;Source image&amp;rdquo;) | The original image has noticeable color noise and therefore it must be filtered before we pass it to further stages.</description>
+      
+    </item>
+    
+  </channel>
+</rss>

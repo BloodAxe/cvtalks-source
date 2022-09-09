@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2012-09-01-a-bunch-of-news-about-book-research-and-life-rsses on Ghostwriter example</title>
+    <link>https://example.com/2012-09-01-a-bunch-of-news-about-book-research-and-life/index.xml</link>
+    <description>Recent content in 2012-09-01-a-bunch-of-news-about-book-research-and-life-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Sat, 01 Sep 2012 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2012-09-01-a-bunch-of-news-about-book-research-and-life/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>A bunch of news about book, research and life</title>
+      <link>https://example.com/2012-09-01-a-bunch-of-news-about-book-research-and-life/</link>
+      <pubDate>Sat, 01 Sep 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2012-09-01-a-bunch-of-news-about-book-research-and-life/</guid>
+      <description>
+
+&lt;p&gt;Hi friends! the summer has ended and schools and universities has opened their doors in front of new students. Since i graduated few years ago i still remember good old times of study. Doh. I&amp;rsquo;m to so old yet :) So, on 1st September i decided to share with you about my plans for next three months. Because i scheduled very interesting activities for this autumn.&lt;/p&gt;
+
+&lt;h1 id=&#34;opencv-hotshots&#34;&gt;OpenCV Hotshots&lt;/h1&gt;
+
+&lt;p&gt;&lt;img src=&#34;book-cover.jpg&#34; alt=&#34;&#34; /&gt;Yes it is. The first book i participated will be published this Autumn. I hope so. I did my best to finish my part right in time. There are two chapters already available from the Packt Publishing (&lt;a href=&#34;http://www.packtpub.com/opencv-2-hotshot/book&#34;&gt;http://www.packtpub.com/opencv-2-hotshot/book&lt;/a&gt;).&lt;/p&gt;
+
+&lt;h2 id=&#34;marker-based-augmented-reality-on-iphone-or-ipad&#34;&gt;Marker-based Augmented Reality on iPhone or iPad&lt;/h2&gt;
+
+&lt;p&gt;In this chapter we will create a AR application for iPhone/iPad devices. Starting from scratch wecreate an application that uses markers to draw some artificial objects on the acquired images for camera. You will learn how to setup a project in XCode IDE project, configure it to use OpenCV within your application. Also, such aspects as capturing a video from built-in camera, 3D scene rendering using OpenGL ES and building of a common AR application architecture are going to be explained.&lt;/p&gt;
+
+&lt;h2 id=&#34;marker-less-augmented-reality&#34;&gt;Marker-less Augmented Reality&lt;/h2&gt;
+
+&lt;p&gt;Readers will learn how to create a standard real-time project using OpenCV (for desktop), and how to perform a new method of marker-less augmented reality, using the actual environment as the input instead of printed square markers. This chapter will cover some theory of marker-less AR and show how to apply it in useful projects. Publisher allowed me to publish source code for both chapters on the GitHub. They are freely available:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;https://github.com/BloodAxe/OpenCV-Hotshots-Marker-Based-AR&#34;&gt;Marker-based Augmented Reality on iPhone or iPad sources&lt;/a&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;https://github.com/BloodAxe/OpenCV-Hotshots-Markless-AR&#34;&gt;Marker-less Augmented Reality sources&lt;/a&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I will try to listen and react your feedback as fast as possible. So feel free to send your suggestions and bug fixes (i hope they won&amp;rsquo;t happen). To interest you even more, i made very short video showing you augmented reality on top of the image pattern. This demonstration is done using OpenCV and Ogre3D libraries. In third chapter of &amp;ldquo;OpenCV Hotshots&amp;rdquo; i explain algorithm of pattern detection. In this video a image pattern was used a a target for animated 3D model. From chapter 3 you will learn how to make your own markerless AR application.&lt;/p&gt;
+
+&lt;h1 id=&#34;feature-descriptors-comparison-report&#34;&gt;Feature descriptors comparison report&lt;/h1&gt;
+
+&lt;p&gt;I will continue my research of comparison of different feature descriptors including but not limited to SURF, SIFT, BRIEF, ORB, BRISK and FREAK. Feature descriptors are widely used for object detection, image stitching and stabilisation, match-moving and structure from motion estimation. I do research to let you know area of appliance of each descriptors extraction algorithm. In the near future i hope to find a time to publish detailed comparison report of all OpenCV feature descriptors. Probably i will wait for OpenCV 2.5 release and then run my test benchmark and generate nice diagrams. From the other side i also curious about parameters optimisation of particular algorithm in terms of improving it&amp;rsquo;s robustness and detection ratio. It&amp;rsquo;s quite big amount of job, but i had experience in my past (LAZY descriptor has been optimized in similary way). All development will be published at &lt;a href=&#34;https://github.com/BloodAxe&#34;&gt;GitHub&lt;/a&gt; (You already following my, have you?): &lt;a href=&#34;https://github.com/BloodAxe/OpenCV-Features-Comparison&#34;&gt;https://github.com/BloodAxe/OpenCV-Features-Comparison&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h1 id=&#34;opencv-tutorial&#34;&gt;OpenCV Tutorial&lt;/h1&gt;
+
+&lt;p&gt;&lt;img src=&#34;opencv-tutorial-logo.png&#34; alt=&#34;&#34; title=&#34;OpenCV Tutorial Application Icon&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;A great way to start learning OpenCV development on iOS platform. There is a [roadmap][6] of the development. Part 7 is almost finished. I hope to publish parts 8 and 9 before winter. I want to say thanks for Anton Belodedenko and Emmanuel d&amp;rsquo;Angelo. They were first who brought new samples in the this project. I was really surprised of their help. Thanks guys!&lt;/p&gt;
+
+&lt;p&gt;In case you missed it. All sources on Github: &lt;a href=&#34;https://github.com/BloodAxe/OpenCV-Tutorial&#34;&gt;https://github.com/BloodAxe/OpenCV-Tutorial&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;step-by-step-tutorials&#34;&gt;Step-by-step tutorials&lt;/h2&gt;
+
+&lt;h3 id=&#34;part-1-introduction-7&#34;&gt;&lt;a href=&#34;http://computer-vision-talks.com/2012/06/opencv-tutorial-part-1/&#34; title=&#34;OpenCV Tutorial – Part 1&#34;&gt;Part 1 - Introduction&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;The first part of the tutorial - in this part we setup a base XCode project for our application and define a base interface of our samples.&lt;/p&gt;
+
+&lt;h3 id=&#34;part-2-writing-a-base-ui-8&#34;&gt;&lt;a href=&#34;http://computer-vision-talks.com/2012/06/opencv-tutorial-part-2/&#34; title=&#34;OpenCV Tutorial – Part 2&#34;&gt;Part 2 - Writing a base UI&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;In the second part we created a basic user interface for displaying registered samples using master-detail paradigm and created two samples: edge and contour detection.&lt;/p&gt;
+
+&lt;h3 id=&#34;part-3-video-and-image-processing-9&#34;&gt;&lt;a href=&#34;http://computer-vision-talks.com/2012/06/opencv-tutorial-part-3/&#34; title=&#34;OpenCV Tutorial – Part 3&#34;&gt;Part 3 - Video and image processing&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;In this part the video and image processing logic was written. We created necessary UI to present result of image processing.&lt;/p&gt;
+
+&lt;h3 id=&#34;part-4-correction-of-mistakes-10&#34;&gt;&lt;a href=&#34;http://computer-vision-talks.com/2012/07/opencv-tutorial-part-4/&#34; title=&#34;OpenCV Tutorial – Part 4&#34;&gt;Part 4 - Correction of mistakes&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;The four part of the tutorial was dedicated to fixing annoying bugs with video orientation and improvements of application performance. The optimized color conversion algorithm was added to increase overall frame processing speed. A new feature was added too - users now can save processed images to photo album.&lt;/p&gt;
+
+&lt;h3 id=&#34;part-5-adding-options-11&#34;&gt;&lt;a href=&#34;http://computer-vision-talks.com/2012/07/opencv-tutorial-part-5/&#34; title=&#34;OpenCV Tutorial – Part 5&#34;&gt;Part 5 - Adding options&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;Options! Options! Options! In this part i will add adjustable options to our samples and create a UI to adjust them. Options will be supported for both image and video processing. From this sample you&amp;rsquo;ll learn how to bind to C++ data types from objective C code and create specific user controls depending on type of bound variable. Also we will use popover controllers to present options on iPad devices and flip animation to show options on iPhone. In addition, a &amp;ldquo;Edge Detection&amp;rdquo; sample will now has four algorithms to find edges. You&amp;rsquo;ll be able to toggle between them using options view and see the difference.&lt;/p&gt;
+
+&lt;h3 id=&#34;part-6-social-interaction-12&#34;&gt;&lt;a href=&#34;http://computer-vision-talks.com/2012/07/opencv-tutorial-part-6/&#34; title=&#34;OpenCV Tutorial - Part 6&#34;&gt;Part 6 - Social interaction&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;In this part i going to to add twitter integration to give you an ability to post your processed images and share them using twitter. Second feature that i will add - video recording. You&amp;rsquo;ll be able to record a video from the processed frames to and share it too.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

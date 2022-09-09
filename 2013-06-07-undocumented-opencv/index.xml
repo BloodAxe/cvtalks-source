@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2013-06-07-undocumented-opencv-rsses on Ghostwriter example</title>
+    <link>https://example.com/2013-06-07-undocumented-opencv/index.xml</link>
+    <description>Recent content in 2013-06-07-undocumented-opencv-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Fri, 07 Jun 2013 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2013-06-07-undocumented-opencv/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Undocumented OpenCV</title>
+      <link>https://example.com/2013-06-07-undocumented-opencv/</link>
+      <pubDate>Fri, 07 Jun 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2013-06-07-undocumented-opencv/</guid>
+      <description>
+
+&lt;p&gt;OpenCV library is widely used by computer vision engineers across the world. It contains almost all algorithms you may want for R&amp;amp;D or product development. It has production-ready build farm with tests and strong community that give nice feedbacks and discover errors. But nevertheless OpenCV has some strange issues and undocummented behaviour that can surprise you as minimum and crash your app as maximum.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;how-to-get-diagonal-matrix-in-opencv&#34;&gt;How to get diagonal matrix in OpenCV&lt;/h2&gt;
+
+&lt;p&gt;A typical parameter update computation in non-linear optimization using Levenber-Marquardt algorithm looks like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;cv::Mat JtJ = J.t() * J;
+x = (JtJ + lambda * JtJ.diag() ).inv(cv::DECOMP_SVD) * (J.t() * I);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So &amp;lsquo;JtJ&amp;rsquo; is a square matrix and i want to get the diagonal matrix from it. Seems correct. But hey, &lt;strong&gt;the member-function diag() does not return diagonal matrix&lt;/strong&gt;! It returns a vector of diagonal elements. Really? Fine. There is a static member-function diag(), maybe it can help?&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;x = (JtJ + lambda * cv::Mat::diag(JtJ)).inv(cv::DECOMP_SVD) * (J.t() * I);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Unfortunately, this is also wrong because this &lt;strong&gt;diag()&lt;/strong&gt; constructs a diagonal matrix from a vector! So the correct solution to create a diagonal matrix in OpenCV is to use both diag&amp;rsquo;s:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;cv::Mat d = cv::Mat::diag( m.diag() );
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And the correct Lev-Mar update will have the following look:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;x = (JtJ + lambda * cv::Mat::diag(JtJ.diag())).inv(cv::DECOMP_SVD) * (J.t() * I);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;how-to-increase-speed-of-optical-flow-klt-in-opencv&#34;&gt;How to increase speed of optical flow (KLT) in OpenCV&lt;/h2&gt;
+
+&lt;p&gt;If you were using OpenCV version 1.x you should remeber there was a cvCalcOpticalFlowPyrLK function that allowed to pass image pyramids. The motivation to use precomputed image pyramids is performance gain. When you continuously tracking video frames you can save time by storing built pyramid from current frame.&lt;/p&gt;
+
+&lt;p&gt;The C++ API provide the following function prototype for this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;//! computes sparse optical flow using multi-scale Lucas-Kanade algorithm
+CV_EXPORTS_W void calcOpticalFlowPyrLK( InputArray prevImg, InputArray nextImg,
+                                        InputArray prevPts, InputOutputArray nextPts,
+                                        OutputArray status, OutputArray err,
+                                        Size winSize = Size(21,21), int maxLevel = 3,
+                                        TermCriteria criteria,
+                                        int flags, double minEigThreshold);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;From the function declaration and &lt;a href=&#34;http://docs.opencv.org/modules/video/doc/motion_analysis_and_object_tracking.html&amp;amp;usg=AFQjCNGCeanEXmqKq5DU7dpbp1m2xo0lPA&#34;&gt;documentation&lt;/a&gt; it&amp;rsquo;s visible that &lt;em&gt;prevImg&lt;/em&gt; and &lt;em&gt;nextImg&lt;/em&gt; are arguments for previous and next image buffers. Does it mean that you can&amp;rsquo;t use prebuilt pyramids? No! This is not documented, but you can precompute image pyramid using &lt;strong&gt;cv::buildOpticalFlowPyramid&lt;/strong&gt; like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;std::vector&amp;lt;cv::mat&amp;gt; prevPyr, nextPyr;
+
+// prevPyr assumed to be already initialized 
+cv::buildOpticalFlowPyramid(nextFrame, nextPyr, winSize, maxLevel, true);
+cv::calcOpticalFlowPyrLK(prevPyr, nextPyr, prevPts, nextPts, status, err, winSize, maxLevel);
+prevPyr.swap(nextPyr);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;On my PC this trick increased performance of KLT almost twice!&lt;/p&gt;
+
+&lt;h2 id=&#34;cv-findhomography-can-return-empty-result&#34;&gt;cv::findHomography can return empty result&lt;/h2&gt;
+
+&lt;p&gt;The documentation of cv::findHomography does not state it, but return value of cv::findHomography was always 3x3 matrix of CV_64FC1 type. Starting from approximately 2.4.5 release &lt;strong&gt;cv::findHomography can return empty matrix in some cases&lt;/strong&gt;. This seems happen only when cv::RANSAC flag is passed. This &lt;a href=&#34;http://code.opencv.org/issues/3057&#34;&gt;issue&lt;/a&gt; has been reported but i suggest to check the computed homography before using it anywhere:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;cv::Mat h = cv::findHomography(....)
+if (!h.empty())
+{
+    // Use it
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;
+
+&lt;p&gt;That&amp;rsquo;s all for now. I hope you enjoy working with OpenCV like i do. This post will be updated with new &amp;ldquo;easter-eggs&amp;rdquo;. Feel free to share you own discoveries.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

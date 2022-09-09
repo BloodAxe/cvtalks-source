@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2011-04-27-opencv-ios-faq-rsses on Ghostwriter example</title>
+    <link>https://example.com/2011-04-27-opencv-ios-faq/index.xml</link>
+    <description>Recent content in 2011-04-27-opencv-ios-faq-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Wed, 27 Apr 2011 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2011-04-27-opencv-ios-faq/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>OpenCV iOS FAQ</title>
+      <link>https://example.com/2011-04-27-opencv-ios-faq/</link>
+      <pubDate>Wed, 27 Apr 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2011-04-27-opencv-ios-faq/</guid>
+      <description>
+
+&lt;h1 id=&#34;opencv-ios-faq&#34;&gt;OpenCV iOS FAQ&lt;/h1&gt;
+
+&lt;p&gt;This FAQ contains answers to numerous similar questions I was asked after my posts about using OpenCV with iOS SDK.&lt;/p&gt;
+
+&lt;h2 id=&#34;step-by-step-opencv-tutorial&#34;&gt;Step by step OpenCV Tutorial&lt;/h2&gt;
+
+&lt;p&gt;OpenCV Tutorial  is a sample demonstration project for iOS devices that main goal is to show how to use OpenCV library in XCOde projects to write image processing code for iPhone and iPad devices. There are several step-by-step guides where i describe in details all development process.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://computer-vision-talks.com/2012/06/opencv-tutorial-a-collection-of-opencv-samples-for-iphoneipad-part-1/&#34; title=&#34;OpenCV Tutorial – a collection of OpenCV samples for iPhone/iPad – Part 1&#34;&gt;Part 1&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://computer-vision-talks.com/2012/06/opencv-tutorial-part-2/&#34; title=&#34;OpenCV Tutorial – Part 2&#34;&gt;Part 2&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://computer-vision-talks.com/2012/06/opencv-tutorial-part-3/&#34; title=&#34;OpenCV Tutorial – Part 3&#34;&gt;Part 3&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Part 4 - in progress&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;advanced-reading&#34;&gt;Advanced reading&lt;/h2&gt;
+
+&lt;p&gt;If you looking for more, here are some old posts i wrote about OpenCV and XCode. Some of them may become outdated, but they contains a lot of usefult infromationt too.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://computer-vision-talks.com/2010/12/building-opencv-for-ios/&#34;&gt;http://computer-vision-talks.com/2010/12/building-opencv-for-ios/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://computer-vision-talks.com/2011/01/using-opencv-in-objective-c-code/&#34;&gt;http://computer-vision-talks.com/2011/01/using-opencv-in-objective-c-code/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://computer-vision-talks.com/2011/02/building-opencv-for-iphone-in-one-click/&#34;&gt;http://computer-vision-talks.com/2011/02/building-opencv-for-iphone-in-one-click/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://computer-vision-talks.com/2011/03/opencv-build-script-with-xcode-4-support-is-here/&#34;&gt;http://computer-vision-talks.com/2011/03/opencv-build-script-with-xcode-4-support-is-here/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;necessary-knowledge&#34;&gt;Necessary knowledge&lt;/h2&gt;
+
+&lt;p&gt;To be able to understand what i&amp;rsquo;m talking about please ensure you have working experience with things listed below. In my posts i usually do not explain trivial things.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Basics of CMake build syntax&lt;/li&gt;
+&lt;li&gt;A little of bash shell scripting&lt;/li&gt;
+&lt;li&gt;XCode 4 build system&lt;/li&gt;
+&lt;li&gt;C++ and OpenCV experience&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;build-script&#34;&gt;Build Script&lt;/h2&gt;
+
+&lt;p&gt;Latest possible version is always here: [download id=&amp;ldquo;1&amp;rdquo;] Issue tracker: &lt;a href=&#34;https://github.com/BloodAxe/OpenCV-iOS-build-script/issues&#34;&gt;https://github.com/BloodAxe/OpenCV-iOS-build-script/issues&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;common-problems-and-their-solutions&#34;&gt;Common problems and their solutions&lt;/h2&gt;
+
+&lt;p&gt; &lt;/p&gt;
+
+&lt;h4 id=&#34;building-opencv-itself&#34;&gt;Building OpenCV itself&lt;/h4&gt;
+
+&lt;h6 id=&#34;problem-installing-opencv-headers-build-failed&#34;&gt;&lt;strong&gt;Problem&lt;/strong&gt;: “Installing OpenCV headers ** BUILD FAILED **”&lt;/h6&gt;
+
+&lt;p&gt;&lt;strong&gt;Solution&lt;/strong&gt;: This can happen if OpenCV build is broken. So build script will not be able to make OpenCV even for MacOS platform. Try to find stable revision.&lt;/p&gt;
+
+&lt;h6 id=&#34;problem-some-other-problems-not-listed-here&#34;&gt;&lt;strong&gt;Problem&lt;/strong&gt;: Some other problems, not listed here&lt;/h6&gt;
+
+&lt;p&gt;&lt;strong&gt;Solution&lt;/strong&gt;: Remember, this build script is still experimental, so no warranties at all. Guys from Willow Garage can change project structure, cmake scripts or whatever and build script will fail… The best thing you can do in this case – contact with me and describe your problem.&lt;/p&gt;
+
+&lt;h4 id=&#34;using-opencv-static-build-in-your-projects&#34;&gt;Using OpenCV static build in your projects:&lt;/h4&gt;
+
+&lt;h6 id=&#34;problem-how-to-setup-my-project&#34;&gt;Problem: How to setup my project?&lt;/h6&gt;
+
+&lt;p&gt;&lt;strong&gt;Solution&lt;/strong&gt;: There is template project on my github page. It already configured. Feel free to modify it as you want. Also you may want to do this manually be specifying additional search path and linker input. Here is detailed tutorial: &lt;a href=&#34;http://computer-vision-talks.com/2011/01/using-opencv-in-objective-c-code/&#34;&gt;http://computer-vision-talks.com/2011/01/using-opencv-in-objective-c-code/&lt;/a&gt;&lt;/p&gt;
+
+&lt;h5 id=&#34;problem-compile-time-error-statement-expressions-are-allowed-only-inside-functions&#34;&gt;&lt;strong&gt;Problem&lt;/strong&gt;: Compile-time error “statement-expressions are allowed only inside functions”&lt;/h5&gt;
+
+&lt;p&gt;**Solution: **The detailed explanation of the problem and it’s solution can be found here: &lt;a href=&#34;http://computer-vision-talks.com/2011/08/a-complete-ios-opencv-sample-project/&#34;&gt;Complete iOS + OpenCV sample project&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;comments&#34;&gt;Comments&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2611&#34; title=&#34;2013-01-14 07:45:07&#34;&gt;Arvind&lt;/a&gt;:&lt;/strong&gt; Hi Ievgen, thanks for the great post on computer-vision-talks but when I click download kinks to OpenCV Build Script (8974) or Precompiled OpenCV library (5467), I get a &amp;lsquo;Page Not Found&amp;rsquo; error. I also wanted to ask whether you have tried and succeeded in getting OpenCV functions IMREAD IMWRITE to work with iOS? If yes, how? I couldn&amp;rsquo;t. Thanks, Arvind&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2614&#34; title=&#34;2013-01-14 21:35:21&#34;&gt;Ievgen Khvedchenia&lt;/a&gt;:&lt;/strong&gt; Hi, sorry for this inconvenience. I recently moved my blog to another hoster. I recommend to download Opencv framework from opencv.org. Functions from highgui module a not supported on iOS. You have to use iOS API to perform image read/write operations.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

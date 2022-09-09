@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>opencv on Computer Vision Talks</title>
+    <link>https://computer-vision-talks.com/tags/opencv/</link>
+    <description>Recent content in opencv on Computer Vision Talks</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 14 Apr 2015 00:00:00 +0000</lastBuildDate><atom:link href="https://computer-vision-talks.com/tags/opencv/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Introducing CloudCV bootstrap</title>
+      <link>https://computer-vision-talks.com/post/introducing-cloudcv-bootstrap/</link>
+      <pubDate>Tue, 14 Apr 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/introducing-cloudcv-bootstrap/</guid>
+      
+        <description>Here&amp;rsquo;s an open-source ready to use bootstrap project written in Node.js that lets you to quickly build a REST service to host your image processing and computer vision code in a cloud environment. Please welcome: cloudcv-bootstrap.
+I made this project aside of CloudCV to keep it simple but functionaly. It is self-contained Node.js project that helps you to get quick results on building and deploying your first server-based image processing service.</description>
+      
+    </item>
+    
+    <item>
+      <title>Hacking OpenCV for fun and profit</title>
+      <link>https://computer-vision-talks.com/post/hacking-opencv-for-fun-and-profit/</link>
+      <pubDate>Thu, 25 Dec 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/hacking-opencv-for-fun-and-profit/</guid>
+      
+        <description>This post convers very specific but important topic about writing memory-efficient code. I will show you how to collect and analyze memory allocations that happens in OpenCV.
+When it comes to writing efficient code we usually care about CPU-efficiency. However there are many times, when memory-efficiency is more important. A limited amount of RAM is not so rare as one can think. On iOS and Android there are a strict memory usage restrictions, and of your app uses more memory than allowed your app can get killed by the system.</description>
+      
+    </item>
+    
+    <item>
+      <title>Tile-based image processing</title>
+      <link>https://computer-vision-talks.com/post/tile-based-image-processing/</link>
+      <pubDate>Thu, 04 Dec 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/tile-based-image-processing/</guid>
+      
+        <description>How would you design an algorithm to process 40Mpx image? 100Mpx? What about gigapixel-sized panorams? Obviously, it should differs from those that are intended for 640x480 images. Here I want to present you implementation of the very simple but powerful approach called &amp;ldquo;Tile-based image processing&amp;rdquo;. I will show you how to make this using OpenCV.
+First, let&amp;rsquo;s define a few restrictions in order to simplify our implementation. In this tutorial I will consider a &amp;lsquo;pass-through&amp;rsquo; pipeline - when we apply some function to input image and give an output image of the same size as an output.</description>
+      
+    </item>
+    
+    <item>
+      <title>Mapping data from Eigen to OpenCV and back</title>
+      <link>https://computer-vision-talks.com/post/mapping-eigen-to-opencv/</link>
+      <pubDate>Sat, 16 Aug 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/mapping-eigen-to-opencv/</guid>
+      
+        <description>Eigen is a C++ template library for matrix and vector operations. It is highly optimized for numeric operations and support vectorization and use aligned memory allocators.
+When it comes to matrix operations, Eigen is much faster than OpenCV. However, it can be situations when it is necessary to pass Eigen data to OpenCV functions.
+In this post I will show how to map Eigen data to OpenCV with easy and efficient way.</description>
+      
+    </item>
+    
+    <item>
+      <title>A good resource on image processing using Python</title>
+      <link>https://computer-vision-talks.com/post/pyimagesearch.com/</link>
+      <pubDate>Thu, 07 Aug 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/pyimagesearch.com/</guid>
+      
+        <description>Let me introduce you Adrian Rosebrock and his http://www.pyimagesearch.com/ website. It&amp;rsquo;s about computer vision and image processing using Python and OpenCV. Looks like there are more than one person that like to share programming experience via blogging :)
+Here&amp;rsquo;s how Adrian position himself:
+ This blog is dedicated to helping other programmers understand how image search engines work. While a lot of computer vision concepts are theoretical in nature, I’m a big fan of “learning by example”.</description>
+      
+    </item>
+    
+    <item>
+      <title>How to detect circles in noisy images</title>
+      <link>https://computer-vision-talks.com/post/how-to-detect-circles-in-noisy-image/</link>
+      <pubDate>Mon, 14 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/how-to-detect-circles-in-noisy-image/</guid>
+      
+        <description>p | This was a request from a(href=&amp;ldquo;http://www.reddit.com/r/computervision/comments/2a1lvi/help_how_to_process_this_image_to_find_the_circles/&amp;quot;) /r/computervision. | A reddit member was asking on how to count number of eggs on quite | noisy image like you may see below. | I&amp;rsquo;ve decided to write a simple algorithm that does the job and explain how it works.
+div.beforeafter img(src=&amp;quot;source.jpg&amp;quot;,alt=&amp;quot;before&amp;quot;) img(src=&amp;quot;display.jpg&amp;quot;,alt=&amp;quot;after&amp;quot;)  span.more
+h2 Step 1 - Filter image
+p img(src=&amp;ldquo;source.jpg&amp;rdquo;,alt=&amp;ldquo;Source image&amp;rdquo;) | The original image has noticeable color noise and therefore it must be filtered before we pass it to further stages.</description>
+      
+    </item>
+    
+    <item>
+      <title>Training Haar cascade in the cloud</title>
+      <link>https://computer-vision-talks.com/post/cloud-haartaining/</link>
+      <pubDate>Tue, 20 May 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/cloud-haartaining/</guid>
+      
+        <description>In this post I&amp;rsquo;ll show you how you can train cascade classifier with OpenCV very quickly even if you have low-end hardware using virtual machine in the cloud.
+Why Clouds? Well, training a descriptor takes a lot of time. Depending on template size, number of samples and stages, it can take from several ours to a couple of days to train such cascade! Be prepared that during training stage your PC will likely be unusuable due to high RAM usage and CPU load.</description>
+      
+    </item>
+    
+    <item>
+      <title>Integration of KAZE 1.6 in OpenCV</title>
+      <link>https://computer-vision-talks.com/post/kaze-1.6-in-opencv/</link>
+      <pubDate>Thu, 03 Apr 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/kaze-1.6-in-opencv/</guid>
+      
+        <description>A new version of KAZE and AKAZE features is a good candidate to become a part of OpenCV. So i decided to update KAZE port i made a while ago with a new version of these features and finally make a pull request to make it a part of OpenCV.
+The OpenCV has accepted my pull-request and merged KAZE port into master branch of the OpenCV library. KAZE and AKAZE features will become available in OpenCV 3.</description>
+      
+    </item>
+    
+    <item>
+      <title>OpenCV is not a panacea</title>
+      <link>https://computer-vision-talks.com/post/opencv-is-not-a-panacea/</link>
+      <pubDate>Sun, 16 Mar 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/opencv-is-not-a-panacea/</guid>
+      
+        <description>Perhaps, someone may find this post provocative or offensive. But in fact it&amp;rsquo;s not. Very often i receive offers from all kind of CXX (CEO, CTO, COO, C-bla-bla-bla) that can be formulated like &amp;ldquo;We want to build product X using OpenCV&amp;rdquo;. What&amp;rsquo;s wrong with you guys? OpenCV is not a panacea. In this post i&amp;rsquo;ll try to reveal this myth.
+Although OpenCV does a great help on getting proof-of-concept software that every start-up needs most of all at early stages, it can make a nightmare for developers in production stage.</description>
+      
+    </item>
+    
+    <item>
+      <title>Instant OpenCV for iOS</title>
+      <link>https://computer-vision-talks.com/post/2013-10-17-instant-opencv-for-ios/</link>
+      <pubDate>Thu, 17 Oct 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2013-10-17-instant-opencv-for-ios/</guid>
+      
+        <description>img.pull-left.img-thumbnail(src=&amp;ldquo;instant-opencv-cover.jpg&amp;rdquo;,alt=&amp;ldquo;Instant OpenCV for iOS&amp;rdquo;)
+p | A new book from authors of OpenCV targeted on iOS development using OpenCV. ul li Learn something new instantly. A short, fast, focused guide delivering immediate results li Build and run your OpenCV code on iOS li Become familiar with iOS fundamentals and make your application interact with the GUI, camera, and gallery li Build your library of computer vision effects, including photo and video filters</description>
+      
+    </item>
+    
+    <item>
+      <title>CloudCV - Cloud image processing platform</title>
+      <link>https://computer-vision-talks.com/post/2013-09-05-cloudcv/</link>
+      <pubDate>Thu, 05 Sep 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2013-09-05-cloudcv/</guid>
+      
+        <description>| Hey everyone! I continue to play with clouds and today it&#39;s time to reveal the CloudCV \- a cloud-based image processing project. | Based on my previous posts i host a server in the Digital Ocean&#39;s cloud. | I have to say, everything is working like a charm. | The cheapest 5$/month plan gives me whatever i may need for this project. | All the source-code is already sits on Github and you are more than welcome to study it.</description>
+      
+    </item>
+    
+    <item>
+      <title>Connecting OpenCV and Node.js inside Cloud9 IDE</title>
+      <link>https://computer-vision-talks.com/post/2013-08-27-connecting-opencv-and-node-js-inside-cloud9-ide/</link>
+      <pubDate>Tue, 27 Aug 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2013-08-27-connecting-opencv-and-node-js-inside-cloud9-ide/</guid>
+      
+        <description>Vacation time is over, and now i&amp;rsquo;m on my way from Tartu, Estonia where i participated in 48 km. inline speedskating marathon to Odessa. My bus have Wi-Fi onboard, so i decided to write a short success-story how i managed to build a C++ addon module for Node.js and run it on the real server inside the Cloud9 IDE. You may also want to check the first tutorial since this guid relies on it.</description>
+      
+    </item>
+    
+    <item>
+      <title>Cloud image processing using OpenCV and Node.js</title>
+      <link>https://computer-vision-talks.com/post/2013-08-19-cloud-image-processing-using-opencv-and-node-js/</link>
+      <pubDate>Mon, 19 Aug 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2013-08-19-cloud-image-processing-using-opencv-and-node-js/</guid>
+      
+        <description>This article describe how to build and use OpenCV in a cloud environment with a front-end in node.js</description>
+      
+    </item>
+    
+    <item>
+      <title>Success-story: Fueling ARBasketball up with NEON</title>
+      <link>https://computer-vision-talks.com/post/2013-06-30-success-story-fueling-arbasketball-up-with-neon/</link>
+      <pubDate>Sun, 30 Jun 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2013-06-30-success-story-fueling-arbasketball-up-with-neon/</guid>
+      
+        <description>img.pull-left.img-thumbnail(src=&amp;ldquo;arbasketball-logo.jpg&amp;rdquo;,alt=&amp;ldquo;ARBasketball&amp;rdquo;)
+p ARBasketball was one of the first augmented reality-based games in App Store. It has been published in 2010. In these days not many people have even heard about AR. I mean it wasn&amp;rsquo;t so popular as it became now. But there were people who saw the great potential in this growing market. One of them was Konstantin Tarovik, the author of ARBasketball. I must confess - I saw this application before, but had no idea it&amp;rsquo;s author lives in Ukraine, and in the same city as I am!</description>
+      
+    </item>
+    
+    <item>
+      <title>KAZE 1.5.1</title>
+      <link>https://computer-vision-talks.com/post/2013-06-17-kaze-1-5-1/</link>
+      <pubDate>Mon, 17 Jun 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2013-06-17-kaze-1-5-1/</guid>
+      
+        <description>A new version of KAZE features has been integrated my private fork of OpenCV (You can find it&amp;rsquo;s here: https://github.com/BloodAxe/opencv/tree/kaze-features). We&amp;rsquo;re on the way to make pull-request and integrate KAZE features to official OpenCV repository.
+There only few things are left:
+ Include KAZE into features2d unit tests. Rewrite KAZE to support OpenCV threading API. Expose adjustable parameters of KAZE algorithm. Do code cleanup and documentation for pull request.  I think we (Pablo, KAZE author) and me complete these steps in a near future.</description>
+      
+    </item>
+    
+    <item>
+      <title>Undocumented OpenCV</title>
+      <link>https://computer-vision-talks.com/post/2013-06-07-undocumented-opencv/</link>
+      <pubDate>Fri, 07 Jun 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2013-06-07-undocumented-opencv/</guid>
+      
+        <description>OpenCV library is widely used by computer vision engineers across the world. It contains almost all algorithms you may want for R&amp;amp;D or product development. It has production-ready build farm with tests and strong community that give nice feedbacks and discover errors. But nevertheless OpenCV has some strange issues and undocummented behaviour that can surprise you as minimum and crash your app as maximum.
+How to get diagonal matrix in OpenCV A typical parameter update computation in non-linear optimization using Levenber-Marquardt algorithm looks like this:</description>
+      
+    </item>
+    
+    <item>
+      <title>Porting KAZE features to OpenCV</title>
+      <link>https://computer-vision-talks.com/post/2013-03-17-porting-kaze-features-to-opencv/</link>
+      <pubDate>Sun, 17 Mar 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2013-03-17-porting-kaze-features-to-opencv/</guid>
+      
+        <description>Recently i came across the publications to a new features called KAZE (Japanesee work meaning &amp;ldquo;Wind&amp;rdquo;). They interested me, because KAZE authors provided very promising evalutaion results and i decided to evaluate them too using my OpenCV features comparison tool. Fortunately KAZE algorithm is based on OpenCV, so it was not too hard to wrap KAZE features implementatino to cv::Feature2D API.
+Impatient readers: you can grab the most recent version of KAZE port to OpenCV here: kaze-features.</description>
+      
+    </item>
+    
+    <item>
+      <title>Are you still using cv::putText to render debug text on the image?</title>
+      <link>https://computer-vision-talks.com/post/2013-01-21-are-you-still-using-cvputtext-to-render-debug-text-on-the-image/</link>
+      <pubDate>Mon, 21 Jan 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2013-01-21-are-you-still-using-cvputtext-to-render-debug-text-on-the-image/</guid>
+      
+        <description>During my research and development work i often have to display a lot of text infromation on top of the OpenCV images. You know what i mean. Suppose you&amp;rsquo;re writing video stabilization algorithm. On each frame you want to display number of features visible on current frame, number of features matched with previois frame, camera motion parameters, recent twitters, name of your pet, etc.. In the OpenCV you can use cv::putText function to print formatted std::string at the desired position on the image.</description>
+      
+    </item>
+    
+    <item>
+      <title>Mastering OpenCV with Practical Computer Vision Projects</title>
+      <link>https://computer-vision-talks.com/post/2012-12-11-mastering-opencv-with-practical-computer-vision-projects/</link>
+      <pubDate>Tue, 11 Dec 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-12-11-mastering-opencv-with-practical-computer-vision-projects/</guid>
+      
+        <description>I feel excited writing this post. The &amp;ldquo;Mastering OpenCV with Practical Computer Vision Projects&amp;rdquo; books is done and published! This is my first experience as a book author and i hope you will like it. This book has been written by several authors, and covers many topics that has real appliance in computer vision area: augmented reality, face recognition and head pose estimation, structure from motion estimation and cartoon image processing.</description>
+      
+    </item>
+    
+    <item>
+      <title>Maximizing performance of CV_BGRA2GRAY conversion using NEON and cv::parallel_for</title>
+      <link>https://computer-vision-talks.com/post/2012-11-06-maximizing-performance-grayscale-color-conversion-using-neon-and-cvparallel_for/</link>
+      <pubDate>Tue, 06 Nov 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-11-06-maximizing-performance-grayscale-color-conversion-using-neon-and-cvparallel_for/</guid>
+      
+        <description>I continue playing with powerful NEON engine in iPhone and iPad devices. Recently i bought iPhone 4S that replaced my HTC Mozart and i decided to check how to speed up BGRA to GRAY color conversion procedure using multithreading. Recently Itseez announced a minor release of OpenCV 2.4.3 with a lot of new major features:
+ Added universal parallel_for implementation using various backends: TBB, OpenMP, GCD, Concurrency Improved OpenCV Manager, new Java samples framework, better camera support on Android, opencv2.</description>
+      
+    </item>
+    
+    <item>
+      <title>OpenCV Tutorial Part 7</title>
+      <link>https://computer-vision-talks.com/post/2012-10-22-opencv-tutorial-part-7/</link>
+      <pubDate>Mon, 22 Oct 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-10-22-opencv-tutorial-part-7/</guid>
+      
+        <description>After a long delay i&amp;rsquo;m happy to resume posting OpenCV tutorials in my blog. In Part 7 i will present you a new way of generation of icons for samples. Also i&amp;rsquo;ll show how to use NEON and assembly language to speed-up cv::transform function twice! Also there are three new samples i have to say few words about each.
+Interface improvements Default sample icons I think each sample has to have it&amp;rsquo;s own unique icon image.</description>
+      
+    </item>
+    
+    <item>
+      <title>OpenCV 2 Hotshot: RAW</title>
+      <link>https://computer-vision-talks.com/post/2012-08-22-opencv-2-hotshot-raw/</link>
+      <pubDate>Wed, 22 Aug 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-08-22-opencv-2-hotshot-raw/</guid>
+      
+        <description>I&amp;rsquo;m glad to publish a official announce of the OpenCV Hotshot book. This book is currently available as a RAW (Read As we Write) book. A RAW book is an ebook, and this one is priced at 20% of the usual eBook price. Once you purchase the RAW book, you can immediately download the content of the book so far, and when new chapters become available, you will be notified, and can download the new version of the book.</description>
+      
+    </item>
+    
+    <item>
+      <title>A battle of three descriptors: SURF, FREAK and BRISK</title>
+      <link>https://computer-vision-talks.com/post/2012-08-18-a-battle-of-three-descriptors-surf-freak-and-brisk/</link>
+      <pubDate>Sat, 18 Aug 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-08-18-a-battle-of-three-descriptors-surf-freak-and-brisk/</guid>
+      
+        <description>I think developers and research guys who works with object recognition, image registration and other areas that uses keypoint extraction can find this post useful. Recently (from 2.4.2) a new feature descriptor algorithm was added to OpenCV library. FREAK descriptor is claimed to be superior to ORB and SURF descriptors, yet it&amp;rsquo;s very fast (comparable to ORB). Also people in comments on my blog mentioned BRISK descriptor which is also new and more efficient than SURF.</description>
+      
+    </item>
+    
+    <item>
+      <title>OpenCV Tutorial - Part 6</title>
+      <link>https://computer-vision-talks.com/post/2012-07-22-opencv-tutorial-part-6/</link>
+      <pubDate>Sun, 22 Jul 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-07-22-opencv-tutorial-part-6/</guid>
+      
+        <description>[toc] Hi folks! I’m glad to publish a sixth part of the OpenCV Tutorial cycle. In this post I will describe how to implement interesting non-photorealistic effect that makes image looks like a cartoon. It has numerous names: cartoon filter or simply “toon” also it known as rotoscoping. In addition we will refactor application interface and add tweeting feature to share your results across the web. According to the roadmap I promised to put the video recording module too, but due to lack of free time I decided to put it on hold for now.</description>
+      
+    </item>
+    
+    <item>
+      <title>OpenCV Tutorial - Part 5</title>
+      <link>https://computer-vision-talks.com/post/2012-07-14-opencv-tutorial-part-5/</link>
+      <pubDate>Sat, 14 Jul 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-07-14-opencv-tutorial-part-5/</guid>
+      
+        <description>Hello readers! The fifth part of the OpenCV Tutorial is here! In this post we will add options pane for our samples. In the end of this chapter our application will receive options interface as shown on screenshot. But first, let me remind you (if you came here for the first time) what is happening here. The &amp;ldquo;OpenCV Tutorial&amp;rdquo; is a open-source project maintained by me (Eugene Khvedchenya). My goal - create a iPhone/iPad application to demonstrate various image processing algorithms of OpenCV library and how to use them in iOS applications.</description>
+      
+    </item>
+    
+    <item>
+      <title>OpenCV Tutorial - Part 4</title>
+      <link>https://computer-vision-talks.com/post/2012-07-07-opencv-tutorial-part-4/</link>
+      <pubDate>Sat, 07 Jul 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-07-07-opencv-tutorial-part-4/</guid>
+      
+        <description>This is the fourth part of the OpenCV Tutorial. In this part the solution of the annoying iOS video capture orientation bug will be described. Of course that&amp;rsquo;s not all. There are some new features - we will add processing of saved photos from your photo album. Also to introduce minor interface improvements and I&amp;rsquo;ll show you how to disable unsupported API like video capture in your app and run in on iOS Simulator.</description>
+      
+    </item>
+    
+    <item>
+      <title>OpenCV Tutorial - Part 3</title>
+      <link>https://computer-vision-talks.com/post/2012-06-27-opencv-tutorial-part-3/</link>
+      <pubDate>Wed, 27 Jun 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-06-27-opencv-tutorial-part-3/</guid>
+      
+        <description>In Part 1 and Part 2 we created base application for our &amp;ldquo;OpenCV Tutorial&amp;rdquo; application. In this part we add video source to process frames using our samples and present the result to user. As usual, you can find source code for this application at github.
+Video capture in iOS At this moment (as far as i know) there OpenCV&amp;rsquo;s cv::VideoCapture does not support iOS platform. Therefore we have to use iOS AVFoundation API to setup video capture.</description>
+      
+    </item>
+    
+    <item>
+      <title>OpenCV Tutorial - Part 2</title>
+      <link>https://computer-vision-talks.com/post/2012-06-24-opencv-tutorial-part-2/</link>
+      <pubDate>Sun, 24 Jun 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-06-24-opencv-tutorial-part-2/</guid>
+      
+        <description>In the previous step we created Master-Detail XCode project and linked OpenCV library to it. Also we defined a base interface for all samples. Today we&amp;rsquo;ll write some UI logic to integrate our samples into the application. One ring to rule them all Since we are going to store a lot of samples (i hope so), we have to store them somewhere. I think for our application the ideal place to save them is our application delegate class.</description>
+      
+    </item>
+    
+    <item>
+      <title>OpenCV Tutorial - Part 1</title>
+      <link>https://computer-vision-talks.com/post/2012-06-23-opencv-tutorial-part-1/</link>
+      <pubDate>Sat, 23 Jun 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-06-23-opencv-tutorial-part-1/</guid>
+      
+        <description>As i recently mentioned, i decided to write a brand new OpenCV tutorial application for iPhone/iPad devies. This development is open-source and anyone can access it on https://github.com/BloodAxe/OpenCV-Tutorial repository page. Your help are welcome to write a UI for this app and help writing sample demonstration cases. Feel free to clone repository and make your contribution!
+OpenCV Tutorial The application startup screen will present master-detail view as a list of available samples.</description>
+      
+    </item>
+    
+    <item>
+      <title>Rewriting OpenCV sample project for iOS</title>
+      <link>https://computer-vision-talks.com/post/2012-06-19-rewriting-opencv-sample-project-for-ios/</link>
+      <pubDate>Tue, 19 Jun 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-06-19-rewriting-opencv-sample-project-for-ios/</guid>
+      
+        <description>A lot of changes been made since I posted a tutorial of using OpenCV library on iPhone/iPad devices. It was the time of iOS 4.x and OpenCV 2.1. The time to rewrite the whole sample project has come. With this post I announce that I going to update my sample project and I ask for your help. My idea is to write a project which will demonstrate use of several common computer vision algorithms.</description>
+      
+    </item>
+    
+    <item>
+      <title>OpenCV &#43; iOS = Success</title>
+      <link>https://computer-vision-talks.com/post/2011-12-23-opencv-ios-success/</link>
+      <pubDate>Fri, 23 Dec 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2011-12-23-opencv-ios-success/</guid>
+      
+        <description>It’s christmas time and i finally managed to deal with all my affairs before holidays. It’s probably the last post in the 2011 year. And i have a little present for you guys – it’s latest build of OpenCV library for the iOS platform, an updated build scipt and updated OpenCV in iPhone sample project with iOS 5 SDK support!
+OpenCV build script for iOS SDK Fortunately, OpenCV team has introduced toolchains for device and simulator builds.</description>
+      
+    </item>
+    
+    <item>
+      <title>A complete iOS &#43; OpenCV sample project</title>
+      <link>https://computer-vision-talks.com/post/2011-08-14-a-complete-ios-opencv-sample-project/</link>
+      <pubDate>Sun, 14 Aug 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2011-08-14-a-complete-ios-opencv-sample-project/</guid>
+      
+        <description>Hello everyone! Today i want to introduce the all new tutorial project of using OpenCV in your iOS projects. In this post i&amp;rsquo;ll show you the right and correct way of interoperation between native OpenCV C/C++ API and Objective-C. I know many of you asked me how to solve this nasty &amp;ldquo;statement-expressions are allowed only inside functions&amp;rdquo; error. Here is a solution.
+The conflict occurs because both UIKit.h and opencv_core.h define the same MIN symbol.</description>
+      
+    </item>
+    
+    <item>
+      <title>Comparison of the OpenCV’s feature detection algorithms – II</title>
+      <link>https://computer-vision-talks.com/post/2011-07-13-comparison-of-the-opencv-feature-detection-algorithms/</link>
+      <pubDate>Wed, 13 Jul 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2011-07-13-comparison-of-the-opencv-feature-detection-algorithms/</guid>
+      
+        <description>Here is an update of half year-old post about differences between existing feature detection algorithms. Original article can be found here: Comparison of the OpenCV&amp;rsquo;s feature detection algorithms – I. I decided to update this comparison report since many things happened: OpenCV 2.3.1 has been released and the new type of feature detector (ORB feature detector) has been introduced. ORB is an acronym of Oriented-BRIEF and uses modified to compute orientation FAST detector for detection stage and BRIEF for descriptor extraction.</description>
+      
+    </item>
+    
+    <item>
+      <title>OpenCV 2.3 is available</title>
+      <link>https://computer-vision-talks.com/post/2011-07-03-opencv-2-3-release-candidate-is-available/</link>
+      <pubDate>Sun, 03 Jul 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2011-07-03-opencv-2-3-release-candidate-is-available/</guid>
+      
+        <description>New major release of OpenCV library is coming. Release candidate is available for testing right now! **Update = **Opencv 2.3 has been released on 5 June. Update 2: Added precompiled binaries of iOS! Download OpenCV 2.3:
+ Win32: http://sourceforge.net/projects/opencvlibrary/files/opencv-win/2.3/ Android: http://sourceforge.net/projects/opencvlibrary/files/opencv-android/2.3/OpenCV-2.3.0alpha1-android-bin.tar.bz2/download Unix: http://sourceforge.net/projects/opencvlibrary/files/opencv-unix/2.3/OpenCV-2.3.0.tar.bz2/download iOS: [download id=&amp;ldquo;4&amp;rdquo;]  General Modifications and Improvements Buildbot-based Continuous Integration system is now continuously testing OpenCV snapshots. The status is available at http://buildbot.itseez.com OpenCV switched to Google Test (http://code.</description>
+      
+    </item>
+    
+    <item>
+      <title>A few thoughts about cvRound</title>
+      <link>https://computer-vision-talks.com/post/2011-06-07-a-few-thoughts-about-cvround/</link>
+      <pubDate>Tue, 07 Jun 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2011-06-07-a-few-thoughts-about-cvround/</guid>
+      
+        <description>During writing commercial iPhone app for one of my customers i noticed really strange slowdown in Surf descriptors. Cutting a long story shorter - while matching two frames usign SURF algorithm more than half of overall time (4, FOUR seconds!) was spent in cvRound function! Read more to know what it was and how did i fixed it. I noticed that matching takes a while and decided to dug into profiler.</description>
+      
+    </item>
+    
+    <item>
+      <title>OpenCV iOS FAQ</title>
+      <link>https://computer-vision-talks.com/post/2011-04-27-opencv-ios-faq/</link>
+      <pubDate>Wed, 27 Apr 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2011-04-27-opencv-ios-faq/</guid>
+      
+        <description>OpenCV iOS FAQ This FAQ contains answers to numerous similar questions I was asked after my posts about using OpenCV with iOS SDK.
+Step by step OpenCV Tutorial OpenCV Tutorial is a sample demonstration project for iOS devices that main goal is to show how to use OpenCV library in XCOde projects to write image processing code for iPhone and iPad devices. There are several step-by-step guides where i describe in details all development process.</description>
+      
+    </item>
+    
+    <item>
+      <title>Image processing &amp; cloud computing</title>
+      <link>https://computer-vision-talks.com/post/2011-03-31-image-processing-cloud-computing/</link>
+      <pubDate>Thu, 31 Mar 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2011-03-31-image-processing-cloud-computing/</guid>
+      
+        <description>It&amp;rsquo;s time to write something interesting. Today I will begin a series of articles on the development of a system of identification of human faces in the cloud. During development, I will describe the key points, details and aspects of running image processing algorithms in the cloud environment. During development face identification system will be created. It has no commercial purpose so don’t expect it will be robust enough :) I create it just for fun, so there are no time plans for this project.</description>
+      
+    </item>
+    
+    <item>
+      <title>Building OpenCV for iPhone in one click</title>
+      <link>https://computer-vision-talks.com/post/2011-02-25-building-opencv-for-iphone-in-one-click/</link>
+      <pubDate>Fri, 25 Feb 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2011-02-25-building-opencv-for-iphone-in-one-click/</guid>
+      
+        <description>My first post in this blog was about building OpenCV for iOS devices (iPhone, iPad, iPod and so on). But the build process that i used is not trivial at all. I received a lot of feedbacks and questions about building OpenCV, setting up XCode build environment. Today i made your life much easier. I have a gift - a build script, which will **build OpenCV **library for your iPhone, iPad, iPod or any other iOS based Apple device right in one click!</description>
+      
+    </item>
+    
+    <item>
+      <title>Markerless Augmented Reality on iPhone</title>
+      <link>https://computer-vision-talks.com/post/2011-02-04-markerless-augmented-reality-on-iphone/</link>
+      <pubDate>Fri, 04 Feb 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2011-02-04-markerless-augmented-reality-on-iphone/</guid>
+      
+        <description>First attempts on trying to implement state of the art Augmented Reality using mobile phone and OpenCV</description>
+      
+    </item>
+    
+    <item>
+      <title>Comparison of feature descriptors</title>
+      <link>https://computer-vision-talks.com/post/2011-01-28-comparison-of-feature-descriptors/</link>
+      <pubDate>Fri, 28 Jan 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2011-01-28-comparison-of-feature-descriptors/</guid>
+      
+        <description>Hello everyone! Today, we have very interesting topic! We will inspect different feature descriptor extractors. From this post you will know how robust is SURF, which disadvantages has BRIEF descriptor and how many times LAZY descriptor is faster than SURF. PS: I will be really appreciate if you point me to good implementations (C/C++) of RIFF, PCA SIFT, GLOH, LESH descriptors. I will include them in test suite. So, today our guinea pigs are:</description>
+      
+    </item>
+    
+    <item>
+      <title>Feature descriptors: A new approach</title>
+      <link>https://computer-vision-talks.com/post/2011-01-15-feature-descriptors-a-new-approach/</link>
+      <pubDate>Sat, 15 Jan 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2011-01-15-feature-descriptors-a-new-approach/</guid>
+      
+        <description>Last year I was tightly connected with image processing and feature tracking/matching. For my needs I’ve used SURF and later RIFF descriptors. Both of them have strong advantages and but… SURF descriptor robustness are compensated by it’s computational cost. RIFF descriptor extracts much faster but not robust enough for my needs. My needs are very simple – doing markerless AR on mobile phone. So, we (me and two other co-authors) decided to develop our own descriptor.</description>
+      
+    </item>
+    
+    <item>
+      <title>Using OpenCV in Objective-C code</title>
+      <link>https://computer-vision-talks.com/post/2011-01-12-using-opencv-in-objective-c-code/</link>
+      <pubDate>Wed, 12 Jan 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2011-01-12-using-opencv-in-objective-c-code/</guid>
+      
+        <description>After publishing Building OpenCV for iOS article many of readers asked me how to use OpenCV within ObjectiveC code, because they encountered compilation errors. In this post I&amp;rsquo;ll show you how to use OpenCV and ObjectiveC to make some image processing.
+In this post I&amp;rsquo;ll use GLImageProcessing sample demo from Apple. Also you will need precompiled OpenCV for iPhone. How to make it read here. I&amp;rsquo;ve copied all OpenCV stuff to &amp;ldquo;opencv&amp;rdquo; folder into the GLImageProcessing.</description>
+      
+    </item>
+    
+    <item>
+      <title>Comparison of the OpenCV’s feature detection algorithms</title>
+      <link>https://computer-vision-talks.com/post/2011-01-04-comparison-of-the-opencv-feature-detection-algorithms/</link>
+      <pubDate>Tue, 04 Jan 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2011-01-04-comparison-of-the-opencv-feature-detection-algorithms/</guid>
+      
+        <description>Introduction
+ “In computer vision and image processing the concept of feature detection refers to methods that aim at computing abstractions of image information and making local decisions at every image point whether there is an image feature of a given type at that point or not. The resulting features will be subsets of the image domain, often in the form of isolated points, continuous curves or connected regions.”
+ Wikipedia</description>
+      
+    </item>
+    
+    <item>
+      <title>Building OpenCV for iOS</title>
+      <link>https://computer-vision-talks.com/post/2010-12-30-building-opencv-for-ios/</link>
+      <pubDate>Fri, 17 Dec 2010 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2010-12-30-building-opencv-for-ios/</guid>
+      
+        <description>OpenCV (Open Source Computer Vision) is a library of programming functions for real time computer vision. This library has a huge number of algorithms.OpenCV supports Windows and Linux platforms (and Android starting from 2.2 version). But, unfortunately, there is no official iOS platform support for this moment. In this post i will show you that can build OpenCV for this platform and run it on your iPhone or iPad.
+Software you&amp;rsquo;ll need  XCode (Developer profile to be able debug on device) CMake Fresh OpenCV SVN command line tool or any GUI SVN client  Getting the new version of OpenCV is pretty easy - just check out them from public svn repository:</description>
+      
+    </item>
+    
+  </channel>
+</rss>

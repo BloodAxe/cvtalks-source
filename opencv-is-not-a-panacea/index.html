@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>OpenCV is not a panacea &middot; My Name</title>
+        <meta name="description" content="p. Perhaps, someone may find this post provocative or offensive. But in fact it&rsquo;s not. Very often i receive offers from all kind of CXX (CEO, CTO, COO, C-bla-bla-bla) that can be formulated like &ldquo;We want to build product X using OpenCV&rdquo;. What&rsquo;s wrong with you guys? OpenCV is not a panacea. In this post i&rsquo;ll try to reveal this myth.
+span.more
+p. Although OpenCV does a great help on getting proof-of-concept software that every start-up needs most of all at early stages, it can make a nightmare for developers in production stage.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="OpenCV is not a panacea">
+<meta property="og:description" content="p. Perhaps, someone may find this post provocative or offensive. But in fact it&rsquo;s not. Very often i receive offers from all kind of CXX (CEO, CTO, COO, C-bla-bla-bla) that can be formulated like &ldquo;We want to build product X using OpenCV&rdquo;. What&rsquo;s wrong with you guys? OpenCV is not a panacea. In this post i&rsquo;ll try to reveal this myth.
+span.more
+p. Although OpenCV does a great help on getting proof-of-concept software that every start-up needs most of all at early stages, it can make a nightmare for developers in production stage.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/opencv-is-not-a-panacea/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">OpenCV is not a panacea</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    <p>p.
+    Perhaps, someone may find this post provocative or offensive. But in fact it&rsquo;s not.
+    Very often i receive offers from all kind of CXX (CEO, CTO, COO, C-bla-bla-bla) that can be formulated like &ldquo;We want to build product X using OpenCV&rdquo;.
+    What&rsquo;s wrong with you guys? OpenCV is not a panacea. In this post i&rsquo;ll try to reveal this myth.</p>
+
+<p>span.more</p>
+
+<p>p.
+    Although OpenCV does a great help on getting proof-of-concept software that every start-up needs most of all at early stages, it can make a nightmare for developers in production stage.
+    The first thing to remember - OpenCV is an open-source project, but there is an official maintainer Itseez company.
+    From one size this looks fine since you may expect that library development will not be abandoned one day.
+    From the other side do you think it&rsquo;s a good idea to build your product around a product of another company that you cannot control?
+    No doubts, Itseez doing it best to fix bugs and add new features to OpenCV, but there is no SLA between you and OpenCV&rsquo;s maintainers on terms of bug-fixing.
+    Even more - sometimes new releases (with critical bugfixes) break backward compatibility.</p>
+
+<p>p
+    | Here are real-world issues related to OpenCV that I have encountered in past:</p>
+
+<pre><code>ul
+    li Implicit element type of the cv::Mat.
+    li Sick way of passing arguments to some functions. cv::Mat(2,4, CV_32FC1) != cv::Mat(1, 4, CV_32FC2).        
+    li Somewhere in between 2.1 and 2.2 Lukas-canade optical flow (LKT tracker) algorithm returned different tracking results (coordinates of tracked points were slightly different).
+    li A cv::findHomography function clould to return empty homography matrix (zero rows, zero cols) in ~2.4. 
+    li Inconsistent ownership transfer with cv::Mat and cv::InputArray.
+    li Lack of OpenGL rendering on OSX platform (while CMake report everything's fine).
+    li Did ANYONE managed to get cv::VideoWriter working?
+
+    li 
+        | What will happen in this case (yes, the size of the destination matrix is 65x65):
+        pre.
+            cv::Mat src(480, 640, CV_8UC1);
+            src(cv::Rect(10,10, 64, 64)) = cv::Mat::eye(65,65, CV_8UC1);
+        | And in this:
+
+        pre.
+            cv::Mat src(480, 640, CV_8UC1);
+            cv::Mat roi = cv::Rect(10,10, 64, 64);
+            cv::Mat::eye(65,65, CV_8UC1).copyTo(roi);
+
+    li.
+        OpenCV's implementation of the SURF features are much weaker (and slower) than OpenSURF.
+
+    li.
+        cv::Ptr&lt;T&gt; ? O'RLY? What about std::shared_ptr and boost::shared_ptr?
+
+    li.
+        OpenCV's non-linear solver used for homography and PnP problem gives bad precision and poor stability. Reason? Straighforward implementation. 
+        No special care taken to deal with numeric precision. 
+
+| If your code is heavily coupled with OpenCV data types or API calls - you're in trouble. 
+| If you don't use regression testing for your project you're in a big trouble - there is a chance that you'll know that your product isn't working anymore form customers.
+</code></pre>
+
+<p>p.lead Encapsulate OpenCV calls into a kind of service.</p>
+
+<p>p.
+    A sign of a good design when you able to change the implementation of this service easily.
+    Imagine that you replace OpenCV with EgmuCV for instance. How much work has to be done for this?</p>
+
+<p>h1 Avoid &lsquo;Not invented here&rsquo;</p>
+
+<p>p.
+    Don&rsquo;t get me wrong, for many cases using OpenCV is ok. Even more, use OpenCV unless you have strong reasons to implement Lev-Mar algorithm by yourself.
+    Personally I&rsquo;m using OpenCV if I want to make a quick proof-of-concept application.
+    However, for performance-critical applications sometimes you have to throw OpenCV away and write it from scratch.
+    Motivation to make this step could vary from low-level code optimization using Assembly language for example.</p>
+
+<p>p
+    | It&rsquo;s a bad sign when third-party libraries affect the design of your application.
+    strong Don&rsquo;t let the cv::Mat spread across your codebase!
+    | OpenCV is a external dependency so try to keep it deep inside and don&rsquo;t expose it&rsquo;s API to public code please.
+    | There is a big temptation to use cv::Mat for storing images, matrices everywhere. Think twice before doing that.
+    | A question that you ask yourself before doing this - &ldquo;how much code I&rsquo;ll have to change if we replace OpenCV with something other someday?&rdquo;.</p>
+
+<p>p.
+    If you&rsquo;re looking for a good containers for matrices, please take a look on Eigen library or boost::ublas.
+    You may want to use Eigen for storing images too since it guarantee memory alignment and there is a nice benefit on accessing aligned pointers.
+    Also take a look on boost::gil library.</p>
+
+<p>h1 So how to hide OpenCV?</p>
+
+<p>p
+    | It&rsquo;s relatively simple with a facade in your business logic. Suppose one may want to have a function to compute strong corners on the input image.
+    | The implementation can looks like this (The Image8U and Corner are used-defined types):</p>
+
+<pre><code>pre.
+    int ComputeStrongCorners(Image8U&amp; src, std::vector&lt;Corner&gt;&amp; corners)
+    {
+        corners.clear();
+
+        #if HAS_NEON_SUPPORT
+            return ComputeStrongCornersNeon(src, corners);
+        #elif HAS_AVX_SUPPORT 
+            return ComputeStrongCornersAVX(src, corners);
+        #elif HAS_OPENCL_SUPPORT
+            return ComputeStrongCornersOpenCL(src, corners);        
+        #endif
+
+        return ComputeStrongCornersDefault(src, corners);
+    }
+
+    int ComputeStrongCornersDefault(src, corners)
+    {
+        cv::goodFeaturesToTrack( Map&lt; cv::Mat &gt;(src), Map&lt; std::vector&lt;cv::Keypoint&gt; &gt;(corners) );
+    }
+
+| This code snippet illustrate an idea of compile-time call dispatching to particular implementation. 
+| Pleas note, that public API of ComputeStrongCorners function does not expose OpenCV types to the user code. 
+| During build compiler will use one of the optimized routines if they are available or default one. 
+| The Map&lt;T&gt; class is a service class for mapping user types to OpenCV and vice versa. 
+| I'll publish a post on how to map user structures to OpenCV without data copy some day.
+</code></pre>
+
+<p>h1 OpenCV is a trend, nothing more</p>
+
+<p>p.lead
+    | It&rsquo;s important to remember that OpenCV is just a library with a set of standard functions, nothing more.
+    | No one is looking for &lsquo;STL programmer&rsquo;, but why &lsquo;OpenCV programmer&rsquo; is a top trending search in linked-in?
+p
+    | Dozens of examples on object recognition, tracking, face detection makes a fake illusion of understanding computer vision.
+    | The fact that someone called two functions with right arguments doesn&rsquo;t make this person a computer vision pro.</p>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/opencv/">opencv</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=OpenCV%20is%20not%20a%20panacea&url=https%3a%2f%2fexample.com%2fopencv-is-not-a-panacea%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2fopencv-is-not-a-panacea%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2fopencv-is-not-a-panacea%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

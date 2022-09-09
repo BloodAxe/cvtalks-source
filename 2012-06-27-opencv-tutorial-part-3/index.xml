@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2012-06-27-opencv-tutorial-part-3-rsses on Ghostwriter example</title>
+    <link>https://example.com/2012-06-27-opencv-tutorial-part-3/index.xml</link>
+    <description>Recent content in 2012-06-27-opencv-tutorial-part-3-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Wed, 27 Jun 2012 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2012-06-27-opencv-tutorial-part-3/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>OpenCV Tutorial - Part 3</title>
+      <link>https://example.com/2012-06-27-opencv-tutorial-part-3/</link>
+      <pubDate>Wed, 27 Jun 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2012-06-27-opencv-tutorial-part-3/</guid>
+      <description>
+
+&lt;p&gt;In &lt;a href=&#34;http://computer-vision-talks.com/2012/06/opencv-tutorial-a-collection-of-opencv-samples-for-iphoneipad-part-1/&#34; title=&#34;OpenCV Tutorial – a collection of OpenCV samples for iPhone/iPad – Part 1&#34;&gt;Part 1&lt;/a&gt; and &lt;a href=&#34;http://computer-vision-talks.com/2012/06/opencv-tutorial-part-2/&#34; title=&#34;OpenCV Tutorial – Part 2&#34;&gt;Part 2&lt;/a&gt; we created base application for our &amp;ldquo;OpenCV Tutorial&amp;rdquo; application. In this part we add video source to process frames using our samples and present the result to user. As usual, you can find source code for this application at &lt;a href=&#34;https://github.com/BloodAxe/OpenCV-Tutorial&#34; title=&#34;OpenCV Tutorial Repository&#34;&gt;github&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;video-capture-in-ios&#34;&gt;Video capture in iOS&lt;/h2&gt;
+
+&lt;p&gt;At this moment (as far as i know) there OpenCV&amp;rsquo;s cv::VideoCapture does not support iOS platform. Therefore we have to use iOS AVFoundation API to setup video capture. This is more complicated that write cv::VideoCapture(&amp;ldquo;YourVideoFileName.avi&amp;rdquo;) but it&amp;rsquo;s not a rocket science.  There is a great Apple documentation article &lt;a href=&#34;http://developer.apple.com/library/ios/#DOCUMENTATION/AudioVideo/Conceptual/AVFoundationPG/Articles/00_Introduction.html&#34; title=&#34;AV Foundation Programming Guide&#34;&gt;AV Foundation Programming Guide&lt;/a&gt; that i strongly advice you to read. &lt;strong&gt;By the way, before I forget - video capture is not supported on iOS simulator. You&amp;rsquo;ll need real device to test your app!&lt;/strong&gt; To manage the capture from a device such as a camera or microphone, you assemble objects to represent inputs and outputs, and use an instance of &lt;code&gt;AVCaptureSession&lt;/code&gt; to coordinate the data flow between them. Minimally you need:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;An instance of &lt;code&gt;AVCaptureDevice&lt;/code&gt; to represent the input device, such as a camera or microphone&lt;/li&gt;
+&lt;li&gt;An instance of a concrete subclass of &lt;code&gt;AVCaptureInput&lt;/code&gt; to configure the ports from the input device&lt;/li&gt;
+&lt;li&gt;An instance of a concrete subclass of &lt;code&gt;AVCaptureOutput&lt;/code&gt; to manage the output to a movie file or still image&lt;/li&gt;
+&lt;li&gt;An instance of &lt;code&gt;AVCaptureSession&lt;/code&gt; to coordinate the data flow from the input to the output
+&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;To put all things together we introduce VideoSource class which incapsulate initialization and video capture routine. Let&amp;rsquo;s take a look on it&amp;rsquo;s interface:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;@protocol VideoSourceDelegate 
+
+- (void) frameCaptured:(cv::Mat) frame;
+
+@end
+
+@interface VideoSource : NSObject
+
+@property id delegate;
+
+- (bool) hasMultipleCameras;
+- (void) toggleCamera;
+- (void) startRunning;
+- (void) stopRunning;
+
+@end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The VideoSourceDelegate protocol defines a callback procedure that user code can handle. The frameCaptured method is called when the frame is received from a camera device. We wrap it in cv::Mat structure for latter use. Initialization of VideoCamera is also not complicated: we create capture session, add video input and video output:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;- (id) init
+{
+  if (self = [super init])
+  {
+    currentCameraIndex = 0;
+    session = [[AVCaptureSession alloc] init];
+    [session setSessionPreset:AVCaptureSessionPreset640x480];
+    captureDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+
+    AVCaptureDevice *videoDevice = [captureDevices objectAtIndex:0];
+
+    NSError * error;
+    captureInput = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:&amp;amp;error];
+
+    if (error)
+    {
+      NSLog(@&amp;quot;Couldn&#39;t create video input&amp;quot;);
+    }
+
+    captureOutput = [[AVCaptureVideoDataOutput alloc] init];
+    captureOutput.alwaysDiscardsLateVideoFrames = YES; 
+
+    // Set the video output to store frame in BGRA (It is supposed to be faster)
+    NSString* key = (NSString*)kCVPixelBufferPixelFormatTypeKey; 
+    NSNumber* value = [NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA]; 
+    NSDictionary* videoSettings = [NSDictionary dictionaryWithObject:value forKey:key]; 
+    [captureOutput setVideoSettings:videoSettings];    
+
+    /*We create a serial queue to handle the processing of our frames*/
+    dispatch_queue_t queue;
+    queue = dispatch_queue_create(&amp;quot;com.computer-vision-talks.cameraQueue&amp;quot;, NULL);
+    [captureOutput setSampleBufferDelegate:self queue:queue];
+    dispatch_release(queue);
+
+    [session addInput:captureInput];
+    [session addOutput:captureOutput];
+  }
+
+  return self;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Please not that we query all video devices available using the [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo] call to get them all. This feature allows us to toggle between front and rear cameras in runtime. Also we set capture session preset to 640x480 because the larger the image the more it it need to be processed by our algorithms. 640x480 is a good choice. As our last step we configure capture output to pass our frames in BGRA format. For our image processing it&amp;rsquo;s the ideal case. In case when our video source has several video inputs we can toggle between them using toggleCamera method:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;- (void) toggleCamera
+{
+  currentCameraIndex++;
+  int camerasCount = [captureDevices count];
+  currentCameraIndex = currentCameraIndex % camerasCount;
+
+  AVCaptureDevice *videoDevice = [captureDevices objectAtIndex:currentCameraIndex];
+
+  [session beginConfiguration];
+
+  if (captureInput)
+  {
+    [session removeInput:captureInput];
+  }
+
+  NSError * error;
+  captureInput = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:&amp;amp;error];
+
+  if (error)
+  {
+    NSLog(@&amp;quot;Couldn&#39;t create video input&amp;quot;);
+  }
+
+  [session addInput:captureInput];
+  [session setSessionPreset:AVCaptureSessionPreset640x480];
+  [session commitConfiguration];
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In this function we cycle through available inputs and add them to capture session (do not forget to remove previous input) and set the capture preset again (just in case). Switching between from and rear camera is initiated by the user by tapping on toggle button (we will talk about it a bit later). Just one thing left - we should implement AVCaptureVideoDataOutputSampleBufferDelegate in our VideoSource class to receive frames from AVFoundation API like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;- (void)captureOutput:(AVCaptureOutput *)captureOutput 
+didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer 
+       fromConnection:(AVCaptureConnection *)connection 
+{ 
+  if (!delegate)
+    return;
+
+  CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer); 
+
+  /*Lock the image buffer*/
+  CVPixelBufferLockBaseAddress(imageBuffer,0); 
+
+  /*Get information about the image*/
+  uint8_t *baseAddress = (uint8_t *)CVPixelBufferGetBaseAddress(imageBuffer); 
+  size_t width = CVPixelBufferGetWidth(imageBuffer); 
+  size_t height = CVPixelBufferGetHeight(imageBuffer);  
+  size_t stride = CVPixelBufferGetBytesPerRow(imageBuffer);
+  //NSLog(@&amp;quot;Frame captured: %lu x %lu&amp;quot;, width,height);
+
+  cv::Mat frame(height, width, CV_8UC4, (void*)baseAddress);
+
+  [delegate frameCaptured:frame];
+
+  /*We unlock the  image buffer*/
+  CVPixelBufferUnlockBaseAddress(imageBuffer,0);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In this method we obtain raw data in BGRA format from CoreMedia and put them input cv::Mat (no data is copied here). And then we call [delegate frameCaptured:] to inform user code that new frame is available.&lt;/p&gt;
+
+&lt;h2 id=&#34;displaying-processed-frames&#34;&gt;Displaying processed frames&lt;/h2&gt;
+
+&lt;p&gt;Since we working with video processing it&amp;rsquo;s obviously to present the result of video processing in real-time on the screen. To secure the appropriate FPS we have to redraw our screen fast. The existing UIImageView control cannot be used here because we&amp;rsquo;ll spent to much time on unnecessary image conversion (cv::Mat to UIImage) and drawing UIImage on the ImageView. For our goal the fastest way to draw the picture is to use OpenGL ES and GLView to draw our bitmap using GPU. In this section i&amp;rsquo;ll show you how to create simple view that able to draw cv::Mat in real-time. To secure this&amp;rsquo;ll UIView and to EAGLContext using it. This allows us to use OpenGL API to draw textured rectangle on top of our view as fast as possible. For user code we expose only single function that is can use:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;@interface GLESImageView : UIView
+
+- (void)drawFrame:(const cv::Mat&amp;amp;) bgraFrame;
+
+@end
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

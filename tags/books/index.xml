@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>books on Computer Vision Talks</title>
+    <link>https://computer-vision-talks.com/tags/books/</link>
+    <description>Recent content in books on Computer Vision Talks</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Thu, 07 Aug 2014 00:00:00 +0000</lastBuildDate><atom:link href="https://computer-vision-talks.com/tags/books/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>A good resource on image processing using Python</title>
+      <link>https://computer-vision-talks.com/post/pyimagesearch.com/</link>
+      <pubDate>Thu, 07 Aug 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/pyimagesearch.com/</guid>
+      
+        <description>Let me introduce you Adrian Rosebrock and his http://www.pyimagesearch.com/ website. It&amp;rsquo;s about computer vision and image processing using Python and OpenCV. Looks like there are more than one person that like to share programming experience via blogging :)
+Here&amp;rsquo;s how Adrian position himself:
+ This blog is dedicated to helping other programmers understand how image search engines work. While a lot of computer vision concepts are theoretical in nature, I’m a big fan of “learning by example”.</description>
+      
+    </item>
+    
+    <item>
+      <title>Instant OpenCV for iOS</title>
+      <link>https://computer-vision-talks.com/post/2013-10-17-instant-opencv-for-ios/</link>
+      <pubDate>Thu, 17 Oct 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2013-10-17-instant-opencv-for-ios/</guid>
+      
+        <description>img.pull-left.img-thumbnail(src=&amp;ldquo;instant-opencv-cover.jpg&amp;rdquo;,alt=&amp;ldquo;Instant OpenCV for iOS&amp;rdquo;)
+p | A new book from authors of OpenCV targeted on iOS development using OpenCV. ul li Learn something new instantly. A short, fast, focused guide delivering immediate results li Build and run your OpenCV code on iOS li Become familiar with iOS fundamentals and make your application interact with the GUI, camera, and gallery li Build your library of computer vision effects, including photo and video filters</description>
+      
+    </item>
+    
+    <item>
+      <title>Book review: Instant OpenCV Starter</title>
+      <link>https://computer-vision-talks.com/post/2013-06-25-instant-opencv-starter/</link>
+      <pubDate>Tue, 25 Jun 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2013-06-25-instant-opencv-starter/</guid>
+      
+        <description>A Instant OpenCV Starter is a short (56 pages) guidebook to help you to start developing apps with OpenCV library. This guide is aimed for developers who are not familiar with OpenCV or want to improve their experience. Instant OpenCV Starter will teach you how to set-up developer environment and build projects that use OpenCV library for both Windows and Linux platforms.
+Starting from the basics you will learn the common types used on OpenCV, basic operations on images and video processing.</description>
+      
+    </item>
+    
+    <item>
+      <title>Mastering OpenCV with Practical Computer Vision Projects</title>
+      <link>https://computer-vision-talks.com/post/2012-12-11-mastering-opencv-with-practical-computer-vision-projects/</link>
+      <pubDate>Tue, 11 Dec 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-12-11-mastering-opencv-with-practical-computer-vision-projects/</guid>
+      
+        <description>I feel excited writing this post. The &amp;ldquo;Mastering OpenCV with Practical Computer Vision Projects&amp;rdquo; books is done and published! This is my first experience as a book author and i hope you will like it. This book has been written by several authors, and covers many topics that has real appliance in computer vision area: augmented reality, face recognition and head pose estimation, structure from motion estimation and cartoon image processing.</description>
+      
+    </item>
+    
+    <item>
+      <title>OpenCV 2 Hotshot: RAW</title>
+      <link>https://computer-vision-talks.com/post/2012-08-22-opencv-2-hotshot-raw/</link>
+      <pubDate>Wed, 22 Aug 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-08-22-opencv-2-hotshot-raw/</guid>
+      
+        <description>I&amp;rsquo;m glad to publish a official announce of the OpenCV Hotshot book. This book is currently available as a RAW (Read As we Write) book. A RAW book is an ebook, and this one is priced at 20% of the usual eBook price. Once you purchase the RAW book, you can immediately download the content of the book so far, and when new chapters become available, you will be notified, and can download the new version of the book.</description>
+      
+    </item>
+    
+    <item>
+      <title>I’m a book author now :)</title>
+      <link>https://computer-vision-talks.com/post/2012-06-12-im-a-book-author-now/</link>
+      <pubDate>Tue, 12 Jun 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-06-12-im-a-book-author-now/</guid>
+      
+        <description>Hello dear computer vision community! I was absent for a while. There were a lot of interesting things i did for these months. Unfortunately, i can’t tell about almost all of them due to signed NDA agreements. But there is one great thing i can share right now. Today i finished working on two chapters of “OpenCV Hotshots” book! This book is written with couple of authors, my part was about marker-based and marker-less augmented reality.</description>
+      
+    </item>
+    
+  </channel>
+</rss>

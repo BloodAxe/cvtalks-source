@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>cpp on Computer Vision Talks</title>
+    <link>https://computer-vision-talks.com/tags/cpp/</link>
+    <description>Recent content in cpp on Computer Vision Talks</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 09 Sep 2015 00:00:00 +0000</lastBuildDate><atom:link href="https://computer-vision-talks.com/tags/cpp/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to write a good code</title>
+      <link>https://computer-vision-talks.com/post/how-to-write-good-code/</link>
+      <pubDate>Wed, 09 Sep 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/how-to-write-good-code/</guid>
+      
+        <description>This article is a quintessence of my all experience I&amp;rsquo;ve got for last years working as a computer vision consultant. I hope you will find this interesting and useful. My goal was to create set of rules I follow personally on daily basis.
+1. Prefer functional approach Image processing is a place where functional paradigm shows it&amp;rsquo;s bests. In most cases, image processing algorithm depends only on input image and has no side effects.</description>
+      
+    </item>
+    
+  </channel>
+</rss>

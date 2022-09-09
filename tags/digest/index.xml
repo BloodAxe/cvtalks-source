@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>digest on Computer Vision Talks</title>
+    <link>https://computer-vision-talks.com/tags/digest/</link>
+    <description>Recent content in digest on Computer Vision Talks</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 09 Sep 2015 00:00:00 +0000</lastBuildDate><atom:link href="https://computer-vision-talks.com/tags/digest/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to write a good code</title>
+      <link>https://computer-vision-talks.com/post/how-to-write-good-code/</link>
+      <pubDate>Wed, 09 Sep 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/how-to-write-good-code/</guid>
+      
+        <description>This article is a quintessence of my all experience I&amp;rsquo;ve got for last years working as a computer vision consultant. I hope you will find this interesting and useful. My goal was to create set of rules I follow personally on daily basis.
+1. Prefer functional approach Image processing is a place where functional paradigm shows it&amp;rsquo;s bests. In most cases, image processing algorithm depends only on input image and has no side effects.</description>
+      
+    </item>
+    
+    <item>
+      <title>Computer Vision Digest - September 2014</title>
+      <link>https://computer-vision-talks.com/post/computer-vision-digest-september-2014/</link>
+      <pubDate>Wed, 01 Oct 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/computer-vision-digest-september-2014/</guid>
+      
+        <description>Third computer vision digest. Your monthly portion of news in computer vision for September 2014.
+In this issue:
+ Real-time face 3D model reconstruction Image color correction and contrast enhancement Robust Optimization Techniques in Computer Vision  Previous issues:
+ Computer Vision Digest (May 2014) Computer Vision Digest (June 2014) Computer Vision Digest (August 2014)  Researchers from the University of Washington prepared interesting presentation for the European Conference on Computer Vision (ECCV-2014).</description>
+      
+    </item>
+    
+    <item>
+      <title>Computer Vision Digest - August 2014</title>
+      <link>https://computer-vision-talks.com/post/computer-vision-digest-august-2014/</link>
+      <pubDate>Sat, 30 Aug 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/computer-vision-digest-august-2014/</guid>
+      
+        <description>Third computer vision digest. Your monthly portion of news in computer vision for August 2014.
+In this issue:
+ Free Photo Editing Software Lets You Manipulate Objects in 3D Real-Time Digital Makeup with Projection Mapping Video stabilization through 3D scene recovery Using OpenCV, Python and Template Matching to play “Where’s Waldo?” OpenCV 3.0 alpha is out  Previous issues:
+ Computer Vision Digest (May 2014) Computer Vision Digest (June 2014)  How much Photoshop magic can you make with 2D photo?</description>
+      
+    </item>
+    
+    <item>
+      <title>Computer vision Digest - June 2014</title>
+      <link>https://computer-vision-talks.com/post/2014-06-computer-vision-digest/</link>
+      <pubDate>Sat, 05 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2014-06-computer-vision-digest/</guid>
+      
+        <description>This is a second issue of monthly computer vision digest - a list things that you don&amp;rsquo;t wanna miss, a list of what happened in computer vision in June 2014.
+Previous issues:
+ Computer Vision Digest (May 2014)  In this issue:
+ Signed Distance Field - converting raster masks to vector form QVision: Computer Vision Library for Qt Closer look on licence plate recognition OpenCV 3.0  The original paper written in Russian, but the topic is rather interesting.</description>
+      
+    </item>
+    
+    <item>
+      <title>Computer vision Digest - May 2014</title>
+      <link>https://computer-vision-talks.com/post/2014-05-computer-vision-digest/</link>
+      <pubDate>Fri, 30 May 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2014-05-computer-vision-digest/</guid>
+      
+        <description>This is a first issue of monthly computer vision digest - a list things that you don&amp;rsquo;t wanna miss, a list of what happened in computer vision in May 2014.
+In this issue:
+ Browser image processing - how fast is it? Object recognition using neural networks via JavaScript NASA shares it&amp;rsquo;s own computer vision library Easy optimization of image processing pipelines using decoupling algorithms OpenCV Apparel Store  Browser image processing - how fast is it?</description>
+      
+    </item>
+    
+  </channel>
+</rss>

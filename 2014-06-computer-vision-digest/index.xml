@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2014-06-computer-vision-digest-rsses on Ghostwriter example</title>
+    <link>https://example.com/2014-06-computer-vision-digest/index.xml</link>
+    <description>Recent content in 2014-06-computer-vision-digest-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Sat, 05 Jul 2014 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2014-06-computer-vision-digest/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Computer vision Digest - June 2014</title>
+      <link>https://example.com/2014-06-computer-vision-digest/</link>
+      <pubDate>Sat, 05 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2014-06-computer-vision-digest/</guid>
+      <description>
+
+&lt;p&gt;This is a second issue of monthly computer vision digest - a list things that
+you don&amp;rsquo;t wanna miss, a list of what happened in computer vision in June 2014.&lt;/p&gt;
+
+&lt;p&gt;Previous issues:
+ - &lt;a href=&#34;https://example.com/articles/2014-05-computer-vision-digest/&#34;&gt;Computer Vision Digest (May 2014)&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;In this issue:
+ - &lt;a href=&#34;#1&#34;&gt;Signed Distance Field - converting raster masks to vector form&lt;/a&gt;
+ - &lt;a href=&#34;#2&#34;&gt;QVision: Computer Vision Library for Qt&lt;/a&gt;
+ - &lt;a href=&#34;#3&#34;&gt;Closer look on licence plate recognition&lt;/a&gt;
+ - &lt;a href=&#34;#4&#34;&gt;OpenCV 3.0&lt;/a&gt;&lt;/p&gt;
+
+&lt;div class=&#34;alert alert-info&#34; role=&#34;alert&#34;&gt;
+Feel free to leave your suggestions on interesting materials in post comments 
+or via Twitter by mentioning [@cvtalks](https://twitter.com/cvtalks). 
+Best links will be included into next digest!
+&lt;/div&gt;
+
+&lt;p&gt;&lt;span class=&#34;more clearfix&#34; /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a name=&#34;1&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h1 id=&#34;signed-distance-field-converting-raster-masks-to-vector-form&#34;&gt;Signed Distance Field - converting raster masks to vector form&lt;/h1&gt;
+
+&lt;p&gt;The original paper written in Russian, but the topic is rather interesting.
+It describe how to render high-resolution &amp;ldquo;vector&amp;rdquo; graphics from small raster images.
+That&amp;rsquo;s why I decided to include this into digest.&lt;/p&gt;
+
+&lt;p&gt;The key algorithm that allows to convert raster mask to vector repesentation
+form is &lt;a href=&#34;http://docs.opencv.org/modules/imgproc/doc/miscellaneous_transformations.html#distancetransform&#34;&gt;distance transform&lt;/a&gt; - algorithm, which calculates
+distance from every binary image pixel to the nearest zero pixel.&lt;/p&gt;
+
+&lt;p&gt;Consider following example:
+&lt;img src=&#34;41bad64c88d9a859d2ba0eb3b7b437bf.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The SDF image we compute from original image can be significatly scaled down to, but it still can be used to render
+image with large zoom without aliasing artifacts that typical for raster rendering.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;56cc184627964797b10b34687180a24b.gif&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Paper in russian: &lt;a href=&#34;http://habrahabr.ru/post/215905/&#34;&gt;Signed Distance Field или как сделать из растра вектор&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;This algorithm was developed by Valve and presented at SIGGRAPH 2007. You can read original paper:
+&lt;a href=&#34;http://www.valvesoftware.com/publications/2007/SIGGRAPH2007_AlphaTestedMagnification.pdf&#34;&gt;Improved Alpha-Tested Magniﬁcation for Vector Textures and Special Effects&lt;/a&gt;. Special thanks to @jin for the link.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a name=&#34;2&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h1 id=&#34;qvision-computer-vision-library-for-qt&#34;&gt;QVision: Computer Vision Library for Qt&lt;/h1&gt;
+
+&lt;p&gt;&lt;img src=&#34;qvisionpenguin.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href=&#34;http://qvision.sourceforge.net/index.html&#34;&gt;QVision&lt;/a&gt; is a free and open source library oriented to the development of computer vision, image/video processing, and scientific computing applications. It is based on the Qt application framework, so it is an object-oriented and cross-platform library for C++.&lt;/p&gt;
+
+&lt;p&gt;The library is mainly intended for educational and research purposes, usability and performance. It has a clean and well documented, Qt-style, object oriented API, which provides functionality for:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Video and image input/output.&lt;/li&gt;
+&lt;li&gt;Image processing.&lt;/li&gt;
+&lt;li&gt;Graphical interface programming.&lt;/li&gt;
+&lt;li&gt;Augmented reality visualization.&lt;/li&gt;
+&lt;li&gt;Performance evaluation.&lt;/li&gt;
+&lt;li&gt;Scientific computing (matrix, vector, quaternions, function optimization, etc..).&lt;/li&gt;
+&lt;li&gt;Visual data-path editor tool for rapid application development (RAD).&lt;/li&gt;
+&lt;li&gt;&amp;hellip; and so on.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I liked this library because it allows to desing algorithm using graph concept:
+&lt;img src=&#34;cannyBlockExample.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Visual designer allows you to connect data sources with image filters that transform one source
+to another and connect filters in a chain to build a computer vision pipeline without wiring
+any single line of code.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;qvdesignergui.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I beleive this kind of playground can be very useful for fast prototyping and learning basics
+of computer vision. The visual designer does not require any knowledge of any computer vision
+library (like OpenCV or Halcon).&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;hartley-combined-edge-movement-detector.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Project homepage: &lt;a href=&#34;http://qvision.sourceforge.net/index.html&#34;&gt;QVision&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a name=&#34;3&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h1 id=&#34;closer-look-on-licence-plate-recognition&#34;&gt;Closer look on licence plate recognition&lt;/h1&gt;
+
+&lt;p&gt;&lt;img src=&#34;d29e20441d4ab164a5fe13f881b684ce.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Again, another publication in Russian, but hey, it&amp;rsquo;s still worth reading it, even via Google Translate.
+License plate recognition is very demanded topic and there are many systems for that. But what about
+knowledge sharing? Guys from Recognitor share their experience with recognizing plate numbers in very,
+very unfriendly conditions - dirty numbers, dark and blurred.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;0d94a205fe806c8d57660ba35188df27.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Here are key features of their implementation:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Small rotation invariance to plate rotation (± 10 degree)&lt;/li&gt;
+&lt;li&gt;Perspective scale invariance (20%)&lt;/li&gt;
+&lt;li&gt;Robustness to partial occlusion of the license plate&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Usually, the first step in system like that is image binarisation. This works fine when we have a clean number and
+friendly lighting conditions. In other cases this method does not help at all. A better approach is to find top and
+bottom lines of the plate using brightness histogram.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Detect bottom border&lt;/li&gt;
+&lt;li&gt;Detect top border&lt;/li&gt;
+&lt;li&gt;Detect left and right borders&lt;/li&gt;
+&lt;li&gt;Increase contrast in ROI&lt;/li&gt;
+&lt;li&gt;Split symbols&lt;/li&gt;
+&lt;li&gt;Symbol matching&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;To attract your attention - here is an example of what their algorihtm is capable to recognize:
+&lt;img src=&#34;74314a4e67ab06faac8f1f5706433e33.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Impressed? So am I was. Original post: &lt;a href=&#34;http://habrahabr.ru/company/recognitor/blog/225913/&#34;&gt;Распознавание автомобильных номеров в деталях&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a name=&#34;4&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h1 id=&#34;opencv-3-0&#34;&gt;OpenCV 3.0&lt;/h1&gt;
+
+&lt;p&gt;No, it has not yet released. But if you build latest revision of master branch, CMake will happily report:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;OpenCV ARCH: x86
+OpenCV RUNTIME: vc12
+OpenCV STATIC: ON
+Found OpenCV 3.0.0 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As you may read in my blog I &lt;a href=&#34;https://example.com/articles/kaze-1.6-in-opencv/&#34;&gt;ported&lt;/a&gt; of KAZE features to OpenCV. And I proud that
+my contribution will be a part of next OpenCV release.&lt;/p&gt;
+
+&lt;p&gt;OpenCV team has not made any announcement about 3.0 release date. Personally I&amp;rsquo;d expect it
+to happed at the end of GSoC. So let&amp;rsquo;s keep fingers crossed.&lt;/p&gt;
+
+&lt;p&gt;Meanwhile, here is a presentation that can reveal some details of what you can expect from OpenCV 3.0:&lt;/p&gt;
+
+&lt;iframe src=&#34;//www.slideshare.net/slideshow/embed_code/36806594&#34; width=&#34;800&#34; height=&#34;600&#34; frameborder=&#34;0&#34; marginwidth=&#34;0&#34; marginheight=&#34;0&#34; scrolling=&#34;no&#34;&gt;&lt;/iframe&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2011-04-05-image-processing-cloud-computing-choose-the-right-cloud-rsses on Ghostwriter example</title>
+    <link>https://example.com/2011-04-05-image-processing-cloud-computing-choose-the-right-cloud/index.xml</link>
+    <description>Recent content in 2011-04-05-image-processing-cloud-computing-choose-the-right-cloud-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Tue, 05 Apr 2011 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2011-04-05-image-processing-cloud-computing-choose-the-right-cloud/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Image processing &amp; cloud computing – choose the right Cloud</title>
+      <link>https://example.com/2011-04-05-image-processing-cloud-computing-choose-the-right-cloud/</link>
+      <pubDate>Tue, 05 Apr 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2011-04-05-image-processing-cloud-computing-choose-the-right-cloud/</guid>
+      <description>
+
+&lt;p&gt;&lt;img src=&#34;opencv-azure-mix-small.png&#34; class=&#34;pull-left img-thumbnail&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;So as i’ve promised – here is first part of my deep dive into cloud computing. Let’s me to remind you why it does matter:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Mobile devices has limited computation power. You cannot do heavy calculations on mobile CPU&lt;/li&gt;
+&lt;li&gt;Similar situation with desktop computers – there are always a lot of heavy calculations even for quad cores&lt;/li&gt;
+&lt;li&gt;Doing server-side calculations decrease complexity of the client application. If you have to support a lot of platforms it’s a killer feature
+Why cloud computing instead of my own server?&lt;/li&gt;
+&lt;li&gt;It’s scalable. You can get as much resources as you need.&lt;/li&gt;
+&lt;li&gt;It’s cheaper than VPD/VPS solution
+We are going to create server side face identification application with web-interface front end application. And all the algorithmic part will be done in C++ (Using Boost, OpenCV as well). So application will required cloud hosting service that supports native code execution. Why i choosed Windows Azure?&lt;/li&gt;
+&lt;li&gt;Native integration with Visual Studio – easy to debug and deploy applications.&lt;/li&gt;
+&lt;li&gt;Supports native code execution.&lt;/li&gt;
+&lt;li&gt;Supports .NET framework infrastructure including awesome things like WCF and workflows.
+One of the features available in Windows Azure environment is the ability to run Web and Worker Roles in full trust environment. The addition of full trust support in Windows Azure not only allows developers to access a wider range of .NET CLR features, but also enables access to unmanaged code through P/Invoke. Access to the unmanaged code (aka native) is a huge advantage, because native code works always faster than managed one. Another pros – you can re-use existing computer vision libraries or your own code in C++ and run it in the cloud environment. Because you would not going to rewrite a half of OpenCV library to C#, wouldn’t you? I will describe all major steps during development so at the end you will be able to create your own cloud application.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;prerequisites&#34;&gt;Prerequisites&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;IIS 7 (with ASP.NET, WCF HTTP Activation)&lt;/li&gt;
+&lt;li&gt;Microsoft .NET Framework 4.0&lt;/li&gt;
+&lt;li&gt;Microsoft Visual Studio 2010 (with Visual C# or Visual Basic .Net, and Visual C++)&lt;/li&gt;
+&lt;li&gt;Windows Azure Tools for Microsoft Visual Studio&lt;/li&gt;
+&lt;li&gt;64-bit Windows 7&lt;/li&gt;
+&lt;li&gt;MS SQL Server 2008 Express edition&lt;/li&gt;
+&lt;li&gt;Windows Live Id account
+Ensure that you have installed x64 compilers and tools:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&#34;clip_image0025_thumb.jpg&#34; alt=&#34;Installing the X64 compilers and tools for Visual Studio&#34; title=&#34;Installing the X64 compilers and tools for Visual Studio&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;If you do not want to download it from the torrents buy VS 2010, i suggest you to use Web Platform Installer which will download all necessary software and configure it. Download link: &lt;a href=&#34;http://www.microsoft.com/windowsazure/getstarted/default.aspx&#34;&gt;http://www.microsoft.com/windowsazure/getstarted/default.aspx&lt;/a&gt; Download the installer, launch it and select Visual Web Developer Express and Windows Azure Toolkit to install:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;figure1.png&#34; alt=&#34;Figure 1&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;When you click Install on the screen above, you are prompted with a license agreement which you must accept before you can proceed with the installation.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;figure2.png&#34; alt=&#34;Figure 2&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now you’re ready to create your first cloud application! In the next part i will describe cloud application architecture and use case scenario.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

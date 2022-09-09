@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>How-to-detect-circles-in-noisy-image-rsses on Ghostwriter example</title>
+    <link>https://example.com/how-to-detect-circles-in-noisy-image/index.xml</link>
+    <description>Recent content in How-to-detect-circles-in-noisy-image-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Mon, 14 Jul 2014 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/how-to-detect-circles-in-noisy-image/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>How to detect circles in noisy images</title>
+      <link>https://example.com/how-to-detect-circles-in-noisy-image/</link>
+      <pubDate>Mon, 14 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/how-to-detect-circles-in-noisy-image/</guid>
+      <description>&lt;p&gt;p
+    | This was a request from
+    a(href=&amp;ldquo;&lt;a href=&#34;http://www.reddit.com/r/computervision/comments/2a1lvi/help_how_to_process_this_image_to_find_the_circles/&amp;quot;&#34;&gt;http://www.reddit.com/r/computervision/comments/2a1lvi/help_how_to_process_this_image_to_find_the_circles/&amp;quot;&lt;/a&gt;) /r/computervision.
+    | A reddit member was asking on how to count number of eggs on quite
+    | noisy image like you may see below.
+    | I&amp;rsquo;ve decided to write a simple algorithm that does the job and explain how it works.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;div.beforeafter
+    img(src=&amp;quot;source.jpg&amp;quot;,alt=&amp;quot;before&amp;quot;)
+    img(src=&amp;quot;display.jpg&amp;quot;,alt=&amp;quot;after&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;span.more&lt;/p&gt;
+
+&lt;p&gt;h2 Step 1 - Filter image&lt;/p&gt;
+
+&lt;p&gt;p
+    img(src=&amp;ldquo;source.jpg&amp;rdquo;,alt=&amp;ldquo;Source image&amp;rdquo;)
+    | The original image has noticeable color noise and therefore it must be filtered before we pass it to further stages.
+    | Ideally you should choose filter algorithm based on your task and noise model. For the sake of simplicity,
+    | I will not use Weiner filter or deconvolution to deal with blur and artifacts that are present on source image.&lt;/p&gt;
+
+&lt;p&gt;p
+    | Instead, I will use pyramidal mean-shift filter.
+    | This algorithm works quite well on this problem and helps to get rid of artifacts.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;pre.
+    cv::Mat inputRgbImage = cv::imread(&amp;quot;input.jpg&amp;quot;);
+    cv::Mat filtered;
+    cv::pyrMeanShiftFiltering(inputRgbImage, 
+                              filtered, 
+                              spatialWindowRadius, 
+                              colorWindowRadius, 
+                              2);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;strong Result of filtering
+div.beforeafter.twentytwenty-container
+    img(src=&amp;ldquo;source.jpg&amp;rdquo;,alt=&amp;ldquo;before&amp;rdquo;)
+    img(src=&amp;ldquo;filtered.jpg&amp;rdquo;,alt=&amp;ldquo;after&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;h2 Step 2 - Increase sharpness&lt;/p&gt;
+
+&lt;p&gt;p
+    | As you may see - eggs edges are not too sharp. For circle detection we will use Hough transform. OpenCV&amp;rsquo; Hough algorithm implementation use Canny edge detector to
+    | detect edges. Unfortunately it&amp;rsquo;s not possible to pass manually computed binary image.
+    | Instead we have to pass 8-bit grayscale image for circle detection.
+    | Therefore we may want to increase their sharpness to make the image more friendly for Canny detector.&lt;/p&gt;
+
+&lt;p&gt;p
+    | Sharpening can be easily done via unsharp mask.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;pre.
+    // Perform in-place unsharp masking operation
+    // http://opencv-code.com/quick-tips/sharpen-image-with-unsharp-mask/
+    void unsharpMask(cv::Mat&amp;amp; im) 
+    {
+        cv::Mat tmp;
+        cv::GaussianBlur(im, tmp, cv::Size(5,5), 5);
+        cv::addWeighted(im, 1.5, tmp, -0.5, 0, im);
+    }
+
+| However, unsharp mask can cause artifacts on edge borders which may lead to double edge.
+| I&#39;m dealing with it by adding laplaccian component to final result:
+
+pre.
+    cv::cvtColor(filtered, grayImg, cv::COLOR_BGR2GRAY);
+    grayImg.convertTo(grayscale, CV_32F);
+
+    cv::GaussianBlur(grayscale, blurred, cv::Size(5,5), 0);
+
+    cv::Laplacian(blurred, laplaccian, CV_32F);
+
+    cv::Mat sharpened = 1.5f * grayscale
+                      - 0.5f * blurred
+                      - weight * grayscale.mul(scale * laplaccian);
+
+strong Result of sharpening
+div.beforeafter.twentytwenty-container
+    img(src=&amp;quot;filtered.jpg&amp;quot;,alt=&amp;quot;before&amp;quot;)
+    img(src=&amp;quot;filteredGray.jpg&amp;quot;,alt=&amp;quot;after&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;h3 Step 3 - Detect circles&lt;/p&gt;
+
+&lt;p&gt;p
+    | After we got nicely filtered and enchanced image we can pass it to cv::HoughCircles to detect circles on the image.
+    | According to problem task, we can limit the maximum radius of circles that we are interested in (we need only small circles).
+    | In addition eggs can be close to each other, so it make sense to set minimal distance between two circles to minimal
+    | allowed diameter of the circle.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;pre.
+   cv::HoughCircles(filteredGray, 
+                    circles, 
+                    cv::HOUGH_GRADIENT, 
+                    2,   // Accumulator resolution
+                    12,  // Minimum distance between the centers of the detected circles.
+                    cannyThreshold, 
+                    accumulatorThreshold, 
+                    5,   // Minimum circle radius
+                    20); // Maximum circle radius
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;h4 Step 4 - Validate eggs&lt;/p&gt;
+
+&lt;p&gt;p
+    | I&amp;rsquo;ve skipped validation step since I don&amp;rsquo;t know what are the requirements to detected eggs.
+    | But I suppose that after detection of possible candidates using Hough the algorithm should validate each contour
+    | to verify it is exactly what we were looking for. Here are some hints what we can check:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ul
+    li Contour defects - how egg shape is close to ideal circle
+    li Contour breaks - is there any breaks in egg boundary or not
+    li Egg color - perhaps we need to count objects only of particular color
+    li Neighbours - maybe (or maybe not) we need only isolated objects.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;h4 Step 5 - GPU Speed-up&lt;/p&gt;
+
+&lt;p&gt;p
+    | The given implementation is very slow since it use CPU and doing a lot of stuff that can be efficiently computed on GPU.
+    | Fortunately, OpenCV has GPU implementations for mean-shift segmentation and hough transform and image blending.
+    | You can easily speed-up this algorithm by using cv::gpu types and functions instead.&lt;/p&gt;
+
+&lt;p&gt;h4 Bonus content&lt;/p&gt;
+
+&lt;p&gt;p
+    | Readed to the end of article? I&amp;rsquo;m impressed :) Here you go, the full source code of the algorithm and small playground to
+    | tweak setting in runtime:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;script(src=&amp;quot;https://gist.github.com/BloodAxe/943fb14220021113d405.js&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

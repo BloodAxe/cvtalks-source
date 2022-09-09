@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2011-08-14-a-complete-ios-opencv-sample-project-rsses on Ghostwriter example</title>
+    <link>https://example.com/2011-08-14-a-complete-ios-opencv-sample-project/index.xml</link>
+    <description>Recent content in 2011-08-14-a-complete-ios-opencv-sample-project-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Sun, 14 Aug 2011 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2011-08-14-a-complete-ios-opencv-sample-project/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>A complete iOS &#43; OpenCV sample project</title>
+      <link>https://example.com/2011-08-14-a-complete-ios-opencv-sample-project/</link>
+      <pubDate>Sun, 14 Aug 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2011-08-14-a-complete-ios-opencv-sample-project/</guid>
+      <description>
+
+&lt;p&gt;&lt;img src=&#34;img_thumb.png&#34; alt=&#34;OpenCV iOS Sample Project&#34; title=&#34;OpenCV iOS Sample Project&#34; /&gt;Hello everyone! Today i want to introduce the all new tutorial project of using OpenCV in your iOS projects. In this post i&amp;rsquo;ll show you the right and correct way of interoperation between native OpenCV C/C++ API and Objective-C. I know many of you asked me how to solve this nasty &amp;ldquo;statement-expressions are allowed only inside functions&amp;rdquo; error. Here is a solution.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;The conflict occurs because both UIKit.h and opencv_core.h define the same MIN symbol. But in UIKit it’s a function, and a macro in OpenCV. If you include bot iOS framework and core.h header file from OpenCV they will conflict with MIN symbol because iOS define MIN function, but the OpenCV has the MAX macros. The simple way would be to ask OpenCV maintainers to give other name to MIN macros. But it&amp;rsquo;s too easy and i do not believe it&amp;rsquo;s right solution.&lt;/p&gt;
+
+&lt;p&gt;The correct way is to split the business logic from the presentation layer into different parts of the project, so the iOS frameworks and OpenCV includes never appears in single compilation unit.&lt;/p&gt;
+
+&lt;p&gt;In this tutorial i consider a sample application, which takes images from the photo album, does some image processing and then displays the processed bitmaps to the user. So the idea to differentiate the UI from the image processing.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s do it in this way.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Declare the API interface used by the View. This API is the only thing that View know about.&lt;/li&gt;
+&lt;li&gt;Write and particular C++ implementation of the image processing component.&lt;/li&gt;
+&lt;li&gt;Write an implementation of the API protocol that implements desired methods and delegates calls to the C++ implementation doing data conversion if necessary.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;A small diagram that illustrates the idea:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;OpenCV-iOS-Architecture_thumb.png&#34; alt=&#34;OpenCV  iOS Architecture&#34; title=&#34;OpenCV  iOS Architecture&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Here is a code of the protocol declaration:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;@protocol ImageProcessingProtocol &amp;lt; NSObject &amp;gt;
+- (UIImage*) processImage:(UIImage*) src;
+@end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As you can see it&amp;rsquo;s pretty simple - it sends the image to processing component and return the result. I pay your attention to the fact that user code at this point know nothing about OpenCV. In the view you work with this API like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;- (void)imagePickerController:(UIImagePickerController *)picker
+        didFinishPickingImage:(UIImage *)image
+                  editingInfo:(NSDictionary *)editingInfo
+{
+  [picker dismissModalViewControllerAnimated:YES];
+
+  iOSplusOpenCVAppDelegate * appDelegate = [[UIApplication sharedApplication] delegate];
+
+  // Process the input image and present the result:
+  UIImage * processedImage = [appDelegate.imageProcessor processImage:image];
+  self.mainButton.imageView.image = processedImage;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now let&amp;rsquo;s write the actual processing code. In this project I use Boost.Gil to pass raw image data to OpenCV because I prefer this strongly typed image concepts very much and use Boost for it is a good choice. You can read about Boost.Gil here: &lt;a href=&#34;http://www.boost.org/doc/libs/1_46_1/libs/gil/doc/index.html&#34;&gt;Boost Gil library overview&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Declaration of OpenCVImageProcessor class:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;struct _IplImage;
+typedef _IplImage IplImage;
+
+class OpenCVImageProcessor
+{
+public:
+    void process(boost::gil::bgr8_view_t src, boost::gil::bgr8_view_t dst);
+
+private:
+    IplImage getIplImageView(boost::gil::bgr8_view_t srcView);
+    IplImage getIplImageView(boost::gil::gray8_view_t srcView);
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Implementation:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;// A helper macro
+#define GIL2CV(GilView) getIplImageView(GilView)
+
+void OpenCVImageProcessor::process(boost::gil::bgr8_view_t src, boost::gil::bgr8_view_t dst)
+{
+    BOOST_ASSERT(src.dimensions() == dst.dimensions());
+
+    boost::gil::gray8_image_t srcGray(src.dimensions());
+    boost::gil::gray8_image_t edges(src.dimensions());
+
+    IplImage srcIplImage     = GIL2CV(src);
+    IplImage srcGrayIplImage = GIL2CV(srcGray._view);
+    IplImage edgesIplImage   = GIL2CV(edges._view);
+    IplImage dstIplImage     = GIL2CV(dst);
+
+    cvCvtColor(&amp;amp;srcIplImage;, &amp;amp;srcGrayIplImage;, CV_BGR2GRAY);
+
+    cvCanny(&amp;amp;srcGrayIplImage;, &amp;amp;edgesIplImage;, 10, 50);
+
+    cvCvtColor(&amp;amp;edgesIplImage;, &amp;amp;dstIplImage;, CV_GRAY2BGR);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Almost done. Now we have write and implementation for the ImageProcessingProtocol (I omit the image conversion functions because they are pretty standard and simple):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;@interface ImageProcessingImpl : NSObject
+- (UIImage*) processImage:(UIImage*) src;
+@end
+
+@implementation ImageProcessingImpl
+
+- (UIImage*) processImage:(UIImage*) src
+{
+  OpenCVImageProcessor processor;
+
+  boost::gil::bgr8_image_t srcImage = [self convertUIImageToGILImage:src];
+  boost::gil::bgr8_image_t dstImage(srcImage.dimensions());
+
+  processor.process(view(srcImage), view(dstImage));
+
+  return [self convertGILImageToUIImage:dstImage];
+}
+
+@end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And that’s all. With this approach you receive flexible design with strict API and platform-independent implementation. You probably can even port it to Android platform by simply writing an adopted ImageProcessingAndroidImpl wrapper.&lt;/p&gt;
+
+&lt;p&gt;The final application looks like on this screenshots:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;1_thumb.png&#34; alt=&#34;1&#34; title=&#34;1&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;At startup user asked to choose the source image by tapping on screen and then the detected edges are shown. To choose another image – just tap on the screen again.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Advantages:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;No explicit dependency from OpenCV in your UI.&lt;/li&gt;
+&lt;li&gt;No violation of MVC and SRP paradigm.&lt;/li&gt;
+&lt;li&gt;The View code looks more clear and easy to understand.&lt;/li&gt;
+&lt;li&gt;Really cross-platform solution.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Disadvantages:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Need to write a bit more code.&lt;/li&gt;
+&lt;li&gt;You need some proxy types to pass Obj-C data (images) to the OpenCV. I use Boost.Gil for this.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;conclusion&#34;&gt;&lt;strong&gt;Conclusion:&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;p&gt;The source code for this sample can be found on my GitHub: &lt;a href=&#34;https://github.com/BloodAxe/opencv-ios-template-project&#34;&gt;https://github.com/BloodAxe/opencv-ios-template-project&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

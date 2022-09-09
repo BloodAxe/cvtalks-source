@@ -1,0 +1,152 @@
+<!doctype html><html dir=ltr lang=en data-theme class=html><head><title>Eugene Khvedchenya
+|
+How to debug node.js addons in Visual Studio</title><meta charset=utf-8><meta name=generator content="Hugo 0.98.0"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name=author content="Eugene Khvedchenya"><meta name=description content="A personal blog about Computer Vision, AI, Kaggle, Open-Source and research. You will never read this in books."><link rel=stylesheet href=/scss/main.min.b2e0cb07595e3519ab1193bb421914e06c0e26b0cc561fef23b3c6131d4d2ffa.css integrity="sha256-suDLB1leNRmrEZO7QhkU4GwOJrDMVh/vI7PGEx1NL/o=" crossorigin=anonymous type=text/css><link rel=stylesheet href=/css/markupHighlight.min.31b0a1f317f55c529a460897848c97436bb138b19c399b37de70d463a8bf6ed5.css integrity="sha256-MbCh8xf1XFKaRgiXhIyXQ2uxOLGcOZs33nDUY6i/btU=" crossorigin=anonymous type=text/css><link rel=stylesheet href=/fontawesome/css/fontawesome.min.7d272de35b410fb165377550cdf9c4d3a80fbbcc961e111914e4d5c0eaf5729f.css integrity="sha256-fSct41tBD7FlN3VQzfnE06gPu8yWHhEZFOTVwOr1cp8=" crossorigin=anonymous type=text/css><link rel=stylesheet href=/fontawesome/css/solid.min.55d8333481b07a08e07cf6f37319753a2b47e99f4c395394c5747b48b495aa9b.css integrity="sha256-VdgzNIGwegjgfPbzcxl1OitH6Z9MOVOUxXR7SLSVqps=" crossorigin=anonymous type=text/css><link rel=stylesheet href=/fontawesome/css/regular.min.a7448d02590b43449364b6b5922ed9af5410abb4de4238412a830316dedb850b.css integrity="sha256-p0SNAlkLQ0STZLa1ki7Zr1QQq7TeQjhBKoMDFt7bhQs=" crossorigin=anonymous type=text/css><link rel=stylesheet href=/fontawesome/css/brands.min.9ed75a5d670c953fe4df935937674b4646f92674367e9e66eb995bb04e821647.css integrity="sha256-ntdaXWcMlT/k35NZN2dLRkb5JnQ2fp5m65lbsE6CFkc=" crossorigin=anonymous type=text/css><link rel="shortcut icon" href=/favicon.ico type=image/x-icon><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=canonical href=https://computer-vision-talks.com/post/how-to-debug-nodejs-addons-in-visual-studio/><script type=text/javascript src=/js/anatole-header.min.f9132794301a01ff16550ed66763482bd848f62243d278f5e550229a158bfd32.js integrity="sha256-+RMnlDAaAf8WVQ7WZ2NIK9hI9iJD0nj15VAimhWL/TI=" crossorigin=anonymous></script>
+<script type=text/javascript src=/js/anatole-theme-switcher.min.560a26330d27ff44a44e83b53cd07a95d4230a65930d31c5c76a8d481e5b35bf.js integrity="sha256-VgomMw0n/0SkToO1PNB6ldQjCmWTDTHFx2qNSB5bNb8=" crossorigin=anonymous></script><meta name=twitter:card content="summary"><meta name=twitter:title content="How to debug node.js addons in Visual Studio"><meta name=twitter:description content="While working on CloudCV I encountered problems in node.js addon written in native code. For CloudCV I use node.js with C++ Addon to separate high-performance algorithms (C++) from high-level networking API which node provides.
+In this tutorial I&rsquo;m going to reveal best practices on debugging C++ Addons for Node.js (0.12) using Visual Studio 2013.
+Continue reading if you want to read in details why this works.
+This article is valid for Node."><meta property="og:title" content="How to debug node.js addons in Visual Studio"><meta property="og:description" content="While working on CloudCV I encountered problems in node.js addon written in native code. For CloudCV I use node.js with C++ Addon to separate high-performance algorithms (C++) from high-level networking API which node provides.
+In this tutorial I&rsquo;m going to reveal best practices on debugging C++ Addons for Node.js (0.12) using Visual Studio 2013.
+Continue reading if you want to read in details why this works.
+This article is valid for Node."><meta property="og:type" content="article"><meta property="og:url" content="https://computer-vision-talks.com/post/how-to-debug-nodejs-addons-in-visual-studio/"><meta property="article:section" content="post"><meta property="article:published_time" content="2015-03-17T00:00:00+00:00"><meta property="article:modified_time" content="2015-03-17T00:00:00+00:00"><meta property="og:site_name" content="Computer Vision Talks"><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","articleSection":"post","name":"How to debug node.js addons in Visual Studio","headline":"How to debug node.js addons in Visual Studio","alternativeHeadline":"","description":"
+      
+        While working on CloudCV I encountered problems in node.js addon written in native code. For CloudCV I use node.js with C\u002b\u002b Addon to separate high-performance algorithms (C\u002b\u002b) from high-level networking API which node provides.\nIn this tutorial I\u0026rsquo;m going to reveal best practices on debugging C\u002b\u002b Addons for Node.js (0.12) using Visual Studio 2013.\nContinue reading if you want to read in details why this works.\nThis article is valid for Node.
+
+
+      
+
+
+    ","inLanguage":"en-us","isFamilyFriendly":"true","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/computer-vision-talks.com\/post\/how-to-debug-nodejs-addons-in-visual-studio\/"},"author":{"@type":"Person","name":"Eugene Khvedchenya"},"creator":{"@type":"Person","name":"Eugene Khvedchenya"},"accountablePerson":{"@type":"Person","name":"Eugene Khvedchenya"},"copyrightHolder":{"@type":"Person","name":"Eugene Khvedchenya"},"copyrightYear":"2015","dateCreated":"2015-03-17T00:00:00.00Z","datePublished":"2015-03-17T00:00:00.00Z","dateModified":"2015-03-17T00:00:00.00Z","publisher":{"@type":"Organization","name":"Eugene Khvedchenya","url":"https://computer-vision-talks.com/","logo":{"@type":"ImageObject","url":"https:\/\/computer-vision-talks.com\/favicon-32x32.png","width":"32","height":"32"}},"image":[],"url":"https:\/\/computer-vision-talks.com\/post\/how-to-debug-nodejs-addons-in-visual-studio\/","wordCount":"1035","genre":[],"keywords":["tutorials","nodejs","visualstudio"]}</script></head><body class="body theme--light"><div class=wrapper><aside class=wrapper__sidebar><div class="sidebar
+animated fadeInDown"><div class=sidebar__content><div class=sidebar__introduction><img class=sidebar__introduction-profileimage src=/images/4ECfkGJr_400x400.jpg alt="profile picture"><div class=sidebar__introduction-title><a href=/>Computer Vision Talks</a></div><div class=sidebar__introduction-description><p>A personal blog about Computer Vision, AI, Kaggle, Open-Source and research. You will never read this in books.</p></div></div><ul class=sidebar__list><li class=sidebar__list-item><a href=https://www.linkedin.com/in/cvtalks/ target=_blank rel=noopener aria-label=Linkedin title=Linkedin><i class="fab fa-linkedin fa-2x" aria-hidden=true></i></a></li><li class=sidebar__list-item><a href=https://twitter.com/cvtalks target=_blank rel=noopener aria-label=Twitter title=Twitter><i class="fab fa-twitter fa-2x" aria-hidden=true></i></a></li><li class=sidebar__list-item><a href=https://github.com/BloodAxe target=_blank rel=noopener aria-label=GitHub title=GitHub><i class="fab fa-github fa-2x" aria-hidden=true></i></a></li><li class=sidebar__list-item><a href=mailto:ekhvedchenya@computer-vision-talks.com target=_blank rel=noopener aria-label=E-Mail title=E-Mail><i class="fas fa-envelope fa-2x" aria-hidden=true></i></a></li></ul></div><footer class="footer footer__sidebar"><ul class=footer__list><li class=footer__item>&copy;
+Eugene Khvedchenya
+2022</li></ul></footer><script type=text/javascript src=/js/medium-zoom.min.9c062c557275acbaba71f0c7cd4024da3e3cc825d248bc4b2130811b0965330b.js integrity="sha256-nAYsVXJ1rLq6cfDHzUAk2j48yCXSSLxLITCBGwllMws=" crossorigin=anonymous></script>
+<script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-10687369-5","auto"),ga("send","pageview"))</script><script async src=https://www.google-analytics.com/analytics.js></script></div></aside><main class=wrapper__main><header class=header><div class="animated fadeInDown"><a role=button class=navbar-burger data-target=navMenu aria-label=menu aria-expanded=false><span aria-hidden=true class=navbar-burger__line></span>
+<span aria-hidden=true class=navbar-burger__line></span>
+<span aria-hidden=true class=navbar-burger__line></span></a><nav class=nav><ul class=nav__list id=navMenu><li class=nav__list-item><a href=/ title>Home</a></li><li class=nav__list-item><a href=/post/ title>Posts</a></li><li class=nav__list-item><a href=/open-source title>Open-Source</a></li><li class=nav__list-item><a href=/challenges title>Wins</a></li><li class=nav__list-item><a href=/publications title>Publications</a></li></ul><ul class="nav__list nav__list--end"><li class=nav__list-item><div class=themeswitch><a title="Switch Theme"><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></li></ul></nav></div></header><div class="post
+animated fadeInDown"><div class=post__content><h1>How to Debug Node.js Addons in Visual Studio</h1><ul class=post__meta><li class=post__meta-item><em class="fas fa-calendar-day post__meta-icon"></em>
+<span class=post__meta-text>Tue, Mar 17, 2015</span></li><li class=post__meta-item><em class="fas fa-stopwatch post__meta-icon"></em>
+<span class=post__meta-text>5-minute read</span></li></ul><p>While working on <a href=https://cloudcv.io>CloudCV</a> I encountered problems in node.js addon written in native code. For CloudCV I use node.js with C++ Addon to separate high-performance algorithms (C++) from high-level networking API which node provides.</p><p>In this tutorial I&rsquo;m going to reveal best practices on debugging C++ Addons for Node.js (0.12) using Visual Studio 2013.</p><p>Continue reading if you want to read in details why this works.</p><p>This article is valid for Node.js version 0.12. It should also works fine for further releases, however few things may change. I will try to keep this post up to date. Please, feel free to drop a comment for this article or write me on <a href=https://twitter.com/cvtalks>@cvtalks</a> if you have troubles following this tutorial.</p><h2 id=before-we-start>Before we start</h2><p>You will need a Visual Studio 2013 (<a href="http://go.microsoft.com/?linkid=9832256">Express edition</a> should be enough). Also, please come and grab <a href=http://nodejs.org/dist/v0.12.0/node-v0.12.0.tar.gz>Node.js source</a>] code. We will use it later to build Debug configuration of Node.js. I assume you
+already have production (Release) version of Node and NPM as we will need <a href=https://github.com/TooTallNate/node-gyp>node-gyp</a> to generate and build C++ Addon project. So please ensure you&rsquo;ve installed them before going to next step:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>npm install -g node-gyp
+</span></span><span class=line><span class=cl>npm install -g nan
+</span></span></code></pre></div><h2 id=build-debug-configuration-of-nodejs>Build Debug configuration of node.js</h2><p>This is very straighforward step.</p><ol><li>Download <a href=http://nodejs.org/dist/v0.12.0/node-v0.12.0.tar.gz>Node.js source</a>] code.</li><li>Extract it somewhere to your filesystem. For demonstration, I assume it will be in <code>c:\Develop\node-v0.12.0</code></li><li>Navigate to <code>c:\Develop\node-v0.12.0</code> and run <code>vcbuild.bat debug nosign x64</code>. This batch script will build Debug configuration of node.js for 64-bit architecture (if you&rsquo;re on 32-bit platform omit this flag). A <code>nosign</code> flag tells to skip executable signing which is ok since we&rsquo;re not going to distribute it, and finally <code>debug</code> forces compiler to generate debug symbols for node executable.</li></ol><p><img src=build-node-debug-step-1.png alt></p><p>If everything goes fine, you should see the following output:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>c:<span class=se>\D</span>evelop<span class=se>\n</span>ode-v0.12.0&gt;vcbuild.bat debug nosign x64
+</span></span><span class=line><span class=cl>ctrpp not found in WinSDK path--using pre-gen files from tools/msvs/genfiles.
+</span></span><span class=line><span class=cl>creating  icu_config.gypi
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>...
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>creating  config.gypi
+</span></span><span class=line><span class=cl>creating  config.mk
+</span></span><span class=line><span class=cl>Project files generated.
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>...
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>debugger-agent.vcxproj -&gt; c:<span class=se>\D</span>evelop<span class=se>\n</span>ode-v0.12.0<span class=se>\D</span>ebug<span class=se>\l</span>ib<span class=se>\d</span>ebugger-agent.lib
+</span></span><span class=line><span class=cl>v8_nosnapshot.vcxproj -&gt; ..<span class=se>\.</span>.<span class=se>\.</span>.<span class=se>\.</span>.<span class=se>\b</span>uild<span class=se>\D</span>ebug<span class=se>\l</span>ib<span class=se>\v</span>8_nosnapshot.lib
+</span></span><span class=line><span class=cl>openssl-cli.vcxproj -&gt; c:<span class=se>\D</span>evelop<span class=se>\n</span>ode-v0.12.0<span class=se>\D</span>ebug<span class=se>\\</span>openssl-cli.exe
+</span></span><span class=line><span class=cl>mksnapshot.vcxproj -&gt; ..<span class=se>\.</span>.<span class=se>\.</span>.<span class=se>\.</span>.<span class=se>\b</span>uild<span class=se>\D</span>ebug<span class=se>\\</span>mksnapshot.exe
+</span></span><span class=line><span class=cl>v8_snapshot.vcxproj -&gt; ..<span class=se>\.</span>.<span class=se>\.</span>.<span class=se>\.</span>.<span class=se>\b</span>uild<span class=se>\D</span>ebug<span class=se>\l</span>ib<span class=se>\v</span>8_snapshot.lib
+</span></span><span class=line><span class=cl>node.vcxproj -&gt; c:<span class=se>\D</span>evelop<span class=se>\n</span>ode-v0.12.0<span class=se>\D</span>ebug<span class=se>\\</span>node.exe
+</span></span></code></pre></div><p><img src=build-node-debug-step-3.png alt></p><p>If you have problems on this step, please refer to <a href=https://github.com/joyent/node/wiki/installation#building-on-windows>building node.js</a> official documentation.</p><h2 id=building-debug-configuration-of-c-addon>Building Debug configuration of C++ Addon</h2><p>A C++ Addon for nodejs is nothing but ordinary DLL. Therefore Visual Studio can load it and let you do step-by-step debugging inside node.js app.
+Let&rsquo;s start with simple scenario. I will use <a href=https://github.com/rvagg/nan/tree/master/examples/async_pi_estimate>Pi estimation</a> example from <a href=https://github.com/rvagg/nan>NaN</a> project.</p><p>Your C++ Addon code can look as follows:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cm>/*********************************************************************
+</span></span></span><span class=line><span class=cl><span class=cm> * NAN - Native Abstractions for Node.js
+</span></span></span><span class=line><span class=cl><span class=cm> *
+</span></span></span><span class=line><span class=cl><span class=cm> * Copyright (c) 2015 NAN contributors
+</span></span></span><span class=line><span class=cl><span class=cm> *
+</span></span></span><span class=line><span class=cl><span class=cm> * MIT License &lt;https://github.com/rvagg/nan/blob/master/LICENSE.md&gt;
+</span></span></span><span class=line><span class=cl><span class=cm> ********************************************************************/</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>var</span> <span class=n>addon</span> <span class=o>=</span> <span class=n>require</span><span class=p>(</span><span class=err>&#39;</span><span class=p>.</span><span class=o>/</span><span class=n>build</span><span class=o>/</span><span class=n>Release</span><span class=o>/</span><span class=n>addon</span><span class=err>&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>var</span> <span class=n>calculations</span> <span class=o>=</span> <span class=n>process</span><span class=p>.</span><span class=n>argv</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>||</span> <span class=mi>100000000</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>function</span> <span class=nf>printResult</span><span class=p>(</span><span class=n>type</span><span class=p>,</span> <span class=n>pi</span><span class=p>,</span> <span class=n>ms</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=n>console</span><span class=p>.</span><span class=n>log</span><span class=p>(</span><span class=n>type</span><span class=p>,</span> <span class=err>&#39;</span><span class=nl>method</span><span class=p>:</span><span class=err>&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=n>console</span><span class=p>.</span><span class=n>log</span><span class=p>(</span><span class=err>&#39;\</span><span class=n>tπ</span> <span class=err>≈</span> <span class=err>&#39;</span> <span class=o>+</span> <span class=n>pi</span>
+</span></span><span class=line><span class=cl>        <span class=o>+</span> <span class=err>&#39;</span> <span class=p>(</span><span class=err>&#39;</span> <span class=o>+</span> <span class=n>Math</span><span class=p>.</span><span class=n>abs</span><span class=p>(</span><span class=n>pi</span> <span class=o>-</span> <span class=n>Math</span><span class=p>.</span><span class=n>PI</span><span class=p>)</span> <span class=o>+</span> <span class=err>&#39;</span> <span class=n>away</span> <span class=n>from</span> <span class=n>actual</span><span class=p>)</span><span class=err>&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>console</span><span class=p>.</span><span class=n>log</span><span class=p>(</span><span class=err>&#39;\</span><span class=n>tTook</span> <span class=err>&#39;</span> <span class=o>+</span> <span class=n>ms</span> <span class=o>+</span> <span class=err>&#39;</span><span class=n>ms</span><span class=err>&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>console</span><span class=p>.</span><span class=n>log</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>function</span> <span class=nf>runSync</span> <span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=n>var</span> <span class=n>start</span> <span class=o>=</span> <span class=n>Date</span><span class=p>.</span><span class=n>now</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// Estimate() will execute in the current thread,
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>// the next line won&#39;t return until it is finished
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>var</span> <span class=n>result</span> <span class=o>=</span> <span class=n>addon</span><span class=p>.</span><span class=n>calculateSync</span><span class=p>(</span><span class=n>calculations</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=n>printResult</span><span class=p>(</span><span class=err>&#39;</span><span class=n>Sync</span><span class=err>&#39;</span><span class=p>,</span> <span class=n>result</span><span class=p>,</span> <span class=n>Date</span><span class=p>.</span><span class=n>now</span><span class=p>()</span> <span class=o>-</span> <span class=n>start</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>function</span> <span class=nf>runAsync</span> <span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// how many batches should we split the work in to?
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>var</span> <span class=n>batches</span> <span class=o>=</span> <span class=n>process</span><span class=p>.</span><span class=n>argv</span><span class=p>[</span><span class=mi>3</span><span class=p>]</span> <span class=o>||</span> <span class=mi>16</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>var</span> <span class=n>ended</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>var</span> <span class=n>total</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>var</span> <span class=n>start</span> <span class=o>=</span> <span class=n>Date</span><span class=p>.</span><span class=n>now</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>function</span> <span class=n>done</span> <span class=p>(</span><span class=n>err</span><span class=p>,</span> <span class=n>result</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>total</span> <span class=o>+=</span> <span class=n>result</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// have all the batches finished executing?
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=k>if</span> <span class=p>(</span><span class=o>++</span><span class=n>ended</span> <span class=o>==</span> <span class=n>batches</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>printResult</span><span class=p>(</span><span class=err>&#39;</span><span class=n>Async</span><span class=err>&#39;</span><span class=p>,</span> <span class=n>total</span> <span class=o>/</span> <span class=n>batches</span><span class=p>,</span> <span class=n>Date</span><span class=p>.</span><span class=n>now</span><span class=p>()</span> <span class=o>-</span> <span class=n>start</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// for each batch of work, request an async Estimate() for
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>// a portion of the total number of calculations
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>for</span> <span class=p>(</span><span class=n>var</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>batches</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>addon</span><span class=p>.</span><span class=n>calculateAsync</span><span class=p>(</span><span class=n>calculations</span> <span class=o>/</span> <span class=n>batches</span><span class=p>,</span> <span class=n>done</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>runSync</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>runAsync</span><span class=p>()</span>
+</span></span></code></pre></div><p>And you also should have gyp file which tells node-gyp how to build your addon:</p><pre tabindex=0><code class=language-gyp data-lang=gyp>{
+  &#34;targets&#34;: [
+    {
+      &#34;target_name&#34;: &#34;addon&#34;,
+      &#34;sources&#34;: [
+        &#34;addon.cc&#34;,
+        &#34;pi_est.cc&#34;,
+        &#34;sync.cc&#34;,
+        &#34;async.cc&#34;
+      ],
+      &#34;include_dirs&#34;: [&#34;&lt;!(node -e \&#34;require(&#39;nan&#39;)\&#34;)&#34;]
+    }
+  ]
+}
+</code></pre><p>Assuming you&rsquo;re in root C++ addon directory, you can now generate a solution for Visual Studio to build your addon:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>node-gyp configure rebuild --nodedir<span class=o>=</span><span class=s2>&#34;c:\Develop\node-v0.12.0&#34;</span>
+</span></span></code></pre></div><p><img src=build-addon-step-1.png alt></p><p>What is really important here, is <code>--nodedir="c:\Develop\node-v0.12.0"</code> flag, which indicates to link against node in specified
+folder rather than system wide available.</p><p>After node-gyp finishes, a .node file (this is .dll, don&rsquo;t be misleaded by .node extension) will be generated in /build/Debug/ folder.</p><p><img src=build-addon-step-3.png alt></p><p>Now it&rsquo;s time to write a small node.js script that utilizes our addon:</p><pre tabindex=0><code class=language-nodejs data-lang=nodejs>var addon = require(&#39;./build/Release/addon&#39;);
+
+function printResult(type, pi, ms) {
+  console.log(type, &#39;method:&#39;)
+  console.log(&#39;\tπ ≈ &#39; + pi
+        + &#39; (&#39; + Math.abs(pi - Math.PI) + &#39; away from actual)&#39;)
+    console.log(&#39;\tTook &#39; + ms + &#39;ms&#39;);
+    console.log()
+}
+
+function runAsync () {
+
+    var start = Date.now();
+
+    function done (err, result) {
+        console.log(&#39;\tπ ≈ &#39; + pi + &#39; (&#39; + Math.abs(pi - Math.PI) + &#39; away from actual)&#39;)
+        console.log(&#39;\tTook &#39; + ms + &#39;ms&#39;);
+        console.log()
+
+        printResult(&#39;Async&#39;, total / batches, Date.now() - start)
+    }
+
+    addon.calculateAsync(1024, done);
+}
+
+runAsync()
+</code></pre><p>You may wonder now, how to debug it. Patience, we&rsquo;re almost there.</p><p><img src=generated-project.jpg alt></p><ol><li>Navigate to <code>build/</code> directory of your C++ Addon and
+open solution file.</li><li>Ensure that you have active Debug configuration.</li><li>Navigate to project properties and open Debugging tab there.</li><li>Modify command name to &ldquo;c:\Develop\node-v0.12.0\Node.exe&rdquo; (Change this path if you extracted node somewhere else)</li><li>Set a command argument to full name of your node.js script.</li><li>Change working directory to a place where your script is. This step important when you have complex nodej.js application with
+dependencies.</li><li>Set breakpoint somewhere in your C++ Addon code.</li><li>Now hit &lsquo;Debug&rsquo; (F5) and enjoy!</li></ol><p><img src=vsproject-settings.jpg alt></p><h2 id=how-it-works>How it works</h2><p>When building Debug builds, Visual Studio trades speed for easy debugging. This means not only slower code, but it also preserves debug
+symbols (a table of function addresses/names/file locations). When you start a debugger on process, VS attachs to it and tries to load
+symbols for this binary and all dynamically loaded libraries it uses.</p><p><img src=vsproject-debugging.jpg alt></p><p>As a consequence, debug symbols for C++ addon is being loaded which allows you to see program execution location in your IDE,
+do step-by-step debugging and change/rebuild/debug as usual.</p><h2 id=conclusion>Conclusion</h2><p>I hope you find this post useful. From my experience debugging node.js &lt;-> C++ interop can be nasty. Personally I follow this
+scenario for debugging CloudCV C++ backend. This saves a lot of time and nerves. Unleash your node.js with C++ and happy debugging!</p></div><div class=post__footer><span><a class=tag href=/tags/tutorials/>tutorials</a><a class=tag href=/tags/nodejs/>nodejs</a><a class=tag href=/tags/visualstudio/>visualstudio</a></span></div><div id=comment><h2>comments</h2><div id=disqus_thread></div><script type=application/javascript>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//cvtalks.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div></div></main></div><footer class="footer footer__base"><ul class=footer__list><li class=footer__item>&copy;
+Eugene Khvedchenya
+2022</li></ul></footer><script type=text/javascript src=/js/medium-zoom.min.9c062c557275acbaba71f0c7cd4024da3e3cc825d248bc4b2130811b0965330b.js integrity="sha256-nAYsVXJ1rLq6cfDHzUAk2j48yCXSSLxLITCBGwllMws=" crossorigin=anonymous></script>
+<script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-10687369-5","auto"),ga("send","pageview"))</script><script async src=https://www.google-analytics.com/analytics.js></script></body></html>

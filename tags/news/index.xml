@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>news on Computer Vision Talks</title>
+    <link>https://computer-vision-talks.com/tags/news/</link>
+    <description>Recent content in news on Computer Vision Talks</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 09 Sep 2015 00:00:00 +0000</lastBuildDate><atom:link href="https://computer-vision-talks.com/tags/news/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to write a good code</title>
+      <link>https://computer-vision-talks.com/post/how-to-write-good-code/</link>
+      <pubDate>Wed, 09 Sep 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/how-to-write-good-code/</guid>
+      
+        <description>This article is a quintessence of my all experience I&amp;rsquo;ve got for last years working as a computer vision consultant. I hope you will find this interesting and useful. My goal was to create set of rules I follow personally on daily basis.
+1. Prefer functional approach Image processing is a place where functional paradigm shows it&amp;rsquo;s bests. In most cases, image processing algorithm depends only on input image and has no side effects.</description>
+      
+    </item>
+    
+    <item>
+      <title>Computer Vision Digest - September 2014</title>
+      <link>https://computer-vision-talks.com/post/computer-vision-digest-september-2014/</link>
+      <pubDate>Wed, 01 Oct 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/computer-vision-digest-september-2014/</guid>
+      
+        <description>Third computer vision digest. Your monthly portion of news in computer vision for September 2014.
+In this issue:
+ Real-time face 3D model reconstruction Image color correction and contrast enhancement Robust Optimization Techniques in Computer Vision  Previous issues:
+ Computer Vision Digest (May 2014) Computer Vision Digest (June 2014) Computer Vision Digest (August 2014)  Researchers from the University of Washington prepared interesting presentation for the European Conference on Computer Vision (ECCV-2014).</description>
+      
+    </item>
+    
+    <item>
+      <title>Computer Vision Digest - August 2014</title>
+      <link>https://computer-vision-talks.com/post/computer-vision-digest-august-2014/</link>
+      <pubDate>Sat, 30 Aug 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/computer-vision-digest-august-2014/</guid>
+      
+        <description>Third computer vision digest. Your monthly portion of news in computer vision for August 2014.
+In this issue:
+ Free Photo Editing Software Lets You Manipulate Objects in 3D Real-Time Digital Makeup with Projection Mapping Video stabilization through 3D scene recovery Using OpenCV, Python and Template Matching to play “Where’s Waldo?” OpenCV 3.0 alpha is out  Previous issues:
+ Computer Vision Digest (May 2014) Computer Vision Digest (June 2014)  How much Photoshop magic can you make with 2D photo?</description>
+      
+    </item>
+    
+    <item>
+      <title>A good resource on image processing using Python</title>
+      <link>https://computer-vision-talks.com/post/pyimagesearch.com/</link>
+      <pubDate>Thu, 07 Aug 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/pyimagesearch.com/</guid>
+      
+        <description>Let me introduce you Adrian Rosebrock and his http://www.pyimagesearch.com/ website. It&amp;rsquo;s about computer vision and image processing using Python and OpenCV. Looks like there are more than one person that like to share programming experience via blogging :)
+Here&amp;rsquo;s how Adrian position himself:
+ This blog is dedicated to helping other programmers understand how image search engines work. While a lot of computer vision concepts are theoretical in nature, I’m a big fan of “learning by example”.</description>
+      
+    </item>
+    
+    <item>
+      <title>Computer vision Digest - June 2014</title>
+      <link>https://computer-vision-talks.com/post/2014-06-computer-vision-digest/</link>
+      <pubDate>Sat, 05 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2014-06-computer-vision-digest/</guid>
+      
+        <description>This is a second issue of monthly computer vision digest - a list things that you don&amp;rsquo;t wanna miss, a list of what happened in computer vision in June 2014.
+Previous issues:
+ Computer Vision Digest (May 2014)  In this issue:
+ Signed Distance Field - converting raster masks to vector form QVision: Computer Vision Library for Qt Closer look on licence plate recognition OpenCV 3.0  The original paper written in Russian, but the topic is rather interesting.</description>
+      
+    </item>
+    
+    <item>
+      <title>Computer vision Digest - May 2014</title>
+      <link>https://computer-vision-talks.com/post/2014-05-computer-vision-digest/</link>
+      <pubDate>Fri, 30 May 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2014-05-computer-vision-digest/</guid>
+      
+        <description>This is a first issue of monthly computer vision digest - a list things that you don&amp;rsquo;t wanna miss, a list of what happened in computer vision in May 2014.
+In this issue:
+ Browser image processing - how fast is it? Object recognition using neural networks via JavaScript NASA shares it&amp;rsquo;s own computer vision library Easy optimization of image processing pipelines using decoupling algorithms OpenCV Apparel Store  Browser image processing - how fast is it?</description>
+      
+    </item>
+    
+    <item>
+      <title>On migrating from Wordpress to Wintersmith</title>
+      <link>https://computer-vision-talks.com/post/2014-01-01-a-new-blog/</link>
+      <pubDate>Wed, 01 Jan 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2014-01-01-a-new-blog/</guid>
+      
+        <description>This post describe how i migrated from Wordpress to Wintersmith static site generator</description>
+      
+    </item>
+    
+    <item>
+      <title>Book review: Instant OpenCV Starter</title>
+      <link>https://computer-vision-talks.com/post/2013-06-25-instant-opencv-starter/</link>
+      <pubDate>Tue, 25 Jun 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2013-06-25-instant-opencv-starter/</guid>
+      
+        <description>A Instant OpenCV Starter is a short (56 pages) guidebook to help you to start developing apps with OpenCV library. This guide is aimed for developers who are not familiar with OpenCV or want to improve their experience. Instant OpenCV Starter will teach you how to set-up developer environment and build projects that use OpenCV library for both Windows and Linux platforms.
+Starting from the basics you will learn the common types used on OpenCV, basic operations on images and video processing.</description>
+      
+    </item>
+    
+    <item>
+      <title>A bunch of news about book, research and life</title>
+      <link>https://computer-vision-talks.com/post/2012-09-01-a-bunch-of-news-about-book-research-and-life/</link>
+      <pubDate>Sat, 01 Sep 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-09-01-a-bunch-of-news-about-book-research-and-life/</guid>
+      
+        <description>Hi friends! the summer has ended and schools and universities has opened their doors in front of new students. Since i graduated few years ago i still remember good old times of study. Doh. I&amp;rsquo;m to so old yet :) So, on 1st September i decided to share with you about my plans for next three months. Because i scheduled very interesting activities for this autumn.
+OpenCV Hotshots Yes it is.</description>
+      
+    </item>
+    
+    <item>
+      <title>OpenCV 2 Hotshot: RAW</title>
+      <link>https://computer-vision-talks.com/post/2012-08-22-opencv-2-hotshot-raw/</link>
+      <pubDate>Wed, 22 Aug 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-08-22-opencv-2-hotshot-raw/</guid>
+      
+        <description>I&amp;rsquo;m glad to publish a official announce of the OpenCV Hotshot book. This book is currently available as a RAW (Read As we Write) book. A RAW book is an ebook, and this one is priced at 20% of the usual eBook price. Once you purchase the RAW book, you can immediately download the content of the book so far, and when new chapters become available, you will be notified, and can download the new version of the book.</description>
+      
+    </item>
+    
+    <item>
+      <title>I’m a book author now :)</title>
+      <link>https://computer-vision-talks.com/post/2012-06-12-im-a-book-author-now/</link>
+      <pubDate>Tue, 12 Jun 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-06-12-im-a-book-author-now/</guid>
+      
+        <description>Hello dear computer vision community! I was absent for a while. There were a lot of interesting things i did for these months. Unfortunately, i can’t tell about almost all of them due to signed NDA agreements. But there is one great thing i can share right now. Today i finished working on two chapters of “OpenCV Hotshots” book! This book is written with couple of authors, my part was about marker-based and marker-less augmented reality.</description>
+      
+    </item>
+    
+    <item>
+      <title>On answering reader questions</title>
+      <link>https://computer-vision-talks.com/post/2012-04-10-reader-questions-1/</link>
+      <pubDate>Tue, 10 Apr 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2012-04-10-reader-questions-1/</guid>
+      
+        <description>A question from intenet:
+ Dear Ievgen, I&amp;rsquo;m researching the field of computer vision and object recognition in particular. I&amp;rsquo;m working for SENSUS in Amsterdam and we focus on social computing solutions for educational and health care sector. While researching and exploring I came up with a couple of simple questions that you might be able to help me with. I&amp;rsquo;m quite new to the concept of computer vision and only had some experience with simple blob tracking in OpenCV with use of OpenFrameworks.</description>
+      
+    </item>
+    
+    <item>
+      <title>OpenCV 2.3 is available</title>
+      <link>https://computer-vision-talks.com/post/2011-07-03-opencv-2-3-release-candidate-is-available/</link>
+      <pubDate>Sun, 03 Jul 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2011-07-03-opencv-2-3-release-candidate-is-available/</guid>
+      
+        <description>New major release of OpenCV library is coming. Release candidate is available for testing right now! **Update = **Opencv 2.3 has been released on 5 June. Update 2: Added precompiled binaries of iOS! Download OpenCV 2.3:
+ Win32: http://sourceforge.net/projects/opencvlibrary/files/opencv-win/2.3/ Android: http://sourceforge.net/projects/opencvlibrary/files/opencv-android/2.3/OpenCV-2.3.0alpha1-android-bin.tar.bz2/download Unix: http://sourceforge.net/projects/opencvlibrary/files/opencv-unix/2.3/OpenCV-2.3.0.tar.bz2/download iOS: [download id=&amp;ldquo;4&amp;rdquo;]  General Modifications and Improvements Buildbot-based Continuous Integration system is now continuously testing OpenCV snapshots. The status is available at http://buildbot.itseez.com OpenCV switched to Google Test (http://code.</description>
+      
+    </item>
+    
+    <item>
+      <title>Future of the Augmented Reality</title>
+      <link>https://computer-vision-talks.com/post/2011-02-11-future-of-the-augmented-reality/</link>
+      <pubDate>Fri, 11 Feb 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2011-02-11-future-of-the-augmented-reality/</guid>
+      
+        <description>Augmented reality technology grows rapidly for last two years. The huge potential this technology has not fully revealed. In the near future we expect appearance of large number of companies seeking to take a a new area in the market. More and more quality and exciting applications of augmented reality will appear. Want to know why?
+Statistics of search queries for &amp;ldquo;Augmented Reality&amp;rdquo; gives eloquent testimony about the growing interest for this technology.</description>
+      
+    </item>
+    
+  </channel>
+</rss>

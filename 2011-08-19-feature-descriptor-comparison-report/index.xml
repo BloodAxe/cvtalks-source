@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2011-08-19-feature-descriptor-comparison-report-rsses on Ghostwriter example</title>
+    <link>https://example.com/2011-08-19-feature-descriptor-comparison-report/index.xml</link>
+    <description>Recent content in 2011-08-19-feature-descriptor-comparison-report-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Fri, 19 Aug 2011 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2011-08-19-feature-descriptor-comparison-report/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Feature descriptor comparison report</title>
+      <link>https://example.com/2011-08-19-feature-descriptor-comparison-report/</link>
+      <pubDate>Fri, 19 Aug 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2011-08-19-feature-descriptor-comparison-report/</guid>
+      <description>
+
+&lt;p&gt;Sharing my research work of behavior of several types of feature descriptors. This article is an update of old &amp;ldquo;&lt;a href=&#34;http://computer-vision-talks.com/2011/01/comparison-of-feature-descriptors/&#34; title=&#34;Comparison of feature descriptors&#34;&gt;Comparison of feature descriptors&lt;/a&gt;&amp;rdquo; post. I&amp;rsquo;ve added a brand new ORB feature descriptor to the test suite, also SIFT descriptor included as well. And a new version of LAZY descriptor present in this test too.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
+
+&lt;p&gt;For this test i have written special test framework, which allows me to easily add the new kind of descriptors and test cases and generate report data in CSV-like format. Than i upload it in Google docs and create this awesome charts. Five quality and one performance test was done for each kind of descriptor.&lt;/p&gt;
+
+&lt;h1 id=&#34;test-cases&#34;&gt;Test cases&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Rotation test -  this test shows how the feature descriptor depends on feature orientation.&lt;/li&gt;
+&lt;li&gt;Scaling test -  this test shows how the feature descriptor depends on feature size.&lt;/li&gt;
+&lt;li&gt;Blur test -  this test shows how the feature descriptor is robust against blur.&lt;/li&gt;
+&lt;li&gt;Lighting test -  this test shows how the feature descriptor is robust against lighting.&lt;/li&gt;
+&lt;li&gt;Pattern detection test - this test performs detection of planar object (image) on the real video. In contrast to the synthetic tests, this test gives a real picture of the overall stability of the particular descriptor.&lt;/li&gt;
+&lt;li&gt;Performance test is a measurement of description extraction time.
+All quality tests works in similar way. Using a given source image we generate a synthetic test data: transformed images corresponding feature points. The transformation algorithm depends on the particular test. For the rotation test case, it&amp;rsquo;s the rotation of the source image around it&amp;rsquo;s center for 360 degrees, for scaling - it&amp;rsquo;s resizing of image from 0.25X to 2x size of original. Blur test uses gaussian blur with several steps and the lighting test changes the overall picture brightness. The pattern detection test deserves a special attention. This test is done on very complex and noisy &lt;a href=&#34;http://www.youtube.com/watch?v=58qTQ_R4IU8&amp;amp;feature=player_embedded&#34;&gt;video sequence&lt;/a&gt;. So it&amp;rsquo;s challenging task for any feature descriptor algorithm to demonstrate a good results in this test. The metric for all quality tests is the percent of correct matches between the source image and the transformed one. Since we use planar object, we can easily select the inliers from all matches using the homography estimation. I use OpenCV&amp;rsquo;s function cvFindHomography for this. This metric gives very good and stable results. I do no outlier detection of matches before homography estimation because this will affect the results in unexpected way. The matching of descriptors is done via brute-force matching from the OpenCV.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;rotation-test&#34;&gt;Rotation test&lt;/h1&gt;
+
+&lt;p&gt;&lt;img src=&#34;rotation_invariantness_thumb.png&#34; alt=&#34;Descriptor&#39;s invariance to rotation summary report&#34; title=&#34;Descriptor&#39;s invariance to rotation summary report&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In this test i obtain pretty expectable results, because all descriptors are rotation invariant expect the BRIEF. Slight changes in stability can be explained by the feature orientation calculation algorithm and descriptor nature. A detailed study of why the descriptor behaves exactly as it is, takes time and effort. It&amp;rsquo;s a topic for another article. Maybe later on&amp;hellip;.&lt;/p&gt;
+
+&lt;h1 id=&#34;scaling-test&#34;&gt;Scaling test&lt;/h1&gt;
+
+&lt;p&gt;&lt;img src=&#34;scale_invariantness_thumb.png&#34; alt=&#34;Descriptor&#39;s invariance to scaling summary report&#34; title=&#34;Descriptor&#39;s invariance to scaling summary report&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;SURF and SIFT descriptors demonstrate us very good stability in this test because they do expensive keypoint size calculation. Other descriptors uses fixed-size descriptor and you can see what it leads to. Currently for LAZY descriptor i do not have separate LAZY feature detector (i use ORB detector for tests) but I&amp;rsquo;m thinking on lightweight feature detector with feature size calculation, because it&amp;rsquo;s a must-have feature. Actually, scale invariance is much more important rather than precise orientation calculation.&lt;/p&gt;
+
+&lt;h1 id=&#34;blur-test&#34;&gt;Blur test&lt;/h1&gt;
+
+&lt;p&gt;&lt;img src=&#34;blur_invariantness_thumb.png&#34; alt=&#34;Descriptor&#39;s invariance to blur summary report&#34; title=&#34;Descriptor&#39;s invariance to blur summary report&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In this test i tried to simulate the motion blur which can occurs if camera moves suddenly. All descriptors demonstrate good results in this test. By “good” I mean that the more blur size is applied the less percent of correct matches is obtained. Which is expected behavior.&lt;/p&gt;
+
+&lt;h1 id=&#34;lighting-test&#34;&gt;Lighting test&lt;/h1&gt;
+
+&lt;p&gt;&lt;img src=&#34;lighting_invariantness_thumb.png&#34; alt=&#34;Descriptor&#39;s invariance to lighting summary report&#34; title=&#34;Descriptor&#39;s invariance to lighting summary report&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In lighting test the transformed images differs only in overall image brightness. All kinds of descriptors works well in this case. The major reason is that all descriptors extracted normalized, e.g the norm_2 of the descriptor vector equals 1. This normalization makes descriptor invariant to brightness changes.&lt;/p&gt;
+
+&lt;h1 id=&#34;pattern-detection-on-real-video&#34;&gt;Pattern detection on real video&lt;/h1&gt;
+
+&lt;p&gt;&lt;img src=&#34;pattern_detection_thumb.png&#34; alt=&#34;Pattern detection test&#34; title=&#34;Pattern detection test&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Detection of the object on real video is the most complex task since ground truth contains rotation, scaling and motion blur. Also other objects are also present. And finally, it’s not HD quality. These conditions are dictated by the actual conditions of application of computer vision. As you can see on diagram, the SIFT and SURF descriptors gives the best results, nevertheless they are far away from ideal, it’s quite enough for such challenging video. Unfortunately, scale-covariant descriptors show very bad results in this test because pattern image appears in 1:1 scale only at the beginning of the video (The “spike” near frame 20). On the rest of the video sequence target object moves from the camera back and scale-covariant descriptors can’t handle this situation.&lt;/p&gt;
+
+&lt;h1 id=&#34;performance-summary&#34;&gt;Performance summary&lt;/h1&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

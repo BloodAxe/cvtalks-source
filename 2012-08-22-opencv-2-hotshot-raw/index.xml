@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2012-08-22-opencv-2-hotshot-raw-rsses on Ghostwriter example</title>
+    <link>https://example.com/2012-08-22-opencv-2-hotshot-raw/index.xml</link>
+    <description>Recent content in 2012-08-22-opencv-2-hotshot-raw-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Wed, 22 Aug 2012 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2012-08-22-opencv-2-hotshot-raw/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>OpenCV 2 Hotshot: RAW</title>
+      <link>https://example.com/2012-08-22-opencv-2-hotshot-raw/</link>
+      <pubDate>Wed, 22 Aug 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2012-08-22-opencv-2-hotshot-raw/</guid>
+      <description>
+
+&lt;p&gt;I&amp;rsquo;m glad to publish a official announce of the &lt;strong&gt;OpenCV Hotshot&lt;/strong&gt; book. This book is currently available as a RAW (Read As we Write) book. A RAW book is an ebook, and this one is priced at 20% of the usual eBook price. Once you purchase the RAW book, you can immediately download the content of the book so far, and when new chapters become available, you will be notified, and  can download the new version of the book. When the book is published, you will receive the full, finished eBook. If you like, you can preorder the print book at the same time as you purchase the RAW book at a significant discount. Visit the &lt;strong&gt;&lt;a href=&#34;http://www.packtpub.com/opencv-2-hotshot/book&#34;&gt;OpenCV Hotshots Book&lt;/a&gt;&lt;/strong&gt;  page on PacktPub website. &lt;strong&gt;Update from August 23rd:&lt;/strong&gt; A Packt Publishing allowed me to publish source code of the example project on the Github. Please find the most recent version of this application here: &lt;a href=&#34;https://github.com/BloodAxe/OpenCV-Hotshots-Marker-Based-AR&#34;&gt;https://github.com/BloodAxe/OpenCV-Hotshots-Marker-Based-AR&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;comments&#34;&gt;Comments&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2110&#34; title=&#34;2012-08-24 03:53:07&#34;&gt;kevin&lt;/a&gt;:&lt;/strong&gt; hi.Ievgen, where can i download the code of the fisrst chater about the skin detection?,can u tell me&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2008&#34; title=&#34;2012-08-20 04:33:45&#34;&gt;kevin&lt;/a&gt;:&lt;/strong&gt; hi ,now , i want to buy this book ,how can i get the Promo Code?&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2211&#34; title=&#34;2012-08-31 08:57:26&#34;&gt;kevin&lt;/a&gt;:&lt;/strong&gt; hi,ievgen,just as fllows than&amp;rsquo;t ok-(void)frameReady:(BGRAVideoFrame) frame { // Start upload new frame to video memory in main thread dispatch_async( dispatch_get_main_queue(), ^{ [self.visualizationController updateBackground:frame]; }); cv::Mat bgraMat(frame.height, frame.width, CV_8UC4, frame.data, frame.stride); cv::cvtColor(bgraMat, m_grayscaleImage, CV_BGRA2GRAY); // When it&amp;rsquo;s done we query rendering from main thread dispatch_async( dispatch_get_main_queue(), ^{ [self.visualizationController drawFrame]; }); } but if i delete the two : cv::Mat bgraMat(frame.height, frame.width, CV_8UC4, frame.data, frame.stride); cv::cvtColor(bgraMat, m_grayscaleImage, CV_BGRA2GRAY); it&amp;rsquo;s will be crush， ireally don&amp;rsquo;t know why&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2036&#34; title=&#34;2012-08-22 16:48:01&#34;&gt;Josh&lt;/a&gt;:&lt;/strong&gt; Thanks for your response Ievgen, Re. Projection matrix - this will affect the augmentation and orientation correct? ie if incorrect will skew the view and offset the augmentation (?) I think previously when using OpenCV for AR I ended up using a library that implemented robust planar pose (RPP by Thomas Pintaric) - but the reason was because OpenCV kept crashing when trying to calculate pose (this is also fussy but didn&amp;rsquo;t jump so dramatically). Any hints on how you are improving the robustness of the marker detection i.e. are you re-using the previous pose? Thanks again for your reply - hopefully the publisher will let you release the code (out of interest - what sort of frame rate are you getting? - assuming its not optimised for clarity). Cheers, Josh&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2035&#34; title=&#34;2012-08-22 16:29:18&#34;&gt;Ievgen Khvedchenia&lt;/a&gt;:&lt;/strong&gt; Hello Kevin. Right now, we dont&amp;rsquo; have promo codes for these book. As soon as publisher give us few coupons you&amp;rsquo;ll get yours!&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2031&#34; title=&#34;2012-08-22 15:10:37&#34;&gt;Josh&lt;/a&gt;:&lt;/strong&gt; First of, nice work - chapters are well written. If you don&amp;rsquo;t mind, I just have a couple of questions: 1. In the marker chapter you have the inverting in 2 places, once when you detect the marker and another when you are about to render it (one is assigned to the marker object and the other is a collection of Transformation objects). // Since solvePnP finds camera location, w.r.t to marker pose, to get marker pose w.r.t to the camera we invert it. m.transformation = m.transformation.getInverted(); // and again in OpenGL Matrix44 glMatrix = transformation.getInverted().getMat44(); Am I missing something? Also assume that this invert is not a Matrix invert but rather transpose of from homography to a model view matrix in openGl? &amp;hellip; the other 2 a more general question so, obviously, feel free to ignore them. 2. I&amp;rsquo;m assuming you&amp;rsquo;re using an iPad in landscape - I&amp;rsquo;m trying to do a simple thing with a circle in portrait mode, would I need to flip your projection matrix for it to work in portrait? 3. (last one) have you come across examples when pose is very unstable (and keeps rotating the pose back and forward) - do you know if this has anything to do with the lose of precision (double to float)? Thanks and keep up the great work! Josh&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2034&#34; title=&#34;2012-08-22 16:21:19&#34;&gt;Ievgen Khvedchenia&lt;/a&gt;:&lt;/strong&gt; Hello Josh, Thanks for you comments. You are probably the first who got the access to the book via RAW program. Currently i&amp;rsquo;m improving my chapters according to reviewer&amp;rsquo;s comments and also rewriting sample project. What concerns your question about transformation - it&amp;rsquo;s seems that publisher uploaded old package source code. I have more recent version in my code repository on Github. I&amp;rsquo;ll ask a publisher is it allowed to make it public. Projection matrix has no common with device orientation since it depends only on camera internal parameters (intrinsic matrix). I can admit you experience issues with AR in portrait mode. It&amp;rsquo;s also caused by old code sample. Marker detection stability. Yes, current detector implementation is very &amp;ldquo;strict&amp;rdquo;. The algorithm prefers to say there is no marker if it&amp;rsquo;s not sure for 100% about it. Currently i working on improving robustness of the marker detection. If publisher allows to open access to the repository you will get access to it as soon as possible. Thanks again for your comments and loyalty.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#2210&#34; title=&#34;2012-08-31 07:05:47&#34;&gt;kevin&lt;/a&gt;:&lt;/strong&gt; hi，Ievgen，i have some question want to ask u , i am new to opengl,you give me a good guide,now ,i want to use your template for myseif,so first i want delete the makerdetecter, self.markerDetector-&amp;gt;processFrame(frame);and sth relevance with it , but run it it&amp;rsquo;s dead, i don&amp;rsquo;t know why , and the i debug ,i find the first frame is good , but the the second frame comes, but frame.data is NULL,in the updateBackground , i don&amp;rsquo;t know why ,can u help me&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

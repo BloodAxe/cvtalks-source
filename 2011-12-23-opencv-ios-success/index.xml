@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2011-12-23-opencv-ios-success-rsses on Ghostwriter example</title>
+    <link>https://example.com/2011-12-23-opencv-ios-success/index.xml</link>
+    <description>Recent content in 2011-12-23-opencv-ios-success-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Fri, 23 Dec 2011 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2011-12-23-opencv-ios-success/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>OpenCV &#43; iOS = Success</title>
+      <link>https://example.com/2011-12-23-opencv-ios-success/</link>
+      <pubDate>Fri, 23 Dec 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2011-12-23-opencv-ios-success/</guid>
+      <description>
+
+&lt;p&gt;It’s christmas time and i finally managed to deal with all my affairs before holidays. It’s probably the last post in the 2011 year. And i have a little present for you guys – it’s latest &lt;strong&gt;build of OpenCV library&lt;/strong&gt; for the iOS platform, an &lt;strong&gt;updated build scipt&lt;/strong&gt; and updated &lt;strong&gt;OpenCV in iPhone sample project&lt;/strong&gt; with iOS 5 SDK support!&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;opencv-build-script-for-ios-sdk&#34;&gt;OpenCV build script for iOS SDK&lt;/h4&gt;
+
+&lt;p&gt;Fortunately, OpenCV team has introduced toolchains for device and simulator builds. Now you don’t have to patch sources and make dirty hacks in CMakeLists.txt to build the library. Therefore build script become significatly shorter. You can download it as usual on github&amp;rsquo;s project page: &lt;a href=&#34;https://github.com/BloodAxe/OpenCV-iOS-build-script&#34; title=&#34;OpenCV build script&#34;&gt;OpenCV build script&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h4 id=&#34;prebuilt-opencv-binaries&#34;&gt;Prebuilt OpenCV binaries&lt;/h4&gt;
+
+&lt;p&gt;If you don’t have a time to write few commands in shell, i prepared precompiled OpenCV library for you. It was built from trunk revision (7083) with XCode version. &lt;a href=&#34;http://computer-vision-talks.com/download/opencv_precompiled_ios_rev7083.zip&#34;&gt;Download precompiled OpenCV library for iPhone/iPad&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h4 id=&#34;opencv-sample-project&#34;&gt;OpenCV Sample project&lt;/h4&gt;
+
+&lt;p&gt;I updated sample project too, to reflect breaking changes in iOS 5. Now it supports both iPhone and iPad devices. Sample project can be found on github too: &lt;a href=&#34;https://github.com/BloodAxe/opencv-ios-template-project&#34;&gt;OpenCV iPhone/iPad template project&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;![][4]&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

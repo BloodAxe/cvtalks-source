@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>How-to-debug-nodejs-addons-in-visual-studio-rsses on Ghostwriter example</title>
+    <link>https://example.com/how-to-debug-nodejs-addons-in-visual-studio/index.xml</link>
+    <description>Recent content in How-to-debug-nodejs-addons-in-visual-studio-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Tue, 17 Mar 2015 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/how-to-debug-nodejs-addons-in-visual-studio/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>How to debug node.js addons in Visual Studio</title>
+      <link>https://example.com/how-to-debug-nodejs-addons-in-visual-studio/</link>
+      <pubDate>Tue, 17 Mar 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/how-to-debug-nodejs-addons-in-visual-studio/</guid>
+      <description>
+
+&lt;p&gt;While working on &lt;a href=&#34;https://cloudcv.io&#34;&gt;CloudCV&lt;/a&gt; I encountered problems in node.js addon written in native code. For CloudCV I use node.js with C++ Addon to separate high-performance algorithms (C++) from high-level networking API which node provides.&lt;/p&gt;
+
+&lt;p&gt;In this tutorial I&amp;rsquo;m going to reveal best practices on debugging C++ Addons for Node.js (0.12) using Visual Studio 2013.&lt;/p&gt;
+
+&lt;div class=&#34;embed-responsive embed-responsive-4by3&#34;&gt;
+  &lt;iframe class=&#34;embed-responsive-item&#34; src=&#34;https://www.youtube.com/embed/eqhv42jVN6s&#34; allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Continue reading if you want to read in details why this works.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This article is valid for Node.js version 0.12. It should also works fine for further releases, however few things may change. I will try to keep this post up to date. Please, feel free to drop a comment for this article or write me on &lt;a href=&#34;https://twitter.com/cvtalks&#34;&gt;@cvtalks&lt;/a&gt; if you have troubles following this tutorial.&lt;/p&gt;
+
+&lt;h2 id=&#34;before-we-start&#34;&gt;Before we start&lt;/h2&gt;
+
+&lt;p&gt;You will need a Visual Studio 2013 (&lt;a href=&#34;http://go.microsoft.com/?linkid=9832256&#34;&gt;Express edition&lt;/a&gt; should be enough). Also, please come and grab &lt;a href=&#34;http://nodejs.org/dist/v0.12.0/node-v0.12.0.tar.gz&#34;&gt;Node.js source&lt;/a&gt;] code. We will use it later to build Debug configuration of Node.js. I assume you
+already have production (Release) version of Node and NPM as we will need &lt;a href=&#34;https://github.com/TooTallNate/node-gyp&#34;&gt;node-gyp&lt;/a&gt; to generate and build C++ Addon project. So please ensure you&amp;rsquo;ve installed them before going to next step:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;npm install -g node-gyp
+npm install -g nan
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;build-debug-configuration-of-node-js&#34;&gt;Build Debug configuration of node.js&lt;/h2&gt;
+
+&lt;p&gt;This is very straighforward step.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Download &lt;a href=&#34;http://nodejs.org/dist/v0.12.0/node-v0.12.0.tar.gz&#34;&gt;Node.js source&lt;/a&gt;] code.&lt;/li&gt;
+&lt;li&gt;Extract it somewhere to your filesystem. For demonstration, I assume it will be in &lt;code&gt;c:\Develop\node-v0.12.0&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Navigate to &lt;code&gt;c:\Develop\node-v0.12.0&lt;/code&gt; and run &lt;code&gt;vcbuild.bat debug nosign x64&lt;/code&gt;. This batch script will build Debug configuration of node.js for 64-bit architecture (if you&amp;rsquo;re on 32-bit platform omit this flag). A &lt;code&gt;nosign&lt;/code&gt; flag tells to skip executable signing which is ok since we&amp;rsquo;re not going to distribute it, and finally &lt;code&gt;debug&lt;/code&gt; forces compiler to generate debug symbols for node executable.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&#34;build-node-debug-step-1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;If everything goes fine, you should see the following output:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;c:\Develop\node-v0.12.0&amp;gt;vcbuild.bat debug nosign x64
+ctrpp not found in WinSDK path--using pre-gen files from tools/msvs/genfiles.
+creating  icu_config.gypi
+
+...
+
+creating  config.gypi
+creating  config.mk
+Project files generated.
+
+...
+
+debugger-agent.vcxproj -&amp;gt; c:\Develop\node-v0.12.0\Debug\lib\debugger-agent.lib
+v8_nosnapshot.vcxproj -&amp;gt; ..\..\..\..\build\Debug\lib\v8_nosnapshot.lib
+openssl-cli.vcxproj -&amp;gt; c:\Develop\node-v0.12.0\Debug\\openssl-cli.exe
+mksnapshot.vcxproj -&amp;gt; ..\..\..\..\build\Debug\\mksnapshot.exe
+v8_snapshot.vcxproj -&amp;gt; ..\..\..\..\build\Debug\lib\v8_snapshot.lib
+node.vcxproj -&amp;gt; c:\Develop\node-v0.12.0\Debug\\node.exe
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;build-node-debug-step-3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;If you have problems on this step, please refer to &lt;a href=&#34;https://github.com/joyent/node/wiki/installation#building-on-windows&#34;&gt;building node.js&lt;/a&gt; official documentation.&lt;/p&gt;
+
+&lt;h2 id=&#34;building-debug-configuration-of-c-addon&#34;&gt;Building Debug configuration of C++ Addon&lt;/h2&gt;
+
+&lt;p&gt;A C++ Addon for nodejs is nothing but ordinary DLL. Therefore Visual Studio can load it and let you do step-by-step debugging inside node.js app.
+Let&amp;rsquo;s start with simple scenario. I will use &lt;a href=&#34;https://github.com/rvagg/nan/tree/master/examples/async_pi_estimate&#34;&gt;Pi estimation&lt;/a&gt; example from &lt;a href=&#34;https://github.com/rvagg/nan&#34;&gt;NaN&lt;/a&gt; project.&lt;/p&gt;
+
+&lt;p&gt;Your C++ Addon code can look as follows:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;/*********************************************************************
+ * NAN - Native Abstractions for Node.js
+ *
+ * Copyright (c) 2015 NAN contributors
+ *
+ * MIT License &amp;lt;https://github.com/rvagg/nan/blob/master/LICENSE.md&amp;gt;
+ ********************************************************************/
+
+var addon = require(&#39;./build/Release/addon&#39;);
+var calculations = process.argv[2] || 100000000;
+
+function printResult(type, pi, ms) {
+  console.log(type, &#39;method:&#39;)
+  console.log(&#39;\tπ ≈ &#39; + pi
+        + &#39; (&#39; + Math.abs(pi - Math.PI) + &#39; away from actual)&#39;)
+    console.log(&#39;\tTook &#39; + ms + &#39;ms&#39;);
+    console.log()
+}
+
+function runSync () {
+  var start = Date.now();
+  // Estimate() will execute in the current thread,
+  // the next line won&#39;t return until it is finished
+    var result = addon.calculateSync(calculations);
+  printResult(&#39;Sync&#39;, result, Date.now() - start)
+}
+
+function runAsync () {
+  // how many batches should we split the work in to?
+    var batches = process.argv[3] || 16;
+    var ended = 0;
+    var total = 0;
+    var start = Date.now();
+
+    function done (err, result) {
+        total += result;
+
+    // have all the batches finished executing?
+        if (++ended == batches) {
+            printResult(&#39;Async&#39;, total / batches, Date.now() - start)
+        }
+    }
+
+  // for each batch of work, request an async Estimate() for
+  // a portion of the total number of calculations
+    for (var i = 0; i &amp;lt; batches; i++) {
+        addon.calculateAsync(calculations / batches, done);
+    }
+}
+
+runSync()
+runAsync()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And you also should have gyp file which tells node-gyp how to build your addon:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-gyp&#34;&gt;{
+  &amp;quot;targets&amp;quot;: [
+    {
+      &amp;quot;target_name&amp;quot;: &amp;quot;addon&amp;quot;,
+      &amp;quot;sources&amp;quot;: [
+        &amp;quot;addon.cc&amp;quot;,
+        &amp;quot;pi_est.cc&amp;quot;,
+        &amp;quot;sync.cc&amp;quot;,
+        &amp;quot;async.cc&amp;quot;
+      ],
+      &amp;quot;include_dirs&amp;quot;: [&amp;quot;&amp;lt;!(node -e \&amp;quot;require(&#39;nan&#39;)\&amp;quot;)&amp;quot;]
+    }
+  ]
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Assuming you&amp;rsquo;re in root C++ addon directory, you can now generate a solution for Visual Studio to build your addon:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;node-gyp configure rebuild --nodedir=&amp;quot;c:\Develop\node-v0.12.0&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;build-addon-step-1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;What is really important here, is &lt;code&gt;--nodedir=&amp;quot;c:\Develop\node-v0.12.0&amp;quot;&lt;/code&gt; flag, which indicates to link against node in specified
+folder rather than system wide available.&lt;/p&gt;
+
+&lt;p class=&#34;bg-info lead&#34;&gt;
+This is very important to match Debug node with Debug C++ Addon, otherwise you will have 
+linker issues caused by inconsistent CRT&#39;s.
+&lt;/p&gt;
+
+&lt;p&gt;After node-gyp finishes, a .node file (this is .dll, don&amp;rsquo;t be misleaded by .node extension) will be generated in /build/Debug/ folder.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;build-addon-step-3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now it&amp;rsquo;s time to write a small node.js script that utilizes our addon:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-nodejs&#34;&gt;var addon = require(&#39;./build/Release/addon&#39;);
+
+function printResult(type, pi, ms) {
+  console.log(type, &#39;method:&#39;)
+  console.log(&#39;\tπ ≈ &#39; + pi
+        + &#39; (&#39; + Math.abs(pi - Math.PI) + &#39; away from actual)&#39;)
+    console.log(&#39;\tTook &#39; + ms + &#39;ms&#39;);
+    console.log()
+}
+
+function runAsync () {
+
+    var start = Date.now();
+
+    function done (err, result) {
+        console.log(&#39;\tπ ≈ &#39; + pi + &#39; (&#39; + Math.abs(pi - Math.PI) + &#39; away from actual)&#39;)
+        console.log(&#39;\tTook &#39; + ms + &#39;ms&#39;);
+        console.log()
+
+        printResult(&#39;Async&#39;, total / batches, Date.now() - start)
+    }
+
+    addon.calculateAsync(1024, done);
+}
+
+runAsync()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You may wonder now, how to debug it. Patience, we&amp;rsquo;re almost there.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;generated-project.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Navigate to &lt;code&gt;build/&lt;/code&gt; directory of your C++ Addon and
+open solution file.&lt;/li&gt;
+&lt;li&gt;Ensure that you have active Debug configuration.&lt;/li&gt;
+&lt;li&gt;Navigate to project properties and open Debugging tab there.&lt;/li&gt;
+&lt;li&gt;Modify command name to &amp;ldquo;c:\Develop\node-v0.12.0\Node.exe&amp;rdquo; (Change this path if you extracted node somewhere else)&lt;/li&gt;
+&lt;li&gt;Set a command argument to full name of your node.js script.&lt;/li&gt;
+&lt;li&gt;Change working directory to a place where your script is. This step important when you have complex nodej.js application with
+dependencies.&lt;/li&gt;
+&lt;li&gt;Set breakpoint somewhere in your C++ Addon code.&lt;/li&gt;
+&lt;li&gt;Now hit &amp;lsquo;Debug&amp;rsquo; (F5) and enjoy!&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&#34;vsproject-settings.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;how-it-works&#34;&gt;How it works&lt;/h2&gt;
+
+&lt;p&gt;When building Debug builds, Visual Studio trades speed for easy debugging. This means not only slower code, but it also preserves debug
+symbols (a table of function addresses/names/file locations). When you start a debugger on process, VS attachs to it and tries to load
+symbols for this binary and all dynamically loaded libraries it uses.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;vsproject-debugging.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As a consequence, debug symbols for C++ addon is being loaded which allows you to see program execution location in your IDE,
+do step-by-step debugging and change/rebuild/debug as usual.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;I hope you find this post useful. From my experience debugging node.js &amp;lt;-&amp;gt; C++ interop can be nasty. Personally I follow this
+scenario for debugging CloudCV C++ backend. This saves a lot of time and nerves. Unleash your node.js with C++ and happy debugging!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

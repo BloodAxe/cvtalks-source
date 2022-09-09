@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2013-10-17-instant-opencv-for-ios-rsses on Ghostwriter example</title>
+    <link>https://example.com/2013-10-17-instant-opencv-for-ios/index.xml</link>
+    <description>Recent content in 2013-10-17-instant-opencv-for-ios-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Thu, 17 Oct 2013 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2013-10-17-instant-opencv-for-ios/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Instant OpenCV for iOS</title>
+      <link>https://example.com/2013-10-17-instant-opencv-for-ios/</link>
+      <pubDate>Thu, 17 Oct 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2013-10-17-instant-opencv-for-ios/</guid>
+      <description>&lt;p&gt;img.pull-left.img-thumbnail(src=&amp;ldquo;instant-opencv-cover.jpg&amp;rdquo;,alt=&amp;ldquo;Instant OpenCV for iOS&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;p
+    | A new book from authors of OpenCV targeted on iOS development using OpenCV.
+    ul
+        li Learn something new instantly. A short, fast, focused guide delivering immediate results
+        li Build and run your OpenCV code on iOS
+        li Become familiar with iOS fundamentals and make your application interact with the GUI, camera, and gallery
+        li Build your library of computer vision effects, including photo and video filters&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;| You can buy 
+a(href=&amp;quot;http://www.packtpub.com/to-build-real-time%20computer%20vision%20applications%20for-ios-using-opencv/book&amp;quot;) [Instant OpenCV for iOS]
+| from Packtpub.
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

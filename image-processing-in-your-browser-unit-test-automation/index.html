@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Image processing in your browser - Unit Test automation &middot; My Name</title>
+        <meta name="description" content="JavaScript. Do you like debug JavaScript code? I hate it. Literally. What what if you have to? In this post I&rsquo;m going to show you how to simplify your life by automating unit testing of the JavaScript code for the browser.
+To get things more interesting - let&rsquo;s automate unit-testing of the image processing library called JSFeat. JSFeat provides a JavaScript implementation of the basic image processing operations that let you to process images in your browser and build sophisticated algorithms.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="Image processing in your browser - Unit Test automation">
+<meta property="og:description" content="JavaScript. Do you like debug JavaScript code? I hate it. Literally. What what if you have to? In this post I&rsquo;m going to show you how to simplify your life by automating unit testing of the JavaScript code for the browser.
+To get things more interesting - let&rsquo;s automate unit-testing of the image processing library called JSFeat. JSFeat provides a JavaScript implementation of the basic image processing operations that let you to process images in your browser and build sophisticated algorithms.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/image-processing-in-your-browser-unit-test-automation/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">Image processing in your browser - Unit Test automation</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    <p>JavaScript. Do you like debug JavaScript code? I hate it. Literally.
+What what if you have to? In this post I&rsquo;m going to show you how to
+simplify your life by automating unit testing of the JavaScript code
+for the browser.</p>
+
+<p><img src="monkeys.jpg" alt="" /></p>
+
+<p>To get things more interesting - let&rsquo;s automate unit-testing of the
+image processing library called <a href="http://inspirit.github.io/jsfeat/">JSFeat</a>. JSFeat provides a
+JavaScript implementation of the basic image processing operations
+that let you to process images in your browser and build sophisticated
+algorithms. <strong>It&rsquo;s like OpenCV for web-browser</strong>.</p>
+
+<p>The <a href="https://github.com/BloodAxe/jsfeat">source code</a> for this tutorial is available on my Github page: <a href="https://github.com/BloodAxe/jsfeat">https://github.com/BloodAxe/jsfeat</a>.</p>
+
+<p><span class="more"></span></p>
+
+<p>Typically, when we test C++ software, we end up with test framework of your
+choise and test runner. It can be continuous integration server like Jenkins
+in your company or public Travic-CI service for open-source project.</p>
+
+<p>With browser JavaScript things gets more complicated. I&rsquo;m not talking about
+JS unit-test frameworks - <a href="https://github.com/mochajs/mocha">mocha</a> is more than enough. I&rsquo;m talking about
+browser testing itself. Basically you have to open a webpage in your browser to
+invoke a test cases. Manually. Ew!</p>
+
+<p>Moreover, due to browser sandbox, you are not allowed to access canvas data for
+local files. In practice it means that code like showed below <strong>won&rsquo;t work if you
+open a HTML page as a local file</strong>:</p>
+
+<pre><code class="language-js">var img = new Image();
+img.src = 'dummy.jpg';
+img.onload = function() {
+    // This will never happen
+};
+</code></pre>
+
+<p>You will have to setup a local HTTP server to serve these tests pages to get this
+works. One simple way to do it by using python: <code>python -m SimpleHTTPServer 8000</code> will
+do the job. However it&rsquo;s only a partial solution.</p>
+
+<p>Now let&rsquo;s imagine that you have a lot of these tests. Would you open each page
+individually, watch how they run and wait to analyze their results? No doubts,
+you can do it, but this is not automated testing in any way.</p>
+
+<p>To recap, here are a list of problems that exists in browser JS testing:
+ - A test framework
+ - Have to open test pages in a browser
+ - Hard to automate and collect results
+ - Need local webserver</p>
+
+<p>Since I&rsquo;m used to Mocha, i will use it. However it&rsquo;s not obligatory and you can chose any other test framework you like. But as you will see later, with Mocha it&rsquo;s really simple. ith mocha you can write your scripts like showed below. This is a real test I wrote as an example for JSFeat:</p>
+
+<pre><code class="language-js">// Source test/test_grayscale.js
+'use strict';
+
+describe('jsfeat', function(){
+
+  describe('imgproc', function(){
+
+    it('grayscale', function(done) {
+
+      var img = new Image();
+      img.src = 'lena.png';
+      img.onload = function() {
+
+        var width = img.width;
+        var height = img.height;
+
+        var canvas = document.createElement('canvas');
+        var context2d = canvas.getContext('2d');
+
+        context2d.drawImage(img, 0, 0, width, height);
+        var image_data = context2d.getImageData(0, 0, width, height);
+ 
+        var gray_img = new jsfeat.matrix_t(width, height, jsfeat.U8_t | jsfeat.C1_t);
+        var code = jsfeat.COLOR_RGBA2GRAY;
+
+        jsfeat.imgproc.grayscale(image_data.data, width, height, gray_img, code);
+        done();
+      };
+
+    });
+
+  });
+   
+});
+</code></pre>
+
+<p>There is a really powerful tool in Nodejs world called [Grunt][grunt] that we will use
+to automate tasks like JavaScript static code checking, minification and testing.</p>
+
+<pre><code class="language-bash">npm install -g grunt-cli
+npm install grunt --save-dev
+</code></pre>
+
+<p>A headless browser is a full-featured browser engine without graphical interface. It was designed to simulate a real browser including DOM and JavaScript. The most important headless browser is <a href="http://phantomjs.org/">PhantomJS</a>. I found that it works like a charm for this task. With phantomjs we can run arbitrary HTML page inside and execute JavaScript code. This tool let&rsquo;s us to get rid of the manual tabs openning.</p>
+
+<pre><code class="language-js">// script.js:
+// Simple Javascript example
+
+console.log('Loading a web page');
+var page = require('webpage').create();
+var url = 'http://www.phantomjs.org/';
+page.open(url, function (status) {
+  //Page is loaded!
+  phantom.exit();
+});
+
+phantomjs script.js
+</code></pre>
+
+<p>PhantomJS and Mocha are already connected together in a single grunt task called <a href="https://github.com/jdcataldo/grunt-mocha-phantomjs">grunt-mocha-phantomjs</a>. And we use <a href="https://github.com/gruntjs/grunt-contrib-connect">grunt-contrib-connect</a> to host a local webserver.</p>
+
+<pre><code class="language-bash">npm install grunt-mocha-phantomjs --save-dev
+</code></pre>
+
+<p>This extension does exactly what we need: it starts a local webserver, open page in phantomjs and run JS test cases.
+With help of it, we are able to run all our tests using simple command:</p>
+
+<pre><code class="language-bash">grunt test
+</code></pre>
+
+<p>Here&rsquo;s an example output:</p>
+
+<pre><code class="language-bash">Running &quot;concat:jsfeat&quot; (concat) task
+File build/jsfeat.js created.
+
+Running &quot;uglify:build&quot; (uglify) task
+&gt;&gt; 1 file created.
+
+Running &quot;connect:server&quot; (connect) task
+Started connect web server on http://0.0.0.0:8000
+
+Running &quot;mocha_phantomjs:all&quot; (mocha_phantomjs) task
+
+
+  jsfeat
+    imgproc
+      ✓ grayscale 
+
+
+  1 passing (41ms)
+
+
+Done, without errors.
+</code></pre>
+
+<p>Within this setup you are now able to automate testing of JavaScript code that require interaction with HTML5 Canvas features. This way I test the code that I write for browser image processing. I hope you enjoyed this post and I&rsquo;m looking forward to see your questions and mentions in a comments!</p>
+
+<p>The <a href="https://github.com/BloodAxe/jsfeat">source code</a> for this tutorial is available on my Github page: <a href="https://github.com/BloodAxe/jsfeat">https://github.com/BloodAxe/jsfeat</a>.</p>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/tutorials/">tutorials</a>
+            
+                 <a href="/tags/nodejs/">nodejs</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=Image%20processing%20in%20your%20browser%20-%20Unit%20Test%20automation&url=https%3a%2f%2fexample.com%2fimage-processing-in-your-browser-unit-test-automation%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2fimage-processing-in-your-browser-unit-test-automation%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2fimage-processing-in-your-browser-unit-test-automation%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

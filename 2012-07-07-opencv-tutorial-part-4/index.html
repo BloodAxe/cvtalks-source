@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>OpenCV Tutorial - Part 4 &middot; My Name</title>
+        <meta name="description" content="This is the fourth part of the OpenCV Tutorial. In this part the solution of the annoying iOS video capture orientation bug will be described. Of course that&rsquo;s not all. There are some new features - we will add processing of saved photos from your photo album. Also to introduce minor interface improvements and I&rsquo;ll show you how to disable unsupported API like video capture in your app and run in on iOS Simulator.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="OpenCV Tutorial - Part 4">
+<meta property="og:description" content="This is the fourth part of the OpenCV Tutorial. In this part the solution of the annoying iOS video capture orientation bug will be described. Of course that&rsquo;s not all. There are some new features - we will add processing of saved photos from your photo album. Also to introduce minor interface improvements and I&rsquo;ll show you how to disable unsupported API like video capture in your app and run in on iOS Simulator.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/2012-07-07-opencv-tutorial-part-4/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">OpenCV Tutorial - Part 4</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    
+
+<p>This is the fourth part of the OpenCV Tutorial. In this part the solution of the annoying iOS video capture orientation bug will be described. Of course that&rsquo;s not all. There are some new features - we will add processing of saved photos from your photo album. Also to introduce minor interface improvements and I&rsquo;ll show you how to disable unsupported API like video capture in your app and run in on iOS Simulator.</p>
+
+<p><span class="more"></span></p>
+
+<h2 id="startup-images">Startup images</h2>
+
+<p>  First of all, i would like to say a great thanks for my friend who made nice startup images for this project. I&rsquo;m really loving them, good graphics make application looks like a pro. Thanks Eugene. By the way, if you looking for free-lance graphic designer - feel free to contact him anytime. So i got a bunch of startup images. With regards to iOS guidelines, to fulfill all possible cases you need 6 different images - two for iPhone (for old one and for retina display) and four for iPad family (in portrait and landscape orientation for both retina and non-retina displays). Assigning them to XCode project was a trivial task - just drag and drop them to project options:</p>
+
+<p><img src="Screen-Shot-2012-07-07-at-10.56.47-AM.png" alt="" title="OpenCV Tutorial icons" /></p>
+
+<h2 id="device-interface-and-video-orientation">Device, Interface and Video orientation</h2>
+
+<p>In the part 3 we created video capture class that use AVFoundation to get raw data from camera capture input. To present our images we introduced GLESImageView class. The motivation was to have fast rendering of bitmaps. But we experienced a problem with video orientation. If we were using AVVideoCapturePreviewLayer then iOS API take care about video/device/interface orientation by itself. But since our choice to use low-level capture API it&rsquo;s our headache. Fortunately, we have to do only one thing - apply the correct rotation for our texture with image with regards to the interface orientation. There is a slight difference between device orientation and interface orientation. The device orientation refers to physical orientation of your device in the world, while interface orientation refers to orientation of UI controls on the screen. To get the current interface orientation you will need an instance of UIViewController object that holds our GLESImageView. We can access interface orientation like this:</p>
+
+<pre><code class="language-objectivec">UIInterfaceOrientation uiOrientation = [viewController interfaceOrientation];
+</code></pre>
+
+<p>To follow SRP we put orientation handling code inside to GLESImageView class. To access the parent view controller from any view you can use following snippet code that i found somewhere on stackoverflow.com: <strong>GLESImageView.mm</strong></p>
+
+<pre><code class="language-objectivec">- (UIViewController *)viewController
+{
+  UIResponder *responder = self;
+  while (![responder isKindOfClass:[UIViewController class]])
+  {
+  responder = [responder nextResponder];
+  if (nil == responder)
+  {
+    break;
+  }
+  }
+
+  return (UIViewController *)responder;
+}
+</code></pre>
+
+<h2 id="camera-frame-orientation">Camera frame orientation</h2>
+
+<p>There is another one kind of orientation - AVCaptureVideoOrientation type. This enum defines the physical orientation of the images captured with particular capture device. The video orientation differs for front and rear cameras. Here is a proof link - <a href="http://developer.apple.com/library/ios/#qa/qa1744/_index.html#//apple_ref/doc/uid/DTS40011134">Technical Q&amp;A QA1744</a>.</p>
+
+<blockquote>
+<p>The iPod touch, iPhone 4 and iPad 2 front facing camera is mounted AVCaptureVideoOrientationLandscapeLeft, and the back-facing camera is mounted AVCaptureVideoOrientationLandscapeRight.</p>
+</blockquote>
+
+<p>Also i draw your attention that AVCaptureVideoDataOutput does not support setting video orientation using API:</p>
+
+<blockquote>
+<p>Currently, the capture outputs for a movie file (AVCaptureMovieFileOutput) and still image (AVCaptureStillImageOutput) support setting the orientation, but the data output for processing video frames (AVCaptureVideoDataOutput) does not.</p>
+</blockquote>
+
+<p>Well, it&rsquo;s not so bat, actually. To handle different orientation of rear and front camera we can use simple flip operation. This brings AVCaptureVideoOrientationLandscapeLeft to AVCaptureVideoOrientationLandscapeRight. We&rsquo;ll use this video orientation as a standard orientation: <strong>VideoSource.mm</strong></p>
+
+<pre><code class="language-objectivec">- (void)captureOutput:(AVCaptureOutput *)captureOutput 
+didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer 
+       fromConnection:(AVCaptureConnection *)connection 
+{ 
+  ... 
+
+  cv::Mat frame(height, width, CV_8UC4, (void*)baseAddress, stride);
+
+  if ([self videoOrientation] == AVCaptureVideoOrientationLandscapeLeft)
+  {
+    cv::flip(frame, frame, 0);
+  }
+
+  ...
+}
+</code></pre>
+
+<p>There is four possible interface orientations - Portrait, PortraitUpsideDown, LandscapeLeft, LandscapeRight. So we can define four sets of texture coordinates that does correct visualization of our bitmap. At every frame we choose right set of texture coordinates with regards to interface orientation. Here is a code that i use: <strong>GLESImageView.mm</strong></p>
+
+<pre><code>- (void)drawFrame:(const cv::Mat&amp;) bgraFrame
+{
+  ...
+
+  GLfloat * textureVertices;
+  static GLfloat textureVerticesPortrait[] =
+  {
+    1, 1,   1, 0,
+    0, 1,   0, 0
+  };  
+
+  static GLfloat textureVerticesPortraitUpsideDown[] =
+  {
+    0, 0,   0, 1,
+    1, 0,   1, 1
+  };
+
+  static GLfloat textureVerticesLandscapeLeft[] =
+  {
+    1, 0,   0, 0,
+    1, 1,   0, 1
+  };  
+
+  static GLfloat textureVerticesLandscapeRight[] =
+  {
+    0, 1,   1, 1,
+    0, 0,   1, 0
+  }; 
+
+  switch (uiOrientation)
+  {
+    case UIInterfaceOrientationPortrait:
+      textureVertices = textureVerticesPortrait;
+      break;
+
+    case UIInterfaceOrientationPortraitUpsideDown:
+      textureVertices = textureVerticesPortraitUpsideDown;
+      break;
+
+    case UIInterfaceOrientationLandscapeLeft:
+      textureVertices = textureVerticesLandscapeLeft;
+      break;
+
+    case UIInterfaceOrientationLandscapeRight:
+    default:
+      textureVertices = textureVerticesLandscapeRight;
+      break;
+  };
+    ...
+}
+</code></pre>
+
+<p>Using this we select correct texture coordinates. The rest of drawing code left without changes. Great, now it seems that video looks correct at every orientation. Cool! Let&rsquo;s move on.</p>
+
+<h2 id="processing-saved-photos">Processing saved photos</h2>
+
+<p>Although processing video frames in real-time is awesome by itself, i though that adding a possibility to process a saved picture is also worth to be implemented. All the more so it&rsquo;s easier to implement than video processing. As usual, we start from creating a new ImageViewController class. Our view will contains UIImageView control to present processed result on the View. Like the VideoViewController, our class also requires a SampleBase object and input image to process.</p>
+
+<p><img src="Screen-Shot-2012-07-07-at-11.14.25-AM.png" alt="" title="Edge detection of saved photo" /></p>
+
+<p>This is how it looks. Two buttons in the top right corner is action buttons - the &ldquo;Save&rdquo; button puts a processed image to a saved photos album, the second button with camera picture - allows you to select another one image for processing.</p>
+
+<p><strong>ImageViewController.h</strong></p>
+
+<pre><code class="language-objectivec">@interface ImageViewController : UIViewController 
+
+- (void) setSample:(SampleBase*) sample;
+- (void) setImage:(UIImage*) image;
+
+@property (weak, nonatomic) IBOutlet UIImageView *imageView;
+
+@end
+</code></pre>
+
+<p><strong>ImageViewController.mm</strong></p>
+
+<pre><code class="language-objectivec">- (void)viewDidLoad
+{
+  [super viewDidLoad];
+  // Do any additional setup after loading the view.
+  self.navigationItem.rightBarButtonItems = [NSArray arrayWithObjects:
+</code></pre>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/opencv/">opencv</a>
+            
+                 <a href="/tags/xcode/">xcode</a>
+            
+                 <a href="/tags/tutorials/">tutorials</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=OpenCV%20Tutorial%20-%20Part%204&url=https%3a%2f%2fexample.com%2f2012-07-07-opencv-tutorial-part-4%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2f2012-07-07-opencv-tutorial-part-4%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2f2012-07-07-opencv-tutorial-part-4%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

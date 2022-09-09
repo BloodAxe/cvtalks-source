@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Image and video processing: From Mars to Hollywood with a stop at the hospital - Week 1 &middot; My Name</title>
+        <meta name="description" content="With this post i start describing my experience with a &ldquo;Image and video processing: From Mars to Hollywood with a stop at the hospital&rdquo; class. I will write a series of 9 posts each week i complete and highlight interesting tasks and solution to optional programming quizzes in OpenCV.
+
+Week 1 The first week was very easy, just an introduction to image processing with explanation of basics and fundamental things.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="Image and video processing: From Mars to Hollywood with a stop at the hospital - Week 1">
+<meta property="og:description" content="With this post i start describing my experience with a &ldquo;Image and video processing: From Mars to Hollywood with a stop at the hospital&rdquo; class. I will write a series of 9 posts each week i complete and highlight interesting tasks and solution to optional programming quizzes in OpenCV.
+
+Week 1 The first week was very easy, just an introduction to image processing with explanation of basics and fundamental things.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/2013-02-05-image-and-video-processing-from-mars-to-hollywood-with-a-stop-at-the-hospital/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">Image and video processing: From Mars to Hollywood with a stop at the hospital - Week 1</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    
+
+<p>With this post i start describing my experience with a <a href="https://www.coursera.org/course/images">&ldquo;Image and video processing: From Mars to Hollywood with a stop at the hospital&rdquo;</a> class. I will write a series of 9 posts each week i complete and highlight interesting tasks and solution to optional programming quizzes in OpenCV.</p>
+
+<p><span class="more"></span></p>
+
+<h1 id="week-1">Week 1</h1>
+
+<p>The first week was very easy, just an introduction to image processing with explanation of basics and fundamental things. Took a day to see all video lectures and answer questions.</p>
+
+<h2 id="optional-task-average-3x3-blur">Optional task: Average 3x3 blur</h2>
+
+<p><em>Task</em></p>
+
+<p>Using any programming language you fill comfortable with, perform a simple spatial 3x3 average of image pixels. In other words, replace the value of every pixel by the average of the values in its 3x3 neighborhood. If the pixel is located at (0,0), this means averaging the values of the pixels at the positions (-1,1), (0,1), (1,1), (-1,0), (0,0), (1,0), (-1,-1), (0,-1), and (1,-1). Be careful with pixels at the image boundaries. Repeat the process for a 10x10 neighborhood and again for a 20x20 neighborhood. Observe what happens to the image (we will discuss this in more details in the very near future, about week 3).</p>
+
+<p><em>Solution</em></p>
+
+<p><strong>First of all, there is <a href="http://docs.opencv.org/modules/imgproc/doc/filtering.html?highlight=blur#void%20blur%28InputArray%20src,%20OutputArray%20dst,%20Size%20ksize,%20Point%20anchor,%20int%20borderType%29">cv::blur</a> function that performs what is exactly requested. But to practice, we&rsquo;re gonna to write its our own implementation.</strong></p>
+
+<p>The <strong>trivial implementation</strong> is to traverse over each pixels, and compute NxN sum over each pixel. But that&rsquo;s extremely slow and inefficient solution.</p>
+
+<p>The most time-consuming operation is calculation of sum of intensities in given area, which has complexity about O(N^2), where N is kernel size. There is a way to perform this operation in O(1) time by using <strong><a href="http://en.wikipedia.org/wiki/Summed_area_table">integral images**</a>. In OpenCV we can use **[cv::integral</strong>]<a href="http://docs.opencv.org/modules/imgproc/doc/miscellaneous_transformations.html?highlight=integral#void%20integral%28InputArray%20src,%20OutputArray%20sum,%20int%20sdepth%29">4</a> function to compute the integral image for given image and then use it to quicly compute sum or elements in particular area.</p>
+
+<p>So, our algorithm looks as follows:</p>
+
+<ol>
+<li>Take input image</li>
+<li>Create temporary image with padded borders (to handle border case we extend input image by replicating border pixels using <strong>[cv::copyMakeBorder</strong>]<a href="http://docs.opencv.org/modules/imgproc/doc/filtering.html?highlight=copymakeborder#void%20copyMakeBorder%28InputArray%20src,%20OutputArray%20dst,%20int%20top,%20int%20bottom,%20int%20left,%20int%20right,%20int%20borderType,%20const%20Scalar&amp;%20value%29">5</a> function)</li>
+<li>Compute integral image of it</li>
+<li>Compute sum of each region, divide it by kernel area and write the result to output image</li>
+</ol>
+
+<p>Here is a complete function that performs average sampling using given kernel size. It does perform operation in-place:</p>
+
+<pre><code>void sampleImage(cv::Mat_&lt;unsigned char&gt;&amp; img, int halfKernelSize)
+{
+    cv::Mat padded;
+    cv::copyMakeBorder(img, padded, halfKernelSize, halfKernelSize, halfKernelSize, halfKernelSize, cv::BORDER_REPLICATE);
+
+    cv::Mat_&lt;int&gt; integral;
+    cv::integral(padded, integral);
+
+    int sampleArea = (halfKernelSize * 2 + 1) * (halfKernelSize * 2 + 1);
+
+    for (int row = 0; row &lt; img.rows; row++)
+    {
+        for (int col = 0; col &lt; img.cols; col++)
+        {
+            int sum = integralSum(integral, row + halfKernelSize, col + halfKernelSize, halfKernelSize);
+            img(row, col) = cv::saturate_cast&lt;unsigned char&gt;(sum / sampleArea);
+        }
+    }
+}
+&lt;/int&gt;&lt;/unsigned&gt;
+</code></pre>
+
+<p>The integralSum function calculates the sum of pixel values in a given area (row and cols indicates center of kernel):</p>
+
+<pre><code>int integralSum(cv::Mat_&lt;int&gt;&amp; integralImage, int row, int col, int halfKernelSize)
+{
+    return + integralImage(row + halfKernelSize + 1, col + halfKernelSize + 1)
+           + integralImage(row - halfKernelSize,     col - halfKernelSize)
+           - integralImage(row + halfKernelSize + 1, col - halfKernelSize)
+           - integralImage(row - halfKernelSize,     col + halfKernelSize + 1);
+}
+&lt;/int&gt;
+</code></pre>
+
+<p>Running this function on the image gives us following output:</p>
+
+<p><strong>Input image</strong>:</p>
+
+<p><img src="fruits.jpg" alt="Source image" /></p>
+
+<p><strong>Average blur of 5x5 kernel (grayscale)</strong>:</p>
+
+<p><img src="sampled_gray.png" alt="Source image" /></p>
+
+<p><strong>Average blur of 5x5 kernel (color)</strong>:</p>
+
+<p><img src="sampled_rgb.png" alt="Source image" /></p>
+
+<p>In this solution i didn&rsquo;t posted RGB-version of the algorithm. But the idea is exactly the same. Each color plane is processed independently and then you compute the final RGB pixel value. I leave it for your home work :)</p>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/coursera/">coursera</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=Image%20and%20video%20processing%3a%20From%20Mars%20to%20Hollywood%20with%20a%20stop%20at%20the%20hospital%20-%20Week%201&url=https%3a%2f%2fexample.com%2f2013-02-05-image-and-video-processing-from-mars-to-hollywood-with-a-stop-at-the-hospital%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2f2013-02-05-image-and-video-processing-from-mars-to-hollywood-with-a-stop-at-the-hospital%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2f2013-02-05-image-and-video-processing-from-mars-to-hollywood-with-a-stop-at-the-hospital%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

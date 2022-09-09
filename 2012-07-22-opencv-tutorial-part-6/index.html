@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>OpenCV Tutorial - Part 6 &middot; My Name</title>
+        <meta name="description" content="[toc] Hi folks! I’m glad to publish a sixth part of the OpenCV Tutorial cycle. In this post I will describe how to implement interesting non-photorealistic effect that makes image looks like a cartoon. It has numerous names: cartoon filter or simply “toon” also it known as rotoscoping. In addition we will refactor application interface and add tweeting feature to share your results across the web. According to the roadmap I promised to put the video recording module too, but due to lack of free time I decided to put it on hold for now.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="OpenCV Tutorial - Part 6">
+<meta property="og:description" content="[toc] Hi folks! I’m glad to publish a sixth part of the OpenCV Tutorial cycle. In this post I will describe how to implement interesting non-photorealistic effect that makes image looks like a cartoon. It has numerous names: cartoon filter or simply “toon” also it known as rotoscoping. In addition we will refactor application interface and add tweeting feature to share your results across the web. According to the roadmap I promised to put the video recording module too, but due to lack of free time I decided to put it on hold for now.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/2012-07-22-opencv-tutorial-part-6/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">OpenCV Tutorial - Part 6</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    
+
+<p>[toc] Hi folks! I’m glad to publish a sixth part of the OpenCV Tutorial cycle. In this post I will describe how to implement interesting non-photorealistic effect that makes image looks like a cartoon. It has numerous names: cartoon filter or simply “toon” also it known as rotoscoping. In addition we will refactor application interface and add tweeting feature to share your results across the web. According to the roadmap I promised to put the video recording module too, but due to lack of free time I decided to put it on hold for now. To compensate this in this part I will demonstrate how to get Sepia effect using simple matrix multiplication. Don’t afraid, video recording will be added, but later. I think after part 9, when most of the samples will be optimized using ARM NEON I will add this feature.</p>
+
+<p><span class="more"></span></p>
+
+<h2 id="interface-improvements">Interface improvements</h2>
+
+<p>I will never get tired to repeat that user experience is a top 1 priority for mobile apps. As a developer you have to think about users in the first order. Will the user be satisfied with your app or deletes it after using for 30 seconds – this depends only from you. I was unsatisfied with previous interface. Especially with those unintuitive icons and text labels. Many thanks for free icon packs where I got new toolbar icons for my app. With new interface I tried to make image and video views looks similar. The left toolbar button for image view responsible for selecting a photo; in the video mode I put a button that switches between front and back cameras to this position. The central place on a toolbar is taken by “options” button that shows the options for selected sample view (iPhone interface). The right button is a special action button that presents a list of action you can do: save image to album, tweet it or do anything else. Let’s take a look how our interface did evolved:</p>
+
+<h3 id="iphone-interface-improvements">iPhone interface improvements</h3>
+
+<p><img src="Screen-Shot-2012-07-23-at-3.12.49-PM.png" alt="" title="Cartoon filter using Machine Eye" /></p>
+
+<h3 id="ipad-interface-improvements">iPad interface improvements</h3>
+
+<p><img src="Screen-Shot-2012-07-23-at-3.14.26-PM-1024x815.png" alt="" title="Sepia effect with Machine Eye" /> To eliminate duplicate code for two processing modes (image and video) we introduce a base class to store common data for derived views:</p>
+
+<pre><code class="language-objectivec">typedef void (^TweetImageCompletionHandler)(); 
+typedef void (^SaveImageCompletionHandler)(); 
+
+#define kSaveImageActionTitle  @&quot;Save image&quot;
+#define kComposeTweetWithImage @&quot;Tweet image&quot;
+
+@interface BaseSampleViewController : UIViewController
+
+@property (readonly) SampleBase * currentSample;
+
+- (void) configureView;
+- (void) setSample:(SampleBase*) sample;
+- (void) tweetImage:(UIImage*) image withCompletionHandler: (TweetImageCompletionHandler) handler;
+- (void) saveImage:(UIImage*) image  withCompletionHandler: (SaveImageCompletionHandler) handler;
+
+@end
+</code></pre>
+
+<p>We will consider implementation of the tweetImage and saveImage function a little bit later. <strong>BaseSampleViewController</strong> has a public readonly property to current sample, and a special <strong>setSample</strong> function to change it. When a new sample is assigned it calls configureView to update the view title and perform other actions.</p>
+
+<h3 id="action-sheet-easy-way-to-perform-typical-actions">Action sheet – easy way to perform typical actions</h3>
+
+<p>You could notice that I’ve removed “Save” button from the toolbar. The main reason for this – I wanted to avoid adding “Tweet”, “Share”, “Save and email” buttons. All these actions should be grouped somewhere else. The ideal solution is to use <strong>UIActionSheet</strong> control that will present available actions. Using this class is very easy: First, you need to instantiate action sheet with a list of available actions. For our case it will looks like this:</p>
+
+<pre><code class="language-objectivec">self.actionSheet = [[UIActionSheet alloc] initWithTitle:@&quot;Actions&quot; 
+                                               delegate:self 
+                                      cancelButtonTitle:@&quot;Cancel&quot; 
+                                 destructiveButtonTitle:nil 
+                                      otherButtonTitles:kSaveImageActionTitle, 
+                                      kComposeTweetWithImage, nil];
+</code></pre>
+
+<p>String constants kSaveImageActionTitle and kComposeTweetWithImage has corresponding values &ldquo;Save image&rdquo; and &ldquo;Tweet image&rdquo;. The key step when we instantiate action sheet - to specify a delegate that will handle interaction with this action sheet. To implement <strong>UIActionSheetDelegate</strong> protocol you must provide implementation at least for <strong>actionSheet:clickedButtonAtIndex:</strong> method:</p>
+
+<pre><code class="language-objectivec">- (void)actionSheet:(UIActionSheet *)senderSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+  NSString * title = [senderSheet buttonTitleAtIndex:buttonIndex];
+
+  if (title == kSaveImageActionTitle)
+  {
+    [self saveImage:self.imageView.image withCompletionHandler:nil];
+  }
+  else if (title == kComposeTweetWithImage)
+  {
+    [self tweetImage:self.imageView.image withCompletionHandler:nil];
+  }
+}
+</code></pre>
+
+<p>Let&rsquo;s imagine we are running a video processing and decide to save image. We press actions button on a toolbar then tap on &ldquo;Save image&rdquo; button, but the video source continue generating new frames. Expected behavior in this case is to suspend processing. To do this we pause video source when action sheet is shown and resume when it dismissed. <strong>UIActionSheetDelegate</strong> provides a method <strong>willPresentActionSheet</strong> called before action sheet will appear:</p>
+
+<pre><code class="language-objectivec">- (void)willPresentActionSheet:(UIActionSheet *)actionSheet;  // before animation and showing view
+{
+  [videoSource stopRunning];
+}
+</code></pre>
+
+<p>So we pause video source when action sheet appears. To resume processing frames we will use <strong>actionSheet:clickedButtonAtIndex</strong> method. If clicked button index does not corresponds to known action we simply resume video source because action sheet will be dismissed soon. But if user ask to tweet or save image, we invoke corresponding method and resume video source only after this action is complete. Since tweeting involves presenting tweet compose view it&rsquo;s reasonable to pause all processing and continue when the all work is done.</p>
+
+<pre><code class="language-objectivec">- (void)actionSheet:(UIActionSheet *)senderSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+  NSString * title = [senderSheet buttonTitleAtIndex:buttonIndex];
+
+  if (title == kSaveImageActionTitle)
+  {
+    UIImage * image = [UIImage imageWithMat:outputFrame.clone() andDeviceOrientation:[[UIDevice currentDevice] orientation]];
+    [self saveImage:image withCompletionHandler: ^{ [videoSource startRunning]; }];
+  }
+  else if (title == kComposeTweetWithImage)
+  {
+    UIImage * image = [UIImage imageWithMat:outputFrame.clone() andDeviceOrientation:[[UIDevice currentDevice] orientation]];
+    [self tweetImage:image withCompletionHandler:^{ [videoSource startRunning]; }];
+  }
+  else
+  {
+    [videoSource startRunning];
+  }
+}
+</code></pre>
+
+<h2 id="sepia-negative-and-other-simple-effects">Sepia, negative and other simple effects</h2>
+
+<h3 id="brightness-and-contrast-adjustments">Brightness and contrast adjustments</h3>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/opencv/">opencv</a>
+            
+                 <a href="/tags/xcode/">xcode</a>
+            
+                 <a href="/tags/tutorials/">tutorials</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=OpenCV%20Tutorial%20-%20Part%206&url=https%3a%2f%2fexample.com%2f2012-07-22-opencv-tutorial-part-6%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2f2012-07-22-opencv-tutorial-part-6%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2f2012-07-22-opencv-tutorial-part-6%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

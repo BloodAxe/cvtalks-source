@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Hacking-opencv-for-fun-and-profit-rsses on Ghostwriter example</title>
+    <link>https://example.com/hacking-opencv-for-fun-and-profit/index.xml</link>
+    <description>Recent content in Hacking-opencv-for-fun-and-profit-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Thu, 25 Dec 2014 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/hacking-opencv-for-fun-and-profit/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Hacking OpenCV for fun and profit</title>
+      <link>https://example.com/hacking-opencv-for-fun-and-profit/</link>
+      <pubDate>Thu, 25 Dec 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/hacking-opencv-for-fun-and-profit/</guid>
+      <description>
+
+&lt;div class=&#34;featured-image&#34;&gt;
+![](logo.png)
+&lt;/div&gt;
+
+&lt;p&gt;This post convers very specific but important topic about writing memory-efficient code.
+I will show you how to collect and analyze memory allocations that happens in OpenCV.&lt;/p&gt;
+
+&lt;p&gt;When it comes to writing efficient code we usually care about CPU-efficiency. However there are
+many times, when memory-efficiency is more important. A limited amount of RAM is not so rare as
+one can think. On iOS and Android there are a strict memory usage restrictions, and of your app
+uses more memory than allowed your app can get killed by the system. Embedded hardware systems
+used in IoT, Raspberri Pi and others also have very limited amount of RAM. So you should be very
+careful when porting code from desktop with gigabytes of memory to mobile platform.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;why-memory-matters&#34;&gt;Why memory matters&lt;/h2&gt;
+
+&lt;p&gt;Let&amp;rsquo;s start with a small example of &lt;a href=&#34;https://en.wikipedia.org/wiki/Unsharp_masking&#34;&gt;unsharp masking&lt;/a&gt; to illustrate the problem:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;cv::Mat source, gray, grayFloat, blurred, unsharped;
+source = cv::imread(&amp;quot;/some/path/to/image.png&amp;quot;);
+cv::cvtColor(m, gray, cv::COLOR_BGR2GRAY)
+gray.convertTo(grayFloat, CV_32F, 1.0 / 255.0);
+cv::GaussianBlur(grayFloat, blurred, cv::Size(3,3));
+unsharped = blurred * 1.5f - grayFloat * 0.5f;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;How much additional memory required for this piece of code to work? Let&amp;rsquo;s count:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;source = cv::imread(&amp;quot;/some/path/to/image.png&amp;quot;);         // N*M*3 bytes
+cv::cvtColor(m, gray, cv::COLOR_BGR2GRAY)               // N*M bytes
+gray.convertTo(grayFloat, CV_32F, 1.0 / 255.0);         // N*M*4
+cv::GaussianBlur(grayFloat, blurred, cv::Size(3,3));    // N*M*4
+unsharped = blurred * 1.5f - grayFloat * 0.5f;          // N*M*4   (in the best case)
+                                                        // N*M*4*3 (in the worst case)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;For NxM sized image we require at least sixteen (16!) times more memory in temporary variables.
+Funny, but the code looks harmless for the first look. Now you can think what will happen if you
+put this snippet into iOS application. Pictures made with iPhone 5S are about 3200x2400 pixels.
+On such image this code will allocate 128Mb of memory!&lt;/p&gt;
+
+&lt;p&gt;I will leave it for you as a home-work to figure out a solution to minimize memory usage by this function.
+In this post I want to demonstrate how to measure memory usage in OpenCV automatically. Complex projects are
+harder to analyze like example above, so you definitely not going to re-calculate it after each change.&lt;/p&gt;
+
+&lt;h2 id=&#34;hacking-opencv&#34;&gt;Hacking OpenCV&lt;/h2&gt;
+
+&lt;p&gt;Typically, when it comes to memory allocation tracing, we usually overload &lt;code&gt;new operator&lt;/code&gt; to intercept all
+allocations. In OpenCV it becomes even easier. There is a &lt;code&gt;cv::fastMalloc&lt;/code&gt; function that is a memory allocator for
+all OpenCV project. This means every &lt;code&gt;cv::Mat&lt;/code&gt; allocation use it. So our goal is to change cv::fastMalloc to &amp;lsquo;save&amp;rsquo;
+allocations somewhere where we can access it in runtime.&lt;/p&gt;
+
+&lt;p&gt;To serve this purpose, I will write a helper class to store allocations/deallocations data. For analysys purposes,
+it records peak memory usage, allocations count, current memory usage and number of live objects:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;// modules\core\include\opencv2\core.hpp
+struct CV_EXPORTS MemorySnapshot
+{
+    //! Total amount of allocated memory.
+    size_t allocatedMemory;
+
+    //! Maximum amount of allocated memory for the whole time.
+    size_t peakMemoryUsage;
+
+    //! Maximum amount of allocated memory since last snapshot.
+    size_t peakMemoryUsageSinceLastSnapshot;
+    
+    //! Number of memory allocations count for the whole program running time.
+    size_t allocationsCount;
+
+    //! Number of memory deallocations for the whole program running time.
+    size_t deallocationsCount;
+    
+    //! Number of allocated objects that are still live (e.g not deallocated).
+    size_t liveObjects;
+};
+
+CV_EXPORTS MemorySnapshot memorySnapshot();
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;An implementation of &lt;code&gt;MemoryManager&lt;/code&gt; is very trivial and can be extended to collect statistics on individual allocations.
+However for my needs this implementation was more than enough:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;// modules\core\alloc.cpp
+class MemoryManager
+{
+public:
+    //! Key - pointer to allocated memory, Value - it&#39;s size
+    typedef std::map&amp;lt;void*, size_t&amp;gt;     AllocationTable;
+    typedef std::lock_guard&amp;lt;std::mutex&amp;gt; LockType;
+
+    void recordAlloc(void* ptr, size_t size)
+    {
+        LockType guard(mAllocMutex);
+        mAllocatedMemory.insert(std::make_pair(ptr, size));
+
+        mCurrentMemoryUsage += size;
+        mPeakMemoryUsage = std::max(mPeakMemoryUsage, mCurrentMemoryUsage);
+        mPeakMemoryUsageSinceLastSnapshot = std::max(mPeakMemoryUsageSinceLastSnapshot, mCurrentMemoryUsage);
+        mAllocationsCount++;
+    }
+
+    void recordFree(void* ptr)
+    {
+        LockType guard(mAllocMutex);
+
+        auto block = mAllocatedMemory.find(ptr);
+        CV_Assert(block != mAllocatedMemory.end());
+    
+        mCurrentMemoryUsage -= block-&amp;gt;second;
+        mDeallocationsCount++;
+        mAllocatedMemory.erase(block);
+    }
+
+   
+
+    static MemoryManager&amp;amp; Instance()
+    {
+        std::call_once(mInitFlag, []() {
+            if (mInstance == nullptr)
+            {
+                mInstance = new MemoryManager();
+            }
+        });
+
+        return *mInstance;
+    }
+
+    MemorySnapshot makeSnapshot()
+    {
+        LockType guard(mAllocMutex);
+        
+        MemorySnapshot snapshot;
+        snapshot.peakMemoryUsage = mPeakMemoryUsage;
+        snapshot.peakMemoryUsageSinceLastSnapshot = mPeakMemoryUsageSinceLastSnapshot;
+        snapshot.allocatedMemory = mCurrentMemoryUsage;
+        snapshot.allocationsCount = mAllocationsCount;
+        snapshot.deallocationsCount = mDeallocationsCount;
+        snapshot.liveObjects = mAllocationsCount - mDeallocationsCount;
+        
+        mPeakMemoryUsageSinceLastSnapshot = 0;
+
+        return std::move(snapshot);
+    }
+private:
+
+    MemoryManager()
+        : mCurrentMemoryUsage(0)
+        , mPeakMemoryUsage(0)
+        , mPeakMemoryUsageSinceLastSnapshot(0)
+        , mAllocationsCount(0)
+        , mDeallocationsCount(0)
+    {
+    }
+
+private:
+    std::mutex      mAllocMutex;
+    AllocationTable mAllocatedMemory;
+
+    size_t          mCurrentMemoryUsage;
+    size_t          mPeakMemoryUsage;
+    size_t          mPeakMemoryUsageSinceLastSnapshot;
+
+    size_t          mAllocationsCount;
+    size_t          mDeallocationsCount;
+
+    static std::once_flag  mInitFlag;
+    static MemoryManager * mInstance;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now it&amp;rsquo;s time to inject our MemoryManager into &lt;code&gt;cv::fastAlloc&lt;/code&gt; / &lt;code&gt;cv::fastFree&lt;/code&gt; functions and create new function &lt;code&gt;cv::memorySnaphot&lt;/code&gt; to retrieve memory snapshots:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;// modules\core\alloc.cpp
+void* fastMalloc( size_t size )
+{
+    uchar* udata = (uchar*)malloc(size + sizeof(void*) + CV_MALLOC_ALIGN);
+
+    if(!udata)
+        return OutOfMemoryError(size);
+
+    MemoryManager::Instance().recordAlloc(udata, size);
+    uchar** adata = alignPtr((uchar**)udata + 1, CV_MALLOC_ALIGN);
+    adata[-1] = udata;
+    return adata;
+}
+
+void fastFree(void* ptr)
+{
+    if(ptr)
+    {
+        uchar* udata = ((uchar**)ptr)[-1];
+        CV_DbgAssert(udata &amp;lt; (uchar*)ptr &amp;amp;&amp;amp;
+               ((uchar*)ptr - udata) &amp;lt;= (ptrdiff_t)(sizeof(void*)+CV_MALLOC_ALIGN));
+
+        MemoryManager::Instance().recordFree(udata);
+        free(udata);
+    }
+}
+
+MemorySnapshot memorySnapshot()
+{
+    return std::move(MemoryManager::Instance().makeSnapshot());
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;That&amp;rsquo;s all with hacking OpenCV. One last step is to rebuild OpenCV with any C++11 conformant compiler and we can use memory manager for analyzing our code.&lt;/p&gt;
+
+&lt;h2 id=&#34;fun-profit&#34;&gt;Fun &amp;amp; Profit&lt;/h2&gt;
+
+&lt;p&gt;Back to first example, we want to measure memory usage after each step. Here&amp;rsquo;s how C++ macros can help us:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;cv::Mat source, gray, grayFloat, blurred, unsharped;
+MEASURE_MEMORY(m = cv::imread(&amp;quot;/some/path/to/image.png&amp;quot;));
+MEASURE_MEMORY(cv::cvtColor(m, gray, cv::COLOR_BGR2GRAY));
+MEASURE_MEMORY(gray.convertTo(grayFloat, CV_32F, 1.0 / 255.0));
+MEASURE_MEMORY(cv::GaussianBlur(grayFloat, blurred, cv::Size(5, 5), 5));
+MEASURE_MEMORY(unsharped = blurred * 1.5f - grayFloat * 0.5f);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Where &lt;code&gt;MEASURE_MEMORY&lt;/code&gt; is a helper macro defined as follows:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;#define MEASURE_MEMORY(x) { size_t memOnStart = cv::memorySnapshot().allocatedMemory; x; \
+                            size_t memOnEnd = cv::memorySnapshot().allocatedMemory;      \
+                            std::cout &amp;lt;&amp;lt; #x &amp;lt;&amp;lt; &amp;quot;\t&amp;quot; &amp;lt;&amp;lt; memOnStart &amp;lt;&amp;lt; &amp;quot;/&amp;quot; &amp;lt;&amp;lt; memOnEnd &amp;lt;&amp;lt; std::endl; }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Example output is the following (The image was 3200x2400):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;m = cv::imread(&amp;quot;/some/path/to/image.png&amp;quot;)               //      743/ 23971559 +23Mb
+cv::cvtColor(m, gray, cv::COLOR_BGR2GRAY)               // 23971559/ 31961831 +7.6Mb
+gray.convertTo(grayFloat, CV_32F, 1.0 / 255.0)          // 31961831/ 63922919 +30Mb
+cv::GaussianBlur(grayFloat, blurred, cv::Size(5, 5), 5) // 63922919/ 95884007 +30Mb
+unsharped = blurred * 1.5f - grayFloat * 0.5f           // 95884007/127845095 +30Mb
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As you can see, numbers are really close to predicted. This way you can measure memory usage, peak usage,
+number of allocations in your program easily, spot memory-related issues and fix them before they appear on
+customer&amp;rsquo;s hardware.&lt;/p&gt;
+
+&lt;h2 id=&#34;source-code&#34;&gt;Source code&lt;/h2&gt;
+
+&lt;p&gt;The modified OpenCV source code can be found here: &lt;a href=&#34;https://github.com/BloodAxe/opencv/tree/memory-snapshots&#34;&gt;https://github.com/BloodAxe/opencv/tree/memory-snapshots&lt;/a&gt;. Don&amp;rsquo;t forget to enable it by building OpenCV with ENABLE_MEMORY_SNAPSHOTS=YES option.&lt;/p&gt;
+
+&lt;p&gt;I have sent pull-request to OpenCV team, so there is a chance it will be included into official OpenCV. Let&amp;rsquo;s keep fingers crossed.&lt;/p&gt;
+
+&lt;h2 id=&#34;license&#34;&gt;License&lt;/h2&gt;
+
+&lt;p&gt;The code is available for use any commercial and non-commercial purposes, but please keep a credit by providing a
+link to my website &lt;a href=&#34;http://computer-vision-talks.com&#34;&gt;computer-vision-talks.com&lt;/a&gt; and email &lt;a href=&#34;ekhvedchenya@gmail.com&#34;&gt;ekhvedchenya@gmail.com&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

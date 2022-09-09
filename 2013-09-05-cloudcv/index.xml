@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2013-09-05-cloudcv-rsses on Ghostwriter example</title>
+    <link>https://example.com/2013-09-05-cloudcv/index.xml</link>
+    <description>Recent content in 2013-09-05-cloudcv-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Thu, 05 Sep 2013 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2013-09-05-cloudcv/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>CloudCV - Cloud image processing platform</title>
+      <link>https://example.com/2013-09-05-cloudcv/</link>
+      <pubDate>Thu, 05 Sep 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2013-09-05-cloudcv/</guid>
+      <description>&lt;p&gt;p
+    | Hey everyone! I continue to play with clouds and today it&amp;rsquo;s time to reveal the CloudCV - a cloud-based image processing project.
+    | Based on my previous posts i host a server in the Digital Ocean&amp;rsquo;s cloud.
+    | I have to say, everything is working like a charm.
+    | The cheapest 5$/month plan gives me whatever i may need for this project.
+    | All the source-code is already sits on Github and you are more than welcome to study it.
+    | This is my goal - to share the experience. So i&amp;rsquo;m looking forward to see you in the comments!&lt;/p&gt;
+
+&lt;p&gt;img.full-width(src=&amp;ldquo;cloudcv-image-processing-platform.png&amp;rdquo;, alt=&amp;ldquo;CloudCV - Cloud image processing platform&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;p Inside of this post you&amp;rsquo;ll find the detailed instructions how to deploy the Node.js and OpenCV in your personal cloud.&lt;/p&gt;
+
+&lt;p&gt;h2 Configuring your instance&lt;/p&gt;
+
+&lt;p&gt;p First, you need to create a Droplet - instance of your virtual machine running in Digital Ocean&amp;rsquo;s cloud. You can find the big &amp;ldquo;Create Droplet&amp;rdquo; button in top right corner of your control panel. For our needs a smallest 1 core instance will be enough:&lt;/p&gt;
+
+&lt;p&gt;img.full-width(src=&amp;ldquo;Screen-Shot-2013-09-13-at-5.42.20-PM-1024x805.png&amp;rdquo;, alt=&amp;ldquo;Create droplet&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;p Next we choose the image for the new Droplet, region and SSH keys. You can pick the closest region to your location to have lower latency:&lt;/p&gt;
+
+&lt;p&gt;img.full-width(src=&amp;ldquo;Screen-Shot-2013-09-13-at-5.44.27-PM-1024x805.png&amp;rdquo;, alt=&amp;ldquo;&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;p One word about your choice for the OS for Droplets. Actually you can pick any of them. Since i more familiar with Ubuntu i&amp;rsquo;ll use it, but the following steps should be very similar to other Linux distributives (Of course, you&amp;rsquo;ll have to change &lt;em&gt;apt-get&lt;/em&gt; on Debian). And let&amp;rsquo;s pick Ubuntu 64-bit, since we&amp;rsquo;re tough guys, aren&amp;rsquo;t we?&lt;/p&gt;
+
+&lt;p&gt;img.full-width(src=&amp;ldquo;Screen-Shot-2013-09-13-at-5.44.33-PM-1024x805.png&amp;rdquo;, alt=&amp;ldquo;&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;p Don&amp;rsquo;t forget to add SSH keys to this Droplet, otherwise you&amp;rsquo;ll have to add them manually after your droplet is ready. When you&amp;rsquo;re done hit &amp;ldquo;Create Droplet&amp;rdquo; and it will be ready in a minute. It&amp;rsquo;s the fastest deployment i&amp;rsquo;ve ever seen! When it&amp;rsquo;s done you should be able to login using &lt;em&gt;ssh&lt;/em&gt; client to your virtual machine. From this moment, we will use only a console to configure our server.&lt;/p&gt;
+
+&lt;p&gt;h2 Node.js and OpenCV installation&lt;/p&gt;
+
+&lt;p&gt;p Let&amp;rsquo;s recap the plan. Our goal is to make image processing using OpenCV library possible in the cloud environment. This means your Droplet will be executing a native code, but it needs a public API to communicate with the others. Such things as REST API and JSON may come in handy here. We will be serving user requests that comes as HTTP requests. For this we need a server software to route requests to native code. Actually, i think, Apache, ngnix or any other web server can do it for us. But i&amp;rsquo;ve chosen Node.js for two reasons - first of all, i want to study JavaScript and the second one - it&amp;rsquo;s kind of a trend now :) I wrote a helper snippet that install all dependencies for Node.js and OpenCV. First of all we update the package list and install git, cmake and build essentials. As a next step this script configure an OpenCV in a proper way (disable unsued image codecs, disable tests and apps and turns on static builds). And finally this script install latest Node.js (this recipe was found somewhere in the Google).&lt;/p&gt;
+
+&lt;p&gt;h2 Source Code&lt;/p&gt;
+
+&lt;p&gt;p
+    | There are two source code repositories for this project:
+    ul
+        li
+            a(href=&amp;lsquo;&lt;a href=&#34;https://github.com/BloodAxe/CloudCV&#39;&#34;&gt;https://github.com/BloodAxe/CloudCV&#39;&lt;/a&gt;) CloudCV
+            span  - is web-application written in Node.js.
+        li
+            a(href=&amp;lsquo;&lt;a href=&#34;https://github.com/BloodAxe/CloudCVBackend&#39;&#34;&gt;https://github.com/BloodAxe/CloudCVBackend&#39;&lt;/a&gt;) CloudCVBackend
+            span  - is a C++ Module for Node.js. This module contains all image processing stuff inside of it.&lt;/p&gt;
+
+&lt;p&gt;h2 Architecture overview&lt;/p&gt;
+
+&lt;p&gt;img(src=&amp;lsquo;cloudcv_architecture-1.png&amp;rsquo;)&lt;/p&gt;
+
+&lt;p&gt;h2 Disclaimer&lt;/p&gt;
+
+&lt;p&gt;p
+    | You can support this project by following this referral link to purchase a cloud hosting.
+    | A really recommend Digital Ocean for both production and testing purposes due to their low prices,
+    | SSD disks, good support and intuitive administration console.
+    a.btn.btn-primary(href=&amp;lsquo;&lt;a href=&#34;https://www.digitalocean.com/?refcode=b93faa829f80&#39;&#34;&gt;https://www.digitalocean.com/?refcode=b93faa829f80&#39;&lt;/a&gt;) Buy Digital Ocean cloud hosting&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

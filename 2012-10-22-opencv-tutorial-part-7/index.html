@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>OpenCV Tutorial Part 7 &middot; My Name</title>
+        <meta name="description" content="After a long delay i&rsquo;m happy to resume posting OpenCV tutorials in my blog. In Part 7 i will present you a new way of generation of icons for samples. Also i&rsquo;ll show how to use NEON and assembly language to speed-up cv::transform function twice! Also there are three new samples i have to say few words about each.
+Interface improvements Default sample icons I think each sample has to have it&rsquo;s own unique icon image.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="OpenCV Tutorial Part 7">
+<meta property="og:description" content="After a long delay i&rsquo;m happy to resume posting OpenCV tutorials in my blog. In Part 7 i will present you a new way of generation of icons for samples. Also i&rsquo;ll show how to use NEON and assembly language to speed-up cv::transform function twice! Also there are three new samples i have to say few words about each.
+Interface improvements Default sample icons I think each sample has to have it&rsquo;s own unique icon image.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/2012-10-22-opencv-tutorial-part-7/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">OpenCV Tutorial Part 7</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    
+
+<p>After a long delay i&rsquo;m happy to resume posting OpenCV tutorials in my blog. In Part 7 i will present you a new way of generation of icons for samples. Also i&rsquo;ll show how to use NEON and assembly language to speed-up cv::transform function twice! Also there are three new samples i have to say few words about each.</p>
+
+<h2 id="interface-improvements">Interface improvements</h2>
+
+<h3 id="default-sample-icons">Default sample icons</h3>
+
+<p>I think each sample has to have it&rsquo;s own unique icon image. Unfortunately, i&rsquo;m not a cool graphic designer and i&rsquo;m lazy. And i found brillant solution how to create unique icon for almost any sample with minimal efforts. Our sample will generate it for us! It&rsquo;s so easy, right? We write a new sample that implements some cool effect. So it would be great if it&rsquo;s icon will inform user about it. To do this we take a default image we use for icons and pass it through our sample. Result image is the best visual demonstration we can ever imagine. Let&rsquo;s take a look on result of processing default icon with Cartoon Filter Sample: <strong>Default Image</strong>: <img src="IMG_0044.png" alt="" title="Mandrill (Original)" /></p>
+
+<h4 id="generated-cartoon-filter-icon"><strong>Generated Cartoon Filter Icon</strong></h4>
+
+<p><img src="IMG_0045.jpg" alt="" title="Mandrill (Cartoon)" /></p>
+
+<p>Also, these icons are now used in the rest of UI. The final picture looks much more user-friendly:</p>
+
+<p><img src="Screen-Shot-2012-08-19-at-9.05.33-PM-1024x813.png" alt="" title="OpenCV Tutorial Part 7 Sample Icons" /></p>
+
+<h3 id="in-case-you-looking-for-a-code">In case you looking for a code</h3>
+
+<p>While working on this chapter i noticed that UI-realted code has a lot of duplicates connected with converting of std::string to NSString, loading UIImage objects from bundle. To remove such duplicates i added a special facade class which performs all conversion and implements sample icon generation as described above.</p>
+
+<h4 id="samplefacade-interface"><strong>SampleFacade interface</strong></h4>
+
+<pre><code class="language-objectivec">@interface SampleFacade : NSObject
+
+- (id) initWithSample:(SampleBase*) sample;
+
+@property (readonly) SampleBase * sample;
+
+- (NSString *) title;
+- (NSString *) description;
+- (NSString *) friendlyName;
+
+- (UIImage*)   smallIcon;
+- (UIImage*)   largeIcon;
+
+- (bool) processFrame:(const cv::Mat&amp;) inputFrame into:(cv::Mat&amp;) outputFrame;
+- (UIImage*) processFrame:(UIImage*) source;
+
+@end
+</code></pre>
+
+<h4 id="icons-generation">Icons generation</h4>
+
+<p>When the data table is populated with a sample list it creates a cell for each sample. A cell contains a sample thumbnail image queried from [SampleFacade smallIcon].</p>
+
+<pre><code class="language-objectivec">- (UIImage*)   smallIcon
+{
+    if (!m_smallIcon)
+    {
+        if (self.sample-&gt;;hasIcon())
+        {
+            NSString * iconStr = [NSString stringWithStdString:self.sample-&gt;;getSampleIcon()];
+            m_smallIcon = [[UIImage imageNamed:iconStr] thumbnailWithSize:80];
+        }
+        else
+        {
+            UIImage * srcImage = [UIImage imageNamed:@&quot;DefaultSampleIcon.png&quot;];
+            m_smallIcon = [self processFrame:[srcImage thumbnailWithSize:80]];
+        }
+    }
+
+    return m_smallIcon;
+}
+</code></pre>
+
+<p>Obviously, this method of generating sample icon image cannot be applied to any sample. It&rsquo;s applicable only to samples that can process single image without any additional data input. For example, we can&rsquo;t use this method to generate icon for video tracking, because it will give us exactly the same picture. But for samples that does manipulate with pixels it&rsquo;s the ideal solution. ;</p>
+
+<h3 id="more-friendly-ipad-interface">More friendly iPad interface</h3>
+
+<p>When in landscape mode iPad&rsquo;s application interface shows list of samples and result of sample processing simultaneously. In the previous versions of the app, selecting new sample while previous was running had no effect. You had go back to sample information window and then click again &ldquo;run&rdquo; to start using new sample. Now it&rsquo;s fixed - you can switch to any sample any time you want. Watch this great demonstration video:  Implementation was very trivial - when user taps &ldquo;Run on Video&rdquo; or &ldquo;Run on Image&rdquo; button we save new view controller in DetailViewController&rsquo;s private property:</p>
+
+<pre><code class="language-objectivec">- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([[segue identifier] isEqualToString:@&quot;processVideo&quot;])
+    {
+        VideoViewController * sampleController = [segue destinationViewController];
+        [sampleController setSample:currentSample];
+        self.activeVideoController = sampleController;
+    }
+    else if ([[segue identifier] isEqualToString:@&quot;processImage&quot;])
+    {
+        ImageViewController * sampleController = [segue destinationViewController];
+        [sampleController setSample:currentSample];
+        self.activeImageController = sampleController;
+    }
+}
+</code></pre>
+
+<p>And modified configureView function now updates active image or video view if it&rsquo;s not null:</p>
+
+<pre><code class="language-objectivec">- (void)configureView
+{
+    // Update the user interface for the detail item.
+
+    if (currentSample)
+    {
+        self.sampleDescriptionTextView.text = [currentSample description];
+        self.title = [currentSample title];
+        self.sampleIconView.image = [currentSample largeIcon];
+
+        if (self.activeImageController)
+            [self.activeImageController setSample:currentSample];
+
+        if (self.activeVideoController)
+            [self.activeVideoController setSample:currentSample];
+    }
+}
+</code></pre>
+
+<h2 id="performance-optimization">Performance optimization</h2>
+
+<h3 id="optimizing-cv-transform-with-arm-neon">Optimizing cv::transform with ARM NEON</h3>
+
+<p>Assembly language and architecture-specific code was always a subject of my special attention. After i got my first iPhone i started learning ARM Assembly and it&rsquo;s SIMD engine called NEON. As a result of my first attempts to write something useful i wrote <a href="/articles/2011-02-08-a-very-fast-bgra-to-grayscale-conversion-on-iphone/" title="A very fast BGRA to Grayscale conversion on Iphone">fast BGRA to Grayscale color conversion</a> function. It was a long time ago, but this function is still actual. NEON-accelerated BGRA to Grayscale conversion is being used in this project too. In this section i will show you how to improve performance of the cv::transform function. Linear transform is useful function. In our samples we use it for Sepia effect for example. Also it can perform BGRA to Gray conversion without reducing number of image channels, adjust contrast and swap channels. A brief theory if you forgot what this function does. A cv::transform function multiplies each image pixel on 4x4 matrix and puts resulting vector to destination image. Input pixel is vector of 4 elements (unsigned bytes), each element contains channel intensity in following order: B, G, R, A. The matrix is represented by a 4x4 floating point (single precision) array. Our goal is to rewrite multiplication of 4x4 matrix on 4-element Vector. First, a wrapping function:</p>
+
+<pre><code class="language-cpp">namespace cv 
+{
+  void neon_transform_bgra(const cv::Mat&amp; input, cv::Mat&amp; result, const cv::Mat_&amp; m)
+  {
+    assert(input.type() == CV_8UC4);
+    
+    if (result.rows != input.rows || result.cols != input.cols || result.type() != CV_8UC4)
+    {
+      result.create(input.rows, input.cols, CV_8UC4);
+    }
+    //result = input.clone();
+    //initSameSizeAlignedIfNecessary(m, result);
+    
+    //cv::Mat trans;
+    //cv::transpose(m, trans);
+    
+    float * matrix = reinterpret_cast&lt;float*&gt;(m.data);
+    
+    int v[4];
+    int out[4];
+    
+    for (int row = 0; row &lt; input.rows; row++)
+    {
+      cv::Vec4b * srcRow = reinterpret_cast&lt;cv::Vec4b*&gt;(input.row(row).data);
+      cv::Vec4b * dstRow = reinterpret_cast&lt;cv::Vec4b*&gt;(result.row(row).data);
+      
+      for (int col = 0; col &lt; input.cols; col++)
+      {
+        const cv::Vec4b&amp; src = srcRow[col];
+        cv:Vec4b&amp; dst        = dstRow[col];
+        
+        v[0] =  src[0];
+        v[1] =  src[1];
+        v[2] =  src[2];
+        v[3] =  src[3];
+        
+        neon_asm_mat4_vec4_mul(matrix, v, out);
+        
+        dst[0] = cv::saturate_cast&lt;unsigned char&gt;(out[0]);
+        dst[1] = cv::saturate_cast&lt;unsigned char&gt;(out[1]);
+        dst[2] = cv::saturate_cast&lt;unsigned char&gt;(out[2]);
+        dst[3] = cv::saturate_cast&lt;unsigned char&gt;(out[3]);
+      }
+    }
+  }
+}
+</code></pre>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/tutorials/">tutorials</a>
+            
+                 <a href="/tags/opencv/">opencv</a>
+            
+                 <a href="/tags/xcode/">xcode</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=OpenCV%20Tutorial%20Part%207&url=https%3a%2f%2fexample.com%2f2012-10-22-opencv-tutorial-part-7%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2f2012-10-22-opencv-tutorial-part-7%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2f2012-10-22-opencv-tutorial-part-7%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

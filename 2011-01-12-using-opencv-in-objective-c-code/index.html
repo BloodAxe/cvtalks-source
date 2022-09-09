@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Using OpenCV in Objective-C code &middot; My Name</title>
+        <meta name="description" content="After publishing Building OpenCV for iOS article many of readers asked me how to use OpenCV within ObjectiveC code, because they encountered compilation errors. In this post I&rsquo;ll show you how to use OpenCV and ObjectiveC to make some image processing.
+
+This post is outdated
+ Current version of OpenCV supports iOS toolchain and can be build in much easier way. You are welcome to read this post for educational purposes.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="Using OpenCV in Objective-C code">
+<meta property="og:description" content="After publishing Building OpenCV for iOS article many of readers asked me how to use OpenCV within ObjectiveC code, because they encountered compilation errors. In this post I&rsquo;ll show you how to use OpenCV and ObjectiveC to make some image processing.
+
+This post is outdated
+ Current version of OpenCV supports iOS toolchain and can be build in much easier way. You are welcome to read this post for educational purposes.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/2011-01-12-using-opencv-in-objective-c-code/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">Using OpenCV in Objective-C code</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    <p>After publishing <a href="http://computer-vision-talks.com/2010/12/building-opencv-for-ios/">Building OpenCV for iOS</a> article many of readers asked me how to use OpenCV within ObjectiveC code, because they encountered compilation errors. In this post I&rsquo;ll show you how to use OpenCV and ObjectiveC to make some image processing.</p>
+
+<p><span class="more"></span></p>
+
+<div class="alert alert-danger">
+    <p class="lead">This post is outdated</p>
+    <p>
+    Current version of OpenCV supports iOS toolchain and can be build in much easier way. You are welcome to read this post for educational purposes. It's 99.9% chance that you will not be able to use OpenCV as described here. Please use my <a href="https://github.com/BloodAxe/OpenCV-Tutorial"><strong>OpenCV Tutorial project</strong></a> if you want to learn how to use OpenCV on iOS platform.
+    </p>
+</div>
+
+<div class="alert alert-info">
+    <p class="lead">
+    Please use my <a href="https://github.com/BloodAxe/OpenCV-Tutorial"><strong>OpenCV Tutorial project</strong></a> if you want to learn how to use OpenCV on iOS platform.
+    </p>
+</div>
+
+<p>In this post I&rsquo;ll use <a href="https://developer.apple.com/library/ios/#samplecode/GLImageProcessing/Introduction/Intro.html">GLImageProcessing</a> sample demo from Apple. Also you will need precompiled OpenCV for iPhone. How to make it read <a href="http://computer-vision-talks.com/2010/12/building-opencv-for-ios/">here</a>. I&rsquo;ve copied all OpenCV stuff to &ldquo;opencv&rdquo; folder into the GLImageProcessing. Here is project directory structure:</p>
+
+<p><img src="example-directory-structure_thumb.jpg" alt="example-directory-structure" title="example-directory-structure" /></p>
+
+<p>Now, let&rsquo;s add OpenCV to our project. **First step - **specify the place, where the OpenCV headers are located. Add the path to OpenCV headers to the “Header Search Paths” property:</p>
+
+<p><img src="opencv-include-headers_thumb.jpg" alt="opencv-include-headers" title="opencv-include-headers" /></p>
+
+<p><strong>Second step</strong> - set up path where the OpenCV libraries are. Please note: you will need to repeat this step for each configuration (debug/release, device/simulator) because of directory structure of the OpenCV libs. Add path of the OpenCV libraries to the “Library Search Paths” property (for release device this will be “opencv/lib/iphoneos/Release” if you follow directory structure listed above). <strong>Third step</strong>: Tell linker to include OpenCV to the output executable:</p>
+
+<p><img src="opencv-link-libraries_thumb.jpg" alt="opencv-link-libraries" title="opencv-link-libraries" /></p>
+
+<p>As you can see i prefer use linker flags instead using XCode UI (Targets -&gt; GLImageProcessing -&gt; Link Binary With Libraries -&gt; Add -&gt; Existing Files&hellip;). There are several reasons: i prefer this way because i don&rsquo;t trust XCode :) (Actually because for all my projects i use cross-platform build system which allows to do such things much easies, but this is a topic for another article). Now, add #include <opencv2/opencv.hpp> to header files . I’ve added this include to Imaging.h header right after #include <OpenGLES/ES1/glext.h>. Crossing fingers and hitting &ldquo;Build and Run&rdquo;&hellip;..Oooops, compilation errors. Let&rsquo;s see, what we can do with all those errors. First of all - <strong>change extensions of all .m files which include OpenCV headers to .mm</strong>. This tells compiler that such file contains mixed ObjectiveC and C++ code. Also change extensions of all .c files to .cpp, because OpenCV uses STL, which is absent for pure C and thus you&rsquo;ll get compilation errors. Now, only one compilation error left:</p>
+
+<pre><code>    opencv/include/opencv2/core/core.hpp:432: error: statement-expressions are allowed only inside functions
+    opencv/include/opencv2/core/core.hpp:432: confused by earlier errors, bailing out
+</code></pre>
+
+<p>These errors are caused by MIN symbol, which is a macro in OpenCV and a function, defined somewhere in UIKit or other frameworks..Simple solution - <strong>include OpenCV before iOS frameworks</strong>. So&hellip;with all these fixes all builds fine. Now it&rsquo;s time to add some OpenCV code.. Let&rsquo;s change the matrix multiplication code! File Imaging.cpp</p>
+
+<pre><code class="language-cpp">    // Matrix Utilities for Hue rotation
+    static void matrixmult(float a[4][4], float b[4][4], float c[4][4])
+    {
+    int x, y;
+    float temp[4][4];
+    for(y=0; y&lt;4; y++)
+        for(x=0; x&lt;4; x++)
+            temp[y][x] = b[y][0] * a[0][x] +
+                     b[y][1] * a[1][x] +
+                                 b[y][2] * a[2][x] +
+                                 b[y][3] * a[3][x];
+    for(y=0; y&lt;4; y++)
+        for(x=0; x&lt;4; x++)
+            c[y][x] = temp[y][x];
+    }
+</code></pre>
+
+<p>A little crappy code, isn&rsquo;t it? Let&rsquo;s rewrite it!</p>
+
+<pre><code class="language-cpp">    // Matrix Utilities for Hue rotation
+    static void matrixmult(float a[4][4], float b[4][4], float c[4][4])
+    {
+        cv::Mat(4,4,CV_32FC1, c) = cv::Mat(4,4,CV_32FC1, a) * cv::Mat(4,4,CV_32FC1,b);
+    }
+</code></pre>
+
+<p>A bit of comments. cv::Mat is a type of OpenCV matrix. We initialize a matrix view, which takes data from the float<a href="opencv-include-headers_thumb.jpg" title="opencv-include-headers">4</a> array, but not copy it. Result of multiplication of two views (a and b) assigned to view c which is a result. Hit &ldquo;Build and Run&rdquo;, and here we go:</p>
+
+<p><img src="Screenshot-2011.01.12-11.11.45_thumb.png" alt="Screenshot 2011.01.12 11.11.45" title="Screenshot 2011.01.12 11.11.45" /></p>
+
+<p>This is a very simple example which demonstrates that you can use OpenCV even with ObjectiveC without any problems. Good luck in your projects!</p>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/opencv/">opencv</a>
+            
+                 <a href="/tags/xcode/">xcode</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=Using%20OpenCV%20in%20Objective-C%20code&url=https%3a%2f%2fexample.com%2f2011-01-12-using-opencv-in-objective-c-code%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2f2011-01-12-using-opencv-in-objective-c-code%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2f2011-01-12-using-opencv-in-objective-c-code%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2012-11-06-maximizing-performance-grayscale-color-conversion-using-neon-and-cvparallel_for-rsses on Ghostwriter example</title>
+    <link>https://example.com/2012-11-06-maximizing-performance-grayscale-color-conversion-using-neon-and-cvparallel_for/index.xml</link>
+    <description>Recent content in 2012-11-06-maximizing-performance-grayscale-color-conversion-using-neon-and-cvparallel_for-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Tue, 06 Nov 2012 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2012-11-06-maximizing-performance-grayscale-color-conversion-using-neon-and-cvparallel_for/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Maximizing performance of CV_BGRA2GRAY conversion using NEON and cv::parallel_for</title>
+      <link>https://example.com/2012-11-06-maximizing-performance-grayscale-color-conversion-using-neon-and-cvparallel_for/</link>
+      <pubDate>Tue, 06 Nov 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2012-11-06-maximizing-performance-grayscale-color-conversion-using-neon-and-cvparallel_for/</guid>
+      <description>
+
+&lt;p&gt;I continue playing with powerful NEON engine in iPhone and iPad devices. Recently i bought iPhone 4S that replaced my HTC Mozart and i decided to check how to speed up BGRA to GRAY color conversion procedure using multithreading.
+&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;Recently Itseez announced a minor release of OpenCV 2.4.3 with a lot of new major features:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Added universal parallel_for implementation using various backends: TBB, OpenMP, GCD, Concurrency&lt;/li&gt;
+&lt;li&gt;Improved OpenCV Manager, new Java samples framework, better camera support on Android,&lt;/li&gt;
+&lt;li&gt;opencv2.framework is now iOS6- and iPhone5- (armv7s) compatible.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The rest of changes can be seen here: &lt;a href=&#34;http://code.opencv.org/projects/opencv/wiki/ChangeLog&#34;&gt;http://code.opencv.org/projects/opencv/wiki/ChangeLog&lt;/a&gt;. In the past i wrote a NEON-optimized grayscale conversion algorithm (&lt;a href=&#34;http://computer-vision-talks.com/2011/02/a-very-fast-bgra-to-grayscale-conversion-on-iphone/&#34;&gt;http://computer-vision-talks.com/2011/02/a-very-fast-bgra-to-grayscale-conversion-on-iphone/&lt;/a&gt;) which showed a pretty nice speed-up (About 2x times faster than cv::cvtColor(input, output, CV_BGRA2GRAY)). In this post we will use these results as a baseline and try to write something faster. To be fair we start from defining a set of rules for all implementations:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;We will process square images of size (8, 10, 12, 14, 16, 18, &amp;hellip;., 1596, 1598, 1600) pixels. Processing small and big images will reveal hidden bottlenecks of each implementation.&lt;/li&gt;
+&lt;li&gt;Each image will be processed 1000 to avoid measurement fluctuations.&lt;/li&gt;
+&lt;li&gt;The destination image will be preallocated prior the test to exclude memory allocations influence.&lt;/li&gt;
+&lt;li&gt;We use mach_absolute_time() to measure processing time. As far as i know it&amp;rsquo;s the most precise measuring method.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Our main test method looks like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;typedef void ConversionFunctionPrototype(const cv::Mat&amp;amp; input, cv::Mat&amp;amp; output);
+
+void testConversion(const cv::Mat&amp;amp; input, int numRuns, int&amp;amp; avgTimeInMicroseconds, ConversionFunctionPrototype conversionFn)
+{
+    assert(input.type() == CV_8UC4);
+    assert(input.empty() == false);
+
+    cv::Mat output(input.size(), CV_8UC1);
+
+    uint64_t conversionStart, conversionFinish;
+    uint64_t totalTime = 0;
+
+    for (int i = 0; i &amp;lt; numRuns ; i++)
+    {
+        conversionStart = mach_absolute_time();
+        conversionFn(input, output);
+        conversionFinish = mach_absolute_time();
+
+        totalTime += (conversionFinish - conversionStart);
+    }
+
+    mach_timebase_info_data_t timebase;
+    mach_timebase_info(&amp;amp;timebase);
+
+    avgTimeInMicroseconds = (int) ((double)totalTime * (double)timebase.numer / ((double)timebase.denom * (double)numRuns));
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The testConversion function computes the average BGRA2GRAY conversion time of the input image by doing color conversion N times (specified by numRuns argument).&lt;/p&gt;
+
+&lt;h2 id=&#34;opencv-implementation&#34;&gt;OpenCV implementation&lt;/h2&gt;
+
+&lt;p&gt;The reference color conversion function from OpenCV:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;static void convert_opencv(const cv::Mat&amp;amp; input, cv::Mat&amp;amp; output)
+{
+    cv::cvtColor(input, output, CV_BGRA2GRAY);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;arm-neon-using-assembler&#34;&gt;ARM NEON using assembler&lt;/h2&gt;
+
+&lt;p&gt;The old assembler version of NEON-accelerated color conversion from my old post:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;static void convert_neon_asm_8px(const cv::Mat&amp;amp; input, cv::Mat&amp;amp; output)
+{
+    uint8_t __restrict * dest = output.data;
+    uint8_t __restrict * src  = input.data;
+    int numPixels             = input.total();
+
+    __asm__ volatile(&amp;quot;lsr          %2, %2, #3      \n&amp;quot;
+                     &amp;quot;# build the three constants: \n&amp;quot;
+                     &amp;quot;mov         r4, #28          \n&amp;quot; // Blue channel multiplier
+                     &amp;quot;mov         r5, #151         \n&amp;quot; // Green channel multiplier
+                     &amp;quot;mov         r6, #77          \n&amp;quot; // Red channel multiplier
+                     &amp;quot;vdup.8      d4, r4           \n&amp;quot;
+                     &amp;quot;vdup.8      d5, r5           \n&amp;quot;
+                     &amp;quot;vdup.8      d6, r6           \n&amp;quot;
+                     &amp;quot;0:                           \n&amp;quot;
+                     &amp;quot;# load 8 pixels:             \n&amp;quot;
+                     &amp;quot;vld4.8      {d0-d3}, [%1]!   \n&amp;quot;
+                     &amp;quot;# do the weight average:     \n&amp;quot;
+                     &amp;quot;vmull.u8    q7, d0, d4       \n&amp;quot;
+                     &amp;quot;vmlal.u8    q7, d1, d5       \n&amp;quot;
+                     &amp;quot;vmlal.u8    q7, d2, d6       \n&amp;quot;
+                     &amp;quot;# shift and store:           \n&amp;quot;
+                     &amp;quot;vshrn.u16   d7, q7, #8       \n&amp;quot; // Divide q3 by 256 and store in the d7
+                     &amp;quot;vst1.8      {d7}, [%0]!      \n&amp;quot;
+                     &amp;quot;subs        %2, %2, #1       \n&amp;quot; // Decrement iteration count
+                     &amp;quot;bne         0b            \n&amp;quot; // Repeat until iteration count is not zero
+                     :
+                     : &amp;quot;r&amp;quot;(dest), &amp;quot;r&amp;quot;(src), &amp;quot;r&amp;quot;(numPixels)
+                     : &amp;quot;r4&amp;quot;, &amp;quot;r5&amp;quot;, &amp;quot;r6&amp;quot;
+                     );
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;arm-neon-using-intrinsics&#34;&gt;ARM NEON using intrinsics&lt;/h2&gt;
+
+&lt;p&gt;You know you can write the same code using arm intrinsics? Here it is:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;static void convert_neon8px_int(const cv::Mat&amp;amp; input, cv::Mat&amp;amp; output)
+{
+    uint8_t __restrict * dest = output.data;
+    uint8_t __restrict * src  = input.data;
+    int numPixels             = input.total();
+
+    uint8x8_t rfac = vdup_n_u8 (77);
+    uint8x8_t gfac = vdup_n_u8 (151);
+    uint8x8_t bfac = vdup_n_u8 (28);
+
+    register int n = numPixels / 8;
+    uint16x8_t  temp;
+    uint8x8_t result;
+    uint8x8x4_t rgb;
+
+    for (register int i = 0; i &amp;lt; n; i++, src += 8*4, dest += 8)
+    {
+        rgb  = vld4_u8 (src);
+
+        temp = vmull_u8 (rgb.val[0],      rfac);
+        temp = vmlal_u8 (temp,rgb.val[1], gfac);
+        temp = vmlal_u8 (temp,rgb.val[2], bfac);
+
+        result = vshrn_n_u16 (temp, 8);
+        vst1_u8 (dest, result);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;parallel-neon-version&#34;&gt;Parallel NEON version&lt;/h2&gt;
+
+&lt;p&gt;Both &lt;strong&gt;convert_neon_asm_8px&lt;/strong&gt; and &lt;strong&gt;convert_neon8px_int&lt;/strong&gt; functions process 8 pixels at once. This color conversion function is a great candidate for multithreading optimization. Since iPhone 4S and iPad 2 have two Cortex A8 CPU we can run our color conversion in two threads. For this purpose we want to use Grand Central Dispatch mechanism from iOS. It provides easy mechanism to execute tasks in multithreaded environment. OpenCV developers offers new nice feature to perform parallel calculation - &lt;strong&gt;cv::parallel_for&lt;/strong&gt;. This function provides abstraction layer between multithreading backend and user code. To use &lt;strong&gt;cv::parallel_for&lt;/strong&gt; you have to implement a cv::ParallelLoopBody functor:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;// a base body class
+class CV_EXPORTS ParallelLoopBody
+{
+public:
+    virtual ~ParallelLoopBody();
+    virtual void operator() (const Range&amp;amp; range) const = 0;
+};
+
+CV_EXPORTS void parallel_for_(const Range&amp;amp; range, const ParallelLoopBody&amp;amp; body, double nstripes=-1.);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Our color conversion function simply wraps the code from the ARM NEON version with slight modifications. When counting the number of pixels to process we take into account the range argument passed to the function body.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;struct convert_ParallelLoopBody : public cv::ParallelLoopBody
+{
+    convert_ParallelLoopBody(const cv::Mat&amp;amp; input, cv::Mat&amp;amp; output)
+    : _in(input)
+    , _out(output)
+    {
+    }
+
+    void operator() (const cv::Range&amp;amp; range) const
+    {
+        uint8_t __restrict * dest = _out.data + range.start;
+        uint8_t __restrict * src  = _in.data  + range.start * 4;
+
+        int numPixels             = range.size();
+
+        uint8x8_t rfac = vdup_n_u8 (77);
+        uint8x8_t gfac = vdup_n_u8 (151);
+        uint8x8_t bfac = vdup_n_u8 (28);
+
+        register int n = numPixels / 8;
+        uint16x8_t  temp;
+        uint8x8_t result;
+        uint8x8x4_t rgb;
+
+        for (register int i = 0; i &amp;lt; n; i++, src += 8*4, dest += 8)
+        {
+            rgb  = vld4_u8 (src);
+
+            temp = vmull_u8 (rgb.val[0],      rfac);
+            temp = vmlal_u8 (temp,rgb.val[1
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

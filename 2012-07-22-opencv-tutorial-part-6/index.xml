@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2012-07-22-opencv-tutorial-part-6-rsses on Ghostwriter example</title>
+    <link>https://example.com/2012-07-22-opencv-tutorial-part-6/index.xml</link>
+    <description>Recent content in 2012-07-22-opencv-tutorial-part-6-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Sun, 22 Jul 2012 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2012-07-22-opencv-tutorial-part-6/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>OpenCV Tutorial - Part 6</title>
+      <link>https://example.com/2012-07-22-opencv-tutorial-part-6/</link>
+      <pubDate>Sun, 22 Jul 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2012-07-22-opencv-tutorial-part-6/</guid>
+      <description>
+
+&lt;p&gt;[toc] Hi folks! I’m glad to publish a sixth part of the OpenCV Tutorial cycle. In this post I will describe how to implement interesting non-photorealistic effect that makes image looks like a cartoon. It has numerous names: cartoon filter or simply “toon” also it known as rotoscoping. In addition we will refactor application interface and add tweeting feature to share your results across the web. According to the roadmap I promised to put the video recording module too, but due to lack of free time I decided to put it on hold for now. To compensate this in this part I will demonstrate how to get Sepia effect using simple matrix multiplication. Don’t afraid, video recording will be added, but later. I think after part 9, when most of the samples will be optimized using ARM NEON I will add this feature.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;more&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;interface-improvements&#34;&gt;Interface improvements&lt;/h2&gt;
+
+&lt;p&gt;I will never get tired to repeat that user experience is a top 1 priority for mobile apps. As a developer you have to think about users in the first order. Will the user be satisfied with your app or deletes it after using for 30 seconds – this depends only from you. I was unsatisfied with previous interface. Especially with those unintuitive icons and text labels. Many thanks for free icon packs where I got new toolbar icons for my app. With new interface I tried to make image and video views looks similar. The left toolbar button for image view responsible for selecting a photo; in the video mode I put a button that switches between front and back cameras to this position. The central place on a toolbar is taken by “options” button that shows the options for selected sample view (iPhone interface). The right button is a special action button that presents a list of action you can do: save image to album, tweet it or do anything else. Let’s take a look how our interface did evolved:&lt;/p&gt;
+
+&lt;h3 id=&#34;iphone-interface-improvements&#34;&gt;iPhone interface improvements&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&#34;Screen-Shot-2012-07-23-at-3.12.49-PM.png&#34; alt=&#34;&#34; title=&#34;Cartoon filter using Machine Eye&#34; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;ipad-interface-improvements&#34;&gt;iPad interface improvements&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&#34;Screen-Shot-2012-07-23-at-3.14.26-PM-1024x815.png&#34; alt=&#34;&#34; title=&#34;Sepia effect with Machine Eye&#34; /&gt; To eliminate duplicate code for two processing modes (image and video) we introduce a base class to store common data for derived views:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;typedef void (^TweetImageCompletionHandler)(); 
+typedef void (^SaveImageCompletionHandler)(); 
+
+#define kSaveImageActionTitle  @&amp;quot;Save image&amp;quot;
+#define kComposeTweetWithImage @&amp;quot;Tweet image&amp;quot;
+
+@interface BaseSampleViewController : UIViewController
+
+@property (readonly) SampleBase * currentSample;
+
+- (void) configureView;
+- (void) setSample:(SampleBase*) sample;
+- (void) tweetImage:(UIImage*) image withCompletionHandler: (TweetImageCompletionHandler) handler;
+- (void) saveImage:(UIImage*) image  withCompletionHandler: (SaveImageCompletionHandler) handler;
+
+@end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We will consider implementation of the tweetImage and saveImage function a little bit later. &lt;strong&gt;BaseSampleViewController&lt;/strong&gt; has a public readonly property to current sample, and a special &lt;strong&gt;setSample&lt;/strong&gt; function to change it. When a new sample is assigned it calls configureView to update the view title and perform other actions.&lt;/p&gt;
+
+&lt;h3 id=&#34;action-sheet-easy-way-to-perform-typical-actions&#34;&gt;Action sheet – easy way to perform typical actions&lt;/h3&gt;
+
+&lt;p&gt;You could notice that I’ve removed “Save” button from the toolbar. The main reason for this – I wanted to avoid adding “Tweet”, “Share”, “Save and email” buttons. All these actions should be grouped somewhere else. The ideal solution is to use &lt;strong&gt;UIActionSheet&lt;/strong&gt; control that will present available actions. Using this class is very easy: First, you need to instantiate action sheet with a list of available actions. For our case it will looks like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;self.actionSheet = [[UIActionSheet alloc] initWithTitle:@&amp;quot;Actions&amp;quot; 
+                                               delegate:self 
+                                      cancelButtonTitle:@&amp;quot;Cancel&amp;quot; 
+                                 destructiveButtonTitle:nil 
+                                      otherButtonTitles:kSaveImageActionTitle, 
+                                      kComposeTweetWithImage, nil];
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;String constants kSaveImageActionTitle and kComposeTweetWithImage has corresponding values &amp;ldquo;Save image&amp;rdquo; and &amp;ldquo;Tweet image&amp;rdquo;. The key step when we instantiate action sheet - to specify a delegate that will handle interaction with this action sheet. To implement &lt;strong&gt;UIActionSheetDelegate&lt;/strong&gt; protocol you must provide implementation at least for &lt;strong&gt;actionSheet:clickedButtonAtIndex:&lt;/strong&gt; method:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;- (void)actionSheet:(UIActionSheet *)senderSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+  NSString * title = [senderSheet buttonTitleAtIndex:buttonIndex];
+
+  if (title == kSaveImageActionTitle)
+  {
+    [self saveImage:self.imageView.image withCompletionHandler:nil];
+  }
+  else if (title == kComposeTweetWithImage)
+  {
+    [self tweetImage:self.imageView.image withCompletionHandler:nil];
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let&amp;rsquo;s imagine we are running a video processing and decide to save image. We press actions button on a toolbar then tap on &amp;ldquo;Save image&amp;rdquo; button, but the video source continue generating new frames. Expected behavior in this case is to suspend processing. To do this we pause video source when action sheet is shown and resume when it dismissed. &lt;strong&gt;UIActionSheetDelegate&lt;/strong&gt; provides a method &lt;strong&gt;willPresentActionSheet&lt;/strong&gt; called before action sheet will appear:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;- (void)willPresentActionSheet:(UIActionSheet *)actionSheet;  // before animation and showing view
+{
+  [videoSource stopRunning];
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So we pause video source when action sheet appears. To resume processing frames we will use &lt;strong&gt;actionSheet:clickedButtonAtIndex&lt;/strong&gt; method. If clicked button index does not corresponds to known action we simply resume video source because action sheet will be dismissed soon. But if user ask to tweet or save image, we invoke corresponding method and resume video source only after this action is complete. Since tweeting involves presenting tweet compose view it&amp;rsquo;s reasonable to pause all processing and continue when the all work is done.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;- (void)actionSheet:(UIActionSheet *)senderSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+  NSString * title = [senderSheet buttonTitleAtIndex:buttonIndex];
+
+  if (title == kSaveImageActionTitle)
+  {
+    UIImage * image = [UIImage imageWithMat:outputFrame.clone() andDeviceOrientation:[[UIDevice currentDevice] orientation]];
+    [self saveImage:image withCompletionHandler: ^{ [videoSource startRunning]; }];
+  }
+  else if (title == kComposeTweetWithImage)
+  {
+    UIImage * image = [UIImage imageWithMat:outputFrame.clone() andDeviceOrientation:[[UIDevice currentDevice] orientation]];
+    [self tweetImage:image withCompletionHandler:^{ [videoSource startRunning]; }];
+  }
+  else
+  {
+    [videoSource startRunning];
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;sepia-negative-and-other-simple-effects&#34;&gt;Sepia, negative and other simple effects&lt;/h2&gt;
+
+&lt;h3 id=&#34;brightness-and-contrast-adjustments&#34;&gt;Brightness and contrast adjustments&lt;/h3&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

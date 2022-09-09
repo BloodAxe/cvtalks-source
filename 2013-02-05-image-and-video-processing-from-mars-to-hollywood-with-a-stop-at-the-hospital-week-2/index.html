@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Image and video processing: From Mars to Hollywood with a stop at the hospital - Week 2 &middot; My Name</title>
+        <meta name="description" content="This is a second part of &ldquo;Image and video processing: From Mars to Hollywood with a stop at the hospital&rdquo; class.
+In optional taks for Week 2 we were asked to test various predictors for JPEG-LS compression algorithm. In this post i want to share my results and discuss how we can achieve better prediction rate. 
+Compare prediction algorithms for loseless image compression Problem statement
+ Compute the histogram of a given image and of its prediction errors.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="Image and video processing: From Mars to Hollywood with a stop at the hospital - Week 2">
+<meta property="og:description" content="This is a second part of &ldquo;Image and video processing: From Mars to Hollywood with a stop at the hospital&rdquo; class.
+In optional taks for Week 2 we were asked to test various predictors for JPEG-LS compression algorithm. In this post i want to share my results and discuss how we can achieve better prediction rate. 
+Compare prediction algorithms for loseless image compression Problem statement
+ Compute the histogram of a given image and of its prediction errors.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/2013-02-05-image-and-video-processing-from-mars-to-hollywood-with-a-stop-at-the-hospital-week-2/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">Image and video processing: From Mars to Hollywood with a stop at the hospital - Week 2</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    
+
+<p>This is a second part of <a href="https://www.coursera.org/course/images">&ldquo;Image and video processing: From Mars to Hollywood with a stop at the hospital&rdquo;</a> class.</p>
+
+<p>In optional taks for Week 2 we were asked to test various predictors for JPEG-LS compression algorithm. In this post i want to share my results and discuss how we can achieve better prediction rate.
+<span class="more"></span></p>
+
+<h1 id="compare-prediction-algorithms-for-loseless-image-compression">Compare prediction algorithms for loseless image compression</h1>
+
+<p><strong>Problem statement</strong></p>
+
+<blockquote>
+<p>Compute the histogram of a given image and of its prediction errors. If the pixel being processed is at coordinate (0,0), consider predicting based on just the pixel at (-1,0); predicting based on just the pixel at (0,1); predicting based on the average of the pixels at (-1,0), (-1,1), and (0,1). Compute the entropy for each one of the predictors in the previous exercise. Which predictor will compress better?</p>
+</blockquote>
+
+<p><strong>A very, very little theory</strong> So, first of all, JPEG-LS is a lose-less image compression algorithm. It uses variable-length coding (Huffman coding in particular) to minimize the amount of data needed to represent our image. So the idea behind this to predict the next pixel values using values of previous pixels and encode this error instead of pixels itself. So if we guess a lot, the distribution of the error would be non-uniform with a peak in near-zero area. So Huffan coding algorithm will be able reduce the code length.</p>
+
+<h1 id="solution">Solution</h1>
+
+<p>Based on the entropy of the input image we can describe prediction rate as follows: $$R=H_s / H_e$$, where $$H_s$$ is the entropy of the input image, and $$H_e$$ - is the entropy of the prediction error.</p>
+
+<p>So, for my tests i wrote a simple OpenCV program that contains predictors test. You can find the full source code here: <strong><a href="http://pastebin.com/zWz9vaD7">http://pastebin.com/zWz9vaD7</a></strong>.</p>
+
+<p>For all the tests i used well-known lena image:</p>
+
+<p><img src="lena.jpg" alt="lena.jpg" /></p>
+
+<p>Which has following parameters of the gray-value representation:</p>
+
+<blockquote>
+<p>Std.Dev. 731.663 Entropy: 5.16456</p>
+</blockquote>
+
+<p>Here i&rsquo;m gonna describe only result of predictors. So we start from trivial predictors that use value of the previous pixel:</p>
+
+<pre><code>int predict_by_previous_pixel_in_row(const cv::Mat_&amp; img, int row, int col)
+{
+    if (col &gt; 0)
+        return img(row, col - 1);
+    return 0;
+}
+
+int predict_by_previous_pixel_in_col(const cv::Mat_&amp; img, int row, int col)
+{
+    if (row &gt; 0)
+        return img(row - 1, col);
+    return 0;
+}
+</code></pre>
+
+<p>These two predictors give us fair enough prediction rate of ~1.47:</p>
+
+<blockquote>
+<p>predict_by_previous_pixel_in_row: Std.Dev. 3322.94 Entropy: 3.50525</p>
+
+<p>predict_by_previous_pixel_in_col: Std.Dev. 3940.22 Entropy: 3.20661</p>
+</blockquote>
+
+<p>Then i tried a predictor based on average value of two previous consecutive pixels:</p>
+
+<pre><code>int predict_by_2prev_pixels_in_row(const cv::Mat_&amp; img, int row, int col)
+{
+    if (col &gt; 1)
+        return ((int)img(row, col - 2) + (int)img(row, col - 1)) / 2;
+    else
+        return 0;
+}
+</code></pre>
+
+<p>Regarding to the benchmark, this prediction strategy is worth than previous.</p>
+
+<blockquote>
+<p>predict_by_2prev_pixels_in_row: Std.Dev. 2908.91 Entropy: 3.70031</p>
+</blockquote>
+
+<p>Intuitively it&rsquo;s correct the more pixels we use for prediction, the more precise it will be. And the less prediction error we achieve. The fourth predictor i&rsquo;ve implemented was neighbor averaging predictor:</p>
+
+<pre><code>int predict_by_neighbors(const cv::Mat_&amp; img, int row, int col)
+{
+    if (col &gt; 0 &amp;&amp; row &gt; 0)
+    {
+        int a = img(row, col - 1);
+        int b = img(row - 1, col - 1);
+        int c = img(row - 1, col);
+        int s = a + b + c;
+
+        float m = s / 3.0f;
+        return (int)m;
+    }
+    else
+        return 0;
+}
+</code></pre>
+
+<p>It predicts the value of the next pixel by averaging values of it&rsquo;s closest neighbors (top, left and top-left pixel). This predictor shows better results than <strong>predict_by_2prev_pixels_in_row</strong>, <strong>predict_by_previous_pixel_in_row</strong>, but for some reason it cannot beat <strong>predict_by_previous_pixel_in_col</strong> algorithm:</p>
+
+<blockquote>
+<p>predict<em>by</em> neighbors: Std.Dev. 3511.97 Entropy: 3.3431</p>
+</blockquote>
+
+<p>Then i remembered as Guillermo mentioned that JPEG-LS uses some sort of edge-detection to do this. So i tried to calculate gradient in X and Y directions using neighbor pixel values and compute the prediction using it:</p>
+
+<pre><code>int predict_by_gradient(const cv::Mat_&amp; img, int row, int col)
+{
+    if (col &gt; 0 &amp;&amp; row &gt; 0)
+    {
+        int a = img(row, col - 1);
+        int b = img(row - 1, col - 1);
+        int c = img(row - 1, col);
+
+        int gx = a - b;
+        int gy = c - b;
+
+        return (int)(b + (gx + gy) / 2.0f);
+    }
+    else
+    {
+        return 0;
+    }
+}
+</code></pre>
+
+<p>Well, at this moment this algorithm demonstrate the best prediction rate:</p>
+
+<blockquote>
+<p>predict_by_gradient: Std.Dev. 3881.62 Entropy: 3.18335</p>
+</blockquote>
+
+<p>Can we increase even more? Yes! I think we should use 3x3 neighbor area based prediction for this. I&rsquo;m pretty sure i&rsquo;m reinventing the wheel, but i think it&rsquo;s very fun and useful to train the brain with puzzles like this :) So, does anyone wants to share their predictors? Let&rsquo;s do a small challenge!</p>
+
+<p><strong>Useful information for OpenCV users</strong>. The source code of my benchmark you can find here: <a href="http://pastebin.com/zWz9vaD7">http://pastebin.com/zWz9vaD7</a>.</p>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/coursera/">coursera</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=Image%20and%20video%20processing%3a%20From%20Mars%20to%20Hollywood%20with%20a%20stop%20at%20the%20hospital%20-%20Week%202&url=https%3a%2f%2fexample.com%2f2013-02-05-image-and-video-processing-from-mars-to-hollywood-with-a-stop-at-the-hospital-week-2%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2f2013-02-05-image-and-video-processing-from-mars-to-hollywood-with-a-stop-at-the-hospital-week-2%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2f2013-02-05-image-and-video-processing-from-mars-to-hollywood-with-a-stop-at-the-hospital-week-2%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

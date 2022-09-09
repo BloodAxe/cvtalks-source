@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2011-04-13-image-processing-cloud-computing-architecture-overview-rsses on Ghostwriter example</title>
+    <link>https://example.com/2011-04-13-image-processing-cloud-computing-architecture-overview/index.xml</link>
+    <description>Recent content in 2011-04-13-image-processing-cloud-computing-architecture-overview-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Wed, 13 Apr 2011 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2011-04-13-image-processing-cloud-computing-architecture-overview/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Image processing &amp; cloud computing - Architecture overview</title>
+      <link>https://example.com/2011-04-13-image-processing-cloud-computing-architecture-overview/</link>
+      <pubDate>Wed, 13 Apr 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2011-04-13-image-processing-cloud-computing-architecture-overview/</guid>
+      <description>
+
+&lt;p&gt;&lt;img src=&#34;opencv-azure-mix-small.png&#34; class=&#34;pull-left img-thumbnail&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This post will be devoted to high level architecture overview. For newcomers - I&amp;rsquo;m creating face recognition demo application that will work in the cloud environment and all algorithmic stuff will be written in native C++ code (with help of OpenCV and boost libraries). Under the hood - detailed application architecture overview and diagrams.&lt;/p&gt;
+
+&lt;p&gt;**FaceRecognitionCloudApp **- is a demonstration project written in combination of C++ and C# languages. It has two challenging objectives:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Face detection and robust person identification&lt;/li&gt;
+&lt;li&gt;Demonstration of the technology of doing expensive, computer vision related calculations in the scalable server environment (cloud)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Application design follows classic three-tier architecture including presentation level, business logic and data abstraction layer.&lt;/p&gt;
+
+&lt;p&gt;Presentation level&lt;/p&gt;
+
+&lt;p&gt;The client application is ASP.NET website used to host Silverlight application inside it. Silverlight application implements thin client which duties are: interaction with user, access to web-camera and communication with business layer through WCF RIA Services.&lt;/p&gt;
+
+&lt;h2 id=&#34;business-logic&#34;&gt;Business logic&lt;/h2&gt;
+
+&lt;p&gt;This layer contains necessary web-service back-end for presentation layer and face recognition module containing  C++ implementation of the face recognition algorithm.&lt;/p&gt;
+
+&lt;h2 id=&#34;data-abstraction-layer&#34;&gt;Data abstraction layer&lt;/h2&gt;
+
+&lt;p&gt;Provides access to database of learned faces. For storing learning data SQL Azure storage is used.&lt;/p&gt;
+
+&lt;p&gt;Here is a bit of diagrams for better understanding:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;FaceRecognitionApp-High-Level-Architecture_thumb.png&#34; alt=&#34;FaceRecognitionApp High Level Architecture&#34; title=&#34;FaceRecognitionApp High Level Architecture&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;FaceRecognitionCloudApp will offer face-based authentication system. User will be able to register himself through web-interface and login using only web camera (without entering user name/password). Remember - this is only a demonstration of concept. Don&amp;rsquo;t expect too much from it. You will be able to register account (working web camera required) and then you can login in the system (your face will be the credential).&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;FaceRecognitionCloudAppActivity_thumb.png&#34; alt=&#34;FaceRecognitionCloudApp Activity diagram&#34; title=&#34;FaceRecognitionCloudApp Activity diagram&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;To be continued…&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>How to debug node.js addons in Visual Studio &middot; My Name</title>
+        <meta name="description" content="While working on CloudCV I encountered problems in node.js addon written in native code. For CloudCV I use node.js with C&#43;&#43; Addon to separate high-performance algorithms (C&#43;&#43;) from high-level networking API which node provides.
+In this tutorial I&rsquo;m going to reveal best practices on debugging C&#43;&#43; Addons for Node.js (0.12) using Visual Studio 2013.
+  Continue reading if you want to read in details why this works.
+This article is valid for Node.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="How to debug node.js addons in Visual Studio">
+<meta property="og:description" content="While working on CloudCV I encountered problems in node.js addon written in native code. For CloudCV I use node.js with C&#43;&#43; Addon to separate high-performance algorithms (C&#43;&#43;) from high-level networking API which node provides.
+In this tutorial I&rsquo;m going to reveal best practices on debugging C&#43;&#43; Addons for Node.js (0.12) using Visual Studio 2013.
+  Continue reading if you want to read in details why this works.
+This article is valid for Node.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/how-to-debug-nodejs-addons-in-visual-studio/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">How to debug node.js addons in Visual Studio</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    
+
+<p>While working on <a href="https://cloudcv.io">CloudCV</a> I encountered problems in node.js addon written in native code. For CloudCV I use node.js with C++ Addon to separate high-performance algorithms (C++) from high-level networking API which node provides.</p>
+
+<p>In this tutorial I&rsquo;m going to reveal best practices on debugging C++ Addons for Node.js (0.12) using Visual Studio 2013.</p>
+
+<div class="embed-responsive embed-responsive-4by3">
+  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/eqhv42jVN6s" allowfullscreen></iframe>
+</div>
+
+<p>Continue reading if you want to read in details why this works.</p>
+
+<p><span class="more" /></p>
+
+<p>This article is valid for Node.js version 0.12. It should also works fine for further releases, however few things may change. I will try to keep this post up to date. Please, feel free to drop a comment for this article or write me on <a href="https://twitter.com/cvtalks">@cvtalks</a> if you have troubles following this tutorial.</p>
+
+<h2 id="before-we-start">Before we start</h2>
+
+<p>You will need a Visual Studio 2013 (<a href="http://go.microsoft.com/?linkid=9832256">Express edition</a> should be enough). Also, please come and grab <a href="http://nodejs.org/dist/v0.12.0/node-v0.12.0.tar.gz">Node.js source</a>] code. We will use it later to build Debug configuration of Node.js. I assume you
+already have production (Release) version of Node and NPM as we will need <a href="https://github.com/TooTallNate/node-gyp">node-gyp</a> to generate and build C++ Addon project. So please ensure you&rsquo;ve installed them before going to next step:</p>
+
+<pre><code class="language-bash">npm install -g node-gyp
+npm install -g nan
+</code></pre>
+
+<h2 id="build-debug-configuration-of-node-js">Build Debug configuration of node.js</h2>
+
+<p>This is very straighforward step.</p>
+
+<ol>
+<li>Download <a href="http://nodejs.org/dist/v0.12.0/node-v0.12.0.tar.gz">Node.js source</a>] code.</li>
+<li>Extract it somewhere to your filesystem. For demonstration, I assume it will be in <code>c:\Develop\node-v0.12.0</code></li>
+<li>Navigate to <code>c:\Develop\node-v0.12.0</code> and run <code>vcbuild.bat debug nosign x64</code>. This batch script will build Debug configuration of node.js for 64-bit architecture (if you&rsquo;re on 32-bit platform omit this flag). A <code>nosign</code> flag tells to skip executable signing which is ok since we&rsquo;re not going to distribute it, and finally <code>debug</code> forces compiler to generate debug symbols for node executable.</li>
+</ol>
+
+<p><img src="build-node-debug-step-1.png" alt="" /></p>
+
+<p>If everything goes fine, you should see the following output:</p>
+
+<pre><code class="language-bash">c:\Develop\node-v0.12.0&gt;vcbuild.bat debug nosign x64
+ctrpp not found in WinSDK path--using pre-gen files from tools/msvs/genfiles.
+creating  icu_config.gypi
+
+...
+
+creating  config.gypi
+creating  config.mk
+Project files generated.
+
+...
+
+debugger-agent.vcxproj -&gt; c:\Develop\node-v0.12.0\Debug\lib\debugger-agent.lib
+v8_nosnapshot.vcxproj -&gt; ..\..\..\..\build\Debug\lib\v8_nosnapshot.lib
+openssl-cli.vcxproj -&gt; c:\Develop\node-v0.12.0\Debug\\openssl-cli.exe
+mksnapshot.vcxproj -&gt; ..\..\..\..\build\Debug\\mksnapshot.exe
+v8_snapshot.vcxproj -&gt; ..\..\..\..\build\Debug\lib\v8_snapshot.lib
+node.vcxproj -&gt; c:\Develop\node-v0.12.0\Debug\\node.exe
+</code></pre>
+
+<p><img src="build-node-debug-step-3.png" alt="" /></p>
+
+<p>If you have problems on this step, please refer to <a href="https://github.com/joyent/node/wiki/installation#building-on-windows">building node.js</a> official documentation.</p>
+
+<h2 id="building-debug-configuration-of-c-addon">Building Debug configuration of C++ Addon</h2>
+
+<p>A C++ Addon for nodejs is nothing but ordinary DLL. Therefore Visual Studio can load it and let you do step-by-step debugging inside node.js app.
+Let&rsquo;s start with simple scenario. I will use <a href="https://github.com/rvagg/nan/tree/master/examples/async_pi_estimate">Pi estimation</a> example from <a href="https://github.com/rvagg/nan">NaN</a> project.</p>
+
+<p>Your C++ Addon code can look as follows:</p>
+
+<pre><code class="language-cpp">/*********************************************************************
+ * NAN - Native Abstractions for Node.js
+ *
+ * Copyright (c) 2015 NAN contributors
+ *
+ * MIT License &lt;https://github.com/rvagg/nan/blob/master/LICENSE.md&gt;
+ ********************************************************************/
+
+var addon = require('./build/Release/addon');
+var calculations = process.argv[2] || 100000000;
+
+function printResult(type, pi, ms) {
+  console.log(type, 'method:')
+  console.log('\tπ ≈ ' + pi
+        + ' (' + Math.abs(pi - Math.PI) + ' away from actual)')
+    console.log('\tTook ' + ms + 'ms');
+    console.log()
+}
+
+function runSync () {
+  var start = Date.now();
+  // Estimate() will execute in the current thread,
+  // the next line won't return until it is finished
+    var result = addon.calculateSync(calculations);
+  printResult('Sync', result, Date.now() - start)
+}
+
+function runAsync () {
+  // how many batches should we split the work in to?
+    var batches = process.argv[3] || 16;
+    var ended = 0;
+    var total = 0;
+    var start = Date.now();
+
+    function done (err, result) {
+        total += result;
+
+    // have all the batches finished executing?
+        if (++ended == batches) {
+            printResult('Async', total / batches, Date.now() - start)
+        }
+    }
+
+  // for each batch of work, request an async Estimate() for
+  // a portion of the total number of calculations
+    for (var i = 0; i &lt; batches; i++) {
+        addon.calculateAsync(calculations / batches, done);
+    }
+}
+
+runSync()
+runAsync()
+</code></pre>
+
+<p>And you also should have gyp file which tells node-gyp how to build your addon:</p>
+
+<pre><code class="language-gyp">{
+  &quot;targets&quot;: [
+    {
+      &quot;target_name&quot;: &quot;addon&quot;,
+      &quot;sources&quot;: [
+        &quot;addon.cc&quot;,
+        &quot;pi_est.cc&quot;,
+        &quot;sync.cc&quot;,
+        &quot;async.cc&quot;
+      ],
+      &quot;include_dirs&quot;: [&quot;&lt;!(node -e \&quot;require('nan')\&quot;)&quot;]
+    }
+  ]
+}
+</code></pre>
+
+<p>Assuming you&rsquo;re in root C++ addon directory, you can now generate a solution for Visual Studio to build your addon:</p>
+
+<pre><code class="language-bash">node-gyp configure rebuild --nodedir=&quot;c:\Develop\node-v0.12.0&quot;
+</code></pre>
+
+<p><img src="build-addon-step-1.png" alt="" /></p>
+
+<p>What is really important here, is <code>--nodedir=&quot;c:\Develop\node-v0.12.0&quot;</code> flag, which indicates to link against node in specified
+folder rather than system wide available.</p>
+
+<p class="bg-info lead">
+This is very important to match Debug node with Debug C++ Addon, otherwise you will have 
+linker issues caused by inconsistent CRT's.
+</p>
+
+<p>After node-gyp finishes, a .node file (this is .dll, don&rsquo;t be misleaded by .node extension) will be generated in /build/Debug/ folder.</p>
+
+<p><img src="build-addon-step-3.png" alt="" /></p>
+
+<p>Now it&rsquo;s time to write a small node.js script that utilizes our addon:</p>
+
+<pre><code class="language-nodejs">var addon = require('./build/Release/addon');
+
+function printResult(type, pi, ms) {
+  console.log(type, 'method:')
+  console.log('\tπ ≈ ' + pi
+        + ' (' + Math.abs(pi - Math.PI) + ' away from actual)')
+    console.log('\tTook ' + ms + 'ms');
+    console.log()
+}
+
+function runAsync () {
+
+    var start = Date.now();
+
+    function done (err, result) {
+        console.log('\tπ ≈ ' + pi + ' (' + Math.abs(pi - Math.PI) + ' away from actual)')
+        console.log('\tTook ' + ms + 'ms');
+        console.log()
+
+        printResult('Async', total / batches, Date.now() - start)
+    }
+
+    addon.calculateAsync(1024, done);
+}
+
+runAsync()
+</code></pre>
+
+<p>You may wonder now, how to debug it. Patience, we&rsquo;re almost there.</p>
+
+<p><img src="generated-project.jpg" alt="" /></p>
+
+<ol>
+<li>Navigate to <code>build/</code> directory of your C++ Addon and
+open solution file.</li>
+<li>Ensure that you have active Debug configuration.</li>
+<li>Navigate to project properties and open Debugging tab there.</li>
+<li>Modify command name to &ldquo;c:\Develop\node-v0.12.0\Node.exe&rdquo; (Change this path if you extracted node somewhere else)</li>
+<li>Set a command argument to full name of your node.js script.</li>
+<li>Change working directory to a place where your script is. This step important when you have complex nodej.js application with
+dependencies.</li>
+<li>Set breakpoint somewhere in your C++ Addon code.</li>
+<li>Now hit &lsquo;Debug&rsquo; (F5) and enjoy!</li>
+</ol>
+
+<p><img src="vsproject-settings.jpg" alt="" /></p>
+
+<h2 id="how-it-works">How it works</h2>
+
+<p>When building Debug builds, Visual Studio trades speed for easy debugging. This means not only slower code, but it also preserves debug
+symbols (a table of function addresses/names/file locations). When you start a debugger on process, VS attachs to it and tries to load
+symbols for this binary and all dynamically loaded libraries it uses.</p>
+
+<p><img src="vsproject-debugging.jpg" alt="" /></p>
+
+<p>As a consequence, debug symbols for C++ addon is being loaded which allows you to see program execution location in your IDE,
+do step-by-step debugging and change/rebuild/debug as usual.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>I hope you find this post useful. From my experience debugging node.js &lt;-&gt; C++ interop can be nasty. Personally I follow this
+scenario for debugging CloudCV C++ backend. This saves a lot of time and nerves. Unleash your node.js with C++ and happy debugging!</p>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/tutorials/">tutorials</a>
+            
+                 <a href="/tags/nodejs/">nodejs</a>
+            
+                 <a href="/tags/visualstudio/">visualstudio</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=How%20to%20debug%20node.js%20addons%20in%20Visual%20Studio&url=https%3a%2f%2fexample.com%2fhow-to-debug-nodejs-addons-in-visual-studio%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2fhow-to-debug-nodejs-addons-in-visual-studio%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2fhow-to-debug-nodejs-addons-in-visual-studio%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

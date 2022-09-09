@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Computer-vision-digest-september-2014-rsses on Ghostwriter example</title>
+    <link>https://example.com/computer-vision-digest-september-2014/index.xml</link>
+    <description>Recent content in Computer-vision-digest-september-2014-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Wed, 01 Oct 2014 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/computer-vision-digest-september-2014/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Computer Vision Digest - September 2014</title>
+      <link>https://example.com/computer-vision-digest-september-2014/</link>
+      <pubDate>Wed, 01 Oct 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/computer-vision-digest-september-2014/</guid>
+      <description>
+
+&lt;p&gt;Third &lt;a href=&#34;https://example.com/tags/digest.html&#34;&gt;computer vision digest&lt;/a&gt;. Your monthly portion of news in computer vision for September 2014.&lt;/p&gt;
+
+&lt;p&gt;In this issue:
+ - &lt;a href=&#34;#1&#34;&gt;Real-time face 3D model reconstruction&lt;/a&gt;
+ - &lt;a href=&#34;#1&#34;&gt;Image color correction and contrast enhancement&lt;/a&gt;
+ - &lt;a href=&#34;#3&#34;&gt;Robust Optimization Techniques in Computer Vision&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Previous issues:
+ - &lt;a href=&#34;https://example.com/articles/2014-05-computer-vision-digest/&#34;&gt;Computer Vision Digest (May 2014)&lt;/a&gt;
+ - &lt;a href=&#34;https://example.com/articles/2014-06-computer-vision-digest/&#34;&gt;Computer Vision Digest (June 2014)&lt;/a&gt;
+ - &lt;a href=&#34;https://example.com/articles/computer-vision-digest-august-2014/&#34;&gt;Computer Vision Digest (August 2014)&lt;/a&gt;&lt;/p&gt;
+
+&lt;div class=&#34;alert alert-info&#34; role=&#34;alert&#34;&gt;
+Feel free to leave your suggestions on interesting materials in post comments 
+or via Twitter by mentioning [@cvtalks](https://twitter.com/cvtalks). 
+Best links will be included into next digest!
+&lt;/div&gt;
+
+&lt;p&gt;&lt;span class=&#34;more clearfix&#34; /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a name=&#34;1&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;real-time-face-3d-model-reconstruction&#34;&gt;Real-time face 3D model reconstruction&lt;/h2&gt;
+
+&lt;p&gt;Researchers from the University of Washington prepared interesting presentation for the European Conference on Computer Vision (ECCV-2014). It is a real-time &lt;a href=&#34;http://grail.cs.washington.edu/projects/totalmoving/&#34;&gt;3D face reconstruction from the video&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;15a03e37860948f9b2c4925b3c311c45.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Using the video from YouTube, the program automatically builds highly detailed face 3D-model for each video frame.&lt;/p&gt;
+
+&lt;p&gt;This is a very impressive result, given the complexity of the problem, because the facial expressions of the human face is very complex. For emotion recognition, it is important to see the exact position of the eyes, bending eyebrows, wrinkles. The smallest error in reconstructed 3D-model is highly noticeable.&lt;/p&gt;
+
+&lt;iframe width=&#34;800&#34; height=&#34;600&#34; src=&#34;//www.youtube.com/embed/C1iLVAUiC7s&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;
+
+&lt;p&gt;The vast majority of other programs for face 3D-tracking uses blend shapes method, when the shape of the object changes, &amp;ldquo;flowing&amp;rdquo; from one state to another. The method of smooth deformations has lack of the small details that are so important for the perception of faces. The authors of the new algorithm abandoned this approach.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;2639b10e54684d11b684d3257c8f400c.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;On the other hand, although the frame-independent reconstruction create a &amp;ldquo;separate&amp;rdquo; 3D mode from each frame, when you play on the &lt;sup&gt;30&lt;/sup&gt;&amp;frasl;&lt;sub&gt;60&lt;/sub&gt; frames per second, the result should be more realistic than in the case of a smooth modification.&lt;/p&gt;
+
+&lt;p&gt;And more. Unlike other technologies, it does not require human involvement in a test of a movie. Instead, a large archive of his photographs in different lighting conditions and poses, this method use video footrage that is tracked with optical flow (3D optical flow). Author research say that in our time for each person collected a large archive of photographs that can be used to reconstruct it&amp;rsquo;s face.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;28b4d17c1c65450faa683cc1afeddd89.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Source: &lt;a href=&#34;http://habrahabr.ru/post/237827/&#34;&gt;http://habrahabr.ru/post/237827/&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a name=&#34;2&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;image-color-correction-and-contrast-enhancement&#34;&gt;Image color correction and contrast enhancement&lt;/h2&gt;
+
+&lt;p&gt;A friend of mine shared a link to slideshare to the exhaustive research and analysis of color correction and contrast enchancement algorithms. How many of these have you worked with? I was impressed on how much algorithms has been developed so far. Just watch these slides, I bet - you&amp;rsquo;ll find new algorithms you&amp;rsquo;ve never heard about. Cheers to Yu Huang for collecting them for us!&lt;/p&gt;
+
+&lt;p&gt;&lt;iframe src=&#34;//www.slideshare.net/slideshow/embed_code/28271598?rel=0&#34; width=&#34;597&#34; height=&#34;486&#34; frameborder=&#34;0&#34; marginwidth=&#34;0&#34; marginheight=&#34;0&#34; scrolling=&#34;no&#34; style=&#34;border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;&#34; allowfullscreen&gt; &lt;/iframe&gt; &lt;div style=&#34;margin-bottom:5px&#34;&gt; &lt;strong&gt; &lt;a href=&#34;https://www.slideshare.net/yuhuang/image-color-correction-contrast-adjustment&#34; title=&#34;Image color correction and contrast enhancement&#34; target=&#34;_blank&#34;&gt;Image color correction and contrast enhancement&lt;/a&gt; &lt;/strong&gt; from &lt;strong&gt;&lt;a href=&#34;http://www.slideshare.net/yuhuang&#34; target=&#34;_blank&#34;&gt;Yu Huang&lt;/a&gt;&lt;/strong&gt; &lt;/div&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a name=&#34;3&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;robust-optimization-techniques-in-computer-vision&#34;&gt;Robust Optimization Techniques in Computer Vision&lt;/h2&gt;
+
+&lt;div class=&#34;alert alert-danger&#34; role=&#34;alert&#34;&gt;
+    &lt;strong&gt;Math warning.&lt;/strong&gt; Do not read this section unless you understand what damping function is and what is LevMar.
+&lt;/div&gt;
+
+&lt;p&gt;I&amp;rsquo;ve found nice slides from the ECCV 2014 workshop on non-linear optimization problems that happen in computer vision.&lt;/p&gt;
+
+&lt;p&gt;Course description&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;div class=&#34;pull-left&#34;&gt;
+![nl](nl.png)
+&lt;/div&gt;
+
+&lt;p&gt;Many important problems in computer vision, such as structure from motion and image registration, involve model estimation in presence of a significant number of outliers. Due to the outliers, simple estimation techniques such as least squares perform very poorly. To deal with this issue, vision researchers have come up with a number of techniques that are robust to outliers, such as Hough transform and RANSAC (random sample consensus). These methods will be analyzed with respect to statistical modeling, worst-case and average exectution times and how to choose the balance between the number of outliers and the number of inliers. Apart from these classical techniques we will also describe recent advances in robust model estimation. This includes sampling based techniques with guaranteed optimality for low-dimensional problems and optimization of semi-robust norms for high-dimensional problems. We will see how to solve low-dimensional estimation problems with over 99% outliers in a few seconds, as well as how to detect outliers in structure from motion problems with thousands of variables.
+Topics&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://www2.maths.lth.se/matematiklth/personal/fredrik/Session1.pdf&#34;&gt;Session 1&lt;/a&gt;: Statistical models of robust regression. Introduction, motivations and applications. Relation to robust statistics. Occasional vs. frequent large-scale measurement noise (outliers). Low- vs. high-dimensional model estimation. Optimal vs. approximate methods. Multiple model fitting. Computational complexity.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www2.maths.lth.se/matematiklth/personal/fredrik/Session2.pdf&#34;&gt;Session 2&lt;/a&gt;: Robust estimation with low-dimensional models. Hough transform. M-estimators. RANSAC and its variants. Branch and bound methods. Optimal methods. Fast approximate methods. Applications: Feature-based registration, multiple-view geometry, image-based localization.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www2.maths.lth.se/matematiklth/personal/fredrik/Session3.pdf&#34;&gt;Session 3&lt;/a&gt;: Robust estimation with high-dimensional models. Robust norms and convex optimization. L_infinity-norm optimization with outliers. L_1-norm optimization on manifolds. Applications: Multiple-view geometry, large-scale structure-from-motion and subspace estimation.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;You can read it here: &lt;a href=&#34;http://www2.maths.lth.se/matematiklth/personal/fredrik/eccv2014_tutorial.html&#34;&gt;http://www2.maths.lth.se/matematiklth/personal/fredrik/eccv2014_tutorial.html&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

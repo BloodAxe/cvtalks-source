@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2012-06-12-im-a-book-author-now-rsses on Ghostwriter example</title>
+    <link>https://example.com/2012-06-12-im-a-book-author-now/index.xml</link>
+    <description>Recent content in 2012-06-12-im-a-book-author-now-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Tue, 12 Jun 2012 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2012-06-12-im-a-book-author-now/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>I’m a book author now :)</title>
+      <link>https://example.com/2012-06-12-im-a-book-author-now/</link>
+      <pubDate>Tue, 12 Jun 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2012-06-12-im-a-book-author-now/</guid>
+      <description>
+
+&lt;p&gt;Hello dear computer vision community! I was absent for a while. There were a lot of interesting things i did for these months. Unfortunately, i can’t tell about almost all of them due to signed NDA agreements. But there is one great thing i can share right now. Today i finished working on two chapters of  “OpenCV Hotshots” book! This book is written with couple of authors, my part was about marker-based and marker-less augmented reality. Here is a brief intro what it’s about:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Marker-based Augmented Reality on iPhone or iPad&lt;/strong&gt; Readers will learn how to create a new iPhone project, how to add the OpenCV library to it, how to efficiently access the camera with OpenCV, and how to display the processed camera image onto their iPhone or iPad. They will also learn a basic method of real time 3D augmented reality, by first detecting a known 2D marker, transforming the camera view based on the marker position &amp;amp; rotation, then displaying a 3D virtual object on top of the real marker.&lt;/p&gt;
+
+&lt;p&gt;**Marker-less Augmented Reality **Readers will learn how to create a standard real time project using OpenCV (for desktop), and how to perform a new method of marker-less augmented reality, using the actual environment as the input instead of printed square markers. This chapter will cover some theory of marker-less AR and show how to apply it in useful projects.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I never have written books before and it’s very exciting and interesting experience. Well, anyway we have to wait few months until the rest of the chapters are done and it will be published. From the other interesting things I did, there were:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Development of the Real-time shape detection algorithm for iPad game.&lt;/li&gt;
+&lt;li&gt;Development of the vehicle trajectory reconstruction algorithm using floor tracking.&lt;/li&gt;
+&lt;li&gt;Investigation of the performance of matrix multiplication using OpenCV and Eigen libraries on the iOS platform. (Spoiler: Eigen kicks OpenCV’s ass).
+Thanks for reading this! I’ll announce interesting crowdsourcing project in a few days. It’s about AR and will be interested to may developers in this area.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;comments&#34;&gt;Comments&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1098&#34; title=&#34;2012-06-19 15:16:05&#34;&gt;dofl&lt;/a&gt;:&lt;/strong&gt; Great. I&amp;rsquo;ll buy it.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1245&#34; title=&#34;2012-07-03 11:13:21&#34;&gt;Josh&lt;/a&gt;:&lt;/strong&gt; Look forward to it! Any hints who you are publishing with and when it will be available (any chance to get a rough-cuts version of it). Josh&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1246&#34; title=&#34;2012-07-03 11:26:18&#34;&gt;Csaba Bolyos&lt;/a&gt;:&lt;/strong&gt; Interesting. Your work is really useful, I&amp;rsquo;m waiting to read it.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;#1259&#34; title=&#34;2012-07-04 08:40:03&#34;&gt;EKhvedchenya&lt;/a&gt;:&lt;/strong&gt; The publisher is Packt Pub, approximate publish date is on October.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

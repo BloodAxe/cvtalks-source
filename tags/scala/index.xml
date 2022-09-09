@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>scala on Computer Vision Talks</title>
+    <link>https://computer-vision-talks.com/tags/scala/</link>
+    <description>Recent content in scala on Computer Vision Talks</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 17 Sep 2013 00:00:00 +0000</lastBuildDate><atom:link href="https://computer-vision-talks.com/tags/scala/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Functional Programming Principles in Scala</title>
+      <link>https://computer-vision-talks.com/post/2013-09-17-functional-programming-principles-in-scala/</link>
+      <pubDate>Tue, 17 Sep 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://computer-vision-talks.com/post/2013-09-17-functional-programming-principles-in-scala/</guid>
+      
+        <description>img.pull-left.img-thumbnail(src=&amp;ldquo;small-icon.png&amp;rdquo;)
+p | Meanwhile, after watching this brilliant talk of the Alexander Soloviov on &amp;ldquo;Functional Reactive Programming and Closure Script&amp;rdquo; i decided to study Functional Programming. | Fortunately, there was a active course a(href=&amp;ldquo;https://class.coursera.org/progfun-003/class/index&amp;quot;) Functional Programming Principles in Scala |.
+p | My first impressions on Scala is&amp;hellip; it&amp;rsquo;s fun! | Thinking in functional programming paradigm makes you think different about your objects and their connection to each other. | And i&amp;rsquo;m curious how Scala can be used for solving main computer vision problems.</description>
+      
+    </item>
+    
+  </channel>
+</rss>

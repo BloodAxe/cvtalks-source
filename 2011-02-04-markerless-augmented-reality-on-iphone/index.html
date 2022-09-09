@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Markerless Augmented Reality on iPhone &middot; My Name</title>
+        <meta name="description" content="Hello everyone! Today i want to share my results in research of markerless augmented reality. The main idea - do fast and quality AR without those damn markers and give the ability to use real object as a target. Markerless augmented reality is very similar to marker-based systems like ARToolkit with one major difference - such technology use real object as a target for augmentation. It can be almost any kind of objects - photos, logos, beer bottle or Cola can.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="Markerless Augmented Reality on iPhone">
+<meta property="og:description" content="Hello everyone! Today i want to share my results in research of markerless augmented reality. The main idea - do fast and quality AR without those damn markers and give the ability to use real object as a target. Markerless augmented reality is very similar to marker-based systems like ARToolkit with one major difference - such technology use real object as a target for augmentation. It can be almost any kind of objects - photos, logos, beer bottle or Cola can.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/2011-02-04-markerless-augmented-reality-on-iphone/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">Markerless Augmented Reality on iPhone</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    
+
+<p>Hello everyone! Today i want to share my results in research of markerless augmented reality. The  main idea - do fast and quality AR without those damn markers and give the ability to use real object as a target.  Markerless augmented reality is very similar to marker-based systems like ARToolkit with one major difference - such technology use real object as a target for augmentation. It can be almost any kind of objects - photos, logos, beer bottle or Cola can.</p>
+
+<p><span class="more"></span></p>
+
+<p>The common pipeline is very trivial:</p>
+
+<ol>
+<li>Estimate transformation between real-world target and virtual camera.</li>
+<li>Render virtual objects using estimated transformation.</li>
+</ol>
+
+<p>The most complex part - is to find a target on video frame. Actually, algorithm you will use depends on the kind of a target. In my today&rsquo;s showcase i use printed image of the graffity pattern. And i will draw the 3d model on the top of this image.</p>
+
+<p><img src="graffiti-300x240.png" alt="" title="graffiti" /></p>
+
+<p>For target detection i use feature descriptors. At each frame, algorithm detects keypoints (using FAST feature detector), extracts descriptors (using LAZY descriptor) and match them with reference descriptor set (from the image above). Those matches gives us all necessary information to estimate transformation between camera and target. All necessary functions exists in OpenCV. Here is screenshot from working sample running on the iPhone 3Gs:</p>
+
+<p><img src="Screenshot-2011.02.04-10.22.36.png" alt="Markerless augmented reality" title="Markerless augmented reality" /></p>
+
+<h2 id="facts">Facts:</h2>
+
+<ul>
+<li>Runs at ~10 fps on iPhone 3Gs.</li>
+<li>3rd party libs used: OpenCV, OGRE, Boost.</li>
+</ul>
+
+<h2 id="further-work">Further work:</h2>
+
+<p>There are a lot of things i wish to do:</p>
+
+<ul>
+<li>Achieve real-time (25+fps) on iPhone</li>
+<li>Introduce two-stage algorithm (expensive initialization &lt;-&gt; lightweight tracking) to get significant performance boost.</li>
+<li>Public demo in AppStore :)</li>
+</ul>
+
+<h2 id="instead-of-conclusion">Instead of conclusion</h2>
+
+<p>I&rsquo;m sure that the markerless AR has a great future. With this technology we can create impressive presentations and games with seamless fusion of the real and augmented worlds. You will no more require to print some kind of markers. Just imagine - any kind of object can be a door to world of the augmented reality!</p>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/opencv/">opencv</a>
+            
+                 <a href="/tags/iphone/">iphone</a>
+            
+                 <a href="/tags/ar/">ar</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=Markerless%20Augmented%20Reality%20on%20iPhone&url=https%3a%2f%2fexample.com%2f2011-02-04-markerless-augmented-reality-on-iphone%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2f2011-02-04-markerless-augmented-reality-on-iphone%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2f2011-02-04-markerless-augmented-reality-on-iphone%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

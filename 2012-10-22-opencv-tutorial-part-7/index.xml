@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2012-10-22-opencv-tutorial-part-7-rsses on Ghostwriter example</title>
+    <link>https://example.com/2012-10-22-opencv-tutorial-part-7/index.xml</link>
+    <description>Recent content in 2012-10-22-opencv-tutorial-part-7-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Mon, 22 Oct 2012 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.com/2012-10-22-opencv-tutorial-part-7/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>OpenCV Tutorial Part 7</title>
+      <link>https://example.com/2012-10-22-opencv-tutorial-part-7/</link>
+      <pubDate>Mon, 22 Oct 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/2012-10-22-opencv-tutorial-part-7/</guid>
+      <description>
+
+&lt;p&gt;After a long delay i&amp;rsquo;m happy to resume posting OpenCV tutorials in my blog. In Part 7 i will present you a new way of generation of icons for samples. Also i&amp;rsquo;ll show how to use NEON and assembly language to speed-up cv::transform function twice! Also there are three new samples i have to say few words about each.&lt;/p&gt;
+
+&lt;h2 id=&#34;interface-improvements&#34;&gt;Interface improvements&lt;/h2&gt;
+
+&lt;h3 id=&#34;default-sample-icons&#34;&gt;Default sample icons&lt;/h3&gt;
+
+&lt;p&gt;I think each sample has to have it&amp;rsquo;s own unique icon image. Unfortunately, i&amp;rsquo;m not a cool graphic designer and i&amp;rsquo;m lazy. And i found brillant solution how to create unique icon for almost any sample with minimal efforts. Our sample will generate it for us! It&amp;rsquo;s so easy, right? We write a new sample that implements some cool effect. So it would be great if it&amp;rsquo;s icon will inform user about it. To do this we take a default image we use for icons and pass it through our sample. Result image is the best visual demonstration we can ever imagine. Let&amp;rsquo;s take a look on result of processing default icon with Cartoon Filter Sample: &lt;strong&gt;Default Image&lt;/strong&gt;: &lt;img src=&#34;IMG_0044.png&#34; alt=&#34;&#34; title=&#34;Mandrill (Original)&#34; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;generated-cartoon-filter-icon&#34;&gt;&lt;strong&gt;Generated Cartoon Filter Icon&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&#34;IMG_0045.jpg&#34; alt=&#34;&#34; title=&#34;Mandrill (Cartoon)&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Also, these icons are now used in the rest of UI. The final picture looks much more user-friendly:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;Screen-Shot-2012-08-19-at-9.05.33-PM-1024x813.png&#34; alt=&#34;&#34; title=&#34;OpenCV Tutorial Part 7 Sample Icons&#34; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;in-case-you-looking-for-a-code&#34;&gt;In case you looking for a code&lt;/h3&gt;
+
+&lt;p&gt;While working on this chapter i noticed that UI-realted code has a lot of duplicates connected with converting of std::string to NSString, loading UIImage objects from bundle. To remove such duplicates i added a special facade class which performs all conversion and implements sample icon generation as described above.&lt;/p&gt;
+
+&lt;h4 id=&#34;samplefacade-interface&#34;&gt;&lt;strong&gt;SampleFacade interface&lt;/strong&gt;&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;@interface SampleFacade : NSObject
+
+- (id) initWithSample:(SampleBase*) sample;
+
+@property (readonly) SampleBase * sample;
+
+- (NSString *) title;
+- (NSString *) description;
+- (NSString *) friendlyName;
+
+- (UIImage*)   smallIcon;
+- (UIImage*)   largeIcon;
+
+- (bool) processFrame:(const cv::Mat&amp;amp;) inputFrame into:(cv::Mat&amp;amp;) outputFrame;
+- (UIImage*) processFrame:(UIImage*) source;
+
+@end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;icons-generation&#34;&gt;Icons generation&lt;/h4&gt;
+
+&lt;p&gt;When the data table is populated with a sample list it creates a cell for each sample. A cell contains a sample thumbnail image queried from [SampleFacade smallIcon].&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;- (UIImage*)   smallIcon
+{
+    if (!m_smallIcon)
+    {
+        if (self.sample-&amp;gt;;hasIcon())
+        {
+            NSString * iconStr = [NSString stringWithStdString:self.sample-&amp;gt;;getSampleIcon()];
+            m_smallIcon = [[UIImage imageNamed:iconStr] thumbnailWithSize:80];
+        }
+        else
+        {
+            UIImage * srcImage = [UIImage imageNamed:@&amp;quot;DefaultSampleIcon.png&amp;quot;];
+            m_smallIcon = [self processFrame:[srcImage thumbnailWithSize:80]];
+        }
+    }
+
+    return m_smallIcon;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Obviously, this method of generating sample icon image cannot be applied to any sample. It&amp;rsquo;s applicable only to samples that can process single image without any additional data input. For example, we can&amp;rsquo;t use this method to generate icon for video tracking, because it will give us exactly the same picture. But for samples that does manipulate with pixels it&amp;rsquo;s the ideal solution. ;&lt;/p&gt;
+
+&lt;h3 id=&#34;more-friendly-ipad-interface&#34;&gt;More friendly iPad interface&lt;/h3&gt;
+
+&lt;p&gt;When in landscape mode iPad&amp;rsquo;s application interface shows list of samples and result of sample processing simultaneously. In the previous versions of the app, selecting new sample while previous was running had no effect. You had go back to sample information window and then click again &amp;ldquo;run&amp;rdquo; to start using new sample. Now it&amp;rsquo;s fixed - you can switch to any sample any time you want. Watch this great demonstration video:  Implementation was very trivial - when user taps &amp;ldquo;Run on Video&amp;rdquo; or &amp;ldquo;Run on Image&amp;rdquo; button we save new view controller in DetailViewController&amp;rsquo;s private property:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([[segue identifier] isEqualToString:@&amp;quot;processVideo&amp;quot;])
+    {
+        VideoViewController * sampleController = [segue destinationViewController];
+        [sampleController setSample:currentSample];
+        self.activeVideoController = sampleController;
+    }
+    else if ([[segue identifier] isEqualToString:@&amp;quot;processImage&amp;quot;])
+    {
+        ImageViewController * sampleController = [segue destinationViewController];
+        [sampleController setSample:currentSample];
+        self.activeImageController = sampleController;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And modified configureView function now updates active image or video view if it&amp;rsquo;s not null:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-objectivec&#34;&gt;- (void)configureView
+{
+    // Update the user interface for the detail item.
+
+    if (currentSample)
+    {
+        self.sampleDescriptionTextView.text = [currentSample description];
+        self.title = [currentSample title];
+        self.sampleIconView.image = [currentSample largeIcon];
+
+        if (self.activeImageController)
+            [self.activeImageController setSample:currentSample];
+
+        if (self.activeVideoController)
+            [self.activeVideoController setSample:currentSample];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;performance-optimization&#34;&gt;Performance optimization&lt;/h2&gt;
+
+&lt;h3 id=&#34;optimizing-cv-transform-with-arm-neon&#34;&gt;Optimizing cv::transform with ARM NEON&lt;/h3&gt;
+
+&lt;p&gt;Assembly language and architecture-specific code was always a subject of my special attention. After i got my first iPhone i started learning ARM Assembly and it&amp;rsquo;s SIMD engine called NEON. As a result of my first attempts to write something useful i wrote &lt;a href=&#34;https://example.com/articles/2011-02-08-a-very-fast-bgra-to-grayscale-conversion-on-iphone/&#34; title=&#34;A very fast BGRA to Grayscale conversion on Iphone&#34;&gt;fast BGRA to Grayscale color conversion&lt;/a&gt; function. It was a long time ago, but this function is still actual. NEON-accelerated BGRA to Grayscale conversion is being used in this project too. In this section i will show you how to improve performance of the cv::transform function. Linear transform is useful function. In our samples we use it for Sepia effect for example. Also it can perform BGRA to Gray conversion without reducing number of image channels, adjust contrast and swap channels. A brief theory if you forgot what this function does. A cv::transform function multiplies each image pixel on 4x4 matrix and puts resulting vector to destination image. Input pixel is vector of 4 elements (unsigned bytes), each element contains channel intensity in following order: B, G, R, A. The matrix is represented by a 4x4 floating point (single precision) array. Our goal is to rewrite multiplication of 4x4 matrix on 4-element Vector. First, a wrapping function:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;namespace cv 
+{
+  void neon_transform_bgra(const cv::Mat&amp;amp; input, cv::Mat&amp;amp; result, const cv::Mat_&amp;amp; m)
+  {
+    assert(input.type() == CV_8UC4);
+    
+    if (result.rows != input.rows || result.cols != input.cols || result.type() != CV_8UC4)
+    {
+      result.create(input.rows, input.cols, CV_8UC4);
+    }
+    //result = input.clone();
+    //initSameSizeAlignedIfNecessary(m, result);
+    
+    //cv::Mat trans;
+    //cv::transpose(m, trans);
+    
+    float * matrix = reinterpret_cast&amp;lt;float*&amp;gt;(m.data);
+    
+    int v[4];
+    int out[4];
+    
+    for (int row = 0; row &amp;lt; input.rows; row++)
+    {
+      cv::Vec4b * srcRow = reinterpret_cast&amp;lt;cv::Vec4b*&amp;gt;(input.row(row).data);
+      cv::Vec4b * dstRow = reinterpret_cast&amp;lt;cv::Vec4b*&amp;gt;(result.row(row).data);
+      
+      for (int col = 0; col &amp;lt; input.cols; col++)
+      {
+        const cv::Vec4b&amp;amp; src = srcRow[col];
+        cv:Vec4b&amp;amp; dst        = dstRow[col];
+        
+        v[0] =  src[0];
+        v[1] =  src[1];
+        v[2] =  src[2];
+        v[3] =  src[3];
+        
+        neon_asm_mat4_vec4_mul(matrix, v, out);
+        
+        dst[0] = cv::saturate_cast&amp;lt;unsigned char&amp;gt;(out[0]);
+        dst[1] = cv::saturate_cast&amp;lt;unsigned char&amp;gt;(out[1]);
+        dst[2] = cv::saturate_cast&amp;lt;unsigned char&amp;gt;(out[2]);
+        dst[3] = cv::saturate_cast&amp;lt;unsigned char&amp;gt;(out[3]);
+      }
+    }
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

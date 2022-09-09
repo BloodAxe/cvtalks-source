@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>A very fast BGRA to Grayscale conversion on Iphone &middot; My Name</title>
+        <meta name="description" content="Almost all image processing algorithms uses gray scale images as input source. But almost all hardware video sources provide frames in RGB/BGR(A) formats. So gray scale conversion is very popular operation. Although it&rsquo;s expensive enough to cause CPU-bound bottlenecks while running on mobile processors. In this post i will show you how to use ARM NEON intrinsic to get significant performance boost of BGRA to GRAY conversion.
+
+Color representation Pixel color can be presented in different ways.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="A very fast BGRA to Grayscale conversion on Iphone">
+<meta property="og:description" content="Almost all image processing algorithms uses gray scale images as input source. But almost all hardware video sources provide frames in RGB/BGR(A) formats. So gray scale conversion is very popular operation. Although it&rsquo;s expensive enough to cause CPU-bound bottlenecks while running on mobile processors. In this post i will show you how to use ARM NEON intrinsic to get significant performance boost of BGRA to GRAY conversion.
+
+Color representation Pixel color can be presented in different ways.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/2011-02-08-a-very-fast-bgra-to-grayscale-conversion-on-iphone/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">A very fast BGRA to Grayscale conversion on Iphone</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    
+
+<p><img src="NEON_ProductImage.jpg" alt="" title="NEON" /></p>
+
+<p>Almost all image processing algorithms uses gray scale images as input source. But almost all hardware video sources provide frames in RGB/BGR(A) formats. So gray scale conversion is very popular operation. Although it&rsquo;s expensive enough to cause CPU-bound bottlenecks while running on mobile processors. In this post i will show you how to use ARM NEON intrinsic to get significant performance boost of BGRA to GRAY conversion.</p>
+
+<p><span class="more"></span></p>
+
+<h2 id="color-representation">Color representation</h2>
+
+<p><img src="RGB_illumination.jpg" alt="" /></p>
+
+<p>Pixel color can be presented in different ways. RGB color model presents color as a combination of three base colors of different intensity. Gray scale image contains only pixel luminance value without specific color. Pixels from RGB color model can be converted to gray scale using following formula: Y = 0.2126 R + 0.7152 G + 0.0722 B. Multipliers can very depending on the color space standards. Since we are targeting to iPhone it’s necessary to remember that camera capture from iOS AVFramework provide video frames in BGRA format (alpha channel is always equals to 255). For our further steps we will ignore it.</p>
+
+<h2 id="implementation">Implementation:</h2>
+
+<p>First of all we need reference C++ implementation. Just to know the starting point. Here it is:</p>
+
+<h4 id="reference-c-bgra-to-grayscale-conversion-function">Reference C++ BGRA to Grayscale conversion function:</h4>
+
+<pre><code class="language-cpp">static void reference_convert (common::UInt8 * dest, common::UInt8 * src, int n)
+{
+  int i;
+  int r,g,b;
+  int y;
+
+  for (i=0; i &lt; n; i++)
+  {
+    b = *src++; // load blue
+    g = *src++; // load green
+    r = *src++; // load red
+    src++; // skip aplha
+
+    // build weighted average:
+    y = (r*77)+(g*151)+(b*28);
+
+    // undo the scale by 256 and write to memory:
+    *dest++ = (y&gt;&gt;8);
+  }
+}
+</code></pre>
+
+<p>Okay, this function works relatively fast but not enough. Since iPhone has ARM CPU (Cortex A-9), it supports SIMD NEON engine which can be used for color conversion with great effort. SIMD technology allows process multiple data with one instruction call, saving time for other computations. Cutting a long story shorter – we will process eighth(!) pixels at one time.</p>
+
+<p><img src="NEON_ISA.jpg" alt="" /></p>
+
+<p>Fortunately, you don’t have to deal with such low-level instructions directly. There are special functions, called intrinsic, which can be treated as regular functions but they works with input data simultaneously. If you want to learn more about NEON intrinsic you will found link in the “References” section.</p>
+
+<h4 id="arm-neon-intrinsic-optimized-conversion">ARM NEON Intrinsic-optimized conversion:</h4>
+
+<pre><code class="language-cpp">void neon_convert (uint8_t * __restrict dest, uint8_t * __restrict src, int numPixels)
+{
+  int i;
+  uint8x8_t rfac = vdup_n_u8 (77);
+  uint8x8_t gfac = vdup_n_u8 (151);
+  uint8x8_t bfac = vdup_n_u8 (28);
+  int n = numPixels / 8;
+
+  // Convert per eight pixels
+  for (i=0; i &lt; n; ++i)
+  {
+    uint16x8_t  temp;
+    uint8x8x4_t rgb  = vld4_u8 (src);
+    uint8x8_t result;
+
+    temp = vmull_u8 (rgb.val[0],      bfac);
+    temp = vmlal_u8 (temp,rgb.val[1], gfac);
+    temp = vmlal_u8 (temp,rgb.val[2], rfac);
+
+    result = vshrn_n_u16 (temp, 8);
+    vst1_u8 (dest, result);
+    src  += 8*4;
+    dest += 8;
+  }
+}
+</code></pre>
+
+<p>This function process eight pixels per iteration. Great performance boost but I decided to go further and rewrite anything using assembler. This requires much more knowledge about CPU Architecture but result was worth of it.</p>
+
+<h2 id="neon-and-assembler">NEON and Assembler:</h2>
+
+<pre><code class="language-cpp">static void neon_asm_convert(uint8_t * __restrict dest, uint8_t * __restrict src, int numPixels)
+{
+  asm volatile(&quot;lsr          %2, %2, #3      \n&quot;
+               &quot;# build the three constants: \n&quot;
+               &quot;mov         r4, #28          \n&quot; // Blue channel multiplier
+               &quot;mov         r5, #151         \n&quot; // Green channel multiplier
+               &quot;mov         r6, #77          \n&quot; // Red channel multiplier
+               &quot;vdup.8      d4, r4           \n&quot;
+               &quot;vdup.8      d5, r5           \n&quot;
+               &quot;vdup.8      d6, r6           \n&quot;
+               &quot;.loop:                       \n&quot;
+               &quot;# load 8 pixels:             \n&quot;
+               &quot;vld4.8      {d0-d3}, [%1]!   \n&quot;
+               &quot;# do the weight average:     \n&quot;
+               &quot;vmull.u8    q7, d0, d4       \n&quot;
+               &quot;vmlal.u8    q7, d1, d5       \n&quot;
+               &quot;vmlal.u8    q7, d2, d6       \n&quot;
+               &quot;# shift and store:           \n&quot;
+               &quot;vshrn.u16   d7, q7, #8       \n&quot; // Divide q3 by 256 and store in the d7
+               &quot;vst1.8      {d7}, [%0]!      \n&quot;
+               &quot;subs        %2, %2, #1       \n&quot; // Decrement iteration count
+               &quot;bne         .loop            \n&quot; // Repeat unil iteration count is not zero
+               :
+               : &quot;r&quot;(dest), &quot;r&quot;(src), &quot;r&quot;(numPixels)
+               : &quot;r4&quot;, &quot;r5&quot;, &quot;r6&quot;
+               );
+}
+</code></pre>
+
+<h2 id="results">Results</h2>
+
+<p>I’ve done color conversion on 640x512 image (well-known graffiti image) 100 times to get more precise time measures. Here is a chart with graphical illustrations of BGRA to GRAY conversion using different algorithms. I’ve added two 3-rd party implementations (One from OpenCV – cvCvtColor, and one from Boost::Gil – copy_and_convert_pixels) to see how are they optimized. Testing hardware - IPhone 3Gs,  iOS 4.2.</p>
+
+<p><img src="bgra2grayconversion.png" alt="BGRA to GRAY conversion" title="BGRA to GRAY conversion" /></p>
+
+<p>As we can see, NEON optimized assembler function works three times faster that C++ function with intrinsic and six times faster than pure C++ implementation.</p>
+
+<h2 id="references">References</h2>
+
+<ol>
+<li>Many thanks for the <a href="http://hilbert-space.de/?p=22">Nils Pipenbrinck</a>. This article helps me a lot!</li>
+<li><a href="http://blogs.arm.com/software-enablement/161-coding-for-neon-part-1-load-and-stores/">Coding for NEON - Part 1: Load and Stores</a></li>
+</ol>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/xcode/">xcode</a>
+            
+                 <a href="/tags/neon/">neon</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=A%20very%20fast%20BGRA%20to%20Grayscale%20conversion%20on%20Iphone&url=https%3a%2f%2fexample.com%2f2011-02-08-a-very-fast-bgra-to-grayscale-conversion-on-iphone%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2f2011-02-08-a-very-fast-bgra-to-grayscale-conversion-on-iphone%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2f2011-02-08-a-very-fast-bgra-to-grayscale-conversion-on-iphone%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

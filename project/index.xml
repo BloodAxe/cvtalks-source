@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Project-rsses on Ghostwriter example</title>
+    <link>https://example.com/project/index.xml</link>
+    <description>Recent content in Project-rsses on Ghostwriter example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>My Name</copyright>
+    <lastBuildDate>Tue, 18 Nov 2014 02:13:50 +0000</lastBuildDate>
+    <atom:link href="https://example.com/project/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>My awesome project</title>
+      <link>https://example.com/project/my-awesome-project/</link>
+      <pubDate>Tue, 18 Nov 2014 02:13:50 +0000</pubDate>
+      
+      <guid>https://example.com/project/my-awesome-project/</guid>
+      <description>
+
+&lt;h2 id=&#34;about-project&#34;&gt;About project&lt;/h2&gt;
+
+&lt;p&gt;Aenean ipsum justo, semper eu nisl ut, pretium tincidunt sem. Praesent et diam sit amet lacus lobortis dictum a id lacus. Quisque hendrerit sit amet turpis eu varius. Ut id lorem ac felis ultrices tincidunt. Pellentesque consequat arcu ac fringilla imperdiet. Phasellus pellentesque, sapien non pulvinar blandit, sapien ante aliquet felis, vel porttitor sapien ante in lacus. Fusce non urna aliquet, malesuada nibh vel, luctus urna. Phasellus ut lacus molestie, varius purus quis, malesuada lorem.&lt;/p&gt;
+
+&lt;h2 id=&#34;install&#34;&gt;Install&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;go get -u -v github.com/spf13/hugo
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;docs&#34;&gt;Docs&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://godoc.org/github.com/spf13/hugo&#34;&gt;https://godoc.org/github.com/spf13/hugo&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

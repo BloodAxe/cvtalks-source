@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Tile-based image processing &middot; My Name</title>
+        <meta name="description" content="How would you design an algorithm to process 40Mpx image? 100Mpx? What about gigapixel-sized panorams? Obviously, it should differs from those that are intended for 640x480 images. Here I want to present you implementation of the very simple but powerful approach called &ldquo;Tile-based image processing&rdquo;. I will show you how to make this using OpenCV.
+First, let&rsquo;s define a few restrictions in order to simplify our implementation. In this tutorial I will consider a &lsquo;pass-through&rsquo; pipeline - when we apply some function to input image and give an output image of the same size as an output.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:title" content="Tile-based image processing">
+<meta property="og:description" content="How would you design an algorithm to process 40Mpx image? 100Mpx? What about gigapixel-sized panorams? Obviously, it should differs from those that are intended for 640x480 images. Here I want to present you implementation of the very simple but powerful approach called &ldquo;Tile-based image processing&rdquo;. I will show you how to make this using OpenCV.
+First, let&rsquo;s define a few restrictions in order to simplify our implementation. In this tutorial I will consider a &lsquo;pass-through&rsquo; pipeline - when we apply some function to input image and give an output image of the same size as an output.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://example.com/tile-based-image-processing/">
+        <link rel="stylesheet" href="https://example.com/css/normalize.css">
+        <link rel="stylesheet" href="https://example.com/css/highlight.css">
+        <link rel="stylesheet" href="https://example.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'XXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://example.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/XXX">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Gitlab" title="Gitlab" href="https://gitlab.com/XXX">
+                                <i class="fa fa-gitlab"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/XXX">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Stack Overflow" title="Stack Overflow" href="https://stackoverflow.com/users/XXX/YYY">
+                                <i class="fa fa-stack-overflow"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/XXX/">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;XXX">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Getting Started with Hugo" href="/2014/04/02/hugoisforlovers/">Getting Started with Hugo</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="tutorials" href="">tutorials</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Blog" href="/">Blog</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/project/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Contact" href="/page/contact/">Contact</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/page/about/">About</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">Tile-based image processing</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    
+
+<p>How would you design an algorithm to process 40Mpx image? 100Mpx? What about gigapixel-sized panorams? Obviously, it should differs from those that are intended for 640x480 images. Here I want to present you implementation of the very simple but powerful approach called &ldquo;Tile-based image processing&rdquo;. I will show you how to make this using OpenCV.</p>
+
+<p><img src="tiles.png" alt="Tile based image processing" /></p>
+
+<p><span class="more" /></p>
+
+<p>First, let&rsquo;s define a few restrictions in order to simplify our implementation. In this tutorial I will consider a &lsquo;pass-through&rsquo; pipeline - when we apply some function to input image and give an output image of the same size as an output.</p>
+
+<p>It is possible to extend this approach to work with many input images, but for the sake of simplicity I&rsquo;ll omit this for now.</p>
+
+<p>Consider a following algorithm:</p>
+
+<ol>
+<li>Take a source image for RGB color space.</li>
+<li>Convert in to grayscale color space (unsigned byte).</li>
+<li>Compute Sobel derivatives (signed short).</li>
+<li>Take a Dx, Dy for each pixel and compute it&rsquo;s magnitude and orientation.</li>
+<li>Leave only those, which magnitude is larger than threshold.</li>
+</ol>
+
+<p>Using OpenCV it could look like this:</p>
+
+<pre><code class="language-cpp">cv::Mat source = cv::imread(&quot;input.jpg&quot;);
+cv::Mat grayscale, dx, dy;
+cv::cvtColor(source, grayscale);
+cv::Sobel(grayscale, dx, 1, 0);
+cv::Sobel(grayscale, dy, 0, 1);
+...
+</code></pre>
+
+<h2 id="problems-with-straighforward-implementation">Problems with straighforward implementation</h2>
+
+<p>This routine require <code>N + 2 * N * sizeof(signed short)</code> bytes of additional memory for straightforward implementation, where N is number of pixels in source image. Large number of intermediate buffers can cause memory issues for memory restricted devices (mobile phones, embedded systems).</p>
+
+<blockquote>
+<p>On iOS, in particular, your app might get terminated by iOS watchdog for high peak RAM usage, despite the fact you use this memory only for a temp buffers.</p>
+</blockquote>
+
+<p>Second issue with large amount of buffers is cache-misses. Large buffers are likely to sit near each other, therefore cache performance will be low and algorithm performance will suffer.</p>
+
+<p>To adress those two issues, I suggest to divide input image into &ldquo;Tiles&rdquo; - regions of the original image of equal size, let&rsquo;s say 64x64. The processing function remains the same, but we reuse all temporary buffers and process only 64x64 pixels at one time.</p>
+
+<p><img src="algorithm.png" alt="Tile based image processing" /></p>
+
+<p>Let&rsquo;s say we&rsquo;re processing <code>1280x720</code> frame, using regular approach, the total amount of
+additional memory is <strong>4.6 megabytes</strong> (<code>4608000</code> bytes). With tile-based approach, we need only <strong>20 kilobytes</strong> (<code>20480</code> bytes). 20K are likely to fit entirely in L2 cache and therefore give a significant performance boost.</p>
+
+<h2 id="tile-based-implementation">Tile-based implementation</h2>
+
+<p>To implement tile-based implementation, we iterate over the image, copy tiles from source image to our local source tile, process it and write to corresponding area in the
+destination image.</p>
+
+<p>A pseudo-code for this routine is follows:</p>
+
+<pre><code class="language-cpp">template&lt;int TileSize, typename Algorithm&gt;
+void process(const cv::Mat&amp; sourceImage, cv::Mat&amp; resultImage, Algorithm algorithm) const
+{
+    assert(!resultImage.empty());
+    assert(sourceImage.rows == resultImage.rows);
+    assert(sourceImage.cols == resultImage.cols);
+
+    const int rows = (sourceImage.rows / TileSize) + (sourceImage.rows % TileSize ? 1 : 0);
+    const int cols = (sourceImage.cols / TileSize) + (sourceImage.cols % TileSize ? 1 : 0);
+
+    cv::Mat tileInput, tileOutput;
+
+    for (int rowTile = 0; rowTile &lt; rows; rowTile++)
+    {
+        for (int colTile = 0; colTile &lt; cols; colTile++)
+        {
+            copyTileFromSource(sourceImage, tileInput, rowTile, colTile);
+            algorithm(tileInput, tileOutput);
+            copyTileToResultImage(tileOutput, resultImage, rowTile, colTile);
+        }
+    }
+}
+</code></pre>
+
+<p>I hope it&rsquo;s clear to understand what is happening in code above. The <code>Algorithm</code> here represents some algorithm that we want to run on our tiles. There are two functions <code>copyTileFromSource</code> and <code>copyTileToResultImage</code> that will be covered a bit later.</p>
+
+<h2 id="dealing-with-out-of-tile-reads">Dealing with out-of-tile reads</h2>
+
+<p>You may ask yourself - what should we do with border pixels? Sobel operator use neighbor pixels around each pixel. When we construct a tile shouldn&rsquo;t we take this into account? Sure we are. So that&rsquo;s why there is a padding parameter that controls amount of additional pixels that are added to top, left, bottom and right of the tile in order to make functions that require additional pixels work correct.</p>
+
+<p><img src="tile_with_paddings.png" alt="Tile with paddings" /></p>
+
+<p>Padding makes tile overlap each other, but we pay this price for good cache locality.</p>
+
+<p>I will use a slightly modified version of code from above:</p>
+
+<pre><code class="language-cpp">struct TiledAlgorithm
+{
+    TiledAlgorithm(int tileSize, int padding, int borderType)
+        : mTileSize(tileSize)
+        , mPadding(padding)
+        , mBorderType(borderType)
+    {
+    }
+
+    void process(const cv::Mat&amp; sourceImage, cv::Mat&amp; resultImage) const
+    {
+        assert(!resultImage.empty());
+        assert(sourceImage.rows == resultImage.rows);
+        assert(sourceImage.cols == resultImage.cols);
+
+        int rows = (sourceImage.rows / mTileSize) + (sourceImage.rows % mTileSize ? 1 : 0);
+        int cols = (sourceImage.cols / mTileSize) + (sourceImage.cols % mTileSize ? 1 : 0);
+
+        cv::Mat tileInput, tileOutput;
+
+        for (int rowTile = 0; rowTile &lt; rows; rowTile++)
+        {
+            for (int colTile = 0; colTile &lt; cols; colTile++)
+            {
+                cv::Rect srcTile(colTile * mTileSize - mPadding, 
+                                 rowTile * mTileSize - mPadding, 
+                                 mTileSize + 2 * mPadding, 
+                                 mTileSize + 2 * mPadding);
+
+                cv::Rect dstTile(colTile * mTileSize,            
+                                 rowTile * mTileSize, 
+                                 mTileSize, 
+                                 mTileSize);
+
+                copySourceTile(sourceImage, tileInput, srcTile);
+                processTileImpl(tileInput, tileOutput);
+                copyTileToResultImage(tileOutput, resultImage, dstTile);
+            }
+        }
+    }
+
+protected:
+    virtual void processTileImpl(const cv::Mat&amp; srcTile, cv::Mat&amp; dstTile) const = 0;
+    
+    void copySourceTile(const cv::Mat&amp; src, cv::Mat&amp; srcTile, cv::Rect &amp;tile) const;
+    void copyTileToResultImage(const cv::Mat&amp; tileImage, cv::Mat&amp; resultImage, cv::Rect resultRoi);
+
+};
+</code></pre>
+
+<p><img src="processing_with_paddings.png" alt="Processing with paddings" /></p>
+
+<p>To fill a tile with source image we should check whether tile is close to image border. In this case OpenCV will come to help with cv::copyMakeBorder function that helps us to fill the missing pixels with given border fill method. If tile including paddings are entirely in the image boundary, it&rsquo;s enough to just copy image region to a tile:</p>
+
+<pre><code class="language-cpp">void copySourceTile(const cv::Mat&amp; src, cv::Mat&amp; srcTile, cv::Rect &amp;tile)
+{
+    auto tl = tile.tl();
+    auto br = tile.br();
+
+    cv::Point tloffset, broffset;
+
+    //Take care of border cases
+    if (tile.x &lt; 0)
+    {
+        tloffset.x = -tile.x;
+        tile.x = 0;
+    }
+
+    if (tile.y &lt; 0)
+    {
+        tloffset.y = -tile.y;
+        tile.y = 0;
+    }
+
+    if (br.x &gt;= src.cols)
+    {
+        broffset.x = br.x - src.cols + 1;
+        tile.width -= broffset.x;
+    }
+
+    if (br.y &gt;= src.rows)
+    {
+        broffset.y = br.y - src.rows + 1;
+        tile.height -= broffset.y;
+    }
+
+    // If any of the tile sides exceed source image boundary we must use copyMakeBorder to make proper paddings for this side
+    if (tloffset.x &gt; 0 || tloffset.y &gt; 0 || broffset.x &gt; 0 || broffset.y &gt; 0)
+    {
+        cv::Rect paddedTile(tile.tl(), tile.br());
+        assert(paddedTile.x &gt;= 0);
+        assert(paddedTile.y &gt;= 0);
+        assert(paddedTile.br().x &lt; src.cols);
+        assert(paddedTile.br().y &lt; src.rows);
+
+        cv::copyMakeBorder(src(paddedTile), srcTile, tloffset.y, broffset.y, tloffset.x, broffset.x, mBorderType);
+    }
+    else
+    {
+        // Entire tile (with paddings lies inside image and it's safe to just take a region:
+        src(tile).copyTo(srcTile);
+    }
+}
+</code></pre>
+
+<p>For non-zero padding case we add additional pixels to source tile, therefore it has effective width and height of <code>TileSize + Padding + Padding</code>, but after processing we write only central segment of the tile of size <code>TileSize x TileSize</code> to destination image. In case of Sobel, we need a padding of <code>1</code>, because Sobel uses 3x3 kernel by default.</p>
+
+<pre><code class="language-cpp">void copyTileToResultImage(const cv::Mat&amp; tileImage, cv::Mat&amp; resultImage, cv::Rect resultRoi)
+{
+    cv::Rect srcTile(mPadding, mPadding, mTileSize, mTileSize);
+
+    auto br = resultRoi.br();
+
+    if (br.x &gt;= resultImage.cols)
+    {
+        resultRoi.width -= br.x - resultImage.cols;
+        srcTile.width -= br.x - resultImage.cols;
+    }
+
+    if (br.y &gt;= resultImage.rows)
+    {
+        resultRoi.height -= br.y - resultImage.rows;
+        srcTile.height -= br.y - resultImage.rows;
+    }
+
+    cv::Mat tileView = tileImage(srcTile);
+    cv::Mat dstView = resultImage(resultRoi);
+
+    assert(tileView.rows == dstView.rows);
+    assert(tileView.cols == dstView.cols);
+
+    tileView.copyTo(dstView);
+}
+</code></pre>
+
+<h2 id="application">Application</h2>
+
+<p>This approach can be used when you need to guarantee low-memory footprint of your algorithm or you want to use data locality without changing a lot in your code. In this
+case I suggest to pre-allocate data buffers as a continuous block of memory:</p>
+
+<pre><code class="language-cpp">// Our algorithm need three intermediate buffers: a,b,c that
+// we want to store close to each other
+class MyAlgorithm : public TiledAlgorithm
+{
+public:
+    MyAlgorithm(int tileSize, int padding)
+    {
+        int size = tileSize + padding * 2;
+
+        // Allocate all buffer as continuous array
+        mBuffer.create(size * 3, size, CV_8UC1);
+            
+        // Create views to sub-regions of mBuffer
+        a = mBuffer.rowRange(0,      size);
+        b = mBuffer.rowRange(size,   2*size);
+        c = mBuffer.rowRange(2*size, 3*size);
+    }
+
+private:
+    cv::Mat mBuffer;
+
+    cv::Mat a, b c;
+}
+}
+</code></pre>
+
+<p>Did you know, that JPEG-2000 coded use tile-based encoding and it allows this codec to retrieve (decode) an arbitrary region of the image? Also, tiles are widely used in aerial photography to stich images.</p>
+
+<p>I hope you find this post interesting. Pleas let me know on which topics you would like to see in my blog. Feel free to drop a ping on <a href="https://twitter.com/cvtalks">@cvtalks</a> or leave a comment. Thanks!</p>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/opencv/">opencv</a>
+            
+                 <a href="/tags/tutorials/">tutorials</a>
+            
+                 <a href="/tags/algorithms/">algorithms</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=Tile-based%20image%20processing&url=https%3a%2f%2fexample.com%2ftile-based-image-processing%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fexample.com%2ftile-based-image-processing%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fexample.com%2ftile-based-image-processing%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Ghostwriter example" href="https://example.com/">Ghostwriter example</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2015 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://example.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://example.com/js/jquery.fitvids.js"></script>
+        <script src="https://example.com/js/scripts.js"></script>
+    </body>
+</html>
+

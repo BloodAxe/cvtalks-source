@@ -46,7 +46,7 @@ image with large zoom without aliasing artifacts that typical for raster renderi
 
 ![](56cc184627964797b10b34687180a24b.gif)
 
-Paper in russian: [Signed Distance Field или как сделать из растра вектор](http://habrahabr.ru/post/215905/).
+Paper in russian: [Signed Distance Field или как сделать из растра вектор](http://habrahabr.ru/posts/215905/).
 
 This algorithm was developed by Valve and presented at SIGGRAPH 2007. You can read original paper:
 [Improved Alpha-Tested Magniﬁcation for Vector Textures and Special Effects](http://www.valvesoftware.com/publications/2007/SIGGRAPH2007_AlphaTestedMagnification.pdf). Special thanks to @jin for the link.

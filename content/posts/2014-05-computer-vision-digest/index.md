@@ -241,4 +241,4 @@ That's all folks! I hope you enjoyed this digest. Please, leave your and feedbac
 [cimg]: http://cimg.sourceforge.net/
 [decoupling]: http://people.csail.mit.edu/jrk/halide12/
 [deep-beleif]: https://www.jetpac.com/developer
-[browser-imgproc]: http://habrahabr.ru/post/221619/
+[browser-imgproc]: http://habrahabr.ru/posts/221619/

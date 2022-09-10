@@ -8,7 +8,7 @@
   name = "المنشورات"
   weight = 200
   identifier = "posts"
-  url = "/ar/post/"
+  url = "/ar/posts/"
 
   [[main]]
   name = "حول"

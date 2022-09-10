@@ -12,11 +12,11 @@ Feel free to reach out me on [Kaggle](https://www.kaggle.com/bloodaxe) and [Sign
 
 # 2022
 
-## [xView3 - The First Place]({{< ref "/post/2022-09-xview3-solution" >}})
+## [xView3 - The First Place]({{< ref "/posts/2022-09-xview3-solution" >}})
 
 * <i class="fa-solid fa-globe"></i> [Competition Website](https://iuu.xview.us/)
 * <i class="fa-solid fa-trophy"></i> [Winners Announcement](https://globalfishingwatch.org/press-release/xview3-winners-announced/)
-* <i class="fa-regular fa-file-lines"></i> [Solution Writeup]({{< ref "/post/2022-09-xview3-solution" >}})
+* <i class="fa-regular fa-file-lines"></i> [Solution Writeup]({{< ref "/posts/2022-09-xview3-solution" >}})
 * <i class="fa-brands fa-github"></i> [xView3-The-First-Place-Solution](https://github.com/BloodAxe/xView3-The-First-Place-Solution)
 
 # 2021
@@ -25,7 +25,7 @@ Feel free to reach out me on [Kaggle](https://www.kaggle.com/bloodaxe) and [Sign
 
 * <i class="fa-solid fa-globe"></i> [Competition Website](https://www.drivendata.org/competitions/78/overhead-geopose-challenge/)
 * <i class="fa-solid fa-trophy"></i> [Winners Announcement](https://drivendata.co/blog/overhead-geopose-challenge-winners/)
-* <i class="fa-regular fa-file-lines"></i> [Solution Writeup]({{< ref "/post/2021-09-geopose-solution" >}})
+* <i class="fa-regular fa-file-lines"></i> [Solution Writeup]({{< ref "/posts/2021-09-geopose-solution" >}})
 * <i class="fa-brands fa-github"></i> [xView3-The-First-Place-Solution](https://github.com/BloodAxe/DrivenData-2021-Geopose-Solution)
 
 
@@ -47,7 +47,7 @@ Became Top-1 ranked competiton in SIGNATE platform
 ## xView 2 Buildings Damage Assessment - 3-rd Place
 
 * <i class="fa-solid fa-globe"></i> [Competition Website](https://xview2.org/)
-* <i class="fa-regular fa-file-lines"></i> [Solution Writeup]({{< ref "/post/2020-01-xview2-solution-writeup" >}})
+* <i class="fa-regular fa-file-lines"></i> [Solution Writeup]({{< ref "/posts/2020-01-xview2-solution-writeup" >}})
 * <i class="fa-regular fa-file-lines"></i> [Arxiv Paper](https://arxiv.org/abs/2111.00508)
 * <i class="fa-brands fa-github"></i> [Solution Code](https://github.com/BloodAxe/xView2-Solution)
 

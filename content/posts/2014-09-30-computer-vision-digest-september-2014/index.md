@@ -51,7 +51,7 @@ And more. Unlike other technologies, it does not require human involvement in a 
 
 ![](28b4d17c1c65450faa683cc1afeddd89.jpg)
 
-Source: http://habrahabr.ru/post/237827/.
+Source: http://habrahabr.ru/posts/237827/.
 
 <hr />
 <a name="2"></a>

@@ -179,4 +179,4 @@ The 3.0-alpha package can be downloaded:
 
  [digests]: /tags/digest.html
  [where-is-waldo]: http://machinelearningmastery.com/using-opencv-python-and-template-matching-to-play-wheres-waldo/
- [video-stab]: http://habrahabr.ru/post/232877/
+ [video-stab]: http://habrahabr.ru/posts/232877/

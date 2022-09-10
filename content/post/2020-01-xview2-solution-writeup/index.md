@@ -1,22 +1,20 @@
 +++
-title = "Getting a medal and publishing follow-up paper on NeurIPS"
-date = "2022-09-09"
+title = "xView2: Getting a medal and publishing follow-up paper on NeurIPS"
+date = "2020-09-09"
 tags =  ["challenge", "diu", "rgb", "pytorch", "deep-learning"]
-thumbnail = "post/2020-01-xview2-solution-writeup/final_leaderboard.png"
+thumbnail = "post/2020-01-xview2-solution-writeup/Santa_Rosa_Wildfires.jpg"
 +++
 
-Automatic damage assessment after natural disasters allows to optimally distribute
-aid and forces to recovery from damage dealt. This process involves acquisition of satellite
-imagery for the region of interest, localization of buildings and classification of amount of
-damage caused by nature or urban factors to buildings. In case of natural disasters, this
-often means processing of many square kilometers of area before and after the event in
-order to judge whether particular building had suffered from the damaging factors or not.
 The main objective of xView 2 challenge was to build a solution, capable of
-processing pair of satellite images of same region (called hereinafter “pre” and “post”
+processing a pair of satellite images of same region (called hereinafter “pre” and “post”
 images) to detect buildings and classify level of damage dealt to them.
-In this white paper I describe my solution to this problem and explain few know-how
-ideas, that resulted in a top-performing solution. The source code for my solution is available
-at https://github.com/BloodAxe/xView2.
+
+In this post I describe my solution to this problem and explain few know-how
+ideas, that resulted in a top-performing solution.
+
+<!--more-->
+
+Solution code and pretrained models are available here: <i class="fa-brands fa-github"></i> https://github.com/BloodAxe/https://github.com/BloodAxe/xView2-Solution.
 
 # Introduction to Solution
 

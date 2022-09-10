@@ -1,5 +1,5 @@
 +++
-title = "How I solved dark vessels detection problem and won xView3 challenge"
+title = "xView3: How I solved dark vessels detection problem and secured the first place"
 date = "2022-09-09"
 tags =  ["challenge", "xview3", "diu", "centernet", "sar", "pytorch", "deep-learning"]
 thumbnail = "post/2022-09-xview3-solution/xview3-leaderboard.png"

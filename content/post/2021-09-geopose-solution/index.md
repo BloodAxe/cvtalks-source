@@ -1,6 +1,6 @@
 +++
 title = "How mixed-precision training prevented me winning a competition"
-date = "2022-09-09"
+date = "2021-09-09"
 tags =  ["challenge", "driven-data", "geopose", "rgb", "pytorch", "deep-learning"]
 thumbnail = "post/2021-09-geopose-solution/final_leaderboard.png"
 +++

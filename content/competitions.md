@@ -12,7 +12,13 @@ Feel free to reach out me on [Kaggle](https://www.kaggle.com/bloodaxe) and [Sign
 
 # 2022
 
-## xView3 - The First Place
+## [xView3 - The First Place]({{< ref "/post/2022-09-xview3-solution" >}})
+
+[Winners Announcement](https://globalfishingwatch.org/press-release/xview3-winners-announced/)
+
+[Competition Website](https://iuu.xview.us/)
+
+<i class="fa-brands fa-github"></i> [xView3-The-First-Place-Solution](https://github.com/BloodAxe/xView3-The-First-Place-Solution)
 
 # 2021
 

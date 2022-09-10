@@ -37,6 +37,8 @@ Eugene Khvedchenya, Tatiana Gabruseva
 
 ### ImageNet Pre-trained CNNs for JPEG Steganalysis
 
+http://ws2.binghamton.edu/fridrich/Research/Alaska-2-Revised.pdf
+
 Yassine Yousfi , Jan Butora , Eugene Khvedchenya, Jessica Fridrich
 
 > In this paper, we investigate pre-trained computer-vision deep architectures, such as the EfficientNet, MixNet, and ResNet for steganalysis. These models pre-trained on ImageNet can be rather quickly refined for JPEG steganalysis while offering significantly better performance than CNNs designed purposely for steganalysis, such as the SRNet, trained from scratch. We show how different architectures compare on the ALASKA II dataset. We demonstrate that avoiding pooling/stride in the first layers enables better performance, as noticed by other top competitors, which aligns with the design choices of many CNNs designed for steganalysis. We also show how pre-trained computer-vision deep architectures perform on the ALASKA I dataset. 
